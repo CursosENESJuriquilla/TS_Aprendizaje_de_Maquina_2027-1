@@ -1,0 +1,54 @@
+# Temario {.unnumbered}
+
+
+| Tema                                                  | Subtema                                                                    |
+| ----------------------------------------------------- | -------------------------------------------------------------------------- |
+| **1. Introducción al aprendizaje automático moderno** | 1.1 Flujo de trabajo en aprendizaje automático.                            |
+|                                                       | 1.2 Tipos de aprendizaje: supervisado y no supervisado.                    |
+|                                                       | 1.3 Sobreajuste y subajuste.                                               |
+|                                                       | 1.4 Compromiso sesgo-varianza.                                             |
+|                                                       | 1.5 Preprocesamiento de datos.                                             |
+|                                                       | 1.6 Ingeniería de variables.                                               |
+|                                                       | 1.7 Escalamiento y normalización.                                          |
+|                                                       | 1.8 Manejo de datos faltantes.                                             |
+|                                                       | 1.9 Partición de datos en entrenamiento, validación y prueba.              |
+|                                                       | 1.10 Métricas de desempeño para modelos de regresión y clasificación.      |
+|                                                       | 1.11 Desbalance de clases.                                                 |
+| **2. Modelos no lineales**                            | 2.1 Regresión polinómica.                                                  |
+|                                                       | 2.2 Funciones escalonadas.                                                 |
+|                                                       | 2.3 Funciones base.                                                        |
+|                                                       | 2.4 Splines de regresión.                                                  |
+|                                                       | 2.5 Splines de suavizamiento.                                              |
+|                                                       | 2.6 Regresión local.                                                       |
+| **3. Métodos de ensamble y optimización de modelos**  | 3.1 Métodos modernos de Gradient Boosting.                                 |
+|                                                       | 3.2 Optimización de hiperparámetros.                                       |
+|                                                       | 3.3 Validación cruzada para selección de modelos.                          |
+|                                                       | 3.4 Búsqueda en malla (Grid Search).                                       |
+|                                                       | 3.5 Búsqueda aleatoria (Random Search).                                    |
+|                                                       | 3.6 Evaluación y comparación de modelos.                                   |
+| **4. Máquinas de Soporte Vectorial**                  | 4.1 Clasificador de margen máximo.                                         |
+|                                                       | 4.2 Clasificadores de soporte vectorial.                                   |
+|                                                       | 4.3 Máquinas de Soporte Vectorial.                                         |
+|                                                       | 4.4 Máquinas de soporte vectorial con más de dos clases.                   |
+|                                                       | 4.5 Relación con la regresión logística.                                   |
+| **5. Aprendizaje no supervisado**                     | 5.1 Introducción al aprendizaje no supervisado.                            |
+|                                                       | **5.2 Reducción de dimensión.**                                            |
+|                                                       | 5.2.1 Análisis de Componentes Principales (PCA).                           |
+|                                                       | 5.2.2 Métodos no lineales para reducción de dimensión.                     |
+|                                                       | 5.2.3 t-SNE.                                                               |
+|                                                       | 5.2.4 UMAP.                                                                |
+|                                                       | 5.2.5 Comparación e interpretación de métodos.                             |
+|                                                       | **5.3 Métodos de agrupamiento.**                                           |
+|                                                       | 5.3.1 Agrupamiento mediante k-medias.                                      |
+|                                                       | 5.3.2 Agrupamiento jerárquico.                                             |
+|                                                       | 5.3.3 Agrupamiento basado en densidad.                                     |
+|                                                       | 5.3.4 Comparación e interpretación de métodos de agrupamiento.             |
+|                                                       | 5.4 Evaluación de agrupamientos.                                           |
+| **6. Interpretabilidad y explicabilidad de modelos**  | 6.1 Importancia de variables.                                              |
+|                                                       | 6.2 Técnicas globales de interpretación.                                   |
+|                                                       | 6.3 Técnicas locales de interpretación.                                    |
+|                                                       | 6.4 Explainable Artificial Intelligence (XAI).                             |
+|                                                       | 6.5 Métodos basados en valores de Shapley.                                 |
+|                                                       | 6.6 Métodos locales de explicación.                                        |
+|                                                       | 6.7 Interpretación y comunicación de resultados.                           |
+|                                                       | 6.8 Consideraciones éticas en el uso de modelos de aprendizaje automático. |

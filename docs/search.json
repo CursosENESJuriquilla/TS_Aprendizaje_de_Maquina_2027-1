@@ -1,0 +1,154 @@
+[
+  {
+    "objectID": "temario.html",
+    "href": "temario.html",
+    "title": "Temario",
+    "section": "",
+    "text": "Tema\nSubtema\n\n\n\n\n1. Introducción al aprendizaje automático moderno\n1.1 Flujo de trabajo en aprendizaje automático.\n\n\n\n1.2 Tipos de aprendizaje: supervisado y no supervisado.\n\n\n\n1.3 Sobreajuste y subajuste.\n\n\n\n1.4 Compromiso sesgo-varianza.\n\n\n\n1.5 Preprocesamiento de datos.\n\n\n\n1.6 Ingeniería de variables.\n\n\n\n1.7 Escalamiento y normalización.\n\n\n\n1.8 Manejo de datos faltantes.\n\n\n\n1.9 Partición de datos en entrenamiento, validación y prueba.\n\n\n\n1.10 Métricas de desempeño para modelos de regresión y clasificación.\n\n\n\n1.11 Desbalance de clases.\n\n\n2. Modelos no lineales\n2.1 Regresión polinómica.\n\n\n\n2.2 Funciones escalonadas.\n\n\n\n2.3 Funciones base.\n\n\n\n2.4 Splines de regresión.\n\n\n\n2.5 Splines de suavizamiento.\n\n\n\n2.6 Regresión local.\n\n\n3. Métodos de ensamble y optimización de modelos\n3.1 Métodos modernos de Gradient Boosting.\n\n\n\n3.2 Optimización de hiperparámetros.\n\n\n\n3.3 Validación cruzada para selección de modelos.\n\n\n\n3.4 Búsqueda en malla (Grid Search).\n\n\n\n3.5 Búsqueda aleatoria (Random Search).\n\n\n\n3.6 Evaluación y comparación de modelos.\n\n\n4. Máquinas de Soporte Vectorial\n4.1 Clasificador de margen máximo.\n\n\n\n4.2 Clasificadores de soporte vectorial.\n\n\n\n4.3 Máquinas de Soporte Vectorial.\n\n\n\n4.4 Máquinas de soporte vectorial con más de dos clases.\n\n\n\n4.5 Relación con la regresión logística.\n\n\n5. Aprendizaje no supervisado\n5.1 Introducción al aprendizaje no supervisado.\n\n\n\n5.2 Reducción de dimensión.\n\n\n\n5.2.1 Análisis de Componentes Principales (PCA).\n\n\n\n5.2.2 Métodos no lineales para reducción de dimensión.\n\n\n\n5.2.3 t-SNE.\n\n\n\n5.2.4 UMAP.\n\n\n\n5.2.5 Comparación e interpretación de métodos.\n\n\n\n5.3 Métodos de agrupamiento.\n\n\n\n5.3.1 Agrupamiento mediante k-medias.\n\n\n\n5.3.2 Agrupamiento jerárquico.\n\n\n\n5.3.3 Agrupamiento basado en densidad.\n\n\n\n5.3.4 Comparación e interpretación de métodos de agrupamiento.\n\n\n\n5.4 Evaluación de agrupamientos.\n\n\n6. Interpretabilidad y explicabilidad de modelos\n6.1 Importancia de variables.\n\n\n\n6.2 Técnicas globales de interpretación.\n\n\n\n6.3 Técnicas locales de interpretación.\n\n\n\n6.4 Explainable Artificial Intelligence (XAI).\n\n\n\n6.5 Métodos basados en valores de Shapley.\n\n\n\n6.6 Métodos locales de explicación.\n\n\n\n6.7 Interpretación y comunicación de resultados.\n\n\n\n6.8 Consideraciones éticas en el uso de modelos de aprendizaje automático.",
+    "crumbs": [
+      "Temario"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Temas Selectos de Aprendizaje de Máquina",
+    "section": "",
+    "text": "Información general\n\nContenido del curso 📌Forma de Evaluación 💻Referencias 📎\n\n\n\nDatos Generales\nTemas Selectos de Aprendizaje de Máquina\n\n\n\nSemestre: 7mo\nPeriodo: 2027-1\nHorario: lunes de 12 a 2pm, martes de 10am a 12pm y viernes de 10am a 12pm    \nAulas: lunes - III 304, marte VI 403, viernes VI 201  \n\n\n🎯 Objetivo principal\nIntroducir al estudiantado en los fundamentos teóricos y prácticos del aprendizaje automático moderno, con énfasis en la formulación matemática de los modelos, la evaluación rigurosa del desempeño, la interpretación de resultados y la aplicación de metodologías de aprendizaje supervisado y no supervisado a problemas reales.\n\nObjetivos particulares\n\nComprender el flujo general de trabajo en proyectos de aprendizaje automático.\nIdentificar y aplicar métodos de preprocesamiento, selección de variables y partición de datos.\nConstruir, comparar e interpretar modelos no lineales.\nAplicar métodos de ensamble y optimización de hiperparámetros.\nUtilizar técnicas de aprendizaje no supervisado para reducción de dimensión y agrupamiento.\nEvaluar la calidad de los modelos mediante métricas adecuadas y validación cruzada.\nInterpretar modelos mediante herramientas globales y locales de explicabilidad.\nDesarrollar un proyecto final reproducible con comunicación clara de resultados.\n\n\n\n\nCitar y reutilizar el material del curso\nLos datos del curso pueden reutilizarse y adaptarse libremente con la debida atribución. Todos los datos de estos repositorios están sujetos a la licencia Creative Commons Zero v1.0 Universal.\n\n\n\n\nEvaluación\n\nPrácticas en Python o R: 25%\nTareas cortas: 10%\nTareas DataCamp: 10%\nExposición de un artículo reciente: 15%\nProyecto final: 40%\n\n\n\nCriterios de evaluación\n\nClaridad matemática y conceptual en la resolución de problemas.\nCorrecta implementación de algoritmos y uso adecuado de herramientas computacio- nales.\nInterpretación razonada de resultados y comparación de modelos.\nPresentación ordenada, escrita y oral, con redacción académica adecuada.\nReproducibilidad del trabajo mediante código, reportes y visualizaciones (GitHub).\n\n\n\nRequisitos y consideraciones\n\nPara tener derecho a la evaluación de cada actividad, será requisito indispensable haber entregado en tiempo y forma las evidencias correspondientes a dicha actividad, de acuerdo con los criterios establecidos por el profesor o profesora.\nPara acreditar el curso, el estudiantado deberá cumplir con la entrega de al menos el 80 % de las prácticas, el 80 % de las tareas cortas, la exposición del artículo reciente y la entrega del proyecto final.\nEn el caso de las prácticas, únicamente se considerarán para evaluación aquellas que hayan sido entregadas completas o con un avance suficiente, según los criterios definidos previamente.\nEn el caso de las tareas cortas, no se aceptarán entregas fuera del periodo establecido, salvo justificación académica o administrativa debidamente respaldada.\nLa exposición de un artículo reciente deberá realizarse en la fecha asignada. En caso de inasistencia justificada, podrá reprogramarse una sola vez, sujetándose a la disponibilidad del calendario del curso.\nEl proyecto final deberá entregarse en versión escrita y presentarse oralmente. La calificación del proyecto integrará la formulación del problema, el análisis de datos, la construcción y comparación de modelos, la interpretación de resultados y la reproducibilidad del trabajo. Debe incluir lo siguiente\n\n\nFormulación del problema.\nExploración y preprocesamiento de datos.\nConstrucción y comparación de modelos.\nOptimización y selección del modelo.\nInterpretación de resultados.\nElaboración de un reporte reproducible.\nPresentación oral del proyecto.\n\n\nEn caso de que el estudiantado no cumpla con alguna de las actividades obligatorias, la calificación final podrá verse afectada, aun cuando el promedio ponderado de las demás actividades sea aprobatorio\nPara acreditar el curso, será indispensable obtener una calificación final mínima aprobatoria, así como cumplir con los requisitos de entrega establecidos para cada componente de evaluación.\nCualquier situación no prevista en este apartado será resuelta por la persona respon sable de la asignatura, atendiendo a los lineamientos institucionales vigentes.\n\n\n\n\n\nBibliografía básica\n[1] James, G., Witten, D., Hastie, T., Tibshirani, R. y Taylor, J. (2023). An Introduction to Statistical Learning: with Applications in Python. Springer.\n[2] Hastie, T., Tibshirani, R. y Friedman, J. (2009). The Elements of Statistical Learning: Data Mining, Inference, and Prediction. Springer.\n[3] Géron, A. (2022). Hands-On Machine Learning with Scikit-Learn, Keras, and Tensor-Flow. 2nd ed. O’Reilly Media.\n[4] Molnar, C. (2023). Interpretable Machine Learning. 3rd ed. disponible en línea, https://christophm.github.io/interpretable-ml-book/.\n\n\nBibliografía complementaria\n[1] Kuhn, M. y Johnson, K. (2013). Applied Predictive Modeling. Springer.\n[2] van der Maaten, L. y Hinton, G. (2008). Visualizing data using t-SNE. Journal of Machine Learning Research, 9, 2579–2605.\n[3] McInnes, L., Healy, J. y Melville, J. (2018). UMAP: Uniform Manifold Approximation and Projection for dimension reduction. arXiv preprint arXiv:1802.03426.\n[4] Lundberg, S. M. y Lee, S.-I. (2017). A unified approach to interpreting model predictions. Advances in Neural Information Processing Systems, 30.\n[5] Ribeiro, M. T., Singh, S. y Guestrin, C. (2016). “Why should I trust you?”: Explaining the predictions of any classifier. Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, 1135–1144.\n[6] Barocas, S., Hardt, M. y Narayanan, A. (2019). Fairness and Machine Learning. Disponible en línea.\n[7] Chen, T. y Guestrin, C. (2016). XGBoost: A scalable tree boosting system. Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, 785–794.\n[8] Bergstra, J. y Bengio, Y. (2012). Random search for hyper-parameter optimization. Journal of Machine Learning Research, 13, 281–305.\n[9] Jain, A. K. (2010). Data clustering: 50 years beyond K-means. Pattern Recognition Letters, 31(8), 651–666.\n[10] Kaufman, L. y Rousseeuw, P. J. (2005). Finding Groups in Data: An Introduction to Cluster Analysis. Wiley.\n[11] Ester, M., Kriegel, H.-P., Sander, J. y Xu, X. (1996). A density-based algorithm for discovering clusters in large spatial databases with noise. Proceedings of the Second International Conference on Knowledge Discovery and Data Mining, 226–231.\n[12] Schubert, E., Sander, J., Ester, M., Kriegel, H.-P. y Xu, X. (2017). DBSCAN revisited, revisited: why and how you should (still) use DBSCAN. ACM Transactions on Database Systems, 42(3), 18",
+    "crumbs": [
+      "Información general"
+    ]
+  },
+  {
+    "objectID": "parte1.html",
+    "href": "parte1.html",
+    "title": "1  Introducción al Aprendizaje Automático”",
+    "section": "",
+    "text": "1.1 Objetivo del ejercicio\nAl terminar este ejercicio se buscará responder:",
+    "crumbs": [
+      "**Introducción al Aprendizaje Automático**",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción al Aprendizaje Automático\"</span>"
+    ]
+  },
+  {
+    "objectID": "parte1.html#objetivo-del-ejercicio",
+    "href": "parte1.html#objetivo-del-ejercicio",
+    "title": "1  Introducción al Aprendizaje Automático”",
+    "section": "",
+    "text": "Este ejercicio es muy introductorio, solo se busca mostrar un ejemplo del flujo de trabajo que mencionamos usando un problema simple y datos simulados.\n\n\n\n\n\n¿Qué etapas sigue un proyecto típico de aprendizaje automático?\n¿Por qué el escalamiento y la imputación se ajustan solo con el conjunto de entrenamiento?\n¿Por qué la exactitud (accuracy) puede ser una métrica engañosa?",
+    "crumbs": [
+      "**Introducción al Aprendizaje Automático**",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción al Aprendizaje Automático\"</span>"
+    ]
+  },
+  {
+    "objectID": "parte1.html#sec-planteamiento",
+    "href": "parte1.html#sec-planteamiento",
+    "title": "1  Introducción al Aprendizaje Automático”",
+    "section": "1.2 Planteamiento del problema",
+    "text": "1.2 Planteamiento del problema\n\nEtapa 1 del flujo de trabajo: formular la pregunta como un problema de regresión, clasificación, agrupamiento, etc.\n\nTrabajaremos con un problema de regresión: predecir el precio de una vivienda (en miles de pesos) a partir de cuatro variables sencillas:\n\n\n\nVariable\nDescripción\n\n\n\n\nsuperficie\nSuperficie construida, en m²\n\n\nhabitaciones\nNúmero de habitaciones\n\n\nciudad\nCiudad donde se ubica la vivienda (categórica)\n\n\nantiguedad\nAntigüedad de la vivienda, en años",
+    "crumbs": [
+      "**Introducción al Aprendizaje Automático**",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción al Aprendizaje Automático\"</span>"
+    ]
+  },
+  {
+    "objectID": "parte1.html#sec-datos",
+    "href": "parte1.html#sec-datos",
+    "title": "1  Introducción al Aprendizaje Automático”",
+    "section": "1.3 Generación de los datos",
+    "text": "1.3 Generación de los datos\n\nEtapa 2 del flujo de trabajo: recolectar los datos relevantes, documentando su procedencia. Aquí, la “procedencia” es que los generamos nosotros con un modelo conocido, lo que también nos servirá para verificar al final si el resultado del modelo entrenado tiene sentido.\n\nimport numpy as np\nimport pandas as pd\n\nrng = np.random.default_rng(42)\nn = 300\n\nsuperficie = rng.normal(90, 25, size=n).clip(30, None)          # m^2\nhabitaciones = rng.integers(1, 6, size=n).astype(float)\nciudad = rng.choice([\"Xalapa\", \"CDMX\", \"Monterrey\"], size=n,\n                     p=[0.5, 0.3, 0.2])\nantiguedad = rng.integers(0, 40, size=n).astype(float)           # años\n\n# Precio \"verdadero\" simulado: relacion lineal + ruido aleatorio\nbonus_ciudad = pd.Series(ciudad).map(\n    {\"Xalapa\": 0, \"CDMX\": 450, \"Monterrey\": 200}).to_numpy()\n\nprecio = (\n    15 * superficie\n    + 80 * habitaciones\n    - 3 * antiguedad\n    + bonus_ciudad\n    + rng.normal(0, 150, size=n)\n)\n\ndf = pd.DataFrame({\n    \"superficie\": superficie,\n    \"habitaciones\": habitaciones,\n    \"ciudad\": ciudad,\n    \"antiguedad\": antiguedad,\n    \"precio\": precio,\n})\n\n# Introducimos valores faltantes A PROPOSITO8\nfaltantes_idx = rng.choice(df.index, size=20, replace=False)\ndf.loc[faltantes_idx, \"habitaciones\"] = np.nan\n\ndf.head()\n\n\n\n\n\n\nTip¿Por qué metemos valores faltantes a propósito?\n\n\n\nEn un curso, rara vez los datos de juguete vienen con la imperfección de los datos reales (duplicados, faltantes, atípicos). Aquí los introducimos deliberadamente para poder practicar las técnicas de imputación dedatos, no porque sea buena práctica “ensuciar” datos en un proyecto real.",
+    "crumbs": [
+      "**Introducción al Aprendizaje Automático**",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción al Aprendizaje Automático\"</span>"
+    ]
+  },
+  {
+    "objectID": "parte1.html#sec-eda",
+    "href": "parte1.html#sec-eda",
+    "title": "1  Introducción al Aprendizaje Automático”",
+    "section": "1.4 Análisis exploratorio (EDA)",
+    "text": "1.4 Análisis exploratorio (EDA)\n\nEtapa 3 del flujo de trabajo (Sección 1.1): examinar distribuciones, valores atípicos, correlaciones y calidad de los datos antes de modelar.\n\n\n\n\n\n\n\nPrecauciónTu turno\n\n\n\nCompleta las siguientes celdas. Cada una tiene una pista de qué función de pandas usar.\n\n\n# TODO: usa df.info() para ver tipos de datos y cuántos valores\n#       no nulos hay en cada columna (fíjate en 'habitaciones').\n# TODO: usa df.describe() para ver estadísticos básicos\n#       de las columnas numéricas (media, desviación, cuartiles).\n# TODO: usa df[\"ciudad\"].value_counts() para ver cuántas\n#       viviendas hay de cada ciudad.\n\n\n\n\n\n\nNotaVer solución\n\n\n\n\n\n#| label: eda-solucion\n\ndf.info()\ndf.describe()\ndf[\"ciudad\"].value_counts()",
+    "crumbs": [
+      "**Introducción al Aprendizaje Automático**",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción al Aprendizaje Automático\"</span>"
+    ]
+  },
+  {
+    "objectID": "parte1.html#sec-particion",
+    "href": "parte1.html#sec-particion",
+    "title": "1  Introducción al Aprendizaje Automático”",
+    "section": "1.5 Partición de datos: entrenamiento y prueba",
+    "text": "1.5 Partición de datos: entrenamiento y prueba\n\nPartición de datos: para estimar honestamente el desempeño de generalización, separamos los datos en un conjunto de entrenamiento y uno de prueba, antes de tocar cualquier otra cosa (incluyendo el preprocesamiento).\n\nfrom sklearn.model_selection import train_test_split\n\nX = df.drop(columns=[\"precio\"])\ny = df[\"precio\"]\n#| label: particion-todo\n#| eval: false\n\n# TODO: separa X, y en X_train, X_test, y_train, y_test.\n#       Usa test_size=0.2 y random_state=0.\nX_train, X_test, y_train, y_test = ____\n\n\n\n\n\n\nNotaVer solución\n\n\n\n\n\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=0)\n\nX_train.shape, X_test.shape",
+    "crumbs": [
+      "**Introducción al Aprendizaje Automático**",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción al Aprendizaje Automático\"</span>"
+    ]
+  },
+  {
+    "objectID": "parte1.html#sec-preprocesamiento",
+    "href": "parte1.html#sec-preprocesamiento",
+    "title": "1  Introducción al Aprendizaje Automático”",
+    "section": "1.6 Preprocesamiento: imputación, codificación y escalamiento",
+    "text": "1.6 Preprocesamiento: imputación, codificación y escalamiento\n\nPreprocesamiento: limpiamos y transformamos los datos para dejarlos en una forma adecuada para el modelo. Encadenamos todo en un Pipeline de scikit-learn para que las transformaciones se ajusten solo con el conjunto de entrenamiento y luego se apliquen al de prueba — evitando así la fuga de información (data leakage).\n\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.preprocessing import OneHotEncoder, StandardScaler\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.pipeline import Pipeline\n\ncolumnas_numericas = [\"superficie\", \"habitaciones\", \"antiguedad\"]\ncolumnas_categoricas = [\"ciudad\"]\n# Pipeline para columnas numéricas: imputar mediana + escalar\npipeline_numerico = Pipeline([\n    (\"imputar\", SimpleImputer(strategy=\"median\")),\n    # TODO: agrega un paso llamado \"escalar\" con StandardScaler()\n])\n\n# Pipeline para columnas categóricas: codificación one-hot\npipeline_categorico = Pipeline([\n    (\"ohe\", OneHotEncoder(drop=\"first\", handle_unknown=\"ignore\")),\n])\n\n# TODO: combina ambos pipelines en un ColumnTransformer.\n#       Pista: recibe una lista de tuplas (nombre, pipeline, columnas)\npreprocesador = ColumnTransformer(transformers=[\n    # (\"num\", pipeline_numerico, columnas_numericas),\n    # (\"cat\", pipeline_categorico, columnas_categoricas),\n])\n\n\n\n\n\n\nNotaVer solución\n\n\n\n\n\npipeline_numerico = Pipeline([\n    (\"imputar\", SimpleImputer(strategy=\"median\")),\n    (\"escalar\", StandardScaler()),\n])\n\npipeline_categorico = Pipeline([\n    (\"ohe\", OneHotEncoder(drop=\"first\", handle_unknown=\"ignore\")),\n])\n\npreprocesador = ColumnTransformer(transformers=[\n    (\"num\", pipeline_numerico, columnas_numericas),\n    (\"cat\", pipeline_categorico, columnas_categoricas),\n])\n\n\n\n\n\n\n\n\n\nAdvertenciaUn principio que no debes olvidar\n\n\n\nCualquier transformación que dependa de estadísticos de los datos (media, desviación estándar, categorías observadas) debe ajustarse exclusivamente con el conjunto de entrenamiento. Ajustarla con todos los datos antes de particionar produce fuga de información e infla artificialmente el desempeño reportado.",
+    "crumbs": [
+      "**Introducción al Aprendizaje Automático**",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción al Aprendizaje Automático\"</span>"
+    ]
+  },
+  {
+    "objectID": "parte1.html#sec-entrenamiento",
+    "href": "parte1.html#sec-entrenamiento",
+    "title": "1  Introducción al Aprendizaje Automático”",
+    "section": "1.7 Entrenamiento del modelo",
+    "text": "1.7 Entrenamiento del modelo\n\nEtapa 6 del flujo de trabajo: elegir una familia de modelos y ajustar sus parámetros con los datos de entrenamiento. Usamos un modelo lineal regularizado (Ridge), sencillo e interpretable.\n\nfrom sklearn.linear_model import Ridge\n\nmodelo = Pipeline([\n    (\"preprocesamiento\", preprocesador),\n    # TODO: agrega el regresor, con el nombre \"regresor\",\n    #       por ejemplo Ridge(alpha=1.0)\n])\n\n# TODO: entrena el modelo con modelo.fit(X_train, y_train)\n\n\n\n\n\n\nNotaVer solución\n\n\n\n\n\nfrom sklearn.linear_model import Ridge\n\nmodelo = Pipeline([\n    (\"preprocesamiento\", preprocesador),\n    (\"regresor\", Ridge(alpha=1.0)),\n])\n\nmodelo.fit(X_train, y_train)",
+    "crumbs": [
+      "**Introducción al Aprendizaje Automático**",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción al Aprendizaje Automático\"</span>"
+    ]
+  },
+  {
+    "objectID": "parte1.html#sec-evaluacion",
+    "href": "parte1.html#sec-evaluacion",
+    "title": "1  Introducción al Aprendizaje Automático”",
+    "section": "1.8 Evaluación del modelo",
+    "text": "1.8 Evaluación del modelo\n\nEvaluación del modelo: medimos el desempeño sobre el conjunto de prueba, que no se usó en ninguna etapa anterior del ajuste.\n\nfrom sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score\n\n# TODO: obtén las predicciones sobre X_test\ny_pred = ____\n\n# TODO: calcula RMSE, MAE y R^2\n# Pista: RMSE = np.sqrt(mean_squared_error(y_test, y_pred))\n\n\n\n\n\n\nNotaVer solución\n\n\n\n\n\nfrom sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score\n\ny_pred = modelo.predict(X_test)\n\nrmse = np.sqrt(mean_squared_error(y_test, y_pred))\nmae = mean_absolute_error(y_test, y_pred)\nr2 = r2_score(y_test, y_pred)\n\nprint(f\"RMSE: {rmse:.2f}\")\nprint(f\"MAE : {mae:.2f}\")\nprint(f\"R^2 : {r2:.3f}\")\n\n\n\n\n\n\n\n\n\nTip¿El resultado tiene sentido?\n\n\n\nComo nosotros mismos generamos precio con una relación mayormente lineal más ruido moderado, es razonable esperar un \\(R^2\\) relativamente alto (cercano a 0.85–0.95). Si tu resultado es muy distinto, revisa que no hayas usado datos de prueba en algún paso de ajuste.",
+    "crumbs": [
+      "**Introducción al Aprendizaje Automático**",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción al Aprendizaje Automático\"</span>"
+    ]
+  },
+  {
+    "objectID": "parte1.html#sec-cv",
+    "href": "parte1.html#sec-cv",
+    "title": "1  Introducción al Aprendizaje Automático”",
+    "section": "1.9 (Opcional) Validación cruzada",
+    "text": "1.9 (Opcional) Validación cruzada\n\nValidación cruzada: cuando el conjunto es de tamaño moderado, la validación cruzada de \\(k\\) particiones aprovecha mejor los datos disponibles que una sola partición fija de validación.\n\nfrom sklearn.model_selection import cross_val_score, KFold\n\nkf = KFold(n_splits=5, shuffle=True, random_state=0)\npuntajes = cross_val_score(\n    modelo, X_train, y_train, cv=kf,\n    scoring=\"neg_root_mean_squared_error\")\n\nprint(f\"RMSE promedio (CV, 5-fold): {-puntajes.mean():.2f}\")",
+    "crumbs": [
+      "**Introducción al Aprendizaje Automático**",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción al Aprendizaje Automático\"</span>"
+    ]
+  },
+  {
+    "objectID": "parte1.html#sec-desbalance",
+    "href": "parte1.html#sec-desbalance",
+    "title": "1  Introducción al Aprendizaje Automático”",
+    "section": "1.10 Bonus: clasificación con clases desbalanceadas",
+    "text": "1.10 Bonus: clasificación con clases desbalanceadas\n\nClases desbalanceadas: convertimos el mismo problema en uno de clasificación binaria —¿la vivienda es “cara”?— para ilustrar por qué la exactitud puede ser engañosa cuando las clases están desbalanceadas.\n\nDefinimos como “cara” a una vivienda dentro del 15% más caro del conjunto, lo que genera un desbalance deliberado (≈85% / 15%).\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import (accuracy_score, precision_score,\n                              recall_score, f1_score, confusion_matrix)\n\numbral = df[\"precio\"].quantile(0.85)\ny_clase = (df[\"precio\"] &gt;= umbral).astype(int)\n\nXc_train, Xc_test, yc_train, yc_test = train_test_split(\n    X, y_clase, test_size=0.2, random_state=0, stratify=y_clase)\n\nclasificador = Pipeline([\n    (\"preprocesamiento\", preprocesador),\n    (\"clasificador\", LogisticRegression(class_weight=\"balanced\")),\n])\nclasificador.fit(Xc_train, yc_train)\nyc_pred = clasificador.predict(Xc_test)\n\nprint(\"Matriz de confusión:\\n\", confusion_matrix(yc_test, yc_pred))\nprint(\"Exactitud :\", round(accuracy_score(yc_test, yc_pred), 3))\nprint(\"Precisión :\", round(precision_score(yc_test, yc_pred), 3))\nprint(\"Recall    :\", round(recall_score(yc_test, yc_pred), 3))\nprint(\"F1        :\", round(f1_score(yc_test, yc_pred), 3))\n\n\n\n\n\n\nImportanteEl punto clave\n\n\n\nUn modelo “tonto” que siempre predijera “no es cara” tendría alrededor de 85% de exactitud, sin ninguna utilidad práctica. Por eso, ante clases desbalanceadas, conviene reportar precisión, recall, F1 o AUC-PR en vez de (o además de) la exactitud.",
+    "crumbs": [
+      "**Introducción al Aprendizaje Automático**",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción al Aprendizaje Automático\"</span>"
+    ]
+  },
+  {
+    "objectID": "parte1.html#sec-reflexion",
+    "href": "parte1.html#sec-reflexion",
+    "title": "1  Introducción al Aprendizaje Automático”",
+    "section": "1.11 Preguntas de reflexión",
+    "text": "1.11 Preguntas de reflexión\nResponde brevemente, en tus propias palabras:\n\n¿El modelo de regresión tuvo un desempeño razonable? ¿Cómo lo justificas con las métricas obtenidas?\n¿Qué habría pasado si el StandardScaler se hubiera ajustado con todos los datos antes de partir en entrenamiento y prueba? Relaciónalo con el concepto de data leakage.\nEn la parte de clasificación, ¿por qué la exactitud (0.85–0.88 aprox.) no cuenta toda la historia? ¿Qué te dice la precisión que no te dice la exactitud?\nSi quisieras predecir si una vivienda se vende en menos de 30 días en vez de su precio, ¿qué partes del pipeline cambiarías y cuáles dejarías igual?\n\n\n\n\n\n\n\nNo hay una única respuesta “correcta” para estas preguntas: el objetivo es que practiques explicar, con tus propias palabras, las decisiones detrás de cada etapa del flujo de trabajo.\n\n\n\n\n\n\n\n\n\n\nTipPara seguir practicando\n\n\n\nCuando te sientas cómodo con este flujo, intenta:\n\nCambiar Ridge por LinearRegression o RandomForestRegressor y comparar el \\(R^2\\).\nVariar el parámetro alpha de Ridge y observar cómo cambia el error de entrenamiento vs. el de prueba (relaciónalo con la Sección 1.3 y 1.4).\nCambiar el umbral de la sección de clasificación (por ejemplo, al 50%) y ver cómo cambian precisión y recall al reducirse el desbalance.",
+    "crumbs": [
+      "**Introducción al Aprendizaje Automático**",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción al Aprendizaje Automático\"</span>"
+    ]
+  }
+]
