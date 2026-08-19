@@ -150,5 +150,93 @@
       "**Introducción al Aprendizaje Automático**",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Introducción al Aprendizaje Automático\"</span>"
     ]
+  },
+  {
+    "objectID": "parte2.html",
+    "href": "parte2.html",
+    "title": "2  Regresión Polinomial",
+    "section": "",
+    "text": "2.1 Objetivos\nCódigo\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport statsmodels.api as sm\n\nfrom ISLP import load_data\nfrom ISLP.models import ModelSpec as MS, poly, summarize",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#carga-y-exploración-inicial-de-los-datos",
+    "href": "parte2.html#carga-y-exploración-inicial-de-los-datos",
+    "title": "2  Regresión Polinomial",
+    "section": "2.2 Carga y exploración inicial de los datos",
+    "text": "2.2 Carga y exploración inicial de los datos\n\n\nCódigo\nwage = load_data('Wage')\nprint(wage.shape)\nwage[['age', 'wage']].describe()\n\n\n(3000, 11)\n\n\n\n\n\n\n\n\n\nage\nwage\n\n\n\n\ncount\n3000.000000\n3000.000000\n\n\nmean\n42.414667\n111.703608\n\n\nstd\n11.542406\n41.728595\n\n\nmin\n18.000000\n20.085537\n\n\n25%\n33.750000\n85.383940\n\n\n50%\n42.000000\n104.921507\n\n\n75%\n51.000000\n128.680488\n\n\nmax\n80.000000\n318.342430\n\n\n\n\n\n\n\n\n\nCódigo\nplt.figure(figsize=(6, 4))\nplt.scatter(wage['age'], wage['wage'], alpha=0.3, s=15)\nplt.xlabel('Edad')\nplt.ylabel('Salario (miles de dólares)')\nplt.title('Salario en función de la edad')\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigura 2.1: Salario en función de la edad: se observa una tendencia creciente y luego decreciente.\n\n\n\n\n\nLa gráfica sugiere que la relación entre age y wage no es lineal: el salario tiende a crecer con la edad hasta cierto punto y después decrece ligeramente. Esto motiva usar un modelo más flexible que la recta, como la regresión polinomial.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#objetivos",
+    "href": "parte2.html#objetivos",
+    "title": "2  Regresión Polinomial",
+    "section": "",
+    "text": "Ajustar un modelo de regresión polinomial usando la base de polinomios ortogonales, replicando en Python el comportamiento de la función poly() de R.\nConstruir e interpretar bandas de confianza puntuales para la curva ajustada.\nComparar dos estrategias para elegir el grado del polinomio: la prueba F de modelos anidados (enfoque clásico) y la validación cruzada de \\(k\\) particiones (enfoque moderno).\nExtender la regresión polinomial al caso de una respuesta binaria mediante regresión logística.\nReconocer y evitar un error común de programación en Python relacionado con la reutilización de nombres de variables.\n\n\n\n\n\n\n\nNota\n\n\n\nEsta práctica corresponde a la primera parte de la sección 7.8 del libro base con algunas modificaciones.\n\n\n\n\n\n\n\n\n\nImportante¿Por qué usamos ISLP.models y no una fórmula tipo la que vieron en R?\n\n\n\nEn R, la función poly(age, 4) dentro de una fórmula (wage ~ poly(age, 4)) construye automáticamente una base de polinomios ortogonales. En Python, el motor de fórmulas que usa statsmodels.formula.api (llamado patsy) no tiene una función poly() incorporada. Si se intenta escribir smf.ols('wage ~ poly(age, 4)', data=wage), Python buscará algún objeto llamado poly en el espacio de nombres disponible; si por accidente existe una variable u objeto distinto con ese mismo nombre (por ejemplo, si en algún momento se usó poly como nombre de una variable de scikit-learn), el resultado son errores confusos y difíciles de depurar.\nPor esta razón, en esta práctica usamos la clase ModelSpec (importada aquí como MS) junto con la función poly que provee el propio paquete ISLP.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#ajuste-de-una-regresión-polinomial-de-grado-4",
+    "href": "parte2.html#ajuste-de-una-regresión-polinomial-de-grado-4",
+    "title": "2  Regresión Polinomial",
+    "section": "2.3 Ajuste de una regresión polinomial de grado 4",
+    "text": "2.3 Ajuste de una regresión polinomial de grado 4\nConstruimos la matriz de diseño con una base de polinomios ortogonales de grado 4 sobre age, y ajustamos el modelo por mínimos cuadrados ordinarios.\n\n\nCódigo\ndesign_g4 = MS([poly('age', degree=4)])\nX_g4 = design_g4.fit_transform(wage)  # matriz de diseño (incluye intercepto)\ny = wage['wage']\n\nmodelo_g4 = sm.OLS(y, X_g4).fit()\nsummarize(modelo_g4)\n\n\n\n\n\n\n\n\n\ncoef\nstd err\nt\nP&gt;|t|\n\n\n\n\nintercept\n111.7036\n0.729\n153.283\n0.000\n\n\npoly(age, degree=4)[0]\n447.0679\n39.915\n11.201\n0.000\n\n\npoly(age, degree=4)[1]\n-478.3158\n39.915\n-11.983\n0.000\n\n\npoly(age, degree=4)[2]\n125.5217\n39.915\n3.145\n0.002\n\n\npoly(age, degree=4)[3]\n-77.9112\n39.915\n-1.952\n0.051\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nLos coeficientes que aparecen en la tabla no se interpretan uno por uno como en una regresión lineal simple (no se puede decir “por cada unidad que aumenta age…”), porque age entra al modelo a través de varias funciones base ortogonales simultáneamente. Lo que sí es directamente interpretable y útil es la curva ajustada completa \\(\\hat f(x_0)\\), que construimos a continuación.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#curva-ajustada-y-banda-de-confianza-puntual",
+    "href": "parte2.html#curva-ajustada-y-banda-de-confianza-puntual",
+    "title": "2  Regresión Polinomial",
+    "section": "2.4 Curva ajustada y banda de confianza puntual",
+    "text": "2.4 Curva ajustada y banda de confianza puntual\n\n\nCódigo\nage_grid = np.linspace(wage['age'].min(), wage['age'].max(), 200)\ndatos_pred = pd.DataFrame({'age': age_grid})\n\n# design_g4 ya quedó \"ajustado\" (fit) al llamar fit_transform sobre wage;\n# ahora solo transformamos los datos nuevos con la MISMA base ortogonal.\n\nX_pred = design_g4.transform(datos_pred)\n\nprediccion = modelo_g4.get_prediction(X_pred)\nresumen_pred = prediccion.summary_frame(alpha=0.05)  # IC al 95%\n\nplt.figure(figsize=(6, 4))\nplt.scatter(wage['age'], wage['wage'], alpha=0.2, s=12, color='gray')\nplt.plot(age_grid, resumen_pred['mean'], color='darkblue', lw=2,\n         label='Ajuste polinomial grado 4')\nplt.fill_between(age_grid,\n                  resumen_pred['mean_ci_lower'],\n                  resumen_pred['mean_ci_upper'],\n                  color='darkblue', alpha=0.2, label='IC 95% puntual')\nplt.xlabel('Edad')\nplt.ylabel('Salario')\nplt.legend()\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigura 2.2: Curva ajustada (grado 4) con banda de confianza puntual al 95%.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#selección-del-grado-del-polinomio",
+    "href": "parte2.html#selección-del-grado-del-polinomio",
+    "title": "2  Regresión Polinomial",
+    "section": "2.5 Selección del grado del polinomio",
+    "text": "2.5 Selección del grado del polinomio\n\n2.5.1 Enfoque clásico: prueba F de modelos anidados\nComo los modelos de grado \\(1, 2, 3, \\dots\\) son anidados (uno es un caso particular del siguiente), podemos comparar cada par de modelos consecutivos con una prueba \\(F\\):\n\\[H_0: \\beta_d = 0 \\ \\text{(el modelo de grado } d-1 \\text{ es suficiente)} \\qquad \\text{vs.} \\qquad H_1: \\beta_d \\neq 0.\\]\n\n\nCódigo\nmodelos = {}\nfor d in range(1, 6):\n    design_d = MS([poly('age', degree=d)])\n    X_d = design_d.fit_transform(wage)\n    modelos[d] = sm.OLS(wage['wage'], X_d).fit()\n\ntabla_anova = sm.stats.anova_lm(modelos[1], modelos[2], modelos[3],\n                                 modelos[4], modelos[5])\ntabla_anova\n\n\n\n\n\n\n\n\n\ndf_resid\nssr\ndf_diff\nss_diff\nF\nPr(&gt;F)\n\n\n\n\n0\n2998.0\n5.022216e+06\n0.0\nNaN\nNaN\nNaN\n\n\n1\n2997.0\n4.793430e+06\n1.0\n228786.010128\n143.593107\n2.363850e-32\n\n\n2\n2996.0\n4.777674e+06\n1.0\n15755.693664\n9.888756\n1.679202e-03\n\n\n3\n2995.0\n4.771604e+06\n1.0\n6070.152124\n3.809813\n5.104620e-02\n\n\n4\n2994.0\n4.770322e+06\n1.0\n1282.563017\n0.804976\n3.696820e-01\n\n\n\n\n\n\n\nRegla de decisión: se recorre la tabla de arriba hacia abajo y se elige el primer grado \\(d\\) tal que el valor \\(p\\) de agregar el término \\(d+1\\) ya no sea significativo (por ejemplo, mayor a 0.05).\n\n\n\n\n\n\nNota\n\n\n\nLa prueba \\(F\\) anidada es válida aquí porque los modelos comparados usan exactamente los mismos datos y difieren solo en el grado del polinomio. Si el modelo incluyera otros predictores (por ejemplo, education), la comparación por ANOVA seguiría siendo válida y es preferible a mirar los valores \\(t\\) individuales de los términos de poly, cuya interpretación aislada no es directa por tratarse de una base ortogonal.\n\n\n\n\n2.5.2 Enfoque moderno: validación cruzada de 10 particiones\n\n\nCódigo\nfrom sklearn.model_selection import KFold\nfrom sklearn.preprocessing import PolynomialFeatures\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.metrics import mean_squared_error\n\nX = wage[['age']].values\ny_arr = wage['wage'].values\n\nkf = KFold(n_splits=10, shuffle=True, random_state=42)\ngrados = range(1, 11)\necm_promedio = []\n\nfor d in grados:\n    errores_fold = []\n    # OJO: usamos 'transformador_poly' y NO 'poly', para no sobrescribir\n    # la funcion 'poly' que importamos de ISLP.models mas arriba.\n    transformador_poly = PolynomialFeatures(degree=d, include_bias=False)\n    for idx_train, idx_test in kf.split(X):\n        X_train_poly = transformador_poly.fit_transform(X[idx_train])\n        X_test_poly = transformador_poly.transform(X[idx_test])\n        modelo_cv = LinearRegression().fit(X_train_poly, y_arr[idx_train])\n        pred = modelo_cv.predict(X_test_poly)\n        errores_fold.append(mean_squared_error(y_arr[idx_test], pred))\n    ecm_promedio.append(np.mean(errores_fold))\n\nd_optimo = list(grados)[int(np.argmin(ecm_promedio))]\nprint(f'Grado óptimo según validación cruzada: {d_optimo}')\n\n\nGrado óptimo según validación cruzada: 3\n\n\n\n\nCódigo\nplt.figure(figsize=(6, 4))\nplt.plot(list(grados), ecm_promedio, marker='o')\nplt.axvline(d_optimo, color='red', linestyle='--',\n            label=f'Grado óptimo = {d_optimo}')\nplt.xlabel('Grado del polinomio (d)')\nplt.ylabel('ECM promedio (validación cruzada, 10 folds)')\nplt.title('Selección del grado por validación cruzada')\nplt.legend()\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigura 2.3: Error cuadrático medio promedio (10-fold CV) para cada grado del polinomio.\n\n\n\n\n\n\n\n\n\n\n\nAdvertenciaConsejo práctico: cuidado con la reutilización de nombres de variables\n\n\n\nEn el bloque anterior, la variable del transformador polinomial se llama deliberadamente transformador_poly y no poly. Esto es intencional: como poly ya fue importado arriba desde ISLP.models y lo necesitaremos de nuevo más adelante (en la regresión logística), si aquí lo sobrescribiéramos con un objeto PolynomialFeatures de scikit-learn, cualquier código posterior que intente usar poly(...) como función fallaría con un error del tipo:\nTypeError: 'PolynomialFeatures' object is not callable\n\n\nEn la práctica, ambos enfoques (ANOVA y validación cruzada) suelen sugerir un grado bajo (2, 3 o 4). Coexisten en la literatura porque ANOVA da una justificación inferencial clásica basada en la teoría de mínimos cuadrados, mientras que la validación cruzada es más robusta cuando no se cumplen exactamente los supuestos de normalidad y homocedasticidad de los errores.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#extensión-regresión-logística-polinomial",
+    "href": "parte2.html#extensión-regresión-logística-polinomial",
+    "title": "2  Regresión Polinomial",
+    "section": "2.6 Extensión: regresión logística polinomial",
+    "text": "2.6 Extensión: regresión logística polinomial\nAhora convertimos el problema en uno de clasificación binaria: ¿el salario de una persona supera los 250 mil dólares?\n\n\nCódigo\nwage['salario_alto'] = (wage['wage'] &gt; 250).astype(int)\n\ndesign_logit = MS([poly('age', degree=4)])\nX_logit = design_logit.fit_transform(wage)\ny_logit = wage['salario_alto']\n\nmodelo_logit = sm.GLM(y_logit, X_logit, family=sm.families.Binomial()).fit()\nsummarize(modelo_logit)\n\n\n\n\n\n\n\n\n\ncoef\nstd err\nz\nP&gt;|z|\n\n\n\n\nintercept\n-4.3012\n0.345\n-12.457\n0.000\n\n\npoly(age, degree=4)[0]\n71.9642\n26.133\n2.754\n0.006\n\n\npoly(age, degree=4)[1]\n-85.7729\n35.929\n-2.387\n0.017\n\n\npoly(age, degree=4)[2]\n34.1626\n19.697\n1.734\n0.083\n\n\npoly(age, degree=4)[3]\n-47.4008\n24.105\n-1.966\n0.049\n\n\n\n\n\n\n\n\n\nCódigo\nX_pred_logit = design_logit.transform(datos_pred)\npred_logit = modelo_logit.get_prediction(X_pred_logit)\nresumen_logit = pred_logit.summary_frame(alpha=0.05)\n\nplt.figure(figsize=(6, 4))\nplt.plot(age_grid, resumen_logit['mean'], color='crimson', lw=2)\nplt.fill_between(age_grid, resumen_logit['mean_ci_lower'],\n                  resumen_logit['mean_ci_upper'],\n                  color='crimson', alpha=0.2)\n# \"rug plot\": marcas verticales que muestran donde hay observaciones\n# con salario alto (arriba) y salario bajo (abajo)\nplt.scatter(wage['age'], wage['salario_alto'] * 0.01 - 0.02,\n            marker='|', color='black', alpha=0.4)\nplt.ylim(-0.03, 0.3)\nplt.xlabel('Edad')\nplt.ylabel('P(salario &gt; 250 mil dólares)')\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigura 2.4: Probabilidad estimada de tener un salario superior a 250 mil dólares, en función de la edad.\n\n\n\n\n\nObserven que la probabilidad estimada aumenta con la edad hasta alrededor de los 40-50 años y después disminuye, de forma consistente con lo observado en la regresión polinomial de la variable cuantitativa wage.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#ejercicios-de-la-práctica",
+    "href": "parte2.html#ejercicios-de-la-práctica",
+    "title": "2  Regresión Polinomial",
+    "section": "2.7 Ejercicios de la práctica",
+    "text": "2.7 Ejercicios de la práctica\n\n\n\n\n\n\nNotaPara entregar\n\n\n\n\nGrado por AIC. Ajusta, para \\(d = 1, \\dots, 8\\), el modelo MS([poly('age', degree=d)]) y calcula el AIC de cada uno con modelo.aic. Grafica el AIC contra \\(d\\) y compara el grado sugerido por este criterio contra el sugerido por ANOVA y por validación cruzada.\nOtro predictor. Repite el ajuste usando la variable year en lugar de age. ¿Encuentra evidencia de una relación no lineal igual de fuerte? Justifica con una gráfica.\nModelo con más predictores. Ajusta un modelo que incluya poly('age', degree=3) y la variable categórica education (sin transformar), usando MS([poly('age', degree=3), 'education']). Interpreta brevemente el coeficiente asociado a alguno de los niveles de education.\nDepuración dirigida. Explica, en tus propias palabras y sin ejecutar código, qué error de Python ocurriría si en subección de regresión logística se hubiera usado accidentalmente la variable poly como nombre de un objeto PolynomialFeatures en una celda anterior. ¿En qué parte exacatamente se manifestaría el error?\nTeórico. Explica por qué la tabla de summarize(modelo_g4) no permite responder directamente la pregunta “¿cuál es el efecto de aumentar la edad en un año sobre el salario esperado?”, y qué habría que calcular en su lugar para responderla.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
   }
 ]

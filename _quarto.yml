@@ -29,7 +29,26 @@ book:
     - part: "**Introducción al Aprendizaje Automático**"
       chapters: 
           - parte1.qmd
-        
+    - part: "**Modelos no lineales**"
+      chapters:
+          - parte2.qmd # regresión polinomial
+          - parte3.qmd
+          - parte4.qmd
+          - parte5.qmd
+          - parte6.qmd
+          - parte7.qmd
+    - part: "**Métodos de ensamble y optimización de modelos**"
+      chapters:
+          - parte9.qmd
+    - part: "**Máquinas de Soporte Vectorial**"
+      chapters:
+          - parte9.qmd
+    - part: "**Aprendizaje no supervisado**"
+      chapters:
+          - parte9.qmd
+    - part: "**Interpretabilidad y explicabilidad de modelos**"
+      chapters:
+          - parte9.qmd  
     
   # Information
   repo-url: https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1 # link de Github
