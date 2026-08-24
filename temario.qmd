@@ -3,7 +3,7 @@
 
 | Tema                                                  | Subtema                                                                    |
 | ----------------------------------------------------- | -------------------------------------------------------------------------- |
-| **1. Introducción al aprendizaje automático moderno** | 1.1 Flujo de trabajo en aprendizaje automático.                            |
+| **1. [Introducción al aprendizaje automático](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/Material/Tema1.pdf)** | 1.1 Flujo de trabajo en aprendizaje automático.                            |
 |                                                       | 1.2 Tipos de aprendizaje: supervisado y no supervisado.                    |
 |                                                       | 1.3 Sobreajuste y subajuste.                                               |
 |                                                       | 1.4 Compromiso sesgo-varianza.                                             |
