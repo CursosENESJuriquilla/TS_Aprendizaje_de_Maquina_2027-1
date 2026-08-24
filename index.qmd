@@ -10,17 +10,11 @@
 :::
 
 <!-- - **Duración:** [17 de agosto, 2026 - 27 de noviembre, 2026 (15 semanas)]{.highlight-green} -->
+
 - **Semestre:** 7mo
 - **Periodo:** 2027-1
-- **Horario:**  lunes de 12 a 2pm, martes de 10am a 12pm y viernes de 10am a 12pm
-<!-- - **Día inhábil:** martes 15 de septiembre, 2026 -->
-<!-- - **Horario:** 3 a 5 pm -->
-<!-- - **Créditos:** 4 -->
-<!-- - **Nivel:** Básico -->
-- **Aulas:** lunes - III 304, marte VI 403, viernes VI 201
-<!-- - **Cuestionario diagnóstico:** [[Google form](https://forms.gle/xxpcC6z4UhiV9iER8)]{.highlight-yellow} -->
-<!-- - **Plan de clases:** [[Clase de Taller de Cómputo](https://docs.google.com/document/d/17rDksWqGWQqDFUMFqzgVF_BXnBDP3KMUrysgxIPGv9U/edit?usp=sharing)]{.highlight-yellow} -->
-
+- **Horario:** lunes de 12 a 2pm, martes de 10am a 12pm y viernes de 10am a 12pm <!-- - **Día inhábil:** martes 15 de septiembre, 2026 --> <!-- - **Horario:** 3 a 5 pm --> <!-- - **Créditos:** 4 --> <!-- - **Nivel:** Básico -->
+- **Aulas:** lunes - III 304, marte VI 403, viernes VI 201 <!-- - **Cuestionario diagnóstico:** [[Google form](https://forms.gle/xxpcC6z4UhiV9iER8)]{.highlight-yellow} --> <!-- - **Plan de clases:** [[Clase de Taller de Cómputo](https://docs.google.com/document/d/17rDksWqGWQqDFUMFqzgVF_BXnBDP3KMUrysgxIPGv9U/edit?usp=sharing)]{.highlight-yellow} -->
 
 ### 🎯 Objetivo principal
 
@@ -53,80 +47,75 @@ Los datos del curso pueden reutilizarse y adaptarse libremente con la debida atr
 
 ### Criterios de evaluación
 
-1. Claridad matemática y conceptual en la resolución de problemas.
-2. Correcta implementación de algoritmos y uso adecuado de herramientas computacio-
-nales.
-3. Interpretación razonada de resultados y comparación de modelos.
-4. Presentación ordenada, escrita y oral, con redacción académica adecuada.
-5. Reproducibilidad del trabajo mediante código, reportes y visualizaciones (GitHub).
+1.  Claridad matemática y conceptual en la resolución de problemas.
+2.  Correcta implementación de algoritmos y uso adecuado de herramientas computacio- nales.
+3.  Interpretación razonada de resultados y comparación de modelos.
+4.  Presentación ordenada, escrita y oral, con redacción académica adecuada.
+5.  Reproducibilidad del trabajo mediante código, reportes y visualizaciones (GitHub).
 
 ### Requisitos y consideraciones
 
-1. Para tener derecho a la evaluación de cada actividad, será requisito indispensable haber entregado en tiempo y forma las evidencias correspondientes a dicha actividad, de acuerdo con los criterios establecidos por el profesor o profesora.
+1.  Para tener derecho a la evaluación de cada actividad, será requisito indispensable haber entregado en tiempo y forma las evidencias correspondientes a dicha actividad, de acuerdo con los criterios establecidos por el profesor o profesora.
 
-2. Para acreditar el curso, el estudiantado deberá cumplir con la entrega de al menos el 80 % de las prácticas, el 80 % de las tareas cortas, la exposición del artículo reciente y la entrega del proyecto final.
+2.  Para acreditar el curso, el estudiantado deberá cumplir con la entrega de al menos el 80 % de las prácticas, el 80 % de las tareas cortas, la exposición del artículo reciente y la entrega del proyecto final.
 
-3. En el caso de las prácticas, únicamente se considerarán para evaluación aquellas que hayan sido entregadas completas o con un avance suficiente, según los criterios definidos previamente.
+3.  En el caso de las prácticas, únicamente se considerarán para evaluación aquellas que hayan sido entregadas completas o con un avance suficiente, según los criterios definidos previamente.
 
-4. En el caso de las tareas cortas, no se aceptarán entregas fuera del periodo establecido, salvo justificación académica o administrativa debidamente respaldada.
+4.  En el caso de las tareas cortas, no se aceptarán entregas fuera del periodo establecido, salvo justificación académica o administrativa debidamente respaldada.
 
-5. La exposición de un artículo reciente deberá realizarse en la fecha asignada. En caso de inasistencia justificada, podrá reprogramarse una sola vez, sujetándose a la disponibilidad del calendario del curso.
+5.  La exposición de un artículo reciente deberá realizarse en la fecha asignada. En caso de inasistencia justificada, podrá reprogramarse una sola vez, sujetándose a la disponibilidad del calendario del curso.
 
-6. El proyecto final deberá entregarse en versión escrita y presentarse oralmente.
-La calificación del proyecto integrará la formulación del problema, el análisis de
-datos, la construcción y comparación de modelos, la interpretación de resultados y
-la reproducibilidad del trabajo. Debe incluir lo siguiente
+6.  El proyecto final deberá entregarse en versión escrita y presentarse oralmente. La calificación del proyecto integrará la formulación del problema, el análisis de datos, la construcción y comparación de modelos, la interpretación de resultados y la reproducibilidad del trabajo. Debe incluir lo siguiente
 
-  - Formulación del problema.
-  - Exploración y preprocesamiento de datos.
-  - Construcción y comparación de modelos.
-  - Optimización y selección del modelo.
-  - Interpretación de resultados.
-  - Elaboración de un reporte reproducible.
-  - Presentación oral del proyecto.
+- Formulación del problema.
+- Exploración y preprocesamiento de datos.
+- Construcción y comparación de modelos.
+- Optimización y selección del modelo.
+- Interpretación de resultados.
+- Elaboración de un reporte reproducible.
+- Presentación oral del proyecto.
 
-7. En caso de que el estudiantado no cumpla con alguna de las actividades obligatorias, la calificación final podrá verse afectada, aun cuando el promedio ponderado de las demás actividades sea aprobatorio
+7.  En caso de que el estudiantado no cumpla con alguna de las actividades obligatorias, la calificación final podrá verse afectada, aun cuando el promedio ponderado de las demás actividades sea aprobatorio
 
-8. Para acreditar el curso, será indispensable obtener una calificación final mínima aprobatoria, así como cumplir con los requisitos de entrega establecidos para cada componente de evaluación.
+8.  Para acreditar el curso, será indispensable obtener una calificación final mínima aprobatoria, así como cumplir con los requisitos de entrega establecidos para cada componente de evaluación.
 
-9. Cualquier situación no prevista en este apartado será resuelta por la persona respon sable de la asignatura, atendiendo a los lineamientos institucionales vigentes.
+9.  Cualquier situación no prevista en este apartado será resuelta por la persona respon sable de la asignatura, atendiendo a los lineamientos institucionales vigentes.
 
 ## Referencias 📎
 
 ### Bibliografía básica
 
-[1] James, G., Witten, D., Hastie, T., Tibshirani, R. y Taylor, J. (2023). An Introduction to Statistical Learning: with Applications in Python. Springer.
+\[1\] James, G., Witten, D., Hastie, T., Tibshirani, R. y Taylor, J. (2023). An Introduction to Statistical Learning: with Applications in Python. Springer.
 
-[2] Hastie, T., Tibshirani, R. y Friedman, J. (2009). The Elements of Statistical Learning: Data Mining, Inference, and Prediction. Springer.
+\[2\] Hastie, T., Tibshirani, R. y Friedman, J. (2009). The Elements of Statistical Learning: Data Mining, Inference, and Prediction. Springer.
 
-[3] Géron, A. (2022). Hands-On Machine Learning with Scikit-Learn, Keras, and Tensor-Flow. 2nd ed. O’Reilly Media.
+\[3\] Géron, A. (2022). Hands-On Machine Learning with Scikit-Learn, Keras, and Tensor-Flow. 2nd ed. O’Reilly Media.
 
-[4] Molnar, C. (2023). Interpretable Machine Learning. 3rd ed. disponible en línea, https://christophm.github.io/interpretable-ml-book/.
+\[4\] Molnar, C. (2023). Interpretable Machine Learning. 3rd ed. disponible en línea, https://christophm.github.io/interpretable-ml-book/.
 
 ### Bibliografía complementaria
 
-[1] Kuhn, M. y Johnson, K. (2013). Applied Predictive Modeling. Springer.
+\[1\] Kuhn, M. y Johnson, K. (2013). Applied Predictive Modeling. Springer.
 
-[2] van der Maaten, L. y Hinton, G. (2008). Visualizing data using t-SNE. Journal of Machine Learning Research, 9, 2579–2605.
+\[2\] van der Maaten, L. y Hinton, G. (2008). Visualizing data using t-SNE. Journal of Machine Learning Research, 9, 2579–2605.
 
-[3] McInnes, L., Healy, J. y Melville, J. (2018). UMAP: Uniform Manifold Approximation and Projection for dimension reduction. arXiv preprint arXiv:1802.03426.
+\[3\] McInnes, L., Healy, J. y Melville, J. (2018). UMAP: Uniform Manifold Approximation and Projection for dimension reduction. arXiv preprint arXiv:1802.03426.
 
-[4] Lundberg, S. M. y Lee, S.-I. (2017). A unified approach to interpreting model predictions. Advances in Neural Information Processing Systems, 30.
+\[4\] Lundberg, S. M. y Lee, S.-I. (2017). A unified approach to interpreting model predictions. Advances in Neural Information Processing Systems, 30.
 
-[5] Ribeiro, M. T., Singh, S. y Guestrin, C. (2016). "Why should I trust you?": Explaining the predictions of any classifier. Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, 1135–1144.
+\[5\] Ribeiro, M. T., Singh, S. y Guestrin, C. (2016). "Why should I trust you?": Explaining the predictions of any classifier. Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, 1135–1144.
 
-[6] Barocas, S., Hardt, M. y Narayanan, A. (2019). Fairness and Machine Learning.
-Disponible en línea.
+\[6\] Barocas, S., Hardt, M. y Narayanan, A. (2019). Fairness and Machine Learning. Disponible en línea.
 
-[7] Chen, T. y Guestrin, C. (2016). XGBoost: A scalable tree boosting system. Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, 785–794.
+\[7\] Chen, T. y Guestrin, C. (2016). XGBoost: A scalable tree boosting system. Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, 785–794.
 
-[8] Bergstra, J. y Bengio, Y. (2012). Random search for hyper-parameter optimization. Journal of Machine Learning Research, 13, 281–305.
+\[8\] Bergstra, J. y Bengio, Y. (2012). Random search for hyper-parameter optimization. Journal of Machine Learning Research, 13, 281–305.
 
-[9] Jain, A. K. (2010). Data clustering: 50 years beyond K-means. Pattern Recognition Letters, 31(8), 651–666.
+\[9\] Jain, A. K. (2010). Data clustering: 50 years beyond K-means. Pattern Recognition Letters, 31(8), 651–666.
 
-[10] Kaufman, L. y Rousseeuw, P. J. (2005). Finding Groups in Data: An Introduction to Cluster Analysis. Wiley.
+\[10\] Kaufman, L. y Rousseeuw, P. J. (2005). Finding Groups in Data: An Introduction to Cluster Analysis. Wiley.
 
-[11] Ester, M., Kriegel, H.-P., Sander, J. y Xu, X. (1996). A density-based algorithm for discovering clusters in large spatial databases with noise. Proceedings of the Second International Conference on Knowledge Discovery and Data Mining, 226–231.
+\[11\] Ester, M., Kriegel, H.-P., Sander, J. y Xu, X. (1996). A density-based algorithm for discovering clusters in large spatial databases with noise. Proceedings of the Second International Conference on Knowledge Discovery and Data Mining, 226–231.
 
-[12] Schubert, E., Sander, J., Ester, M., Kriegel, H.-P. y Xu, X. (2017). DBSCAN revisited, revisited: why and how you should (still) use DBSCAN. ACM Transactions on Database Systems, 42(3), 18
+\[12\] Schubert, E., Sander, J., Ester, M., Kriegel, H.-P. y Xu, X. (2017). DBSCAN revisited, revisited: why and how you should (still) use DBSCAN. ACM Transactions on Database Systems, 42(3), 18
 ::::

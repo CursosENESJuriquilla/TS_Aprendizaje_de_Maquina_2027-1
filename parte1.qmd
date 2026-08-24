@@ -4,45 +4,40 @@
 ## Objetivo del ejercicio
 
 ::: {.callout-note appearance="simple"}
-Este ejercicio es **muy introductorio**, solo se busca mostrar un  ejemplo del flujo de trabajo que mencionamos usando un problema simple y datos simulados.
+Este ejercicio es **muy introductorio**, solo se busca mostrar un ejemplo del flujo de trabajo que mencionamos usando un problema simple y datos simulados.
 :::
 
 Al terminar este ejercicio se buscará responder:
 
 - ¿Qué etapas sigue un proyecto típico de aprendizaje automático?
-- ¿Por qué el escalamiento y la imputación se ajustan **solo con el conjunto de
-  entrenamiento**?
+- ¿Por qué el escalamiento y la imputación se ajustan **solo con el conjunto de entrenamiento**?
 - ¿Por qué la exactitud (*accuracy*) puede ser una métrica engañosa?
 
 
+[Diapositivas](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/Material/Tema1.pdf)
 
----
+------------------------------------------------------------------------
+
+
 
 ## Planteamiento del problema {#sec-planteamiento}
 
-> **Etapa 1 del flujo de trabajo:** formular la pregunta como un
-> problema de regresión, clasificación, agrupamiento, etc.
+> **Etapa 1 del flujo de trabajo:** formular la pregunta como un problema de regresión, clasificación, agrupamiento, etc.
 
-Trabajaremos con un problema de **regresión**: predecir el **precio de una vivienda**
-(en miles de pesos) a partir de cuatro variables sencillas:
+Trabajaremos con un problema de **regresión**: predecir el **precio de una vivienda** (en miles de pesos) a partir de cuatro variables sencillas:
 
-| Variable       | Descripción                                   |
+| Variable       | Descripción                                    |
 |----------------|------------------------------------------------|
 | `superficie`   | Superficie construida, en m²                   |
-| `habitaciones` | Número de habitaciones                          |
-| `ciudad`       | Ciudad donde se ubica la vivienda (categórica)  |
-| `antiguedad`   | Antigüedad de la vivienda, en años              |
-
-
+| `habitaciones` | Número de habitaciones                         |
+| `ciudad`       | Ciudad donde se ubica la vivienda (categórica) |
+| `antiguedad`   | Antigüedad de la vivienda, en años             |
 
 ## Generación de los datos {#sec-datos}
 
-> **Etapa 2 del flujo de trabajo:** recolectar los datos relevantes, documentando su
-> procedencia. Aquí, la "procedencia" es que los generamos nosotros con un modelo
-> conocido, lo que también nos servirá para verificar al final si el resultado del
-> modelo entrenado tiene sentido.
+> **Etapa 2 del flujo de trabajo:** recolectar los datos relevantes, documentando su procedencia. Aquí, la "procedencia" es que los generamos nosotros con un modelo conocido, lo que también nos servirá para verificar al final si el resultado del modelo entrenado tiene sentido.
 
-```python
+``` python
 import numpy as np
 import pandas as pd
 
@@ -83,39 +78,34 @@ df.head()
 ```
 
 ::: {.callout-tip title="¿Por qué metemos valores faltantes a propósito?"}
-En un curso, rara vez los datos de juguete vienen con la imperfección de los datos
-reales (duplicados, faltantes, atípicos). Aquí los introducimos deliberadamente para
-poder **practicar** las técnicas de imputación dedatos, no porque sea buena práctica
-"ensuciar" datos en un proyecto real.
+En un curso, rara vez los datos de juguete vienen con la imperfección de los datos reales (duplicados, faltantes, atípicos). Aquí los introducimos deliberadamente para poder **practicar** las técnicas de imputación dedatos, no porque sea buena práctica "ensuciar" datos en un proyecto real.
 :::
 
 ## Análisis exploratorio (EDA) {#sec-eda}
 
-> **Etapa 3 del flujo de trabajo (Sección 1.1):** examinar distribuciones, valores
-> atípicos, correlaciones y calidad de los datos **antes** de modelar.
+> **Etapa 3 del flujo de trabajo (Sección 1.1):** examinar distribuciones, valores atípicos, correlaciones y calidad de los datos **antes** de modelar.
 
 ::: {.callout-caution title="Tu turno"}
-Completa las siguientes celdas. Cada una tiene una pista de qué función de `pandas`
-usar.
+Completa las siguientes celdas. Cada una tiene una pista de qué función de `pandas` usar.
 :::
 
-```python
+``` python
 # TODO: usa df.info() para ver tipos de datos y cuántos valores
 #       no nulos hay en cada columna (fíjate en 'habitaciones').
 ```
 
-```python
+``` python
 # TODO: usa df.describe() para ver estadísticos básicos
 #       de las columnas numéricas (media, desviación, cuartiles).
 ```
 
-```python
+``` python
 # TODO: usa df["ciudad"].value_counts() para ver cuántas
 #       viviendas hay de cada ciudad.
 ```
 
 ::: {.callout-note collapse="true" title="Ver solución"}
-```python
+``` python
 #| label: eda-solucion
 
 df.info()
@@ -126,18 +116,16 @@ df["ciudad"].value_counts()
 
 ## Partición de datos: entrenamiento y prueba {#sec-particion}
 
-> **Partición de datos:** para estimar honestamente el desempeño de generalización,
-> separamos los datos en un conjunto de **entrenamiento** y uno de **prueba**,
-> *antes* de tocar cualquier otra cosa (incluyendo el preprocesamiento).
+> **Partición de datos:** para estimar honestamente el desempeño de generalización, separamos los datos en un conjunto de **entrenamiento** y uno de **prueba**, *antes* de tocar cualquier otra cosa (incluyendo el preprocesamiento).
 
-```python
+``` python
 from sklearn.model_selection import train_test_split
 
 X = df.drop(columns=["precio"])
 y = df["precio"]
 ```
 
-```python
+``` python
 #| label: particion-todo
 #| eval: false
 
@@ -147,7 +135,7 @@ X_train, X_test, y_train, y_test = ____
 ```
 
 ::: {.callout-note collapse="true" title="Ver solución"}
-```python
+``` python
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=0)
 
@@ -157,13 +145,9 @@ X_train.shape, X_test.shape
 
 ## Preprocesamiento: imputación, codificación y escalamiento {#sec-preprocesamiento}
 
-> **Preprocesamiento:** limpiamos y transformamos los datos para dejarlos en
-> una forma adecuada para el modelo. Encadenamos todo en un `Pipeline` de
-> `scikit-learn` para que las transformaciones se **ajusten solo con el conjunto de
-> entrenamiento** y luego se apliquen al de prueba — evitando así la fuga de
-> información (*data leakage*).
+> **Preprocesamiento:** limpiamos y transformamos los datos para dejarlos en una forma adecuada para el modelo. Encadenamos todo en un `Pipeline` de `scikit-learn` para que las transformaciones se **ajusten solo con el conjunto de entrenamiento** y luego se apliquen al de prueba — evitando así la fuga de información (*data leakage*).
 
-```python
+``` python
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
@@ -173,7 +157,7 @@ columnas_numericas = ["superficie", "habitaciones", "antiguedad"]
 columnas_categoricas = ["ciudad"]
 ```
 
-```python
+``` python
 # Pipeline para columnas numéricas: imputar mediana + escalar
 pipeline_numerico = Pipeline([
     ("imputar", SimpleImputer(strategy="median")),
@@ -194,7 +178,7 @@ preprocesador = ColumnTransformer(transformers=[
 ```
 
 ::: {.callout-note collapse="true" title="Ver solución"}
-```python
+``` python
 pipeline_numerico = Pipeline([
     ("imputar", SimpleImputer(strategy="median")),
     ("escalar", StandardScaler()),
@@ -212,19 +196,14 @@ preprocesador = ColumnTransformer(transformers=[
 :::
 
 ::: {.callout-warning title="Un principio que no debes olvidar"}
-Cualquier transformación que dependa de estadísticos de los datos (media,
-desviación estándar, categorías observadas) debe ajustarse **exclusivamente con el
-conjunto de entrenamiento**. Ajustarla con todos los datos antes de particionar
-produce **fuga de información** e infla artificialmente el desempeño reportado.
+Cualquier transformación que dependa de estadísticos de los datos (media, desviación estándar, categorías observadas) debe ajustarse **exclusivamente con el conjunto de entrenamiento**. Ajustarla con todos los datos antes de particionar produce **fuga de información** e infla artificialmente el desempeño reportado.
 :::
 
 ## Entrenamiento del modelo {#sec-entrenamiento}
 
-> **Etapa 6 del flujo de trabajo:** elegir una familia de modelos y ajustar sus
-> parámetros con los datos de entrenamiento. Usamos un modelo lineal regularizado
-> (`Ridge`), sencillo e interpretable.
+> **Etapa 6 del flujo de trabajo:** elegir una familia de modelos y ajustar sus parámetros con los datos de entrenamiento. Usamos un modelo lineal regularizado (`Ridge`), sencillo e interpretable.
 
-```python
+``` python
 from sklearn.linear_model import Ridge
 
 modelo = Pipeline([
@@ -237,7 +216,7 @@ modelo = Pipeline([
 ```
 
 ::: {.callout-note collapse="true" title="Ver solución"}
-```python
+``` python
 from sklearn.linear_model import Ridge
 
 modelo = Pipeline([
@@ -251,10 +230,9 @@ modelo.fit(X_train, y_train)
 
 ## Evaluación del modelo {#sec-evaluacion}
 
-> **Evaluación del modelo:** medimos el desempeño **sobre el conjunto de prueba**, que no se
-> usó en ninguna etapa anterior del ajuste.
+> **Evaluación del modelo:** medimos el desempeño **sobre el conjunto de prueba**, que no se usó en ninguna etapa anterior del ajuste.
 
-```python
+``` python
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 # TODO: obtén las predicciones sobre X_test
@@ -265,7 +243,7 @@ y_pred = ____
 ```
 
 ::: {.callout-note collapse="true" title="Ver solución"}
-```python
+``` python
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 y_pred = modelo.predict(X_test)
@@ -281,19 +259,14 @@ print(f"R^2 : {r2:.3f}")
 :::
 
 ::: {.callout-tip title="¿El resultado tiene sentido?"}
-Como nosotros mismos generamos `precio` con una relación mayormente lineal más
-ruido moderado, es razonable esperar un $R^2$ relativamente alto (cercano a 0.85–0.95).
-Si tu resultado es muy distinto, revisa que no hayas usado datos de prueba en algún
-paso de ajuste.
+Como nosotros mismos generamos `precio` con una relación mayormente lineal más ruido moderado, es razonable esperar un $R^2$ relativamente alto (cercano a 0.85–0.95). Si tu resultado es muy distinto, revisa que no hayas usado datos de prueba en algún paso de ajuste.
 :::
 
 ## (Opcional) Validación cruzada {#sec-cv}
 
-> **Validación cruzada:** cuando el conjunto es de tamaño moderado, la validación cruzada de
-> $k$ particiones aprovecha mejor los datos disponibles que una sola partición fija de
-> validación.
+> **Validación cruzada:** cuando el conjunto es de tamaño moderado, la validación cruzada de $k$ particiones aprovecha mejor los datos disponibles que una sola partición fija de validación.
 
-```python
+``` python
 from sklearn.model_selection import cross_val_score, KFold
 
 kf = KFold(n_splits=5, shuffle=True, random_state=0)
@@ -306,14 +279,11 @@ print(f"RMSE promedio (CV, 5-fold): {-puntajes.mean():.2f}")
 
 ## Bonus: clasificación con clases desbalanceadas {#sec-desbalance}
 
-> **Clases desbalanceadas:** convertimos el mismo problema en uno de **clasificación
-> binaria** —¿la vivienda es "cara"?— para ilustrar por qué la exactitud puede ser
-> engañosa cuando las clases están desbalanceadas.
+> **Clases desbalanceadas:** convertimos el mismo problema en uno de **clasificación binaria** —¿la vivienda es "cara"?— para ilustrar por qué la exactitud puede ser engañosa cuando las clases están desbalanceadas.
 
-Definimos como "cara" a una vivienda dentro del 15% más caro del conjunto, lo que
-genera un desbalance deliberado (≈85% / 15%).
+Definimos como "cara" a una vivienda dentro del 15% más caro del conjunto, lo que genera un desbalance deliberado (≈85% / 15%).
 
-```python
+``` python
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (accuracy_score, precision_score,
                               recall_score, f1_score, confusion_matrix)
@@ -339,41 +309,28 @@ print("F1        :", round(f1_score(yc_test, yc_pred), 3))
 ```
 
 ::: {.callout-important title="El punto clave"}
-Un modelo "tonto" que siempre predijera "no es cara" tendría alrededor de **85% de
-exactitud**, sin ninguna utilidad práctica. Por eso, ante clases desbalanceadas,
-conviene reportar **precisión, recall, F1 o AUC-PR** en vez de (o además de) la
-exactitud.
+Un modelo "tonto" que siempre predijera "no es cara" tendría alrededor de **85% de exactitud**, sin ninguna utilidad práctica. Por eso, ante clases desbalanceadas, conviene reportar **precisión, recall, F1 o AUC-PR** en vez de (o además de) la exactitud.
 :::
 
 ## Preguntas de reflexión {#sec-reflexion}
 
 Responde brevemente, en tus propias palabras:
 
-1. ¿El modelo de regresión tuvo un desempeño razonable? ¿Cómo lo justificas con las
-   métricas obtenidas?
-2. ¿Qué habría pasado si el `StandardScaler` se hubiera ajustado con **todos** los
-   datos antes de partir en entrenamiento y prueba? Relaciónalo con el concepto de
-   *data leakage*.
-3. En la parte de clasificación, ¿por qué la exactitud (0.85–0.88 aprox.) no cuenta
-   toda la historia? ¿Qué te dice la precisión que no te dice la exactitud?
-4. Si quisieras predecir si una vivienda se vende **en menos de 30 días** en vez de
-   su precio, ¿qué partes del pipeline cambiarías y cuáles dejarías igual?
+1.  ¿El modelo de regresión tuvo un desempeño razonable? ¿Cómo lo justificas con las métricas obtenidas?
+2.  ¿Qué habría pasado si el `StandardScaler` se hubiera ajustado con **todos** los datos antes de partir en entrenamiento y prueba? Relaciónalo con el concepto de *data leakage*.
+3.  En la parte de clasificación, ¿por qué la exactitud (0.85–0.88 aprox.) no cuenta toda la historia? ¿Qué te dice la precisión que no te dice la exactitud?
+4.  Si quisieras predecir si una vivienda se vende **en menos de 30 días** en vez de su precio, ¿qué partes del pipeline cambiarías y cuáles dejarías igual?
 
 ::: {.callout-note appearance="simple"}
-No hay una única respuesta "correcta" para estas preguntas: el objetivo es que
-practiques explicar, con tus propias palabras, las decisiones detrás de cada etapa
-del flujo de trabajo.
+No hay una única respuesta "correcta" para estas preguntas: el objetivo es que practiques explicar, con tus propias palabras, las decisiones detrás de cada etapa del flujo de trabajo.
 :::
 
----
+------------------------------------------------------------------------
 
 ::: {.callout-tip title="Para seguir practicando"}
 Cuando te sientas cómodo con este flujo, intenta:
 
-- Cambiar `Ridge` por `LinearRegression` o `RandomForestRegressor` y comparar el
-  $R^2$.
-- Variar el parámetro `alpha` de `Ridge` y observar cómo cambia el error de
-  entrenamiento vs. el de prueba (relaciónalo con la Sección 1.3 y 1.4).
-- Cambiar el umbral de la sección de clasificación (por ejemplo, al 50%) y ver cómo
-  cambian precisión y recall al reducirse el desbalance.
+- Cambiar `Ridge` por `LinearRegression` o `RandomForestRegressor` y comparar el $R^2$.
+- Variar el parámetro `alpha` de `Ridge` y observar cómo cambia el error de entrenamiento vs. el de prueba (relaciónalo con la Sección 1.3 y 1.4).
+- Cambiar el umbral de la sección de clasificación (por ejemplo, al 50%) y ver cómo cambian precisión y recall al reducirse el desbalance.
 :::
