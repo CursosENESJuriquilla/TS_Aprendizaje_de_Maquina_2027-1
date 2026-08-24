@@ -156,7 +156,7 @@
     "href": "parte2.html",
     "title": "2  Regresión Polinomial",
     "section": "",
-    "text": "2.1 Objetivos\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport statsmodels.api as sm\n\nfrom ISLP import load_data\nfrom ISLP.models import ModelSpec as MS, poly, summarize",
+    "text": "2.1 Antes de comenzar\nEn esta práctica utilizaremos conceptos de regresión lineal y regresión logística que ya han estudiado previamente. Antes de comenzar, recuerden algunas ideas fundamentales.\nNo necesitan desarrollar demostraciones. El objetivo es recuperar las ideas que utilizaremos a lo largo de la práctica.",
     "crumbs": [
       "**Modelos no lineales**",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
@@ -177,8 +177,8 @@
     "objectID": "parte2.html#objetivos",
     "href": "parte2.html#objetivos",
     "title": "2  Regresión Polinomial",
-    "section": "",
-    "text": "Ajustar un modelo de regresión polinomial usando la base de polinomios ortogonales, replicando en Python el comportamiento de la función poly() de R.\nConstruir e interpretar bandas de confianza puntuales para la curva ajustada.\nComparar dos estrategias para elegir el grado del polinomio: la prueba F de modelos anidados (enfoque clásico) y la validación cruzada de \\(k\\) particiones (enfoque moderno).\nExtender la regresión polinomial al caso de una respuesta binaria mediante regresión logística.\nReconocer y evitar un error común de programación en Python relacionado con la reutilización de nombres de variables.\n\n\n\n\n\n\n\nNota\n\n\n\nEsta práctica corresponde a la primera parte de la sección 7.8 del libro base con algunas modificaciones.\n\n\n\n\n\n\n\n\n\nImportante¿Por qué usamos ISLP.models y no una fórmula tipo la que vieron en R?\n\n\n\nEn R, la función poly(age, 4) dentro de una fórmula (wage ~ poly(age, 4)) construye automáticamente una base de polinomios ortogonales. En Python, el motor de fórmulas que usa statsmodels.formula.api (llamado patsy) no tiene una función poly() incorporada. Si se intenta escribir smf.ols('wage ~ poly(age, 4)', data=wage), Python buscará algún objeto llamado poly en el espacio de nombres disponible; si por accidente existe una variable u objeto distinto con ese mismo nombre (por ejemplo, si en algún momento se usó poly como nombre de una variable de scikit-learn), el resultado son errores confusos y difíciles de depurar.\nPor esta razón, en esta práctica usamos la clase ModelSpec (importada aquí como MS) junto con la función poly que provee el propio paquete ISLP.",
+    "section": "2.2 Objetivos",
+    "text": "2.2 Objetivos\nAl finalizar esta práctica podrán:\n\nAjustar modelos de regresión polinomial utilizando una base de polinomios ortogonales.\nConstruir e interpretar intervalos de confianza puntuales para la curva de regresión estimada.\nComparar modelos polinomiales con diferentes grados de flexibilidad.\nComparar dos estrategias para elegir el grado del polinomio: pruebas de modelos anidados y validación cruzada.\nDistinguir entre un intervalo de confianza para la respuesta media y un intervalo de predicción para una nueva observación.\nExtender la misma idea de expansión polinomial al caso de una respuesta binaria mediante regresión logística.\nIdentificar algunos detalles de implementación que pueden producir errores al trabajar con transformaciones polinomiales en Python.\n\n\n\n\n\n\n\nNota\n\n\n\nEsta práctica corresponde a la primera parte de la sección 7.8 del libro base, con algunas modificaciones y ejercicios adicionales.",
     "crumbs": [
       "**Modelos no lineales**",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
@@ -248,6 +248,303 @@
     "crumbs": [
       "**Modelos no lineales**",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Funciones escalonadas</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#librerías",
+    "href": "parte2.html#librerías",
+    "title": "2  Regresión Polinomial",
+    "section": "2.3 Librerías",
+    "text": "2.3 Librerías\nComenzaremos cargando las librerías necesarias.\n\n\nCódigo\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\nimport statsmodels.api as sm\n\nfrom ISLP import load_data\nfrom ISLP.models import ModelSpec as MS, poly, summarize\n\n\n\n\n\n\n\n\nImportante¿Por qué usamos ISLP.models?\n\n\n\nEn R, la función poly(age, 4) dentro de una fórmula como\nwage ~ poly(age, 4)\nconstruye una base de polinomios ortogonales.\nEn esta práctica utilizaremos ModelSpec (importada como MS) junto con la función poly proporcionada por el paquete ISLP. Esto nos permite construir una base polinomial y, posteriormente, aplicar exactamente la misma transformación a nuevos datos cuando queramos realizar predicciones.\nMás adelante utilizaremos también PolynomialFeatures de scikit-learn.\nTengan cuidado de no utilizar el nombre poly para guardar otros objetos, pues poly ya identifica a la función que importamos desde ISLP.models.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#carga-y-exploración-inicial",
+    "href": "parte2.html#carga-y-exploración-inicial",
+    "title": "2  Regresión Polinomial",
+    "section": "3.1 Carga y exploración inicial",
+    "text": "3.1 Carga y exploración inicial\n\n\nCódigo\nwage = load_data('Wage')\n\nprint(wage.shape)\n\nwage[['age', 'wage']].describe()\n\n\n(3000, 11)\n\n\n\n\n\n\n\n\n\nage\nwage\n\n\n\n\ncount\n3000.000000\n3000.000000\n\n\nmean\n42.414667\n111.703608\n\n\nstd\n11.542406\n41.728595\n\n\nmin\n18.000000\n20.085537\n\n\n25%\n33.750000\n85.383940\n\n\n50%\n42.000000\n104.921507\n\n\n75%\n51.000000\n128.680488\n\n\nmax\n80.000000\n318.342430\n\n\n\n\n\n\n\nAntes de continuar, observen el resumen anterior.\n\n¿Cuál es el rango de edades observado?\n¿Cuál es el rango de salarios?\n¿En qué intervalo se concentra la mayor parte de las edades?\n\n\n\n\n\n\n\nTipSolución\n\n\n\n\n\nEl conjunto de datos contiene trabajadores con edades entre aproximadamente 18 y 80 años.\nLos salarios presentan una variabilidad considerable y algunos valores son mucho mayores que la mayoría de las observaciones.\nAl observar los cuartiles de age, vemos que una gran parte de las observaciones se concentra en edades intermedias. Por tanto, tenemos más información en esta región que cerca de los extremos del rango.\nEsto será importante más adelante: las estimaciones del modelo suelen presentar mayor incertidumbre en regiones donde tenemos menos observaciones.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#relación-entre-edad-y-salario",
+    "href": "parte2.html#relación-entre-edad-y-salario",
+    "title": "2  Regresión Polinomial",
+    "section": "3.2 Relación entre edad y salario",
+    "text": "3.2 Relación entre edad y salario\nVisualicemos ahora ambas variables.\n\n\nCódigo\nplt.figure(figsize=(7, 5))\n\nplt.scatter(\n    wage['age'],\n    wage['wage'],\n    alpha=0.3,\n    s=15\n)\n\nplt.xlabel('Edad')\nplt.ylabel('Salario')\nplt.title('Salario en función de la edad')\n\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigura 3.1: Salario en función de la edad.\n\n\n\n\n\nObserven la nube de puntos.\n\n¿Parece razonable representar la relación mediante una recta?\n¿El salario parece aumentar a la misma velocidad para todas las edades?\n¿Encuentran evidencia visual de una posible curvatura?\n\n\n\n\n\n\n\nTipSolución\n\n\n\n\n\nLa nube de puntos no sugiere una relación estrictamente lineal.\nEn términos generales, el salario parece aumentar durante las primeras etapas del rango de edades, pero este crecimiento no continúa a una tasa constante. Para edades mayores, la tendencia se estabiliza e incluso puede disminuir.\nPor tanto, encontramos evidencia visual de curvatura y una recta podría ser demasiado restrictiva para representar la relación entre age y wage.\nEsta observación no determina todavía qué grado de polinomio debemos utilizar; únicamente motiva considerar modelos más flexibles.\n\n\n\nLa gráfica sugiere que la relación entre age y wage no es completamente lineal. El salario tiende a aumentar con la edad hasta cierto punto y posteriormente la tendencia cambia.\nEsto motiva utilizar un modelo más flexible.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#por-qué-polinomios-ortogonales",
+    "href": "parte2.html#por-qué-polinomios-ortogonales",
+    "title": "2  Regresión Polinomial",
+    "section": "4.1 ¿Por qué polinomios ortogonales?",
+    "text": "4.1 ¿Por qué polinomios ortogonales?\nLas variables\n\\[\nX,\\quad X^2,\\quad X^3,\\quad\\ldots\n\\]\npueden estar fuertemente correlacionadas entre sí.\nEn lugar de trabajar directamente con la base\n\\[\n1,x,x^2,\\ldots,x^d,\n\\]\npodemos utilizar otra base\n\\[\nP_0(x),P_1(x),\\ldots,P_d(x)\n\\]\nformada por polinomios ortogonales.\n\n\n\n\n\n\nNota\n\n\n\nLos polinomios\n\\[\n1,x,x^2,\\ldots,x^d\n\\]\ny una base de polinomios ortogonales de grado hasta \\(d\\) generan el mismo espacio de funciones polinomiales.\nPor tanto, cambiar de base modifica los coeficientes que aparecen en la salida del modelo, pero no modifica el espacio de modelos que podemos ajustar ni, salvo diferencias numéricas, las predicciones obtenidas.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#curva-e-intervalo-de-confianza",
+    "href": "parte2.html#curva-e-intervalo-de-confianza",
+    "title": "2  Regresión Polinomial",
+    "section": "6.1 Curva e intervalo de confianza",
+    "text": "6.1 Curva e intervalo de confianza\nPara cada edad \\(x_0\\), el modelo produce una estimación\n\\[\n\\hat f(x_0)\n=\n\\widehat{E[Y\\mid X=x_0]}.\n\\]\nAdemás, podemos cuantificar la incertidumbre asociada a esta estimación.\nGraficaremos un intervalo de confianza puntual del 95%.\n\n\nCódigo\nplt.figure(figsize=(7, 5))\n\nplt.scatter(\n    wage['age'],\n    wage['wage'],\n    alpha=0.2,\n    s=12\n)\n\nplt.plot(\n    age_grid,\n    resumen_pred['mean'],\n    lw=2,\n    label='Ajuste polinomial grado 4'\n)\n\nplt.fill_between(\n    age_grid,\n    resumen_pred['mean_ci_lower'],\n    resumen_pred['mean_ci_upper'],\n    alpha=0.2,\n    label='IC 95% para la media'\n)\n\nplt.xlabel('Edad')\nplt.ylabel('Salario')\nplt.title('Regresión polinomial de grado 4')\n\nplt.legend()\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigura 6.1: Curva polinomial de grado 4 e intervalo de confianza puntual del 95%.\n\n\n\n\n\nLa curva representa\n\\[\n\\widehat{E[\\text{wage}\\mid\\text{age}=x]}.\n\\]\nLa banda responde aproximadamente a la pregunta:\n\n¿En qué rango estimamos que se encuentra el salario promedio de los trabajadores de edad \\(x\\)?\n\nObserven también el ancho de la banda.\n\n¿Es igual para todas las edades?\n¿Qué ocurre cerca de los extremos del rango?\n¿En qué regiones tenemos mayor cantidad de información?\n\n\n\n\n\n\n\nTipSolución\n\n\n\n\n\nLa banda de confianza no tiene el mismo ancho para todas las edades.\nEn general, es más estrecha en regiones donde tenemos una mayor concentración de observaciones y se ensancha hacia los extremos del rango de age.\nLa razón es que tenemos menos información para estimar la relación en esas regiones. En consecuencia, aumenta la incertidumbre asociada a\n\\[\n\\hat f(x).\n\\]\nAdemás, los modelos polinomiales pueden ser particularmente inestables cerca de los extremos del rango observado.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#comparación-gráfica",
+    "href": "parte2.html#comparación-gráfica",
+    "title": "2  Regresión Polinomial",
+    "section": "7.1 Comparación gráfica",
+    "text": "7.1 Comparación gráfica\nstatsmodels proporciona ambos intervalos en summary_frame():\n\nmean_ci_lower, mean_ci_upper: intervalo para la media.\nobs_ci_lower, obs_ci_upper: intervalo para una nueva observación.\n\n\n\nCódigo\nplt.figure(figsize=(7, 5))\n\nplt.scatter(\n    wage['age'],\n    wage['wage'],\n    alpha=0.2,\n    s=12\n)\n\n# Intervalo de predicción\nplt.fill_between(\n    age_grid,\n    resumen_pred['obs_ci_lower'],\n    resumen_pred['obs_ci_upper'],\n    alpha=0.12,\n    label='Intervalo de predicción 95%'\n)\n\n# Intervalo para la media\nplt.fill_between(\n    age_grid,\n    resumen_pred['mean_ci_lower'],\n    resumen_pred['mean_ci_upper'],\n    alpha=0.30,\n    label='IC 95% para la media'\n)\n\n# Curva\nplt.plot(\n    age_grid,\n    resumen_pred['mean'],\n    lw=2,\n    label='Media estimada'\n)\n\nplt.xlabel('Edad')\nplt.ylabel('Salario')\nplt.title('Incertidumbre en las predicciones')\n\nplt.legend()\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigura 7.1: Intervalo de confianza para la media e intervalo de predicción para una nueva observación.\n\n\n\n\n\nObserven la diferencia entre ambas bandas.\nAunque podemos estimar razonablemente bien la tendencia promedio del salario con respecto a la edad, existe una variabilidad considerable entre los salarios de personas de una misma edad.\nPor ello, conocer la edad puede ser útil para describir la tendencia media, pero no necesariamente permite predecir con gran precisión el salario de una persona particular.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#enfoque-clásico-comparación-de-modelos-anidados",
+    "href": "parte2.html#enfoque-clásico-comparación-de-modelos-anidados",
+    "title": "2  Regresión Polinomial",
+    "section": "9.1 Enfoque clásico: comparación de modelos anidados",
+    "text": "9.1 Enfoque clásico: comparación de modelos anidados\nLos modelos polinomiales tienen una estructura natural de anidamiento.\nPor ejemplo,\n\\[\n\\begin{aligned}\nd=1 &: \\quad \\beta_0+\\beta_1x,\\\\\nd=2 &: \\quad \\beta_0+\\beta_1x+\\beta_2x^2,\\\\\nd=3 &: \\quad \\beta_0+\\beta_1x+\\beta_2x^2+\\beta_3x^3.\n\\end{aligned}\n\\]\nEl modelo de grado \\(d-1\\) está contenido dentro del modelo de grado \\(d\\).\nPor ello podemos preguntar si agregar el siguiente grado produce una mejora estadísticamente detectable.\nAl comparar grados \\(d-1\\) y \\(d\\), planteamos\n\\[\nH_0:\n\\text{el modelo de grado }d-1\\text{ es suficiente}\n\\]\ncontra\n\\[\nH_1:\n\\text{el término adicional mejora el ajuste}.\n\\]\nAjustemos modelos de grados 1 a 5.\n\n\nCódigo\nmodelos = {}\n\nfor d in range(1, 6):\n\n    design_d = MS([poly('age', degree=d)])\n    X_d = design_d.fit_transform(wage)\n\n    modelos[d] = sm.OLS(\n        wage['wage'],\n        X_d\n    ).fit()\n\ntabla_anova = sm.stats.anova_lm(\n    modelos[1],\n    modelos[2],\n    modelos[3],\n    modelos[4],\n    modelos[5]\n)\n\ntabla_anova\n\n\n\n\n\n\n\n\n\ndf_resid\nssr\ndf_diff\nss_diff\nF\nPr(&gt;F)\n\n\n\n\n0\n2998.0\n5.022216e+06\n0.0\nNaN\nNaN\nNaN\n\n\n1\n2997.0\n4.793430e+06\n1.0\n228786.010128\n143.593107\n2.363850e-32\n\n\n2\n2996.0\n4.777674e+06\n1.0\n15755.693664\n9.888756\n1.679202e-03\n\n\n3\n2995.0\n4.771604e+06\n1.0\n6070.152124\n3.809813\n5.104620e-02\n\n\n4\n2994.0\n4.770322e+06\n1.0\n1282.563017\n0.804976\n3.696820e-01\n\n\n\n\n\n\n\nCada fila compara un modelo con el inmediatamente anterior.\nPor ejemplo:\n\ngrado 1 vs. grado 2 pregunta si necesitamos incorporar curvatura cuadrática;\ngrado 2 vs. grado 3 pregunta si agregar mayor flexibilidad produce una mejora detectable;\ny así sucesivamente.\n\nAnalicen la tabla y respondan:\n\n¿Encuentran evidencia de que una recta sea insuficiente?\n¿Hasta qué grado encuentran evidencia de una mejora en el ajuste?\n¿A partir de qué grado el aumento de complejidad deja de producir una mejora estadísticamente significativa?\n¿Qué grado elegirían utilizando únicamente este criterio?\n\n\n\n\n\n\n\nTipSolución\n\n\n\n\n\nLa primera comparación permite evaluar si pasar de un modelo lineal a uno cuadrático mejora significativamente el ajuste.\nSi el valor \\(p\\) correspondiente a esta comparación es pequeño, encontramos evidencia de que el modelo lineal es insuficiente.\nDespués debemos continuar leyendo las comparaciones de manera secuencial:\n\\[\nd=1\\rightarrow2,\\qquad\nd=2\\rightarrow3,\\qquad\nd=3\\rightarrow4,\\qquad\\ldots\n\\]\nMientras el valor \\(p\\) sea suficientemente pequeño, encontramos evidencia de que agregar flexibilidad mejora el ajuste.\nCuando agregar el siguiente término deja de producir una mejora estadísticamente significativa, no encontramos evidencia suficiente para justificar ese aumento de complejidad.\nPor tanto, el grado seleccionado corresponde al modelo anterior a la primera ampliación que deja de aportar una mejora significativa.\n\n\n\n\n\n\n\n\n\nNota\n\n\n\nLa comparación es válida porque los modelos utilizan las mismas observaciones y están anidados.\nLa pregunta central no es cuál modelo tiene el valor \\(p\\) más pequeño, sino hasta qué punto agregar flexibilidad sigue aportando evidencia de una mejora en el ajuste.\n\n\nRegla de decisión: se recorre la tabla de arriba hacia abajo y se elige el primer grado \\(d\\) tal que el valor \\(p\\) de agregar el término \\(d+1\\) ya no sea significativo (por ejemplo, mayor a 0.05).\n\n\n\n\n\n\nNota\n\n\n\nLa prueba \\(F\\) anidada es válida aquí porque los modelos comparados usan exactamente los mismos datos y difieren solo en el grado del polinomio. Si el modelo incluyera otros predictores (por ejemplo, education), la comparación por ANOVA seguiría siendo válida y es preferible a mirar los valores \\(t\\) individuales de los términos de poly, cuya interpretación aislada no es directa por tratarse de una base ortogonal.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#implementación",
+    "href": "parte2.html#implementación",
+    "title": "2  Regresión Polinomial",
+    "section": "10.1 Implementación",
+    "text": "10.1 Implementación\n\n\nCódigo\nfrom sklearn.model_selection import KFold\nfrom sklearn.preprocessing import PolynomialFeatures\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.metrics import mean_squared_error\n\nX = wage[['age']].values\ny_arr = wage['wage'].values\n\nkf = KFold(\n    n_splits=10,\n    shuffle=True,\n    random_state=42\n)\n\ngrados = range(1, 11)\n\necm_promedio = []\n\nfor d in grados:\n\n    errores_fold = []\n\n    transformador_poly = PolynomialFeatures(\n        degree=d,\n        include_bias=False\n    )\n\n    for idx_train, idx_test in kf.split(X):\n\n        X_train_poly = transformador_poly.fit_transform(\n            X[idx_train]\n        )\n\n        X_test_poly = transformador_poly.transform(\n            X[idx_test]\n        )\n\n        modelo_cv = LinearRegression().fit(\n            X_train_poly,\n            y_arr[idx_train]\n        )\n\n        pred = modelo_cv.predict(X_test_poly)\n\n        errores_fold.append(\n            mean_squared_error(\n                y_arr[idx_test],\n                pred\n            )\n        )\n\n    ecm_promedio.append(\n        np.mean(errores_fold)\n    )\n\nd_optimo = list(grados)[\n    int(np.argmin(ecm_promedio))\n]\n\nprint(\n    f'Grado óptimo según validación cruzada: {d_optimo}'\n)\n\n\nGrado óptimo según validación cruzada: 3\n\n\n\n\n\n\n\n\nNota\n\n\n\nEn esta sección PolynomialFeatures genera las potencias ordinarias\n\\[\nx,x^2,\\ldots,x^d,\n\\]\nmientras que anteriormente utilizamos una base de polinomios ortogonales.\nEn mínimos cuadrados ordinarios, ambas bases generan el mismo espacio de polinomios de grado menor o igual que \\(d\\) y, salvo diferencias numéricas, producen las mismas predicciones.\nAquí utilizamos PolynomialFeatures porque se integra de manera sencilla con el flujo de validación cruzada de scikit-learn.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#error-de-validación-cruzada",
+    "href": "parte2.html#error-de-validación-cruzada",
+    "title": "2  Regresión Polinomial",
+    "section": "10.2 Error de validación cruzada",
+    "text": "10.2 Error de validación cruzada\n\n\nCódigo\nplt.figure(figsize=(7, 5))\n\nplt.plot(\n    list(grados),\n    ecm_promedio,\n    marker='o'\n)\n\nplt.axvline(\n    d_optimo,\n    linestyle='--',\n    label=f'Grado seleccionado = {d_optimo}'\n)\n\nplt.xlabel('Grado del polinomio')\nplt.ylabel('ECM promedio')\nplt.title('Selección del grado mediante validación cruzada')\n\nplt.legend()\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigura 10.1: Error cuadrático medio promedio mediante validación cruzada de 10 particiones.\n\n\n\n\n\nObserven la gráfica.\n\n¿En qué grado se obtiene el menor error?\n¿La diferencia entre el mejor grado y los grados cercanos es grande?\n¿Coincide este resultado con la comparación de modelos anidados?\n¿Elegirían necesariamente el modelo más complejo si su error fuera apenas menor?\n\n\n\n\n\n\n\nTipSolución\n\n\n\n\n\nEl criterio de validación cruzada selecciona el grado que minimiza el error cuadrático medio promedio:\n\\[\nd_{\\mathrm{CV}}\n=\n\\arg\\min_d \\operatorname{ECM}_{\\mathrm{CV}}(d).\n\\]\nEl valor concreto aparece en la salida de\nd_optimo\ny corresponde al mínimo de la gráfica.\nSin embargo, también conviene observar la magnitud de las diferencias entre los errores. Si varios grados presentan errores muy similares, una pequeña diferencia en el ECM no constituye necesariamente una razón fuerte para elegir el modelo más complejo.\nEl resultado tampoco tiene que coincidir exactamente con el obtenido mediante ANOVA. Los dos procedimientos responden a preguntas diferentes: ANOVA evalúa evidencia inferencial al comparar modelos anidados, mientras que la validación cruzada evalúa desempeño predictivo fuera de muestra.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#dos-preguntas-diferentes",
+    "href": "parte2.html#dos-preguntas-diferentes",
+    "title": "2  Regresión Polinomial",
+    "section": "10.3 Dos preguntas diferentes",
+    "text": "10.3 Dos preguntas diferentes\nLos dos procedimientos utilizados no responden exactamente a la misma pregunta.\nLa comparación mediante ANOVA es un procedimiento inferencial: pregunta si agregar complejidad produce una mejora estadísticamente detectable bajo los supuestos del modelo.\nLa validación cruzada es un procedimiento predictivo: evalúa directamente qué tan bien generaliza cada modelo a observaciones que no fueron utilizadas para ajustarlo.\nPor ello, ambos procedimientos pueden sugerir grados diferentes sin que uno de los dos sea necesariamente incorrecto.\n\n\n\n\n\n\nAdvertenciaCuidado con los nombres de las variables\n\n\n\nEn el bloque anterior utilizamos deliberadamente\ntransformador_poly\ny no\npoly\npara almacenar el objeto PolynomialFeatures.\nLa razón es que poly ya fue importada desde ISLP.models.\nSi escribiéramos, por ejemplo,\npoly = PolynomialFeatures(degree=4)\nhabríamos reemplazado el nombre de la función original. Posteriormente, una instrucción como\npoly('age', degree=4)\nintentaría llamar al objeto PolynomialFeatures como si fuera la función de ISLP, produciendo un error.\n\n\n\n\n\n\n\n\nAdvertencia\n\n\n\nEn la práctica, ambos enfoques (ANOVA y validación cruzada) suelen sugerir un grado bajo (2, 3 o 4). Coexisten en la literatura porque ANOVA da una justificación inferencial clásica basada en la teoría de mínimos cuadrados, mientras que la validación cruzada es más robusta cuando no se cumplen exactamente los supuestos de normalidad y homocedasticidad de los errores.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#recordatorio-regresión-logística",
+    "href": "parte2.html#recordatorio-regresión-logística",
+    "title": "2  Regresión Polinomial",
+    "section": "11.1 Recordatorio: regresión logística",
+    "text": "11.1 Recordatorio: regresión logística\nEn una regresión logística simple modelamos el logaritmo de los odds mediante una relación lineal:\n\\[\n\\log\\left(\n\\frac{p(x)}{1-p(x)}\n\\right)\n=\n\\beta_0+\\beta_1x.\n\\]\nLa cantidad\n\\[\n\\frac{p(x)}{1-p(x)}\n\\]\nse conoce como los odds, mientras que\n\\[\n\\log\\left(\n\\frac{p(x)}{1-p(x)}\n\\right)\n\\]\nes el logit o log-odds.\nEn este modelo se supone que el log-odds cambia linealmente con respecto a \\(x\\).\nSin embargo, al igual que en regresión lineal, esta suposición puede ser demasiado restrictiva.\nPodemos introducir términos polinomiales y considerar\n\\[\n\\log\\left(\n\\frac{p(x)}{1-p(x)}\n\\right)\n=\n\\beta_0+\\beta_1x+\\beta_2x^2+\\cdots+\\beta_dx^d.\n\\]\nEsta es una regresión logística polinomial.\nLa idea es exactamente la misma que utilizamos antes:\n\\[\nX\n\\longmapsto\n(X,X^2,\\ldots,X^d).\n\\]\nLo que cambia ahora es el tipo de variable respuesta y, por tanto, el modelo utilizado para relacionar los predictores con la respuesta.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#construcción-de-la-variable-respuesta",
+    "href": "parte2.html#construcción-de-la-variable-respuesta",
+    "title": "2  Regresión Polinomial",
+    "section": "11.2 Construcción de la variable respuesta",
+    "text": "11.2 Construcción de la variable respuesta\nConstruimos primero la variable binaria salario_alto.\n\n\nCódigo\nwage['salario_alto'] = (\n    wage['wage'] &gt; 250\n).astype(int)\n\nwage['salario_alto'].value_counts()\n\n\nsalario_alto\n0    2921\n1      79\nName: count, dtype: int64\n\n\nObserven las frecuencias obtenidas.\n\n¿Cuántas observaciones tienen un salario superior a 250?\n¿Es un evento frecuente?\n¿Las clases están balanceadas?\n\n\n\n\n\n\n\nTipSolución\n\n\n\n\n\nLas observaciones con salario_alto = 1 representan una proporción pequeña del conjunto de datos. Por tanto, tener un salario superior a 250 es un evento poco frecuente y las dos clases están desbalanceadas.\nEsto explica por qué las probabilidades estimadas que veremos en la gráfica son considerablemente menores que \\(0.5\\).\n\n\n\nEsta exploración es importante porque la proporción de observaciones con \\(Y=1\\) afecta la escala de las probabilidades que veremos posteriormente.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#por-qué-usamos-glm-con-familia-binomial",
+    "href": "parte2.html#por-qué-usamos-glm-con-familia-binomial",
+    "title": "2  Regresión Polinomial",
+    "section": "11.3 ¿Por qué usamos GLM con familia binomial?",
+    "text": "11.3 ¿Por qué usamos GLM con familia binomial?\nEn la regresión polinomial anterior utilizamos mínimos cuadrados ordinarios mediante sm.OLS() porque la respuesta wage era cuantitativa.\nAhora la variable respuesta toma únicamente los valores\n\\[\nY\\in\\{0,1\\}.\n\\]\nPor esta razón utilizaremos un modelo lineal generalizado, o GLM por sus siglas en inglés.\nEn statsmodels escribimos:\nsm.GLM(\n    y,\n    X,\n    family=sm.families.Binomial()\n)\nLa opción\nfamily=sm.families.Binomial()\nindica que la variable respuesta sigue una distribución binomial.\nPara una observación individual, esto equivale al caso Bernoulli:\n\\[\nY_i\\sim\\operatorname{Bernoulli}(p_i),\n\\]\ndonde\n\\[\nP(Y_i=1)=p_i\n\\]\ny\n\\[\nP(Y_i=0)=1-p_i.\n\\]\nAdemás, statsmodels utiliza por defecto la función de enlace logit para la familia binomial. Por tanto, el modelo que se ajusta tiene la forma\n\\[\n\\log\\left(\n\\frac{p_i}{1-p_i}\n\\right)\n=\n\\eta_i,\n\\]\ndonde \\(\\eta_i\\) es el predictor lineal.\nEn nuestro caso, como utilizaremos un polinomio de grado 4 en age,\n\\[\n\\eta_i\n=\n\\beta_0\n+\\beta_1P_1(\\texttt{age}_i)\n+\\beta_2P_2(\\texttt{age}_i)\n+\\beta_3P_3(\\texttt{age}_i)\n+\\beta_4P_4(\\texttt{age}_i),\n\\]\ndonde \\(P_1,\\ldots,P_4\\) son los polinomios de la base ortogonal construida por ISLP.models.poly.\n\n\n\n\n\n\nImportante\n\n\n\nLa opción\nfamily=sm.families.Binomial()\nno se utiliza porque el modelo sea polinomial.\nSe utiliza porque la variable respuesta es binaria.\nLa parte polinomial viene de\npoly('age', degree=4)\nmientras que la familia binomial determina cómo se modela la variable respuesta.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#construcción-de-la-base-polinomial",
+    "href": "parte2.html#construcción-de-la-base-polinomial",
+    "title": "2  Regresión Polinomial",
+    "section": "11.4 Construcción de la base polinomial",
+    "text": "11.4 Construcción de la base polinomial\nUtilizaremos una base de polinomios ortogonales de grado 4, igual que en el ejemplo anterior de regresión polinomial.\n\n\nCódigo\ngrado = 4\n\ndesign_logit = MS([\n    poly('age', degree=grado)\n])\n\ndesign_logit = design_logit.fit(wage)\n\nX_logit = design_logit.transform(wage)\n\ny_logit = wage['salario_alto']\n\n\nLa matriz X_logit contiene el intercepto y las funciones base polinomiales asociadas a age.\nAunque el modelo es no lineal respecto a age, sigue siendo lineal respecto a los coeficientes del predictor lineal.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#ajuste-de-la-regresión-logística-polinomial",
+    "href": "parte2.html#ajuste-de-la-regresión-logística-polinomial",
+    "title": "2  Regresión Polinomial",
+    "section": "11.5 Ajuste de la regresión logística polinomial",
+    "text": "11.5 Ajuste de la regresión logística polinomial\nAjustamos ahora el modelo.\n\n\nCódigo\nmodelo_logit = sm.GLM(\n    y_logit,\n    X_logit,\n    family=sm.families.Binomial()\n).fit()\n\nsummarize(modelo_logit)\n\n\n\n\n\n\n\n\n\ncoef\nstd err\nz\nP&gt;|z|\n\n\n\n\nintercept\n-4.3012\n0.345\n-12.457\n0.000\n\n\npoly(age, degree=4)[0]\n71.9642\n26.133\n2.754\n0.006\n\n\npoly(age, degree=4)[1]\n-85.7729\n35.929\n-2.387\n0.017\n\n\npoly(age, degree=4)[2]\n34.1626\n19.697\n1.734\n0.083\n\n\npoly(age, degree=4)[3]\n-47.4008\n24.105\n-1.966\n0.049\n\n\n\n\n\n\n\nLos coeficientes se estiman mediante máxima verosimilitud, no mediante mínimos cuadrados.\nEl modelo ajustado tiene la forma\n\\[\n\\log\\left(\n\\frac{\\hat p(x)}{1-\\hat p(x)}\n\\right)\n=\n\\hat\\beta_0\n+\\hat\\beta_1P_1(x)\n+\\cdots\n+\\hat\\beta_4P_4(x).\n\\]\nSin embargo, normalmente nos interesa más interpretar la probabilidad estimada\n\\[\n\\hat p(x)\n=\nP(\\texttt{wage}&gt;250\\mid\\texttt{age}=x)\n\\]\nque los coeficientes individuales de la base ortogonal.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#predicciones-sobre-una-grilla-de-edades",
+    "href": "parte2.html#predicciones-sobre-una-grilla-de-edades",
+    "title": "2  Regresión Polinomial",
+    "section": "11.6 Predicciones sobre una grilla de edades",
+    "text": "11.6 Predicciones sobre una grilla de edades\nPara visualizar cómo cambia la probabilidad con la edad, evaluaremos el modelo en una secuencia fina de edades.\n\n\nCódigo\nage_grid = np.linspace(\n    wage['age'].min(),\n    wage['age'].max(),\n    200\n)\n\ndatos_pred_logit = pd.DataFrame({\n    'age': age_grid\n})\n\nX_pred_logit = design_logit.transform(\n    datos_pred_logit\n)\n\npred_logit = modelo_logit.get_prediction(\n    X_pred_logit\n)\n\nresumen_logit = pred_logit.summary_frame(\n    alpha=0.05\n)\n\nresumen_logit.head()\n\n\n\n\n\n\n\n\n\nmean\nmean_se\nmean_ci_lower\nmean_ci_upper\n\n\n\n\n0\n9.826349e-09\n6.037272e-08\n5.789509e-14\n0.001665\n\n\n1\n1.900428e-08\n1.113108e-07\n1.964454e-13\n0.001835\n\n\n2\n3.598553e-08\n2.008033e-07\n6.402190e-13\n0.002019\n\n\n3\n6.674401e-08\n3.545879e-07\n2.005727e-12\n0.002216\n\n\n4\n1.213091e-07\n6.131647e-07\n6.045581e-12\n0.002428\n\n\n\n\n\n\n\nLa columna mean contiene la probabilidad estimada\n\\[\n\\hat p(x),\n\\]\nmientras que mean_ci_lower y mean_ci_upper contienen los límites del intervalo de confianza puntual del 95% para esa probabilidad.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#probabilidad-de-tener-un-salario-alto",
+    "href": "parte2.html#probabilidad-de-tener-un-salario-alto",
+    "title": "2  Regresión Polinomial",
+    "section": "11.7 Probabilidad de tener un salario alto",
+    "text": "11.7 Probabilidad de tener un salario alto\nGraficaremos:\n\nlas observaciones con salario_alto = 0 en la parte inferior;\nlas observaciones con salario_alto = 1 en la parte superior;\nla probabilidad estimada \\(\\hat p(x)\\);\nel intervalo de confianza puntual del 95%.\n\n\n\nCódigo\nprob = resumen_logit['mean']\n\nic_lower = resumen_logit['mean_ci_lower']\nic_upper = resumen_logit['mean_ci_upper']\n\n\nplt.figure(figsize=(8, 6))\n\n\n# Observaciones con wage &lt;= 250\nmask_bajo = wage['salario_alto'] == 0\n\nplt.plot(\n    wage.loc[mask_bajo, 'age'],\n    np.zeros(mask_bajo.sum()),\n    '|',\n    alpha=0.25,\n    markersize=5\n)\n\n\n# Observaciones con wage &gt; 250\nmask_alto = wage['salario_alto'] == 1\n\nplt.plot(\n    wage.loc[mask_alto, 'age'],\n    np.repeat(0.20, mask_alto.sum()),\n    '|',\n    alpha=0.45,\n    markersize=6\n)\n\n\n# Banda de confianza del 95%\nplt.fill_between(\n    age_grid,\n    ic_lower,\n    ic_upper,\n    alpha=0.20,\n    label='IC 95%'\n)\n\n\n# Probabilidad estimada\nplt.plot(\n    age_grid,\n    prob,\n    linewidth=2,\n    label='Regresión logística polinomial'\n)\n\n\nplt.xlabel('Edad')\nplt.ylabel('Probabilidad de salario &gt; 250')\n\nplt.title(\n    'Probabilidad de salario alto en función de la edad'\n)\n\nplt.ylim(-0.005, 0.21)\n\nplt.legend()\n\nplt.tight_layout()\n\nplt.show()\n\n\n\n\n\n\n\n\nFigura 11.1: Probabilidad estimada de tener un salario superior a 250 mil dólares en función de la edad.\n\n\n\n\n\nLa curva representa\n\\[\n\\widehat{\nP(\\texttt{wage}&gt;250\\mid\\texttt{age}=x)\n}.\n\\]\nObserven que las probabilidades estimadas son pequeñas. Esto es consistente con el hecho de que tener un salario superior a 250 es un evento poco frecuente en este conjunto de datos.\nAnalicen la forma de la curva:\n\n¿La probabilidad cambia de manera lineal o monótona con la edad?\n¿En qué intervalo de edades parece alcanzar sus valores más altos?\n¿Qué ocurre en las edades más grandes?\n¿Una regresión logística con únicamente un término lineal en age podría representar adecuadamente esta forma?\n\n\n\n\n\n\n\nTipSolución\n\n\n\n\n\nLa probabilidad estimada no cambia de manera monótona con la edad.\nEl modelo muestra una región en la que\n\\[\nP(\\texttt{wage}&gt;250\\mid\\texttt{age}=x)\n\\]\naumenta con la edad, alcanza valores relativamente altos en edades intermedias y posteriormente disminuye.\nUna regresión logística con un único término lineal,\n\\[\n\\log\\left(\n\\frac{p(x)}{1-p(x)}\n\\right)\n=\n\\beta_0+\\beta_1x,\n\\]\nsería más restrictiva, ya que obliga al log-odds a ser una función lineal de la edad.\nLa expansión polinomial permite que el log-odds cambie de forma no lineal y, por tanto, que la probabilidad estimada tenga una forma más flexible.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#qué-aporta-el-término-polinomial",
+    "href": "parte2.html#qué-aporta-el-término-polinomial",
+    "title": "2  Regresión Polinomial",
+    "section": "11.8 ¿Qué aporta el término polinomial?",
+    "text": "11.8 ¿Qué aporta el término polinomial?\nEn una regresión logística simple tendríamos\n\\[\n\\log\\left(\n\\frac{p(x)}{1-p(x)}\n\\right)\n=\n\\beta_0+\\beta_1x.\n\\]\nEsto obliga al log-odds a cambiar linealmente con la edad.\nAl utilizar un polinomio,\n\\[\n\\log\\left(\n\\frac{p(x)}{1-p(x)}\n\\right)\n=\n\\beta_0+\\beta_1x+\\cdots+\\beta_dx^d,\n\\]\npermitimos que el log-odds, y por tanto la probabilidad \\(p(x)\\), presente una forma mucho más flexible.\n\n\n\n\n\n\nNota\n\n\n\nLa regresión logística ya produce una relación no lineal entre el predictor lineal \\(\\eta\\) y la probabilidad \\(p\\) debido a la función logística.\nAquí estamos introduciendo una segunda fuente de flexibilidad: permitimos que el predictor lineal \\(\\eta\\) sea una función polinomial de age.\n\n\nObserven que la probabilidad estimada aumenta con la edad hasta alrededor de los 40-50 años y después disminuye, de forma consistente con lo observado en la regresión polinomial de la variable cuantitativa wage.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#respuesta-cuantitativa",
+    "href": "parte2.html#respuesta-cuantitativa",
+    "title": "2  Regresión Polinomial",
+    "section": "12.1 Respuesta cuantitativa",
+    "text": "12.1 Respuesta cuantitativa\nCuando \\(Y\\) es cuantitativa, utilizamos regresión polinomial:\n\\[\nE[Y\\mid X]\n=\n\\beta_0+\\beta_1X+\\cdots+\\beta_dX^d.\n\\]\nEn nuestro ejemplo,\n\\[\nY=\\texttt{wage}.\n\\]",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#respuesta-binaria",
+    "href": "parte2.html#respuesta-binaria",
+    "title": "2  Regresión Polinomial",
+    "section": "12.2 Respuesta binaria",
+    "text": "12.2 Respuesta binaria\nCuando \\(Y\\) es binaria, utilizamos regresión logística polinomial:\n\\[\n\\log\\left(\n\\frac{p(X)}{1-p(X)}\n\\right)\n=\n\\beta_0+\\beta_1X+\\cdots+\\beta_dX^d.\n\\]\nEn nuestro ejemplo,\n\\[\nY=I(\\texttt{wage}&gt;250).\n\\]\nEn ambos casos aplicamos la transformación\n\\[\nX\n\\longmapsto\n(X,X^2,\\ldots,X^d).\n\\]\nLa diferencia principal está en qué cantidad modelamos:\n\\[\n\\text{Regresión polinomial}\n\\quad\\longrightarrow\\quad\nE[Y\\mid X],\n\\]\nmientras que\n\\[\n\\text{Regresión logística polinomial}\n\\quad\\longrightarrow\\quad\n\\log\\left(\n\\frac{p(X)}{1-p(X)}\n\\right).\n\\]\nLa idea fundamental es la misma: introducir flexibilidad mediante transformaciones de los predictores.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#para-entregar",
+    "href": "parte2.html#para-entregar",
+    "title": "2  Regresión Polinomial",
+    "section": "13.1 Para entregar",
+    "text": "13.1 Para entregar\n\n13.1.1 Selección del grado mediante AIC\nAjusten, para\n\\[\nd=1,\\ldots,8,\n\\]\nel modelo\nMS([poly('age', degree=d)])\ny obtengan el AIC de cada modelo mediante\nmodelo.aic\nGrafiquen el AIC contra \\(d\\).\n\n¿Qué grado minimiza el AIC?\n¿Coincide con el grado sugerido por la comparación de modelos anidados?\n¿Coincide con el obtenido mediante validación cruzada?\nExpliquen brevemente por qué los tres criterios no tienen que producir necesariamente la misma respuesta.\n\n\n\n13.1.2 Otro predictor\nRepitan el análisis utilizando year en lugar de age.\nAjusten modelos polinomiales de distintos grados y construyan una gráfica que permita comparar los ajustes.\n¿Encuentran evidencia de una relación no lineal igual de fuerte que la observada para age?\nJustifiquen su respuesta utilizando tanto la gráfica como los resultados de los modelos.\n\n\n13.1.3 Modelo con más predictores\nAjusten un modelo que incluya\npoly('age', degree=3)\ny la variable categórica\neducation\nsin transformar.\nPueden construir la especificación mediante\nMS([\n    poly('age', degree=3),\n    'education'\n])\nInterpreten brevemente el coeficiente asociado a uno de los niveles de education.\n¿Qué representa ese coeficiente cuando mantenemos constante el efecto de la edad?\n\n\n13.1.4 Depuración dirigida\nSupongan que, durante la sección de validación cruzada, hubieran escrito\npoly = PolynomialFeatures(degree=4)\nen lugar de utilizar el nombre transformador_poly.\nSin ejecutar código:\n\nExpliquen qué problema produciría esta instrucción.\nIdentifiquen en qué parte de la sección de regresión logística se manifestaría el error.\nExpliquen por qué Python produciría ese error.\n\n\n\n13.1.5 Interpretación del efecto de la edad\nLa tabla producida por\nsummarize(modelo_g4)\nmuestra los coeficientes correspondientes a una base de polinomios ortogonales.\nExpliquen por qué esta tabla no permite responder directamente:\n\n¿Cuál es el cambio esperado en el salario cuando la edad aumenta un año?\n\n¿Qué cantidad relacionada con la curva\n\\[\n\\hat f(x)\n\\]\ndeberían estudiar para responder esta pregunta?\n¿Esperarían que ese efecto fuera el mismo para una persona de 25 años que para una de 60 años? Justifiquen.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#selección-del-grado-mediante-aic",
+    "href": "parte2.html#selección-del-grado-mediante-aic",
+    "title": "2  Regresión Polinomial",
+    "section": "13.1 Selección del grado mediante AIC",
+    "text": "13.1 Selección del grado mediante AIC\nAjusten, para\n\\[\nd=1,\\ldots,8,\n\\]\nel modelo\nMS([poly('age', degree=d)])\ny obtengan el AIC de cada modelo mediante\nmodelo.aic\nGrafiquen el AIC contra \\(d\\).\n\n¿Qué grado minimiza el AIC?\n¿Coincide con el grado sugerido por la comparación de modelos anidados?\n¿Coincide con el obtenido mediante validación cruzada?\nExpliquen brevemente por qué los tres criterios no tienen que producir necesariamente la misma respuesta.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#otro-predictor",
+    "href": "parte2.html#otro-predictor",
+    "title": "2  Regresión Polinomial",
+    "section": "13.2 Otro predictor",
+    "text": "13.2 Otro predictor\nRepitan el análisis utilizando year en lugar de age.\nAjusten modelos polinomiales de distintos grados y construyan una gráfica que permita comparar los ajustes.\n¿Encuentran evidencia de una relación no lineal igual de fuerte que la observada para age?\nJustifiquen su respuesta utilizando tanto la gráfica como los resultados de los modelos.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#modelo-con-más-predictores",
+    "href": "parte2.html#modelo-con-más-predictores",
+    "title": "2  Regresión Polinomial",
+    "section": "13.3 Modelo con más predictores",
+    "text": "13.3 Modelo con más predictores\nAjusten un modelo que incluya\npoly('age', degree=3)\ny la variable categórica\neducation\nsin transformar.\nPueden construir la especificación mediante\nMS([\n    poly('age', degree=3),\n    'education'\n])\nInterpreten brevemente el coeficiente asociado a uno de los niveles de education.\n¿Qué representa ese coeficiente cuando mantenemos constante el efecto de la edad?",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#depuración-dirigida",
+    "href": "parte2.html#depuración-dirigida",
+    "title": "2  Regresión Polinomial",
+    "section": "13.4 Depuración dirigida",
+    "text": "13.4 Depuración dirigida\nSupongan que, durante la sección de validación cruzada, hubieran escrito\npoly = PolynomialFeatures(degree=4)\nen lugar de utilizar el nombre transformador_poly.\nSin ejecutar código:\n\nExpliquen qué problema produciría esta instrucción.\nIdentifiquen en qué parte de la sección de regresión logística se manifestaría el error.\nExpliquen por qué Python produciría ese error.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#interpretación-del-efecto-de-la-edad",
+    "href": "parte2.html#interpretación-del-efecto-de-la-edad",
+    "title": "2  Regresión Polinomial",
+    "section": "13.5 Interpretación del efecto de la edad",
+    "text": "13.5 Interpretación del efecto de la edad\nLa tabla producida por\nsummarize(modelo_g4)\nmuestra los coeficientes correspondientes a una base de polinomios ortogonales.\nExpliquen por qué esta tabla no permite responder directamente:\n\n¿Cuál es el cambio esperado en el salario cuando la edad aumenta un año?\n\n¿Qué cantidad relacionada con la curva\n\\[\n\\hat f(x)\n\\]\ndeberían estudiar para responder esta pregunta?\n¿Esperarían que ese efecto fuera el mismo para una persona de 25 años que para una de 60 años? Justifiquen.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
+    ]
+  },
+  {
+    "objectID": "parte2.html#antes-de-comenzar",
+    "href": "parte2.html#antes-de-comenzar",
+    "title": "2  Regresión Polinomial",
+    "section": "",
+    "text": "NotaPara discutir\n\n\n\n\nRegresión lineal. ¿Qué cantidad modelamos mediante una regresión lineal? Escriban formalmente el modelo para un único predictor \\(X\\).\nMínimos cuadrados. ¿Qué criterio utilizamos para estimar los coeficientes \\(\\beta_0,\\beta_1,\\ldots,\\beta_p\\) en una regresión lineal? Escriban la función que minimizamos y recuerden su formulación matricial.\nRegresión logística. Si \\(Y\\in\\{0,1\\}\\), ¿por qué no utilizamosdirectamente una regresión lineal para modelar \\(P(Y=1\\mid X=x)\\)? ¿Qué transformación de la probabilidad utilizamos en regresión logística?\nLinealidad. En los modelos anteriores, ¿qué significa realmente decir que un modelo es ``lineal’’? ¿Debe ser necesariamente una función lineal de los predictores?\n\n\n\n\n\n\n\n\n\n\nTipRecordatorio\n\n\n\n\n\nEn regresión lineal modelamos la media condicional de \\(Y\\):\n\\[\nE[Y\\mid X]\n=\n\\beta_0+\\beta_1X_1+\\cdots+\\beta_pX_p.\n\\]\nLos coeficientes se estiman mediante mínimos cuadrados, minimizando\n\\[\n\\operatorname{RSS}(\\boldsymbol{\\beta})\n=\n\\sum_{i=1}^{n}\n\\left(\ny_i-\\beta_0-\\sum_{j=1}^{p}\\beta_jx_{ij}\n\\right)^2.\n\\]\nEn forma matricial,\n\\[\n\\hat{\\boldsymbol{\\beta}}\n=\n\\arg\\min_{\\boldsymbol{\\beta}}\n\\left\\|\n\\mathbf y-\\mathbf X\\boldsymbol{\\beta}\n\\right\\|_2^2.\n\\]\nSi \\(\\mathbf X^\\top\\mathbf X\\) es invertible, la solución es\n\\[\n\\hat{\\boldsymbol{\\beta}}\n=\n(\\mathbf X^\\top\\mathbf X)^{-1}\n\\mathbf X^\\top\\mathbf y.\n\\]\nEn regresión logística, para una respuesta \\(Y\\in\\{0,1\\}\\), definimos\n\\[\np(X)=P(Y=1\\mid X).\n\\]\nEn lugar de modelar directamente \\(p(X)\\) mediante una recta, modelamos el log-odds:\n\\[\n\\log\\left(\n\\frac{p(X)}{1-p(X)}\n\\right)\n=\n\\beta_0+\\beta_1X_1+\\cdots+\\beta_pX_p.\n\\]\nFinalmente, recuerden que un modelo es lineal cuando es lineal en sus parámetros. Por ejemplo,\n\\[\nY\n=\n\\beta_0+\\beta_1X+\\beta_2X^2+\\varepsilon\n\\]\nno es una recta como función de \\(X\\), pero sigue siendo un modelo lineal en los parámetros \\(\\beta_0,\\beta_1,\\beta_2\\).\nEsta última observación será precisamente el punto de partida de la regresión polinomial.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Regresión Polinomial</span>"
     ]
   }
 ]

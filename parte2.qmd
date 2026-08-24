@@ -1,16 +1,119 @@
 # Regresión Polinomial
 
-## Objetivos
+## Antes de comenzar
 
-- Ajustar un modelo de **regresión polinomial** usando la base de **polinomios ortogonales**, replicando en Python el comportamiento de la función `poly()` de R.
-- Construir e interpretar **bandas de confianza puntuales** para la curva ajustada.
-- Comparar dos estrategias para elegir el grado del polinomio: la prueba **F de modelos anidados** (enfoque clásico) y la **validación cruzada de** $k$ particiones (enfoque moderno).
-- Extender la regresión polinomial al caso de una respuesta **binaria** mediante regresión logística.
-- Reconocer y evitar un error común de programación en Python relacionado con la **reutilización de nombres de variables**.
+En esta práctica utilizaremos conceptos de regresión lineal y regresión
+logística que ya han estudiado previamente. Antes de comenzar, recuerden
+algunas ideas fundamentales.
 
 ::: callout-note
-Esta práctica corresponde a la primera parte de la sección 7.8 del libro base con algunas modificaciones.
+### Para discutir
+
+1. **Regresión lineal.** ¿Qué cantidad modelamos mediante una regresión lineal? Escriban formalmente el modelo para un único predictor $X$.
+
+2. **Mínimos cuadrados.** ¿Qué criterio utilizamos para estimar los    coeficientes $\beta_0,\beta_1,\ldots,\beta_p$ en una regresión lineal? Escriban la función que minimizamos y recuerden su formulación matricial.
+
+3. **Regresión logística.** Si $Y\in\{0,1\}$, ¿por qué no utilizamosdirectamente una regresión lineal para modelar
+   $P(Y=1\mid X=x)$? ¿Qué transformación de la probabilidad utilizamos en regresión logística?
+
+4. **Linealidad.** En los modelos anteriores, ¿qué significa realmente decir que un modelo es ``lineal''? ¿Debe ser necesariamente una función lineal de los predictores?
 :::
+
+No necesitan desarrollar demostraciones. El objetivo es recuperar las ideas que utilizaremos a lo largo de la práctica.
+
+
+::: {.callout-tip collapse="true"}
+## Recordatorio
+
+En regresión lineal modelamos la media condicional de $Y$:
+
+$$
+E[Y\mid X]
+=
+\beta_0+\beta_1X_1+\cdots+\beta_pX_p.
+$$
+
+Los coeficientes se estiman mediante **mínimos cuadrados**, minimizando
+
+$$
+\operatorname{RSS}(\boldsymbol{\beta})
+=
+\sum_{i=1}^{n}
+\left(
+y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij}
+\right)^2.
+$$
+
+En forma matricial,
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+\arg\min_{\boldsymbol{\beta}}
+\left\|
+\mathbf y-\mathbf X\boldsymbol{\beta}
+\right\|_2^2.
+$$
+
+Si $\mathbf X^\top\mathbf X$ es invertible, la solución es
+
+$$
+\hat{\boldsymbol{\beta}}
+=
+(\mathbf X^\top\mathbf X)^{-1}
+\mathbf X^\top\mathbf y.
+$$
+
+En regresión logística, para una respuesta $Y\in\{0,1\}$, definimos
+
+$$
+p(X)=P(Y=1\mid X).
+$$
+
+En lugar de modelar directamente $p(X)$ mediante una recta, modelamos el log-*odds*:
+
+$$
+\log\left(
+\frac{p(X)}{1-p(X)}
+\right)
+=
+\beta_0+\beta_1X_1+\cdots+\beta_pX_p.
+$$
+
+Finalmente, recuerden que un modelo es **lineal** cuando es lineal en sus parámetros. Por ejemplo,
+
+$$
+Y
+=
+\beta_0+\beta_1X+\beta_2X^2+\varepsilon
+$$
+
+no es una recta como función de $X$, pero sigue siendo un modelo lineal en los parámetros $\beta_0,\beta_1,\beta_2$.
+
+Esta última observación será precisamente el punto de partida de la regresión polinomial.
+:::
+
+
+## Objetivos
+
+Al finalizar esta práctica podrán:
+
+- Ajustar modelos de **regresión polinomial** utilizando una base de **polinomios ortogonales**.
+- Construir e interpretar **intervalos de confianza puntuales** para la  curva de regresión estimada.
+- Comparar modelos polinomiales con diferentes grados de flexibilidad.
+- Comparar dos estrategias para elegir el grado del polinomio: pruebas de **modelos anidados** y **validación cruzada**.
+- Distinguir entre un intervalo de confianza para la respuesta media y un intervalo de predicción para una nueva observación.
+- Extender la misma idea de expansión polinomial al caso de una respuesta **binaria** mediante regresión logística.
+- Identificar algunos detalles de implementación que pueden producir errores al trabajar con transformaciones polinomiales en Python.
+
+::: callout-note
+Esta práctica corresponde a la primera parte de la sección 7.8 del libro base, con algunas modificaciones y ejercicios adicionales.
+:::
+
+
+## Librerías
+
+Comenzaremos cargando las librerías necesarias.
 
 ```{python}
 #| label: importes
@@ -27,65 +130,304 @@ from ISLP.models import ModelSpec as MS, poly, summarize
 ```
 
 ::: callout-important
-## ¿Por qué usamos `ISLP.models` y no una fórmula tipo la que vieron en R?
+## ¿Por qué usamos `ISLP.models`?
 
-En R, la función `poly(age, 4)` dentro de una fórmula (`wage ~ poly(age, 4)`) construye automáticamente una base de **polinomios ortogonales**. En Python, el motor de fórmulas que usa `statsmodels.formula.api` (llamado `patsy`) **no tiene** una función `poly()` incorporada. Si se intenta escribir `smf.ols('wage ~ poly(age, 4)', data=wage)`, Python buscará algún objeto llamado `poly` en el espacio de nombres disponible; si por accidente existe una variable u objeto distinto con ese mismo nombre (por ejemplo, si en algún momento se usó `poly` como nombre de una variable de `scikit-learn`), el resultado son errores confusos y difíciles de depurar.
+En R, la función `poly(age, 4)` dentro de una fórmula como
 
-Por esta razón, en esta práctica usamos la clase `ModelSpec` (importada aquí como `MS`) junto con la función `poly` que provee el propio paquete `ISLP`.
+```r
+wage ~ poly(age, 4)
+```
+
+construye una base de **polinomios ortogonales**.
+
+En esta práctica utilizaremos `ModelSpec` (importada como `MS`) junto con la función `poly` proporcionada por el paquete `ISLP`. Esto nos permite construir una base polinomial y, posteriormente, aplicar exactamente la misma transformación a nuevos datos cuando queramos realizar  predicciones.
+
+Más adelante utilizaremos también `PolynomialFeatures` de `scikit-learn`.
+
+Tengan cuidado de no utilizar el nombre `poly` para guardar otros objetos, pues `poly` ya identifica a la función que importamos desde `ISLP.models`.
 :::
 
-## Carga y exploración inicial de los datos
+# Datos `Wage`
+
+Trabajaremos con el conjunto de datos `Wage`, que contiene información sobre salarios y algunas características de trabajadores de la región del Atlántico medio de Estados Unidos.
+
+Nos concentraremos inicialmente en dos variables:
+
+- `age`: edad del trabajador.
+- `wage`: salario del trabajador.
+
+Nuestra pregunta inicial será:
+
+> **¿Cómo cambia el salario esperado de una persona en función de su edad?**
+
+En una regresión lineal simple modelaríamos esta relación mediante
+
+$$
+E[\text{wage}\mid\text{age}]
+=
+\beta_0+\beta_1\text{age}.
+$$
+
+Este modelo supone que el salario esperado cambia a una tasa constante con respecto a la edad.
+
+Antes de aceptar esta suposición, exploremos los datos.
+
+
+## Carga y exploración inicial
 
 ```{python}
 #| label: carga-datos
 
 wage = load_data('Wage')
+
 print(wage.shape)
+
 wage[['age', 'wage']].describe()
 ```
 
+Antes de continuar, observen el resumen anterior.
+
+1. ¿Cuál es el rango de edades observado?
+2. ¿Cuál es el rango de salarios?
+3. ¿En qué intervalo se concentra la mayor parte de las edades?
+
+
+::: {.callout-tip collapse="true"}
+## Solución
+
+El conjunto de datos contiene trabajadores con edades entre aproximadamente 18 y 80 años.
+
+Los salarios presentan una variabilidad considerable y algunos valores son mucho mayores que la mayoría de las observaciones.
+
+Al observar los cuartiles de `age`, vemos que una gran parte de las observaciones se concentra en edades intermedias. Por tanto, tenemos más información en esta región que cerca de los extremos del rango.
+
+Esto será importante más adelante: las estimaciones del modelo suelen presentar mayor incertidumbre en regiones donde tenemos menos observaciones.
+:::
+
+
+## Relación entre edad y salario
+
+Visualicemos ahora ambas variables.
+
 ```{python}
 #| label: fig-dispersion-inicial
-#| fig-cap: "Salario en función de la edad: se observa una tendencia creciente y luego decreciente."
+#| fig-cap: "Salario en función de la edad."
 
-plt.figure(figsize=(6, 4))
-plt.scatter(wage['age'], wage['wage'], alpha=0.3, s=15)
+plt.figure(figsize=(7, 5))
+
+plt.scatter(
+    wage['age'],
+    wage['wage'],
+    alpha=0.3,
+    s=15
+)
+
 plt.xlabel('Edad')
-plt.ylabel('Salario (miles de dólares)')
+plt.ylabel('Salario')
 plt.title('Salario en función de la edad')
+
 plt.tight_layout()
 plt.show()
 ```
 
-La gráfica sugiere que la relación entre `age` y `wage` **no es lineal**: el salario tiende a crecer con la edad hasta cierto punto y después decrece ligeramente. Esto motiva usar un modelo más flexible que la recta, como la regresión polinomial.
+Observen la nube de puntos.
 
-## Ajuste de una regresión polinomial de grado 4
+- ¿Parece razonable representar la relación mediante una recta?
+- ¿El salario parece aumentar a la misma velocidad para todas las edades?
+- ¿Encuentran evidencia visual de una posible curvatura?
 
-Construimos la matriz de diseño con una base de polinomios ortogonales de grado 4 sobre `age`, y ajustamos el modelo por mínimos cuadrados ordinarios.
+
+::: {.callout-tip collapse="true"}
+## Solución
+
+La nube de puntos no sugiere una relación estrictamente lineal.
+
+En términos generales, el salario parece aumentar durante las primeras etapas del rango de edades, pero este crecimiento no continúa a una tasa
+constante. Para edades mayores, la tendencia se estabiliza e incluso puede disminuir.
+
+Por tanto, encontramos evidencia visual de **curvatura** y una recta podría ser demasiado restrictiva para representar la relación entre `age` y `wage`.
+
+Esta observación no determina todavía qué grado de polinomio debemos utilizar; únicamente motiva considerar modelos más flexibles.
+:::
+
+
+La gráfica sugiere que la relación entre `age` y `wage` **no es
+completamente lineal**. El salario tiende a aumentar con la edad hasta cierto punto y posteriormente la tendencia cambia.
+
+Esto motiva utilizar un modelo más flexible.
+
+
+# De la regresión lineal a la regresión polinomial
+
+En lugar de imponer
+
+$$
+E[Y\mid X=x]
+=
+\beta_0+\beta_1x,
+$$
+
+podemos considerar
+
+$$
+E[Y\mid X=x]
+=
+\beta_0+\beta_1x+\beta_2x^2+\cdots+\beta_dx^d.
+$$
+
+A este modelo lo llamamos **regresión polinomial de grado $d$**.
+
+Aunque la relación entre $X$ y la respuesta ya no es una recta, observen que el modelo sigue siendo **lineal en los parámetros**
+
+$$
+\beta_0,\beta_1,\ldots,\beta_d.
+$$
+
+Podemos pensar que simplemente hemos creado nuevos predictores:
+
+$$
+X,\quad X^2,\quad X^3,\quad\ldots,\quad X^d.
+$$
+
+Por tanto, podemos seguir utilizando las herramientas de regresión
+lineal y estimar los parámetros mediante mínimos cuadrados ordinarios.
+
+
+## ¿Por qué polinomios ortogonales?
+
+Las variables
+
+$$
+X,\quad X^2,\quad X^3,\quad\ldots
+$$
+
+pueden estar fuertemente correlacionadas entre sí.
+
+En lugar de trabajar directamente con la base
+
+$$
+1,x,x^2,\ldots,x^d,
+$$
+
+podemos utilizar otra base
+
+$$
+P_0(x),P_1(x),\ldots,P_d(x)
+$$
+
+formada por **polinomios ortogonales**.
+
+::: callout-note
+Los polinomios
+
+$$
+1,x,x^2,\ldots,x^d
+$$
+
+y una base de polinomios ortogonales de grado hasta $d$ generan el
+**mismo espacio de funciones polinomiales**.
+
+Por tanto, cambiar de base modifica los coeficientes que aparecen en la salida del modelo, pero **no modifica el espacio de modelos que podemos ajustar** ni, salvo diferencias numéricas, las predicciones obtenidas.
+:::
+
+
+
+# Ajuste de un polinomio de grado 4
+
+Comenzaremos utilizando un polinomio de grado 4:
+
+$$
+E[\text{wage}\mid\text{age}=x]
+=
+\beta_0+\beta_1x+\beta_2x^2+
+\beta_3x^3+\beta_4x^4.
+$$
+
+Construiremos una base polinomial utilizando `poly()` y ajustaremos el modelo mediante mínimos cuadrados ordinarios.
 
 ```{python}
 #| label: ajuste-poly4
 
 design_g4 = MS([poly('age', degree=4)])
-X_g4 = design_g4.fit_transform(wage)  # matriz de diseño (incluye intercepto)
+
+X_g4 = design_g4.fit_transform(wage)
+
 y = wage['wage']
 
 modelo_g4 = sm.OLS(y, X_g4).fit()
+
 summarize(modelo_g4)
 ```
 
-::: callout-tip
-Los coeficientes que aparecen en la tabla **no** se interpretan uno por uno como en una regresión lineal simple (no se puede decir "por cada unidad que aumenta `age`..."), porque `age` entra al modelo a través de varias funciones base ortogonales simultáneamente. Lo que sí es directamente interpretable y útil es la **curva ajustada completa** $\hat f(x_0)$, que construimos a continuación.
+Observen la salida obtenida.
+
+- ¿Cuántos términos aparecen además del intercepto?
+- ¿Cuáles muestran evidencia de contribuir al modelo?
+- ¿Podemos interpretar directamente cada coeficiente como "el cambio en   salario por cada año adicional de edad"?
+
+
+::: {.callout-tip collapse="true"}
+## Solución
+
+Además del intercepto aparecen cuatro términos correspondientes a la base polinomial de grado 4.
+
+La significancia de los términos puede estudiarse mediante sus
+estadísticos y valores $p$. Sin embargo, debemos tener cuidado con su interpretación.
+
+Como utilizamos una base de **polinomios ortogonales**, los coeficientes no son directamente los coeficientes de
+
+$$
+x,\quad x^2,\quad x^3,\quad x^4.
+$$
+
+Por ello, un coeficiente individual no debe interpretarse como
+``el cambio en salario producido por aumentar la edad en una unidad''.
+
+Para interpretar el efecto de la edad resulta más útil estudiar la
+función ajustada completa
+
+$$
+\hat f(x)
+$$
+
+o cantidades derivadas de ella, como su pendiente local.
 :::
 
-## Curva ajustada y banda de confianza puntual
+
+::: callout-tip
+Los coeficientes de esta tabla **no se interpretan individualmente como en una regresión lineal simple**.
+
+La variable `age` entra al modelo a través de varias funciones base
+ortogonales simultáneamente. Por ello, los coeficientes corresponden a esas funciones base y no directamente a $x,x^2,x^3,x^4$.
+
+Una cantidad mucho más útil para interpretar el modelo es la **curva ajustada completa**
+
+$$
+\hat f(x)=\widehat{E[Y\mid X=x]}.
+$$
+:::
+
+
+# Curva ajustada
+
+Para visualizar el modelo necesitamos evaluarlo en diferentes edades.
+
+Construiremos una secuencia fina de valores que cubra todo el rango
+observado de `age`.
 
 ```{python}
-#| label: fig-banda-confianza
-#| fig-cap: "Curva ajustada (grado 4) con banda de confianza puntual al 95%."
+#| label: prediccion-grid
 
-age_grid = np.linspace(wage['age'].min(), wage['age'].max(), 200)
-datos_pred = pd.DataFrame({'age': age_grid})
+age_grid = np.linspace(
+    wage['age'].min(),
+    wage['age'].max(),
+    200
+)
+
+datos_pred = pd.DataFrame({
+    'age': age_grid
+})
+
 
 # design_g4 ya quedó "ajustado" (fit) al llamar fit_transform sobre wage;
 # ahora solo transformamos los datos nuevos con la MISMA base ortogonal.
@@ -93,44 +435,404 @@ datos_pred = pd.DataFrame({'age': age_grid})
 X_pred = design_g4.transform(datos_pred)
 
 prediccion = modelo_g4.get_prediction(X_pred)
-resumen_pred = prediccion.summary_frame(alpha=0.05)  # IC al 95%
 
-plt.figure(figsize=(6, 4))
-plt.scatter(wage['age'], wage['wage'], alpha=0.2, s=12, color='gray')
-plt.plot(age_grid, resumen_pred['mean'], color='darkblue', lw=2,
-         label='Ajuste polinomial grado 4')
-plt.fill_between(age_grid,
-                  resumen_pred['mean_ci_lower'],
-                  resumen_pred['mean_ci_upper'],
-                  color='darkblue', alpha=0.2, label='IC 95% puntual')
+# IC al 95%
+resumen_pred = prediccion.summary_frame(alpha=0.05) 
+
+resumen_pred.head()
+```
+
+Es importante utilizar
+
+```python
+design_g4.transform(datos_pred)
+```
+
+y **no volver a ajustar la transformación**.
+
+La base polinomial fue construida utilizando los datos originales y
+debemos utilizar exactamente esa misma transformación para predecir
+sobre nuevos valores de `age`.
+
+## Curva e intervalo de confianza
+
+Para cada edad $x_0$, el modelo produce una estimación
+
+$$
+\hat f(x_0)
+=
+\widehat{E[Y\mid X=x_0]}.
+$$
+
+Además, podemos cuantificar la incertidumbre asociada a esta estimación.
+
+Graficaremos un intervalo de confianza puntual del 95%.
+
+
+```{python}
+#| label: fig-banda-confianza
+#| fig-cap: "Curva polinomial de grado 4 e intervalo de confianza puntual del 95%."
+
+plt.figure(figsize=(7, 5))
+
+plt.scatter(
+    wage['age'],
+    wage['wage'],
+    alpha=0.2,
+    s=12
+)
+
+plt.plot(
+    age_grid,
+    resumen_pred['mean'],
+    lw=2,
+    label='Ajuste polinomial grado 4'
+)
+
+plt.fill_between(
+    age_grid,
+    resumen_pred['mean_ci_lower'],
+    resumen_pred['mean_ci_upper'],
+    alpha=0.2,
+    label='IC 95% para la media'
+)
+
 plt.xlabel('Edad')
 plt.ylabel('Salario')
+plt.title('Regresión polinomial de grado 4')
+
 plt.legend()
 plt.tight_layout()
 plt.show()
 ```
 
-## Selección del grado del polinomio
+La curva representa
 
-### Enfoque clásico: prueba F de modelos anidados
+$$
+\widehat{E[\text{wage}\mid\text{age}=x]}.
+$$
 
-Como los modelos de grado $1, 2, 3, \dots$ son anidados (uno es un caso particular del siguiente), podemos comparar cada par de modelos consecutivos con una prueba $F$:
+La banda responde aproximadamente a la pregunta:
 
-$$H_0: \beta_d = 0 \ \text{(el modelo de grado } d-1 \text{ es suficiente)} \qquad \text{vs.} \qquad H_1: \beta_d \neq 0.$$
+> **¿En qué rango estimamos que se encuentra el salario promedio de los trabajadores de edad $x$?**
+
+Observen también el ancho de la banda.
+
+- ¿Es igual para todas las edades?
+- ¿Qué ocurre cerca de los extremos del rango?
+- ¿En qué regiones tenemos mayor cantidad de información?
+
+
+::: {.callout-tip collapse="true"}
+## Solución
+
+La banda de confianza no tiene el mismo ancho para todas las edades.
+
+En general, es más estrecha en regiones donde tenemos una mayor
+concentración de observaciones y se ensancha hacia los extremos del rango de `age`.
+
+La razón es que tenemos menos información para estimar la relación en esas regiones. En consecuencia, aumenta la incertidumbre asociada a
+
+$$
+\hat f(x).
+$$
+
+Además, los modelos polinomiales pueden ser particularmente inestables cerca de los extremos del rango observado.
+:::
+
+
+# Intervalo de confianza vs. intervalo de predicción
+
+Existe una distinción importante entre estimar el **salario promedio** y
+predecir el salario de **una persona individual**.
+
+Para una edad $x_0$ podemos formular dos preguntas:
+
+### Intervalo de confianza
+
+> **¿Dónde se encuentra el salario promedio de los trabajadores de edad $x_0$?**
+
+Queremos estimar
+
+$$
+E[Y\mid X=x_0].
+$$
+
+### Intervalo de predicción
+
+> **¿Qué salario podría tener un nuevo trabajador de edad $x_0$?**
+
+Ahora queremos predecir una nueva observación
+
+$$
+Y_{\text{nuevo}}\mid X=x_0.
+$$
+
+El segundo intervalo debe incorporar no solamente la incertidumbre de $\hat f(x_0)$, sino también la variabilidad individual representada por el término de error $\varepsilon$.
+
+Por esta razón, el **intervalo de predicción es más ancho**.
+
+
+## Comparación gráfica
+
+`statsmodels` proporciona ambos intervalos en `summary_frame()`:
+
+- `mean_ci_lower`, `mean_ci_upper`: intervalo para la media.
+- `obs_ci_lower`, `obs_ci_upper`: intervalo para una nueva observación.
+
+```{python}
+#| label: fig-ic-ip
+#| fig-cap: "Intervalo de confianza para la media e intervalo de predicción para una nueva observación."
+
+plt.figure(figsize=(7, 5))
+
+plt.scatter(
+    wage['age'],
+    wage['wage'],
+    alpha=0.2,
+    s=12
+)
+
+# Intervalo de predicción
+plt.fill_between(
+    age_grid,
+    resumen_pred['obs_ci_lower'],
+    resumen_pred['obs_ci_upper'],
+    alpha=0.12,
+    label='Intervalo de predicción 95%'
+)
+
+# Intervalo para la media
+plt.fill_between(
+    age_grid,
+    resumen_pred['mean_ci_lower'],
+    resumen_pred['mean_ci_upper'],
+    alpha=0.30,
+    label='IC 95% para la media'
+)
+
+# Curva
+plt.plot(
+    age_grid,
+    resumen_pred['mean'],
+    lw=2,
+    label='Media estimada'
+)
+
+plt.xlabel('Edad')
+plt.ylabel('Salario')
+plt.title('Incertidumbre en las predicciones')
+
+plt.legend()
+plt.tight_layout()
+plt.show()
+```
+
+Observen la diferencia entre ambas bandas.
+
+Aunque podemos estimar razonablemente bien la **tendencia promedio** del salario con respecto a la edad, existe una variabilidad considerable entre los salarios de personas de una misma edad.
+
+Por ello, conocer la edad puede ser útil para describir la tendencia media, pero no necesariamente permite predecir con gran precisión el salario de una persona particular.
+
+# ¿Qué cambia al aumentar el grado?
+
+Hasta ahora elegimos $d=4$. Sin embargo, esta elección fue arbitraria.
+
+Comparemos modelos de grados
+
+$$
+d=1,2,3,4.
+$$
+
+Al aumentar $d$ aumenta la **flexibilidad** del modelo.
+
+```{python}
+#| label: fig-comparacion-grados
+#| fig-cap: "Comparación de regresiones polinomiales de grados 1, 2, 3 y 4."
+
+plt.figure(figsize=(7, 5))
+
+plt.scatter(
+    wage['age'],
+    wage['wage'],
+    alpha=0.25,
+    s=12,
+    label='Datos'
+)
+
+for d in range(1, 5):
+
+    design_d = MS([poly('age', degree=d)])
+    X_d = design_d.fit_transform(wage)
+
+    modelo_d = sm.OLS(
+        wage['wage'],
+        X_d
+    ).fit()
+
+    X_grid_d = design_d.transform(datos_pred)
+
+    pred_d = modelo_d.predict(X_grid_d)
+
+    plt.plot(
+        age_grid,
+        pred_d,
+        lw=2,
+        label=f'Grado {d}'
+    )
+
+plt.xlabel('Edad')
+plt.ylabel('Salario')
+plt.title('Regresión polinomial: diferentes grados')
+
+plt.legend()
+plt.tight_layout()
+plt.show()
+```
+
+Observen las cuatro curvas y discutan:
+
+1. ¿Qué característica de los datos no puede capturar el modelo de
+   grado 1?
+2. ¿Qué cambia al pasar de grado 1 a grado 2?
+3. ¿Las diferencias entre grados 3 y 4 son igual de evidentes?
+4. ¿Sería conveniente continuar aumentando el grado indefinidamente?
+
+::: {.callout-tip collapse="true"}
+## Solución
+
+El modelo de grado 1 únicamente puede representar una recta y, por tanto, no1 puede capturar adecuadamente el cambio de tendencia que observamos en los datos.
+
+Al pasar de grado 1 a grado 2 aparece curvatura, lo que permite representar un aumento del salario seguido de una estabilización o disminución.
+
+Los grados 3 y 4 permiten introducir formas todavía más flexibles. Sin embargo, visualmente las mejoras son menos evidentes que al pasar de una recta a un modelo cuadrático.
+
+No sería conveniente aumentar el grado indefinidamente. Cada término adicional aumenta la flexibilidad del modelo, pero también puede aumentar su varianza y favorecer el **sobreajuste**.
+
+Por ello necesitamos algún criterio para decidir si la flexibilidad adicional está justificada.
+:::
+
+Un grado demasiado bajo puede producir **subajuste**, mientras que un grado innecesariamente alto puede aumentar la variabilidad y producir comportamientos poco estables.
+
+Necesitamos, por tanto, algún criterio para seleccionar $d$.
+
+
+# Selección del grado del polinomio
+
+Estudiaremos dos perspectivas diferentes:
+
+1. un enfoque **inferencial**, comparando modelos anidados;
+2. un enfoque **predictivo**, mediante validación cruzada.
+
+
+## Enfoque clásico: comparación de modelos anidados
+
+Los modelos polinomiales tienen una estructura natural de anidamiento.
+
+Por ejemplo,
+
+$$
+\begin{aligned}
+d=1 &: \quad \beta_0+\beta_1x,\\
+d=2 &: \quad \beta_0+\beta_1x+\beta_2x^2,\\
+d=3 &: \quad \beta_0+\beta_1x+\beta_2x^2+\beta_3x^3.
+\end{aligned}
+$$
+
+El modelo de grado $d-1$ está contenido dentro del modelo de grado $d$.
+
+Por ello podemos preguntar si agregar el siguiente grado produce una mejora estadísticamente detectable.
+
+Al comparar grados $d-1$ y $d$, planteamos
+
+$$
+H_0:
+\text{el modelo de grado }d-1\text{ es suficiente}
+$$
+
+contra
+
+$$
+H_1:
+\text{el término adicional mejora el ajuste}.
+$$
+
+Ajustemos modelos de grados 1 a 5.
 
 ```{python}
 #| label: anova-anidada
 
 modelos = {}
+
 for d in range(1, 6):
+
     design_d = MS([poly('age', degree=d)])
     X_d = design_d.fit_transform(wage)
-    modelos[d] = sm.OLS(wage['wage'], X_d).fit()
 
-tabla_anova = sm.stats.anova_lm(modelos[1], modelos[2], modelos[3],
-                                 modelos[4], modelos[5])
+    modelos[d] = sm.OLS(
+        wage['wage'],
+        X_d
+    ).fit()
+
+tabla_anova = sm.stats.anova_lm(
+    modelos[1],
+    modelos[2],
+    modelos[3],
+    modelos[4],
+    modelos[5]
+)
+
 tabla_anova
 ```
+
+Cada fila compara un modelo con el inmediatamente anterior.
+
+Por ejemplo:
+
+- grado 1 vs. grado 2 pregunta si necesitamos incorporar curvatura
+  cuadrática;
+- grado 2 vs. grado 3 pregunta si agregar mayor flexibilidad produce una mejora detectable;
+- y así sucesivamente.
+
+Analicen la tabla y respondan:
+
+1. ¿Encuentran evidencia de que una recta sea insuficiente?
+2. ¿Hasta qué grado encuentran evidencia de una mejora en el ajuste?
+3. ¿A partir de qué grado el aumento de complejidad deja de producir una    mejora estadísticamente significativa?
+4. ¿Qué grado elegirían utilizando únicamente este criterio?
+
+
+::: {.callout-tip collapse="true"}
+## Solución
+
+La primera comparación permite evaluar si pasar de un modelo lineal a uno cuadrático mejora significativamente el ajuste.
+
+Si el valor $p$ correspondiente a esta comparación es pequeño, encontramos evidencia de que el modelo lineal es insuficiente.
+
+Después debemos continuar leyendo las comparaciones de manera secuencial:
+
+$$
+d=1\rightarrow2,\qquad
+d=2\rightarrow3,\qquad
+d=3\rightarrow4,\qquad\ldots
+$$
+
+Mientras el valor $p$ sea suficientemente pequeño, encontramos evidencia de que agregar flexibilidad mejora el ajuste.
+
+Cuando agregar el siguiente término deja de producir una mejora
+estadísticamente significativa, no encontramos evidencia suficiente para justificar ese aumento de complejidad.
+
+Por tanto, el grado seleccionado corresponde al modelo anterior a la primera ampliación que deja de aportar una mejora significativa.
+:::
+
+
+::: callout-note
+La comparación es válida porque los modelos utilizan las mismas
+observaciones y están anidados.
+
+La pregunta central no es cuál modelo tiene el valor $p$ más pequeño, sino **hasta qué punto agregar flexibilidad sigue aportando evidencia de una mejora en el ajuste**.
+:::
+
 
 **Regla de decisión:** se recorre la tabla de arriba hacia abajo y se elige el primer grado $d$ tal que el valor $p$ de agregar el término $d+1$ ya **no** sea significativo (por ejemplo, mayor a 0.05).
 
@@ -138,7 +840,30 @@ tabla_anova
 La prueba $F$ anidada es válida aquí porque los modelos comparados usan exactamente los mismos datos y difieren solo en el grado del polinomio. Si el modelo incluyera otros predictores (por ejemplo, `education`), la comparación por ANOVA seguiría siendo válida y es preferible a mirar los valores $t$ individuales de los términos de `poly`, cuya interpretación aislada no es directa por tratarse de una base ortogonal.
 :::
 
-### Enfoque moderno: validación cruzada de 10 particiones
+
+# Enfoque predictivo: validación cruzada
+
+La comparación anterior plantea una pregunta inferencial.
+
+Ahora plantearemos una pregunta diferente:
+
+> **¿Qué grado produce mejores predicciones para observaciones que el modelo no utilizó durante el ajuste?**
+
+Para responder utilizaremos **validación cruzada de 10 particiones**.
+
+Para cada grado $d$:
+
+1. dividiremos los datos en 10 particiones;
+2. utilizaremos 9 particiones para ajustar el modelo;
+3. evaluaremos su error de predicción en la partición restante;
+4. repetiremos el procedimiento hasta utilizar cada partición como
+   conjunto de validación;
+5. calcularemos el error cuadrático medio promedio.
+
+El grado con menor error de validación cruzada será nuestro candidato desde una perspectiva predictiva.
+
+
+## Implementación
 
 ```{python}
 #| label: seleccion-cv
@@ -152,110 +877,859 @@ from sklearn.metrics import mean_squared_error
 X = wage[['age']].values
 y_arr = wage['wage'].values
 
-kf = KFold(n_splits=10, shuffle=True, random_state=42)
+kf = KFold(
+    n_splits=10,
+    shuffle=True,
+    random_state=42
+)
+
 grados = range(1, 11)
+
 ecm_promedio = []
 
 for d in grados:
-    errores_fold = []
-    # OJO: usamos 'transformador_poly' y NO 'poly', para no sobrescribir
-    # la funcion 'poly' que importamos de ISLP.models mas arriba.
-    transformador_poly = PolynomialFeatures(degree=d, include_bias=False)
-    for idx_train, idx_test in kf.split(X):
-        X_train_poly = transformador_poly.fit_transform(X[idx_train])
-        X_test_poly = transformador_poly.transform(X[idx_test])
-        modelo_cv = LinearRegression().fit(X_train_poly, y_arr[idx_train])
-        pred = modelo_cv.predict(X_test_poly)
-        errores_fold.append(mean_squared_error(y_arr[idx_test], pred))
-    ecm_promedio.append(np.mean(errores_fold))
 
-d_optimo = list(grados)[int(np.argmin(ecm_promedio))]
-print(f'Grado óptimo según validación cruzada: {d_optimo}')
+    errores_fold = []
+
+    transformador_poly = PolynomialFeatures(
+        degree=d,
+        include_bias=False
+    )
+
+    for idx_train, idx_test in kf.split(X):
+
+        X_train_poly = transformador_poly.fit_transform(
+            X[idx_train]
+        )
+
+        X_test_poly = transformador_poly.transform(
+            X[idx_test]
+        )
+
+        modelo_cv = LinearRegression().fit(
+            X_train_poly,
+            y_arr[idx_train]
+        )
+
+        pred = modelo_cv.predict(X_test_poly)
+
+        errores_fold.append(
+            mean_squared_error(
+                y_arr[idx_test],
+                pred
+            )
+        )
+
+    ecm_promedio.append(
+        np.mean(errores_fold)
+    )
+
+d_optimo = list(grados)[
+    int(np.argmin(ecm_promedio))
+]
+
+print(
+    f'Grado óptimo según validación cruzada: {d_optimo}'
+)
 ```
+
+::: callout-note
+En esta sección `PolynomialFeatures` genera las potencias ordinarias
+
+$$
+x,x^2,\ldots,x^d,
+$$
+
+mientras que anteriormente utilizamos una base de polinomios
+ortogonales. 
+
+En mínimos cuadrados ordinarios, ambas bases generan el mismo espacio de polinomios de grado menor o igual que $d$ y, salvo diferencias numéricas, producen las mismas predicciones.
+
+Aquí utilizamos `PolynomialFeatures` porque se integra de manera sencilla con el flujo de validación cruzada de `scikit-learn`.
+:::
+
+## Error de validación cruzada
 
 ```{python}
 #| label: fig-seleccion-cv
-#| fig-cap: "Error cuadrático medio promedio (10-fold CV) para cada grado del polinomio."
+#| fig-cap: "Error cuadrático medio promedio mediante validación cruzada de 10 particiones."
 
-plt.figure(figsize=(6, 4))
-plt.plot(list(grados), ecm_promedio, marker='o')
-plt.axvline(d_optimo, color='red', linestyle='--',
-            label=f'Grado óptimo = {d_optimo}')
-plt.xlabel('Grado del polinomio (d)')
-plt.ylabel('ECM promedio (validación cruzada, 10 folds)')
-plt.title('Selección del grado por validación cruzada')
+plt.figure(figsize=(7, 5))
+
+plt.plot(
+    list(grados),
+    ecm_promedio,
+    marker='o'
+)
+
+plt.axvline(
+    d_optimo,
+    linestyle='--',
+    label=f'Grado seleccionado = {d_optimo}'
+)
+
+plt.xlabel('Grado del polinomio')
+plt.ylabel('ECM promedio')
+plt.title('Selección del grado mediante validación cruzada')
+
 plt.legend()
 plt.tight_layout()
 plt.show()
 ```
 
-::: callout-warning
-## Consejo práctico: cuidado con la reutilización de nombres de variables
+Observen la gráfica.
 
-En el bloque anterior, la variable del transformador polinomial se llama deliberadamente `transformador_poly` y **no** `poly`. Esto es intencional: como `poly` ya fue importado arriba desde `ISLP.models` y lo necesitaremos de nuevo más adelante (en la regresión logística), si aquí lo sobrescribiéramos con un objeto `PolynomialFeatures` de `scikit-learn`, cualquier código posterior que intente usar `poly(...)` como función fallaría con un error del tipo:
+1. ¿En qué grado se obtiene el menor error?
+2. ¿La diferencia entre el mejor grado y los grados cercanos es grande?
+3. ¿Coincide este resultado con la comparación de modelos anidados?
+4. ¿Elegirían necesariamente el modelo más complejo si su error fuera apenas menor?
 
-```         
-TypeError: 'PolynomialFeatures' object is not callable
+::: {.callout-tip collapse="true"}
+## Solución
+
+El criterio de validación cruzada selecciona el grado que minimiza el error cuadrático medio promedio:
+
+$$
+d_{\mathrm{CV}}
+=
+\arg\min_d \operatorname{ECM}_{\mathrm{CV}}(d).
+$$
+
+El valor concreto aparece en la salida de
+
+```python
+d_optimo
 ```
+
+y corresponde al mínimo de la gráfica.
+
+Sin embargo, también conviene observar la **magnitud de las diferencias** entre los errores. Si varios grados presentan errores muy similares, una pequeña diferencia en el ECM no constituye necesariamente una razón fuerte para elegir el modelo más complejo.
+
+El resultado tampoco tiene que coincidir exactamente con el obtenido mediante ANOVA. Los dos procedimientos responden a preguntas diferentes: ANOVA evalúa evidencia inferencial al comparar modelos anidados, mientras que la validación cruzada evalúa desempeño predictivo fuera de muestra.
 :::
 
+
+## Dos preguntas diferentes
+
+Los dos procedimientos utilizados no responden exactamente a la misma pregunta.
+
+La comparación mediante ANOVA es un procedimiento **inferencial**:
+pregunta si agregar complejidad produce una mejora estadísticamente
+detectable bajo los supuestos del modelo.
+
+La validación cruzada es un procedimiento **predictivo**:
+evalúa directamente qué tan bien generaliza cada modelo a observaciones que no fueron utilizadas para ajustarlo.
+
+Por ello, ambos procedimientos pueden sugerir grados diferentes sin que uno de los dos sea necesariamente incorrecto.
+
+
+::: callout-warning
+## Cuidado con los nombres de las variables
+
+En el bloque anterior utilizamos deliberadamente
+
+```python
+transformador_poly
+```
+
+y no
+
+```python
+poly
+```
+
+para almacenar el objeto `PolynomialFeatures`.
+
+La razón es que `poly` ya fue importada desde `ISLP.models`.
+
+Si escribiéramos, por ejemplo,
+
+```python
+poly = PolynomialFeatures(degree=4)
+```
+
+habríamos reemplazado el nombre de la función original. Posteriormente, una instrucción como
+
+```python
+poly('age', degree=4)
+```
+
+intentaría llamar al objeto `PolynomialFeatures` como si fuera la
+función de `ISLP`, produciendo un error.
+:::
+
+
+
+
+::: callout-warning
 En la práctica, ambos enfoques (ANOVA y validación cruzada) suelen sugerir un grado bajo (2, 3 o 4). Coexisten en la literatura porque ANOVA da una justificación inferencial clásica basada en la teoría de mínimos cuadrados, mientras que la validación cruzada es más robusta cuando no se cumplen exactamente los supuestos de normalidad y homocedasticidad de los errores.
+:::
 
-## Extensión: regresión logística polinomial
 
-Ahora convertimos el problema en uno de **clasificación binaria**: ¿el salario de una persona supera los 250 mil dólares?
+# Regresión logística polinomial
+
+Hasta ahora hemos trabajado con `wage` como una variable respuesta
+cuantitativa. Consideremos ahora una pregunta diferente:
+
+> **¿Cómo cambia con la edad la probabilidad de que una persona tenga un salario superior a 250 mil dólares?**
+
+Definimos una nueva variable respuesta binaria:
+
+$$
+Y=
+\begin{cases}
+1, & \text{si } \texttt{wage}>250,\\
+0, & \text{si } \texttt{wage}\leq 250.
+\end{cases}
+$$
+
+Por tanto, ahora queremos modelar la probabilidad
+
+$$
+p(x)
+=
+P(Y=1\mid X=x)
+=
+P(\texttt{wage}>250\mid \texttt{age}=x).
+$$
+
+## Recordatorio: regresión logística
+
+En una regresión logística simple modelamos el logaritmo de los *odds* mediante una relación lineal:
+
+$$
+\log\left(
+\frac{p(x)}{1-p(x)}
+\right)
+=
+\beta_0+\beta_1x.
+$$
+
+La cantidad
+
+$$
+\frac{p(x)}{1-p(x)}
+$$
+
+se conoce como los *odds*, mientras que
+
+$$
+\log\left(
+\frac{p(x)}{1-p(x)}
+\right)
+$$
+
+es el *logit* o log-*odds*.
+
+En este modelo se supone que el log-*odds* cambia linealmente con respecto a $x$.
+
+Sin embargo, al igual que en regresión lineal, esta suposición puede ser demasiado restrictiva.
+
+Podemos introducir términos polinomiales y considerar
+
+$$
+\log\left(
+\frac{p(x)}{1-p(x)}
+\right)
+=
+\beta_0+\beta_1x+\beta_2x^2+\cdots+\beta_dx^d.
+$$
+
+Esta es una **regresión logística polinomial**.
+
+La idea es exactamente la misma que utilizamos antes:
+
+$$
+X
+\longmapsto
+(X,X^2,\ldots,X^d).
+$$
+
+Lo que cambia ahora es el tipo de variable respuesta y, por tanto, el modelo utilizado para relacionar los predictores con la respuesta.
+
+
+## Construcción de la variable respuesta
+
+Construimos primero la variable binaria `salario_alto`.
 
 ```{python}
-#| label: logit-poly
+#| label: respuesta-binaria
 
-wage['salario_alto'] = (wage['wage'] > 250).astype(int)
+wage['salario_alto'] = (
+    wage['wage'] > 250
+).astype(int)
 
-design_logit = MS([poly('age', degree=4)])
-X_logit = design_logit.fit_transform(wage)
+wage['salario_alto'].value_counts()
+```
+
+Observen las frecuencias obtenidas.
+
+- ¿Cuántas observaciones tienen un salario superior a 250?
+- ¿Es un evento frecuente?
+- ¿Las clases están balanceadas?
+
+::: {.callout-tip collapse="true"}
+## Solución
+
+Las observaciones con `salario_alto = 1` representan una proporción pequeña del conjunto de datos. Por tanto, tener un salario superior a 250 es un evento poco frecuente y las dos clases están desbalanceadas.
+
+Esto explica por qué las probabilidades estimadas que veremos en la gráfica son considerablemente menores que $0.5$.
+:::
+
+Esta exploración es importante porque la proporción de observaciones con $Y=1$ afecta la escala de las probabilidades que veremos posteriormente.
+
+
+## ¿Por qué usamos `GLM` con familia binomial?
+
+En la regresión polinomial anterior utilizamos mínimos cuadrados ordinarios mediante `sm.OLS()` porque la respuesta `wage` era cuantitativa.
+
+Ahora la variable respuesta toma únicamente los valores
+
+$$
+Y\in\{0,1\}.
+$$
+
+Por esta razón utilizaremos un **modelo lineal generalizado**, o GLM por sus siglas en inglés.
+
+En `statsmodels` escribimos:
+
+```python
+sm.GLM(
+    y,
+    X,
+    family=sm.families.Binomial()
+)
+```
+
+La opción
+
+```python
+family=sm.families.Binomial()
+```
+
+indica que la variable respuesta sigue una distribución binomial.
+
+Para una observación individual, esto equivale al caso Bernoulli:
+
+$$
+Y_i\sim\operatorname{Bernoulli}(p_i),
+$$
+
+donde
+
+$$
+P(Y_i=1)=p_i
+$$
+
+y
+
+$$
+P(Y_i=0)=1-p_i.
+$$
+
+Además, `statsmodels` utiliza por defecto la función de enlace **logit** para la familia binomial. Por tanto, el modelo que se ajusta tiene la forma
+
+$$
+\log\left(
+\frac{p_i}{1-p_i}
+\right)
+=
+\eta_i,
+$$
+
+donde $\eta_i$ es el predictor lineal.
+
+En nuestro caso, como utilizaremos un polinomio de grado 4 en `age`,
+
+$$
+\eta_i
+=
+\beta_0
++\beta_1P_1(\texttt{age}_i)
++\beta_2P_2(\texttt{age}_i)
++\beta_3P_3(\texttt{age}_i)
++\beta_4P_4(\texttt{age}_i),
+$$
+
+donde $P_1,\ldots,P_4$ son los polinomios de la base ortogonal construida por `ISLP.models.poly`.
+
+::: callout-important
+La opción
+
+```python
+family=sm.families.Binomial()
+```
+
+no se utiliza porque el modelo sea polinomial.
+
+Se utiliza porque la **variable respuesta es binaria**.
+
+La parte polinomial viene de
+
+```python
+poly('age', degree=4)
+```
+
+mientras que la familia binomial determina cómo se modela la variable respuesta.
+:::
+
+
+## Construcción de la base polinomial
+
+Utilizaremos una base de polinomios ortogonales de grado 4, igual que en el ejemplo anterior de regresión polinomial.
+
+```{python}
+#| label: base-logit
+
+grado = 4
+
+design_logit = MS([
+    poly('age', degree=grado)
+])
+
+design_logit = design_logit.fit(wage)
+
+X_logit = design_logit.transform(wage)
+
 y_logit = wage['salario_alto']
+```
 
-modelo_logit = sm.GLM(y_logit, X_logit, family=sm.families.Binomial()).fit()
+La matriz `X_logit` contiene el intercepto y las funciones base polinomiales asociadas a `age`.
+
+Aunque el modelo es no lineal respecto a `age`, sigue siendo lineal respecto a los coeficientes del predictor lineal.
+
+
+## Ajuste de la regresión logística polinomial
+
+Ajustamos ahora el modelo.
+
+```{python}
+#| label: ajuste-logit
+
+modelo_logit = sm.GLM(
+    y_logit,
+    X_logit,
+    family=sm.families.Binomial()
+).fit()
+
 summarize(modelo_logit)
 ```
 
+Los coeficientes se estiman mediante **máxima verosimilitud**, no mediante mínimos cuadrados.
+
+El modelo ajustado tiene la forma
+
+$$
+\log\left(
+\frac{\hat p(x)}{1-\hat p(x)}
+\right)
+=
+\hat\beta_0
++\hat\beta_1P_1(x)
++\cdots
++\hat\beta_4P_4(x).
+$$
+
+Sin embargo, normalmente nos interesa más interpretar la probabilidad estimada
+
+$$
+\hat p(x)
+=
+P(\texttt{wage}>250\mid\texttt{age}=x)
+$$
+
+que los coeficientes individuales de la base ortogonal.
+
+
+## Predicciones sobre una grilla de edades
+
+Para visualizar cómo cambia la probabilidad con la edad, evaluaremos el modelo en una secuencia fina de edades.
+
+```{python}
+#| label: pred-logit
+
+age_grid = np.linspace(
+    wage['age'].min(),
+    wage['age'].max(),
+    200
+)
+
+datos_pred_logit = pd.DataFrame({
+    'age': age_grid
+})
+
+X_pred_logit = design_logit.transform(
+    datos_pred_logit
+)
+
+pred_logit = modelo_logit.get_prediction(
+    X_pred_logit
+)
+
+resumen_logit = pred_logit.summary_frame(
+    alpha=0.05
+)
+
+resumen_logit.head()
+```
+
+La columna `mean` contiene la probabilidad estimada
+
+$$
+\hat p(x),
+$$
+
+mientras que `mean_ci_lower` y `mean_ci_upper` contienen los límites del intervalo de confianza puntual del 95% para esa probabilidad.
+
+
+## Probabilidad de tener un salario alto
+
+Graficaremos:
+
+- las observaciones con `salario_alto = 0` en la parte inferior;
+- las observaciones con `salario_alto = 1` en la parte superior;
+- la probabilidad estimada $\hat p(x)$;
+- el intervalo de confianza puntual del 95%.
+
 ```{python}
 #| label: fig-logit-poly
-#| fig-cap: "Probabilidad estimada de tener un salario superior a 250 mil dólares, en función de la edad."
+#| fig-cap: "Probabilidad estimada de tener un salario superior a 250 mil dólares en función de la edad."
 
-X_pred_logit = design_logit.transform(datos_pred)
-pred_logit = modelo_logit.get_prediction(X_pred_logit)
-resumen_logit = pred_logit.summary_frame(alpha=0.05)
+prob = resumen_logit['mean']
 
-plt.figure(figsize=(6, 4))
-plt.plot(age_grid, resumen_logit['mean'], color='crimson', lw=2)
-plt.fill_between(age_grid, resumen_logit['mean_ci_lower'],
-                  resumen_logit['mean_ci_upper'],
-                  color='crimson', alpha=0.2)
-# "rug plot": marcas verticales que muestran donde hay observaciones
-# con salario alto (arriba) y salario bajo (abajo)
-plt.scatter(wage['age'], wage['salario_alto'] * 0.01 - 0.02,
-            marker='|', color='black', alpha=0.4)
-plt.ylim(-0.03, 0.3)
+ic_lower = resumen_logit['mean_ci_lower']
+ic_upper = resumen_logit['mean_ci_upper']
+
+
+plt.figure(figsize=(8, 6))
+
+
+# Observaciones con wage <= 250
+mask_bajo = wage['salario_alto'] == 0
+
+plt.plot(
+    wage.loc[mask_bajo, 'age'],
+    np.zeros(mask_bajo.sum()),
+    '|',
+    alpha=0.25,
+    markersize=5
+)
+
+
+# Observaciones con wage > 250
+mask_alto = wage['salario_alto'] == 1
+
+plt.plot(
+    wage.loc[mask_alto, 'age'],
+    np.repeat(0.20, mask_alto.sum()),
+    '|',
+    alpha=0.45,
+    markersize=6
+)
+
+
+# Banda de confianza del 95%
+plt.fill_between(
+    age_grid,
+    ic_lower,
+    ic_upper,
+    alpha=0.20,
+    label='IC 95%'
+)
+
+
+# Probabilidad estimada
+plt.plot(
+    age_grid,
+    prob,
+    linewidth=2,
+    label='Regresión logística polinomial'
+)
+
+
 plt.xlabel('Edad')
-plt.ylabel('P(salario > 250 mil dólares)')
+plt.ylabel('Probabilidad de salario > 250')
+
+plt.title(
+    'Probabilidad de salario alto en función de la edad'
+)
+
+plt.ylim(-0.005, 0.21)
+
+plt.legend()
+
 plt.tight_layout()
+
 plt.show()
 ```
 
-Observen que la probabilidad estimada aumenta con la edad hasta alrededor de los 40-50 años y después disminuye, de forma consistente con lo observado en la regresión polinomial de la variable cuantitativa `wage`.
+La curva representa
 
-## Ejercicios de la práctica
+$$
+\widehat{
+P(\texttt{wage}>250\mid\texttt{age}=x)
+}.
+$$
+
+Observen que las probabilidades estimadas son pequeñas. Esto es consistente con el hecho de que tener un salario superior a 250 es un evento poco frecuente en este conjunto de datos.
+
+Analicen la forma de la curva:
+
+1. ¿La probabilidad cambia de manera lineal o monótona con la edad?
+2. ¿En qué intervalo de edades parece alcanzar sus valores más altos?
+3. ¿Qué ocurre en las edades más grandes?
+4. ¿Una regresión logística con únicamente un término lineal en `age` podría representar adecuadamente esta forma?
+
+
+
+::: {.callout-tip collapse="true"}
+## Solución
+
+La probabilidad estimada no cambia de manera monótona con la edad.
+
+El modelo muestra una región en la que
+
+$$
+P(\texttt{wage}>250\mid\texttt{age}=x)
+$$
+
+aumenta con la edad, alcanza valores relativamente altos en edades
+intermedias y posteriormente disminuye.
+
+Una regresión logística con un único término lineal,
+
+$$
+\log\left(
+\frac{p(x)}{1-p(x)}
+\right)
+=
+\beta_0+\beta_1x,
+$$
+
+sería más restrictiva, ya que obliga al log-*odds* a ser una función lineal de la edad.
+
+La expansión polinomial permite que el log-*odds* cambie de forma no lineal y, por tanto, que la probabilidad estimada tenga una forma más flexible.
+:::
+
+## ¿Qué aporta el término polinomial?
+
+En una regresión logística simple tendríamos
+
+$$
+\log\left(
+\frac{p(x)}{1-p(x)}
+\right)
+=
+\beta_0+\beta_1x.
+$$
+
+Esto obliga al log-*odds* a cambiar linealmente con la edad.
+
+Al utilizar un polinomio,
+
+$$
+\log\left(
+\frac{p(x)}{1-p(x)}
+\right)
+=
+\beta_0+\beta_1x+\cdots+\beta_dx^d,
+$$
+
+permitimos que el log-*odds*, y por tanto la probabilidad $p(x)$, presente una forma mucho más flexible.
 
 ::: callout-note
-## Para entregar
+La regresión logística ya produce una relación no lineal entre el predictor lineal $\eta$ y la probabilidad $p$ debido a la función logística.
 
-1.  **Grado por AIC.** Ajusta, para $d = 1, \dots, 8$, el modelo `MS([poly('age', degree=d)])` y calcula el AIC de cada uno con `modelo.aic`. Grafica el AIC contra $d$ y compara el grado sugerido por este criterio contra el sugerido por ANOVA y por validación cruzada.
-
-2.  **Otro predictor.** Repite el ajuste usando la variable `year` en lugar de `age`. ¿Encuentra evidencia de una relación no lineal igual de fuerte? Justifica con una gráfica.
-
-3.  **Modelo con más predictores.** Ajusta un modelo que incluya `poly('age', degree=3)` **y** la variable categórica `education` (sin transformar), usando `MS([poly('age', degree=3), 'education'])`. Interpreta brevemente el coeficiente asociado a alguno de los niveles de `education`.
-
-4.  **Depuración dirigida.** Explica, en tus propias palabras y sin ejecutar código, qué error de Python ocurriría si en subección de regresión logística se hubiera usado accidentalmente la variable `poly` como nombre de un objeto `PolynomialFeatures` en una celda anterior. ¿En qué parte exacatamente se manifestaría el error?
-
-5.  **Teórico.** Explica por qué la tabla de `summarize(modelo_g4)` no permite responder directamente la pregunta "¿cuál es el efecto de aumentar la edad en un año sobre el salario esperado?", y qué habría que calcular en su lugar para responderla.
+Aquí estamos introduciendo una segunda fuente de flexibilidad: permitimos que el predictor lineal $\eta$ sea una función polinomial de `age`.
 :::
+
+
+Observen que la probabilidad estimada aumenta con la edad hasta alrededor de los 40-50 años y después disminuye, de forma consistente con lo observado en la regresión polinomial de la variable cuantitativa `wage`.
+
+
+# Regresión polinomial vs. regresión logística polinomial
+
+Podemos resumir ambos modelos utilizando la misma idea de expansión del predictor.
+
+## Respuesta cuantitativa
+
+Cuando $Y$ es cuantitativa, utilizamos regresión polinomial:
+
+$$
+E[Y\mid X]
+=
+\beta_0+\beta_1X+\cdots+\beta_dX^d.
+$$
+
+En nuestro ejemplo,
+
+$$
+Y=\texttt{wage}.
+$$
+
+## Respuesta binaria
+
+Cuando $Y$ es binaria, utilizamos regresión logística polinomial:
+
+$$
+\log\left(
+\frac{p(X)}{1-p(X)}
+\right)
+=
+\beta_0+\beta_1X+\cdots+\beta_dX^d.
+$$
+
+En nuestro ejemplo,
+
+$$
+Y=I(\texttt{wage}>250).
+$$
+
+En ambos casos aplicamos la transformación
+
+$$
+X
+\longmapsto
+(X,X^2,\ldots,X^d).
+$$
+
+La diferencia principal está en **qué cantidad modelamos**:
+
+$$
+\text{Regresión polinomial}
+\quad\longrightarrow\quad
+E[Y\mid X],
+$$
+
+mientras que
+
+$$
+\text{Regresión logística polinomial}
+\quad\longrightarrow\quad
+\log\left(
+\frac{p(X)}{1-p(X)}
+\right).
+$$
+
+La idea fundamental es la misma: introducir **flexibilidad mediante transformaciones de los predictores**.
+
+
+# Ejercicios de la práctica
+
+
+## Selección del grado mediante AIC
+
+Ajusten, para
+
+$$
+d=1,\ldots,8,
+$$
+
+el modelo
+
+```python
+MS([poly('age', degree=d)])
+```
+
+y obtengan el AIC de cada modelo mediante
+
+```python
+modelo.aic
+```
+
+Grafiquen el AIC contra $d$.
+
+- ¿Qué grado minimiza el AIC?
+- ¿Coincide con el grado sugerido por la comparación de modelos
+  anidados?
+- ¿Coincide con el obtenido mediante validación cruzada?
+- Expliquen brevemente por qué los tres criterios no tienen que producir necesariamente la misma respuesta.
+
+
+## Otro predictor
+
+Repitan el análisis utilizando `year` en lugar de `age`.
+
+Ajusten modelos polinomiales de distintos grados y construyan una gráfica que permita comparar los ajustes.
+
+**¿Encuentran evidencia de una relación no lineal igual de fuerte que la observada para `age`?**
+
+Justifiquen su respuesta utilizando tanto la gráfica como los resultados de los modelos.
+
+
+## Modelo con más predictores
+
+Ajusten un modelo que incluya
+
+```python
+poly('age', degree=3)
+```
+
+y la variable categórica
+
+```python
+education
+```
+
+sin transformar.
+
+Pueden construir la especificación mediante
+
+```python
+MS([
+    poly('age', degree=3),
+    'education'
+])
+```
+
+Interpreten brevemente el coeficiente asociado a uno de los niveles de `education`.
+
+¿Qué representa ese coeficiente cuando mantenemos constante el efecto de la edad?
+
+
+## Depuración dirigida
+
+Supongan que, durante la sección de validación cruzada, hubieran escrito
+
+```python
+poly = PolynomialFeatures(degree=4)
+```
+
+en lugar de utilizar el nombre `transformador_poly`.
+
+Sin ejecutar código:
+
+1. Expliquen qué problema produciría esta instrucción.
+2. Identifiquen en qué parte de la sección de regresión logística se manifestaría el error.
+3. Expliquen por qué Python produciría ese error.
+
+
+## Interpretación del efecto de la edad
+
+La tabla producida por
+
+```python
+summarize(modelo_g4)
+```
+
+muestra los coeficientes correspondientes a una base de polinomios
+ortogonales.
+
+Expliquen por qué esta tabla no permite responder directamente:
+
+> **¿Cuál es el cambio esperado en el salario cuando la edad aumenta un año?**
+
+¿Qué cantidad relacionada con la curva
+
+$$
+\hat f(x)
+$$
+
+deberían estudiar para responder esta pregunta?
+
+¿Esperarían que ese efecto fuera el mismo para una persona de 25 años que para una de 60 años? Justifiquen.
+
+
+
+
+
