@@ -32,7 +32,7 @@ book:
     - part: "**Modelos no lineales**"
       chapters:
           - parte2.qmd # regresión polinomial
-          - parte3.qmd
+          - parte3.qmd # funciones escalonadas
           - parte4.qmd
           - parte5.qmd
           - parte6.qmd

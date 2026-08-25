@@ -96,8 +96,6 @@ Esta última observación será precisamente el punto de partida de la regresió
 
 ## Objetivos
 
-Al finalizar esta práctica podrán:
-
 - Ajustar modelos de **regresión polinomial** utilizando una base de **polinomios ortogonales**.
 - Construir e interpretar **intervalos de confianza puntuales** para la  curva de regresión estimada.
 - Comparar modelos polinomiales con diferentes grados de flexibilidad.
@@ -147,7 +145,7 @@ Más adelante utilizaremos también `PolynomialFeatures` de `scikit-learn`.
 Tengan cuidado de no utilizar el nombre `poly` para guardar otros objetos, pues `poly` ya identifica a la función que importamos desde `ISLP.models`.
 :::
 
-# Datos `Wage`
+## Datos `Wage`
 
 Trabajaremos con el conjunto de datos `Wage`, que contiene información sobre salarios y algunas características de trabajadores de la región del Atlántico medio de Estados Unidos.
 
@@ -173,7 +171,7 @@ Este modelo supone que el salario esperado cambia a una tasa constante con respe
 Antes de aceptar esta suposición, exploremos los datos.
 
 
-## Carga y exploración inicial
+### Carga y exploración inicial
 
 ```{python}
 #| label: carga-datos
@@ -205,7 +203,7 @@ Esto será importante más adelante: las estimaciones del modelo suelen presenta
 :::
 
 
-## Relación entre edad y salario
+### Relación entre edad y salario
 
 Visualicemos ahora ambas variables.
 
@@ -257,7 +255,7 @@ completamente lineal**. El salario tiende a aumentar con la edad hasta cierto pu
 Esto motiva utilizar un modelo más flexible.
 
 
-# De la regresión lineal a la regresión polinomial
+## De la regresión lineal a la regresión polinomial
 
 En lugar de imponer
 
@@ -293,7 +291,7 @@ Por tanto, podemos seguir utilizando las herramientas de regresión
 lineal y estimar los parámetros mediante mínimos cuadrados ordinarios.
 
 
-## ¿Por qué polinomios ortogonales?
+### ¿Por qué polinomios ortogonales?
 
 Las variables
 
@@ -332,7 +330,7 @@ Por tanto, cambiar de base modifica los coeficientes que aparecen en la salida d
 
 
 
-# Ajuste de un polinomio de grado 4
+## Ajuste de un polinomio de grado 4
 
 Comenzaremos utilizando un polinomio de grado 4:
 
@@ -408,7 +406,7 @@ $$
 :::
 
 
-# Curva ajustada
+## Curva ajustada
 
 Para visualizar el modelo necesitamos evaluarlo en diferentes edades.
 
@@ -454,7 +452,7 @@ La base polinomial fue construida utilizando los datos originales y
 debemos utilizar exactamente esa misma transformación para predecir
 sobre nuevos valores de `age`.
 
-## Curva e intervalo de confianza
+### Curva e intervalo de confianza
 
 Para cada edad $x_0$, el modelo produce una estimación
 
@@ -541,7 +539,7 @@ Además, los modelos polinomiales pueden ser particularmente inestables cerca de
 :::
 
 
-# Intervalo de confianza vs. intervalo de predicción
+## Intervalo de confianza vs. intervalo de predicción
 
 Existe una distinción importante entre estimar el **salario promedio** y
 predecir el salario de **una persona individual**.
@@ -573,7 +571,7 @@ El segundo intervalo debe incorporar no solamente la incertidumbre de $\hat f(x_
 Por esta razón, el **intervalo de predicción es más ancho**.
 
 
-## Comparación gráfica
+### Comparación gráfica
 
 `statsmodels` proporciona ambos intervalos en `summary_frame()`:
 
@@ -634,7 +632,7 @@ Aunque podemos estimar razonablemente bien la **tendencia promedio** del salario
 
 Por ello, conocer la edad puede ser útil para describir la tendencia media, pero no necesariamente permite predecir con gran precisión el salario de una persona particular.
 
-# ¿Qué cambia al aumentar el grado?
+## ¿Qué cambia al aumentar el grado?
 
 Hasta ahora elegimos $d=4$. Sin embargo, esta elección fue arbitraria.
 
@@ -717,7 +715,7 @@ Un grado demasiado bajo puede producir **subajuste**, mientras que un grado inne
 Necesitamos, por tanto, algún criterio para seleccionar $d$.
 
 
-# Selección del grado del polinomio
+## Selección del grado del polinomio
 
 Estudiaremos dos perspectivas diferentes:
 
@@ -725,7 +723,7 @@ Estudiaremos dos perspectivas diferentes:
 2. un enfoque **predictivo**, mediante validación cruzada.
 
 
-## Enfoque clásico: comparación de modelos anidados
+### Enfoque clásico: comparación de modelos anidados
 
 Los modelos polinomiales tienen una estructura natural de anidamiento.
 
@@ -841,7 +839,7 @@ La prueba $F$ anidada es válida aquí porque los modelos comparados usan exacta
 :::
 
 
-# Enfoque predictivo: validación cruzada
+### Enfoque predictivo: validación cruzada
 
 La comparación anterior plantea una pregunta inferencial.
 
@@ -863,7 +861,7 @@ Para cada grado $d$:
 El grado con menor error de validación cruzada será nuestro candidato desde una perspectiva predictiva.
 
 
-## Implementación
+### Implementación
 
 ```{python}
 #| label: seleccion-cv
@@ -948,7 +946,7 @@ En mínimos cuadrados ordinarios, ambas bases generan el mismo espacio de polino
 Aquí utilizamos `PolynomialFeatures` porque se integra de manera sencilla con el flujo de validación cruzada de `scikit-learn`.
 :::
 
-## Error de validación cruzada
+### Error de validación cruzada
 
 ```{python}
 #| label: fig-seleccion-cv
@@ -1009,7 +1007,7 @@ El resultado tampoco tiene que coincidir exactamente con el obtenido mediante AN
 :::
 
 
-## Dos preguntas diferentes
+### Dos preguntas diferentes
 
 Los dos procedimientos utilizados no responden exactamente a la misma pregunta.
 
@@ -1066,7 +1064,7 @@ En la práctica, ambos enfoques (ANOVA y validación cruzada) suelen sugerir un 
 :::
 
 
-# Regresión logística polinomial
+## Regresión logística polinomial
 
 Hasta ahora hemos trabajado con `wage` como una variable respuesta
 cuantitativa. Consideremos ahora una pregunta diferente:
@@ -1093,7 +1091,7 @@ P(Y=1\mid X=x)
 P(\texttt{wage}>250\mid \texttt{age}=x).
 $$
 
-## Recordatorio: regresión logística
+### Recordatorio: regresión logística
 
 En una regresión logística simple modelamos el logaritmo de los *odds* mediante una relación lineal:
 
@@ -1148,7 +1146,7 @@ $$
 Lo que cambia ahora es el tipo de variable respuesta y, por tanto, el modelo utilizado para relacionar los predictores con la respuesta.
 
 
-## Construcción de la variable respuesta
+### Construcción de la variable respuesta
 
 Construimos primero la variable binaria `salario_alto`.
 
@@ -1179,7 +1177,7 @@ Esto explica por qué las probabilidades estimadas que veremos en la gráfica so
 Esta exploración es importante porque la proporción de observaciones con $Y=1$ afecta la escala de las probabilidades que veremos posteriormente.
 
 
-## ¿Por qué usamos `GLM` con familia binomial?
+### ¿Por qué usamos `GLM` con familia binomial?
 
 En la regresión polinomial anterior utilizamos mínimos cuadrados ordinarios mediante `sm.OLS()` porque la respuesta `wage` era cuantitativa.
 
@@ -1274,7 +1272,7 @@ mientras que la familia binomial determina cómo se modela la variable respuesta
 :::
 
 
-## Construcción de la base polinomial
+### Construcción de la base polinomial
 
 Utilizaremos una base de polinomios ortogonales de grado 4, igual que en el ejemplo anterior de regresión polinomial.
 
@@ -1299,7 +1297,7 @@ La matriz `X_logit` contiene el intercepto y las funciones base polinomiales aso
 Aunque el modelo es no lineal respecto a `age`, sigue siendo lineal respecto a los coeficientes del predictor lineal.
 
 
-## Ajuste de la regresión logística polinomial
+### Ajuste de la regresión logística polinomial
 
 Ajustamos ahora el modelo.
 
@@ -1341,7 +1339,7 @@ $$
 que los coeficientes individuales de la base ortogonal.
 
 
-## Predicciones sobre una grilla de edades
+### Predicciones sobre una grilla de edades
 
 Para visualizar cómo cambia la probabilidad con la edad, evaluaremos el modelo en una secuencia fina de edades.
 
@@ -1382,7 +1380,7 @@ $$
 mientras que `mean_ci_lower` y `mean_ci_upper` contienen los límites del intervalo de confianza puntual del 95% para esa probabilidad.
 
 
-## Probabilidad de tener un salario alto
+### Probabilidad de tener un salario alto
 
 Graficaremos:
 
@@ -1511,7 +1509,7 @@ sería más restrictiva, ya que obliga al log-*odds* a ser una función lineal d
 La expansión polinomial permite que el log-*odds* cambie de forma no lineal y, por tanto, que la probabilidad estimada tenga una forma más flexible.
 :::
 
-## ¿Qué aporta el término polinomial?
+### ¿Qué aporta el término polinomial?
 
 En una regresión logística simple tendríamos
 
@@ -1547,11 +1545,11 @@ Aquí estamos introduciendo una segunda fuente de flexibilidad: permitimos que e
 Observen que la probabilidad estimada aumenta con la edad hasta alrededor de los 40-50 años y después disminuye, de forma consistente con lo observado en la regresión polinomial de la variable cuantitativa `wage`.
 
 
-# Regresión polinomial vs. regresión logística polinomial
+## Regresión polinomial vs. regresión logística polinomial
 
 Podemos resumir ambos modelos utilizando la misma idea de expansión del predictor.
 
-## Respuesta cuantitativa
+### Respuesta cuantitativa
 
 Cuando $Y$ es cuantitativa, utilizamos regresión polinomial:
 
@@ -1567,7 +1565,7 @@ $$
 Y=\texttt{wage}.
 $$
 
-## Respuesta binaria
+### Respuesta binaria
 
 Cuando $Y$ es binaria, utilizamos regresión logística polinomial:
 
@@ -1614,10 +1612,10 @@ $$
 La idea fundamental es la misma: introducir **flexibilidad mediante transformaciones de los predictores**.
 
 
-# Ejercicios de la práctica
+## Ejercicios de la práctica
 
 
-## Selección del grado mediante AIC
+### Selección del grado mediante AIC
 
 Ajusten, para
 
@@ -1646,7 +1644,7 @@ Grafiquen el AIC contra $d$.
 - Expliquen brevemente por qué los tres criterios no tienen que producir necesariamente la misma respuesta.
 
 
-## Otro predictor
+### Otro predictor
 
 Repitan el análisis utilizando `year` en lugar de `age`.
 
@@ -1657,7 +1655,7 @@ Ajusten modelos polinomiales de distintos grados y construyan una gráfica que p
 Justifiquen su respuesta utilizando tanto la gráfica como los resultados de los modelos.
 
 
-## Modelo con más predictores
+### Modelo con más predictores
 
 Ajusten un modelo que incluya
 
@@ -1687,7 +1685,7 @@ Interpreten brevemente el coeficiente asociado a uno de los niveles de `educatio
 ¿Qué representa ese coeficiente cuando mantenemos constante el efecto de la edad?
 
 
-## Depuración dirigida
+### Depuración dirigida
 
 Supongan que, durante la sección de validación cruzada, hubieran escrito
 
@@ -1704,7 +1702,7 @@ Sin ejecutar código:
 3. Expliquen por qué Python produciría ese error.
 
 
-## Interpretación del efecto de la edad
+### Interpretación del efecto de la edad
 
 La tabla producida por
 

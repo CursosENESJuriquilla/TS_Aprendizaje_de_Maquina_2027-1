@@ -110,7 +110,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
+
+
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -366,60 +369,58 @@ window.Quarto = {
   <li><a href="#antes-de-comenzar" id="toc-antes-de-comenzar" class="nav-link active" data-scroll-target="#antes-de-comenzar"><span class="header-section-number">2.1</span> Antes de comenzar</a></li>
   <li><a href="#objetivos" id="toc-objetivos" class="nav-link" data-scroll-target="#objetivos"><span class="header-section-number">2.2</span> Objetivos</a></li>
   <li><a href="#librerías" id="toc-librerías" class="nav-link" data-scroll-target="#librerías"><span class="header-section-number">2.3</span> Librerías</a></li>
-  <li><a href="#datos-wage" id="toc-datos-wage" class="nav-link" data-scroll-target="#datos-wage"><span class="header-section-number">3</span> Datos <code>Wage</code></a>
+  <li><a href="#datos-wage" id="toc-datos-wage" class="nav-link" data-scroll-target="#datos-wage"><span class="header-section-number">2.4</span> Datos <code>Wage</code></a>
   <ul>
-  <li><a href="#carga-y-exploración-inicial" id="toc-carga-y-exploración-inicial" class="nav-link" data-scroll-target="#carga-y-exploración-inicial"><span class="header-section-number">3.1</span> Carga y exploración inicial</a></li>
-  <li><a href="#relación-entre-edad-y-salario" id="toc-relación-entre-edad-y-salario" class="nav-link" data-scroll-target="#relación-entre-edad-y-salario"><span class="header-section-number">3.2</span> Relación entre edad y salario</a></li>
+  <li><a href="#carga-y-exploración-inicial" id="toc-carga-y-exploración-inicial" class="nav-link" data-scroll-target="#carga-y-exploración-inicial"><span class="header-section-number">2.4.1</span> Carga y exploración inicial</a></li>
+  <li><a href="#relación-entre-edad-y-salario" id="toc-relación-entre-edad-y-salario" class="nav-link" data-scroll-target="#relación-entre-edad-y-salario"><span class="header-section-number">2.4.2</span> Relación entre edad y salario</a></li>
   </ul></li>
-  <li><a href="#de-la-regresión-lineal-a-la-regresión-polinomial" id="toc-de-la-regresión-lineal-a-la-regresión-polinomial" class="nav-link" data-scroll-target="#de-la-regresión-lineal-a-la-regresión-polinomial"><span class="header-section-number">4</span> De la regresión lineal a la regresión polinomial</a>
+  <li><a href="#de-la-regresión-lineal-a-la-regresión-polinomial" id="toc-de-la-regresión-lineal-a-la-regresión-polinomial" class="nav-link" data-scroll-target="#de-la-regresión-lineal-a-la-regresión-polinomial"><span class="header-section-number">2.5</span> De la regresión lineal a la regresión polinomial</a>
   <ul>
-  <li><a href="#por-qué-polinomios-ortogonales" id="toc-por-qué-polinomios-ortogonales" class="nav-link" data-scroll-target="#por-qué-polinomios-ortogonales"><span class="header-section-number">4.1</span> ¿Por qué polinomios ortogonales?</a></li>
+  <li><a href="#por-qué-polinomios-ortogonales" id="toc-por-qué-polinomios-ortogonales" class="nav-link" data-scroll-target="#por-qué-polinomios-ortogonales"><span class="header-section-number">2.5.1</span> ¿Por qué polinomios ortogonales?</a></li>
   </ul></li>
-  <li><a href="#ajuste-de-un-polinomio-de-grado-4" id="toc-ajuste-de-un-polinomio-de-grado-4" class="nav-link" data-scroll-target="#ajuste-de-un-polinomio-de-grado-4"><span class="header-section-number">5</span> Ajuste de un polinomio de grado 4</a></li>
-  <li><a href="#curva-ajustada" id="toc-curva-ajustada" class="nav-link" data-scroll-target="#curva-ajustada"><span class="header-section-number">6</span> Curva ajustada</a>
+  <li><a href="#ajuste-de-un-polinomio-de-grado-4" id="toc-ajuste-de-un-polinomio-de-grado-4" class="nav-link" data-scroll-target="#ajuste-de-un-polinomio-de-grado-4"><span class="header-section-number">2.6</span> Ajuste de un polinomio de grado 4</a></li>
+  <li><a href="#curva-ajustada" id="toc-curva-ajustada" class="nav-link" data-scroll-target="#curva-ajustada"><span class="header-section-number">2.7</span> Curva ajustada</a>
   <ul>
-  <li><a href="#curva-e-intervalo-de-confianza" id="toc-curva-e-intervalo-de-confianza" class="nav-link" data-scroll-target="#curva-e-intervalo-de-confianza"><span class="header-section-number">6.1</span> Curva e intervalo de confianza</a></li>
+  <li><a href="#curva-e-intervalo-de-confianza" id="toc-curva-e-intervalo-de-confianza" class="nav-link" data-scroll-target="#curva-e-intervalo-de-confianza"><span class="header-section-number">2.7.1</span> Curva e intervalo de confianza</a></li>
   </ul></li>
-  <li><a href="#intervalo-de-confianza-vs.-intervalo-de-predicción" id="toc-intervalo-de-confianza-vs.-intervalo-de-predicción" class="nav-link" data-scroll-target="#intervalo-de-confianza-vs.-intervalo-de-predicción"><span class="header-section-number">7</span> Intervalo de confianza vs.&nbsp;intervalo de predicción</a>
+  <li><a href="#intervalo-de-confianza-vs.-intervalo-de-predicción" id="toc-intervalo-de-confianza-vs.-intervalo-de-predicción" class="nav-link" data-scroll-target="#intervalo-de-confianza-vs.-intervalo-de-predicción"><span class="header-section-number">2.8</span> Intervalo de confianza vs.&nbsp;intervalo de predicción</a>
   <ul>
-  <li><a href="#intervalo-de-confianza" id="toc-intervalo-de-confianza" class="nav-link" data-scroll-target="#intervalo-de-confianza"><span class="header-section-number">7.0.1</span> Intervalo de confianza</a></li>
-  <li><a href="#intervalo-de-predicción" id="toc-intervalo-de-predicción" class="nav-link" data-scroll-target="#intervalo-de-predicción"><span class="header-section-number">7.0.2</span> Intervalo de predicción</a></li>
-  <li><a href="#comparación-gráfica" id="toc-comparación-gráfica" class="nav-link" data-scroll-target="#comparación-gráfica"><span class="header-section-number">7.1</span> Comparación gráfica</a></li>
+  <li><a href="#intervalo-de-confianza" id="toc-intervalo-de-confianza" class="nav-link" data-scroll-target="#intervalo-de-confianza"><span class="header-section-number">2.8.1</span> Intervalo de confianza</a></li>
+  <li><a href="#intervalo-de-predicción" id="toc-intervalo-de-predicción" class="nav-link" data-scroll-target="#intervalo-de-predicción"><span class="header-section-number">2.8.2</span> Intervalo de predicción</a></li>
+  <li><a href="#comparación-gráfica" id="toc-comparación-gráfica" class="nav-link" data-scroll-target="#comparación-gráfica"><span class="header-section-number">2.8.3</span> Comparación gráfica</a></li>
   </ul></li>
-  <li><a href="#qué-cambia-al-aumentar-el-grado" id="toc-qué-cambia-al-aumentar-el-grado" class="nav-link" data-scroll-target="#qué-cambia-al-aumentar-el-grado"><span class="header-section-number">8</span> ¿Qué cambia al aumentar el grado?</a></li>
-  <li><a href="#selección-del-grado-del-polinomio" id="toc-selección-del-grado-del-polinomio" class="nav-link" data-scroll-target="#selección-del-grado-del-polinomio"><span class="header-section-number">9</span> Selección del grado del polinomio</a>
+  <li><a href="#qué-cambia-al-aumentar-el-grado" id="toc-qué-cambia-al-aumentar-el-grado" class="nav-link" data-scroll-target="#qué-cambia-al-aumentar-el-grado"><span class="header-section-number">2.9</span> ¿Qué cambia al aumentar el grado?</a></li>
+  <li><a href="#selección-del-grado-del-polinomio" id="toc-selección-del-grado-del-polinomio" class="nav-link" data-scroll-target="#selección-del-grado-del-polinomio"><span class="header-section-number">2.10</span> Selección del grado del polinomio</a>
   <ul>
-  <li><a href="#enfoque-clásico-comparación-de-modelos-anidados" id="toc-enfoque-clásico-comparación-de-modelos-anidados" class="nav-link" data-scroll-target="#enfoque-clásico-comparación-de-modelos-anidados"><span class="header-section-number">9.1</span> Enfoque clásico: comparación de modelos anidados</a></li>
+  <li><a href="#enfoque-clásico-comparación-de-modelos-anidados" id="toc-enfoque-clásico-comparación-de-modelos-anidados" class="nav-link" data-scroll-target="#enfoque-clásico-comparación-de-modelos-anidados"><span class="header-section-number">2.10.1</span> Enfoque clásico: comparación de modelos anidados</a></li>
+  <li><a href="#enfoque-predictivo-validación-cruzada" id="toc-enfoque-predictivo-validación-cruzada" class="nav-link" data-scroll-target="#enfoque-predictivo-validación-cruzada"><span class="header-section-number">2.10.2</span> Enfoque predictivo: validación cruzada</a></li>
+  <li><a href="#implementación" id="toc-implementación" class="nav-link" data-scroll-target="#implementación"><span class="header-section-number">2.10.3</span> Implementación</a></li>
+  <li><a href="#error-de-validación-cruzada" id="toc-error-de-validación-cruzada" class="nav-link" data-scroll-target="#error-de-validación-cruzada"><span class="header-section-number">2.10.4</span> Error de validación cruzada</a></li>
+  <li><a href="#dos-preguntas-diferentes" id="toc-dos-preguntas-diferentes" class="nav-link" data-scroll-target="#dos-preguntas-diferentes"><span class="header-section-number">2.10.5</span> Dos preguntas diferentes</a></li>
   </ul></li>
-  <li><a href="#enfoque-predictivo-validación-cruzada" id="toc-enfoque-predictivo-validación-cruzada" class="nav-link" data-scroll-target="#enfoque-predictivo-validación-cruzada"><span class="header-section-number">10</span> Enfoque predictivo: validación cruzada</a>
+  <li><a href="#regresión-logística-polinomial" id="toc-regresión-logística-polinomial" class="nav-link" data-scroll-target="#regresión-logística-polinomial"><span class="header-section-number">2.11</span> Regresión logística polinomial</a>
   <ul>
-  <li><a href="#implementación" id="toc-implementación" class="nav-link" data-scroll-target="#implementación"><span class="header-section-number">10.1</span> Implementación</a></li>
-  <li><a href="#error-de-validación-cruzada" id="toc-error-de-validación-cruzada" class="nav-link" data-scroll-target="#error-de-validación-cruzada"><span class="header-section-number">10.2</span> Error de validación cruzada</a></li>
-  <li><a href="#dos-preguntas-diferentes" id="toc-dos-preguntas-diferentes" class="nav-link" data-scroll-target="#dos-preguntas-diferentes"><span class="header-section-number">10.3</span> Dos preguntas diferentes</a></li>
+  <li><a href="#recordatorio-regresión-logística" id="toc-recordatorio-regresión-logística" class="nav-link" data-scroll-target="#recordatorio-regresión-logística"><span class="header-section-number">2.11.1</span> Recordatorio: regresión logística</a></li>
+  <li><a href="#construcción-de-la-variable-respuesta" id="toc-construcción-de-la-variable-respuesta" class="nav-link" data-scroll-target="#construcción-de-la-variable-respuesta"><span class="header-section-number">2.11.2</span> Construcción de la variable respuesta</a></li>
+  <li><a href="#por-qué-usamos-glm-con-familia-binomial" id="toc-por-qué-usamos-glm-con-familia-binomial" class="nav-link" data-scroll-target="#por-qué-usamos-glm-con-familia-binomial"><span class="header-section-number">2.11.3</span> ¿Por qué usamos <code>GLM</code> con familia binomial?</a></li>
+  <li><a href="#construcción-de-la-base-polinomial" id="toc-construcción-de-la-base-polinomial" class="nav-link" data-scroll-target="#construcción-de-la-base-polinomial"><span class="header-section-number">2.11.4</span> Construcción de la base polinomial</a></li>
+  <li><a href="#ajuste-de-la-regresión-logística-polinomial" id="toc-ajuste-de-la-regresión-logística-polinomial" class="nav-link" data-scroll-target="#ajuste-de-la-regresión-logística-polinomial"><span class="header-section-number">2.11.5</span> Ajuste de la regresión logística polinomial</a></li>
+  <li><a href="#predicciones-sobre-una-grilla-de-edades" id="toc-predicciones-sobre-una-grilla-de-edades" class="nav-link" data-scroll-target="#predicciones-sobre-una-grilla-de-edades"><span class="header-section-number">2.11.6</span> Predicciones sobre una grilla de edades</a></li>
+  <li><a href="#probabilidad-de-tener-un-salario-alto" id="toc-probabilidad-de-tener-un-salario-alto" class="nav-link" data-scroll-target="#probabilidad-de-tener-un-salario-alto"><span class="header-section-number">2.11.7</span> Probabilidad de tener un salario alto</a></li>
+  <li><a href="#qué-aporta-el-término-polinomial" id="toc-qué-aporta-el-término-polinomial" class="nav-link" data-scroll-target="#qué-aporta-el-término-polinomial"><span class="header-section-number">2.11.8</span> ¿Qué aporta el término polinomial?</a></li>
   </ul></li>
-  <li><a href="#regresión-logística-polinomial" id="toc-regresión-logística-polinomial" class="nav-link" data-scroll-target="#regresión-logística-polinomial"><span class="header-section-number">11</span> Regresión logística polinomial</a>
+  <li><a href="#regresión-polinomial-vs.-regresión-logística-polinomial" id="toc-regresión-polinomial-vs.-regresión-logística-polinomial" class="nav-link" data-scroll-target="#regresión-polinomial-vs.-regresión-logística-polinomial"><span class="header-section-number">2.12</span> Regresión polinomial vs.&nbsp;regresión logística polinomial</a>
   <ul>
-  <li><a href="#recordatorio-regresión-logística" id="toc-recordatorio-regresión-logística" class="nav-link" data-scroll-target="#recordatorio-regresión-logística"><span class="header-section-number">11.1</span> Recordatorio: regresión logística</a></li>
-  <li><a href="#construcción-de-la-variable-respuesta" id="toc-construcción-de-la-variable-respuesta" class="nav-link" data-scroll-target="#construcción-de-la-variable-respuesta"><span class="header-section-number">11.2</span> Construcción de la variable respuesta</a></li>
-  <li><a href="#por-qué-usamos-glm-con-familia-binomial" id="toc-por-qué-usamos-glm-con-familia-binomial" class="nav-link" data-scroll-target="#por-qué-usamos-glm-con-familia-binomial"><span class="header-section-number">11.3</span> ¿Por qué usamos <code>GLM</code> con familia binomial?</a></li>
-  <li><a href="#construcción-de-la-base-polinomial" id="toc-construcción-de-la-base-polinomial" class="nav-link" data-scroll-target="#construcción-de-la-base-polinomial"><span class="header-section-number">11.4</span> Construcción de la base polinomial</a></li>
-  <li><a href="#ajuste-de-la-regresión-logística-polinomial" id="toc-ajuste-de-la-regresión-logística-polinomial" class="nav-link" data-scroll-target="#ajuste-de-la-regresión-logística-polinomial"><span class="header-section-number">11.5</span> Ajuste de la regresión logística polinomial</a></li>
-  <li><a href="#predicciones-sobre-una-grilla-de-edades" id="toc-predicciones-sobre-una-grilla-de-edades" class="nav-link" data-scroll-target="#predicciones-sobre-una-grilla-de-edades"><span class="header-section-number">11.6</span> Predicciones sobre una grilla de edades</a></li>
-  <li><a href="#probabilidad-de-tener-un-salario-alto" id="toc-probabilidad-de-tener-un-salario-alto" class="nav-link" data-scroll-target="#probabilidad-de-tener-un-salario-alto"><span class="header-section-number">11.7</span> Probabilidad de tener un salario alto</a></li>
-  <li><a href="#qué-aporta-el-término-polinomial" id="toc-qué-aporta-el-término-polinomial" class="nav-link" data-scroll-target="#qué-aporta-el-término-polinomial"><span class="header-section-number">11.8</span> ¿Qué aporta el término polinomial?</a></li>
+  <li><a href="#respuesta-cuantitativa" id="toc-respuesta-cuantitativa" class="nav-link" data-scroll-target="#respuesta-cuantitativa"><span class="header-section-number">2.12.1</span> Respuesta cuantitativa</a></li>
+  <li><a href="#respuesta-binaria" id="toc-respuesta-binaria" class="nav-link" data-scroll-target="#respuesta-binaria"><span class="header-section-number">2.12.2</span> Respuesta binaria</a></li>
   </ul></li>
-  <li><a href="#regresión-polinomial-vs.-regresión-logística-polinomial" id="toc-regresión-polinomial-vs.-regresión-logística-polinomial" class="nav-link" data-scroll-target="#regresión-polinomial-vs.-regresión-logística-polinomial"><span class="header-section-number">12</span> Regresión polinomial vs.&nbsp;regresión logística polinomial</a>
+  <li><a href="#ejercicios-de-la-práctica" id="toc-ejercicios-de-la-práctica" class="nav-link" data-scroll-target="#ejercicios-de-la-práctica"><span class="header-section-number">2.13</span> Ejercicios de la práctica</a>
   <ul>
-  <li><a href="#respuesta-cuantitativa" id="toc-respuesta-cuantitativa" class="nav-link" data-scroll-target="#respuesta-cuantitativa"><span class="header-section-number">12.1</span> Respuesta cuantitativa</a></li>
-  <li><a href="#respuesta-binaria" id="toc-respuesta-binaria" class="nav-link" data-scroll-target="#respuesta-binaria"><span class="header-section-number">12.2</span> Respuesta binaria</a></li>
-  </ul></li>
-  <li><a href="#ejercicios-de-la-práctica" id="toc-ejercicios-de-la-práctica" class="nav-link" data-scroll-target="#ejercicios-de-la-práctica"><span class="header-section-number">13</span> Ejercicios de la práctica</a>
-  <ul>
-  <li><a href="#selección-del-grado-mediante-aic" id="toc-selección-del-grado-mediante-aic" class="nav-link" data-scroll-target="#selección-del-grado-mediante-aic"><span class="header-section-number">13.1</span> Selección del grado mediante AIC</a></li>
-  <li><a href="#otro-predictor" id="toc-otro-predictor" class="nav-link" data-scroll-target="#otro-predictor"><span class="header-section-number">13.2</span> Otro predictor</a></li>
-  <li><a href="#modelo-con-más-predictores" id="toc-modelo-con-más-predictores" class="nav-link" data-scroll-target="#modelo-con-más-predictores"><span class="header-section-number">13.3</span> Modelo con más predictores</a></li>
-  <li><a href="#depuración-dirigida" id="toc-depuración-dirigida" class="nav-link" data-scroll-target="#depuración-dirigida"><span class="header-section-number">13.4</span> Depuración dirigida</a></li>
-  <li><a href="#interpretación-del-efecto-de-la-edad" id="toc-interpretación-del-efecto-de-la-edad" class="nav-link" data-scroll-target="#interpretación-del-efecto-de-la-edad"><span class="header-section-number">13.5</span> Interpretación del efecto de la edad</a></li>
+  <li><a href="#selección-del-grado-mediante-aic" id="toc-selección-del-grado-mediante-aic" class="nav-link" data-scroll-target="#selección-del-grado-mediante-aic"><span class="header-section-number">2.13.1</span> Selección del grado mediante AIC</a></li>
+  <li><a href="#otro-predictor" id="toc-otro-predictor" class="nav-link" data-scroll-target="#otro-predictor"><span class="header-section-number">2.13.2</span> Otro predictor</a></li>
+  <li><a href="#modelo-con-más-predictores" id="toc-modelo-con-más-predictores" class="nav-link" data-scroll-target="#modelo-con-más-predictores"><span class="header-section-number">2.13.3</span> Modelo con más predictores</a></li>
+  <li><a href="#depuración-dirigida" id="toc-depuración-dirigida" class="nav-link" data-scroll-target="#depuración-dirigida"><span class="header-section-number">2.13.4</span> Depuración dirigida</a></li>
+  <li><a href="#interpretación-del-efecto-de-la-edad" id="toc-interpretación-del-efecto-de-la-edad" class="nav-link" data-scroll-target="#interpretación-del-efecto-de-la-edad"><span class="header-section-number">2.13.5</span> Interpretación del efecto de la edad</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -537,7 +538,6 @@ Y
 </section>
 <section id="objetivos" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="objetivos"><span class="header-section-number">2.2</span> Objetivos</h2>
-<p>Al finalizar esta práctica podrán:</p>
 <ul>
 <li>Ajustar modelos de <strong>regresión polinomial</strong> utilizando una base de <strong>polinomios ortogonales</strong>.</li>
 <li>Construir e interpretar <strong>intervalos de confianza puntuales</strong> para la curva de regresión estimada.</li>
@@ -595,8 +595,8 @@ Nota
 </div>
 </div>
 </section>
-<section id="datos-wage" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Datos <code>Wage</code></h1>
+<section id="datos-wage" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="datos-wage"><span class="header-section-number">2.4</span> Datos <code>Wage</code></h2>
 <p>Trabajaremos con el conjunto de datos <code>Wage</code>, que contiene información sobre salarios y algunas características de trabajadores de la región del Atlántico medio de Estados Unidos.</p>
 <p>Nos concentraremos inicialmente en dos variables:</p>
 <ul>
@@ -615,8 +615,8 @@ E[\text{wage}\mid\text{age}]
 \]</span></p>
 <p>Este modelo supone que el salario esperado cambia a una tasa constante con respecto a la edad.</p>
 <p>Antes de aceptar esta suposición, exploremos los datos.</p>
-<section id="carga-y-exploración-inicial" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="carga-y-exploración-inicial"><span class="header-section-number">3.1</span> Carga y exploración inicial</h2>
+<section id="carga-y-exploración-inicial" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="carga-y-exploración-inicial"><span class="header-section-number">2.4.1</span> Carga y exploración inicial</h3>
 <div id="cell-carga-datos" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
@@ -714,8 +714,8 @@ E[\text{wage}\mid\text{age}]
 </div>
 </div>
 </section>
-<section id="relación-entre-edad-y-salario" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="relación-entre-edad-y-salario"><span class="header-section-number">3.2</span> Relación entre edad y salario</h2>
+<section id="relación-entre-edad-y-salario" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="relación-entre-edad-y-salario"><span class="header-section-number">2.4.2</span> Relación entre edad y salario</h3>
 <p>Visualicemos ahora ambas variables.</p>
 <div id="cell-fig-dispersion-inicial" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
@@ -743,7 +743,7 @@ E[\text{wage}\mid\text{age}]
 <img src="parte2_files/figure-html/fig-dispersion-inicial-output-1.png" width="663" height="470" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dispersion-inicial-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figura&nbsp;3.1: Salario en función de la edad.
+Figura&nbsp;2.1: Salario en función de la edad.
 </figcaption>
 </figure>
 </div>
@@ -778,8 +778,8 @@ Figura&nbsp;3.1: Salario en función de la edad.
 <p>Esto motiva utilizar un modelo más flexible.</p>
 </section>
 </section>
-<section id="de-la-regresión-lineal-a-la-regresión-polinomial" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> De la regresión lineal a la regresión polinomial</h1>
+<section id="de-la-regresión-lineal-a-la-regresión-polinomial" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="de-la-regresión-lineal-a-la-regresión-polinomial"><span class="header-section-number">2.5</span> De la regresión lineal a la regresión polinomial</h2>
 <p>En lugar de imponer</p>
 <p><span class="math display">\[
 E[Y\mid X=x]
@@ -802,8 +802,8 @@ E[Y\mid X=x]
 X,\quad X^2,\quad X^3,\quad\ldots,\quad X^d.
 \]</span></p>
 <p>Por tanto, podemos seguir utilizando las herramientas de regresión lineal y estimar los parámetros mediante mínimos cuadrados ordinarios.</p>
-<section id="por-qué-polinomios-ortogonales" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="por-qué-polinomios-ortogonales"><span class="header-section-number">4.1</span> ¿Por qué polinomios ortogonales?</h2>
+<section id="por-qué-polinomios-ortogonales" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="por-qué-polinomios-ortogonales"><span class="header-section-number">2.5.1</span> ¿Por qué polinomios ortogonales?</h3>
 <p>Las variables</p>
 <p><span class="math display">\[
 X,\quad X^2,\quad X^3,\quad\ldots
@@ -838,8 +838,8 @@ Nota
 </div>
 </section>
 </section>
-<section id="ajuste-de-un-polinomio-de-grado-4" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Ajuste de un polinomio de grado 4</h1>
+<section id="ajuste-de-un-polinomio-de-grado-4" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="ajuste-de-un-polinomio-de-grado-4"><span class="header-section-number">2.6</span> Ajuste de un polinomio de grado 4</h2>
 <p>Comenzaremos utilizando un polinomio de grado 4:</p>
 <p><span class="math display">\[
 E[\text{wage}\mid\text{age}=x]
@@ -969,8 +969,8 @@ Tip
 </div>
 </div>
 </section>
-<section id="curva-ajustada" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Curva ajustada</h1>
+<section id="curva-ajustada" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="curva-ajustada"><span class="header-section-number">2.7</span> Curva ajustada</h2>
 <p>Para visualizar el modelo necesitamos evaluarlo en diferentes edades.</p>
 <p>Construiremos una secuencia fina de valores que cubra todo el rango observado de <code>age</code>.</p>
 <div id="cell-prediccion-grid" class="cell" data-execution_count="5">
@@ -1071,8 +1071,8 @@ Tip
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>design_g4.transform(datos_pred)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>y <strong>no volver a ajustar la transformación</strong>.</p>
 <p>La base polinomial fue construida utilizando los datos originales y debemos utilizar exactamente esa misma transformación para predecir sobre nuevos valores de <code>age</code>.</p>
-<section id="curva-e-intervalo-de-confianza" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="curva-e-intervalo-de-confianza"><span class="header-section-number">6.1</span> Curva e intervalo de confianza</h2>
+<section id="curva-e-intervalo-de-confianza" class="level3" data-number="2.7.1">
+<h3 data-number="2.7.1" class="anchored" data-anchor-id="curva-e-intervalo-de-confianza"><span class="header-section-number">2.7.1</span> Curva e intervalo de confianza</h3>
 <p>Para cada edad <span class="math inline">\(x_0\)</span>, el modelo produce una estimación</p>
 <p><span class="math display">\[
 \hat f(x_0)
@@ -1123,7 +1123,7 @@ Tip
 <img src="parte2_files/figure-html/fig-banda-confianza-output-1.png" width="663" height="470" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-banda-confianza-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figura&nbsp;6.1: Curva polinomial de grado 4 e intervalo de confianza puntual del 95%.
+Figura&nbsp;2.2: Curva polinomial de grado 4 e intervalo de confianza puntual del 95%.
 </figcaption>
 </figure>
 </div>
@@ -1167,12 +1167,12 @@ Figura&nbsp;6.1: Curva polinomial de grado 4 e intervalo de confianza puntual de
 </div>
 </section>
 </section>
-<section id="intervalo-de-confianza-vs.-intervalo-de-predicción" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> Intervalo de confianza vs.&nbsp;intervalo de predicción</h1>
+<section id="intervalo-de-confianza-vs.-intervalo-de-predicción" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="intervalo-de-confianza-vs.-intervalo-de-predicción"><span class="header-section-number">2.8</span> Intervalo de confianza vs.&nbsp;intervalo de predicción</h2>
 <p>Existe una distinción importante entre estimar el <strong>salario promedio</strong> y predecir el salario de <strong>una persona individual</strong>.</p>
 <p>Para una edad <span class="math inline">\(x_0\)</span> podemos formular dos preguntas:</p>
-<section id="intervalo-de-confianza" class="level3" data-number="7.0.1">
-<h3 data-number="7.0.1" class="anchored" data-anchor-id="intervalo-de-confianza"><span class="header-section-number">7.0.1</span> Intervalo de confianza</h3>
+<section id="intervalo-de-confianza" class="level3" data-number="2.8.1">
+<h3 data-number="2.8.1" class="anchored" data-anchor-id="intervalo-de-confianza"><span class="header-section-number">2.8.1</span> Intervalo de confianza</h3>
 <blockquote class="blockquote">
 <p><strong>¿Dónde se encuentra el salario promedio de los trabajadores de edad <span class="math inline">\(x_0\)</span>?</strong></p>
 </blockquote>
@@ -1181,8 +1181,8 @@ Figura&nbsp;6.1: Curva polinomial de grado 4 e intervalo de confianza puntual de
 E[Y\mid X=x_0].
 \]</span></p>
 </section>
-<section id="intervalo-de-predicción" class="level3" data-number="7.0.2">
-<h3 data-number="7.0.2" class="anchored" data-anchor-id="intervalo-de-predicción"><span class="header-section-number">7.0.2</span> Intervalo de predicción</h3>
+<section id="intervalo-de-predicción" class="level3" data-number="2.8.2">
+<h3 data-number="2.8.2" class="anchored" data-anchor-id="intervalo-de-predicción"><span class="header-section-number">2.8.2</span> Intervalo de predicción</h3>
 <blockquote class="blockquote">
 <p><strong>¿Qué salario podría tener un nuevo trabajador de edad <span class="math inline">\(x_0\)</span>?</strong></p>
 </blockquote>
@@ -1193,8 +1193,8 @@ Y_{\text{nuevo}}\mid X=x_0.
 <p>El segundo intervalo debe incorporar no solamente la incertidumbre de <span class="math inline">\(\hat f(x_0)\)</span>, sino también la variabilidad individual representada por el término de error <span class="math inline">\(\varepsilon\)</span>.</p>
 <p>Por esta razón, el <strong>intervalo de predicción es más ancho</strong>.</p>
 </section>
-<section id="comparación-gráfica" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="comparación-gráfica"><span class="header-section-number">7.1</span> Comparación gráfica</h2>
+<section id="comparación-gráfica" class="level3" data-number="2.8.3">
+<h3 data-number="2.8.3" class="anchored" data-anchor-id="comparación-gráfica"><span class="header-section-number">2.8.3</span> Comparación gráfica</h3>
 <p><code>statsmodels</code> proporciona ambos intervalos en <code>summary_frame()</code>:</p>
 <ul>
 <li><code>mean_ci_lower</code>, <code>mean_ci_upper</code>: intervalo para la media.</li>
@@ -1253,7 +1253,7 @@ Y_{\text{nuevo}}\mid X=x_0.
 <img src="parte2_files/figure-html/fig-ic-ip-output-1.png" width="663" height="470" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ic-ip-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figura&nbsp;7.1: Intervalo de confianza para la media e intervalo de predicción para una nueva observación.
+Figura&nbsp;2.3: Intervalo de confianza para la media e intervalo de predicción para una nueva observación.
 </figcaption>
 </figure>
 </div>
@@ -1264,8 +1264,8 @@ Figura&nbsp;7.1: Intervalo de confianza para la media e intervalo de predicción
 <p>Por ello, conocer la edad puede ser útil para describir la tendencia media, pero no necesariamente permite predecir con gran precisión el salario de una persona particular.</p>
 </section>
 </section>
-<section id="qué-cambia-al-aumentar-el-grado" class="level1" data-number="8">
-<h1 data-number="8"><span class="header-section-number">8</span> ¿Qué cambia al aumentar el grado?</h1>
+<section id="qué-cambia-al-aumentar-el-grado" class="level2" data-number="2.9">
+<h2 data-number="2.9" class="anchored" data-anchor-id="qué-cambia-al-aumentar-el-grado"><span class="header-section-number">2.9</span> ¿Qué cambia al aumentar el grado?</h2>
 <p>Hasta ahora elegimos <span class="math inline">\(d=4\)</span>. Sin embargo, esta elección fue arbitraria.</p>
 <p>Comparemos modelos de grados</p>
 <p><span class="math display">\[
@@ -1321,7 +1321,7 @@ d=1,2,3,4.
 <img src="parte2_files/figure-html/fig-comparacion-grados-output-1.png" width="663" height="470" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-comparacion-grados-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figura&nbsp;8.1: Comparación de regresiones polinomiales de grados 1, 2, 3 y 4.
+Figura&nbsp;2.4: Comparación de regresiones polinomiales de grados 1, 2, 3 y 4.
 </figcaption>
 </figure>
 </div>
@@ -1357,15 +1357,15 @@ Figura&nbsp;8.1: Comparación de regresiones polinomiales de grados 1, 2, 3 y 4.
 <p>Un grado demasiado bajo puede producir <strong>subajuste</strong>, mientras que un grado innecesariamente alto puede aumentar la variabilidad y producir comportamientos poco estables.</p>
 <p>Necesitamos, por tanto, algún criterio para seleccionar <span class="math inline">\(d\)</span>.</p>
 </section>
-<section id="selección-del-grado-del-polinomio" class="level1" data-number="9">
-<h1 data-number="9"><span class="header-section-number">9</span> Selección del grado del polinomio</h1>
+<section id="selección-del-grado-del-polinomio" class="level2" data-number="2.10">
+<h2 data-number="2.10" class="anchored" data-anchor-id="selección-del-grado-del-polinomio"><span class="header-section-number">2.10</span> Selección del grado del polinomio</h2>
 <p>Estudiaremos dos perspectivas diferentes:</p>
 <ol type="1">
 <li>un enfoque <strong>inferencial</strong>, comparando modelos anidados;</li>
 <li>un enfoque <strong>predictivo</strong>, mediante validación cruzada.</li>
 </ol>
-<section id="enfoque-clásico-comparación-de-modelos-anidados" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="enfoque-clásico-comparación-de-modelos-anidados"><span class="header-section-number">9.1</span> Enfoque clásico: comparación de modelos anidados</h2>
+<section id="enfoque-clásico-comparación-de-modelos-anidados" class="level3" data-number="2.10.1">
+<h3 data-number="2.10.1" class="anchored" data-anchor-id="enfoque-clásico-comparación-de-modelos-anidados"><span class="header-section-number">2.10.1</span> Enfoque clásico: comparación de modelos anidados</h3>
 <p>Los modelos polinomiales tienen una estructura natural de anidamiento.</p>
 <p>Por ejemplo,</p>
 <p><span class="math display">\[
@@ -1550,9 +1550,8 @@ Nota
 </div>
 </div>
 </section>
-</section>
-<section id="enfoque-predictivo-validación-cruzada" class="level1" data-number="10">
-<h1 data-number="10"><span class="header-section-number">10</span> Enfoque predictivo: validación cruzada</h1>
+<section id="enfoque-predictivo-validación-cruzada" class="level3" data-number="2.10.2">
+<h3 data-number="2.10.2" class="anchored" data-anchor-id="enfoque-predictivo-validación-cruzada"><span class="header-section-number">2.10.2</span> Enfoque predictivo: validación cruzada</h3>
 <p>La comparación anterior plantea una pregunta inferencial.</p>
 <p>Ahora plantearemos una pregunta diferente:</p>
 <blockquote class="blockquote">
@@ -1568,8 +1567,9 @@ Nota
 <li>calcularemos el error cuadrático medio promedio.</li>
 </ol>
 <p>El grado con menor error de validación cruzada será nuestro candidato desde una perspectiva predictiva.</p>
-<section id="implementación" class="level2" data-number="10.1">
-<h2 data-number="10.1" class="anchored" data-anchor-id="implementación"><span class="header-section-number">10.1</span> Implementación</h2>
+</section>
+<section id="implementación" class="level3" data-number="2.10.3">
+<h3 data-number="2.10.3" class="anchored" data-anchor-id="implementación"><span class="header-section-number">2.10.3</span> Implementación</h3>
 <div id="seleccion-cv" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
@@ -1660,8 +1660,8 @@ x,x^2,\ldots,x^d,
 </div>
 </div>
 </section>
-<section id="error-de-validación-cruzada" class="level2" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="error-de-validación-cruzada"><span class="header-section-number">10.2</span> Error de validación cruzada</h2>
+<section id="error-de-validación-cruzada" class="level3" data-number="2.10.4">
+<h3 data-number="2.10.4" class="anchored" data-anchor-id="error-de-validación-cruzada"><span class="header-section-number">2.10.4</span> Error de validación cruzada</h3>
 <div id="cell-fig-seleccion-cv" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
@@ -1694,7 +1694,7 @@ x,x^2,\ldots,x^d,
 <img src="parte2_files/figure-html/fig-seleccion-cv-output-1.png" width="664" height="470" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-seleccion-cv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figura&nbsp;10.1: Error cuadrático medio promedio mediante validación cruzada de 10 particiones.
+Figura&nbsp;2.5: Error cuadrático medio promedio mediante validación cruzada de 10 particiones.
 </figcaption>
 </figure>
 </div>
@@ -1734,8 +1734,8 @@ d_{\mathrm{CV}}
 </div>
 </div>
 </section>
-<section id="dos-preguntas-diferentes" class="level2" data-number="10.3">
-<h2 data-number="10.3" class="anchored" data-anchor-id="dos-preguntas-diferentes"><span class="header-section-number">10.3</span> Dos preguntas diferentes</h2>
+<section id="dos-preguntas-diferentes" class="level3" data-number="2.10.5">
+<h3 data-number="2.10.5" class="anchored" data-anchor-id="dos-preguntas-diferentes"><span class="header-section-number">2.10.5</span> Dos preguntas diferentes</h3>
 <p>Los dos procedimientos utilizados no responden exactamente a la misma pregunta.</p>
 <p>La comparación mediante ANOVA es un procedimiento <strong>inferencial</strong>: pregunta si agregar complejidad produce una mejora estadísticamente detectable bajo los supuestos del modelo.</p>
 <p>La validación cruzada es un procedimiento <strong>predictivo</strong>: evalúa directamente qué tan bien generaliza cada modelo a observaciones que no fueron utilizadas para ajustarlo.</p>
@@ -1778,8 +1778,8 @@ Advertencia
 </div>
 </section>
 </section>
-<section id="regresión-logística-polinomial" class="level1" data-number="11">
-<h1 data-number="11"><span class="header-section-number">11</span> Regresión logística polinomial</h1>
+<section id="regresión-logística-polinomial" class="level2" data-number="2.11">
+<h2 data-number="2.11" class="anchored" data-anchor-id="regresión-logística-polinomial"><span class="header-section-number">2.11</span> Regresión logística polinomial</h2>
 <p>Hasta ahora hemos trabajado con <code>wage</code> como una variable respuesta cuantitativa. Consideremos ahora una pregunta diferente:</p>
 <blockquote class="blockquote">
 <p><strong>¿Cómo cambia con la edad la probabilidad de que una persona tenga un salario superior a 250 mil dólares?</strong></p>
@@ -1800,8 +1800,8 @@ P(Y=1\mid X=x)
 =
 P(\texttt{wage}&gt;250\mid \texttt{age}=x).
 \]</span></p>
-<section id="recordatorio-regresión-logística" class="level2" data-number="11.1">
-<h2 data-number="11.1" class="anchored" data-anchor-id="recordatorio-regresión-logística"><span class="header-section-number">11.1</span> Recordatorio: regresión logística</h2>
+<section id="recordatorio-regresión-logística" class="level3" data-number="2.11.1">
+<h3 data-number="2.11.1" class="anchored" data-anchor-id="recordatorio-regresión-logística"><span class="header-section-number">2.11.1</span> Recordatorio: regresión logística</h3>
 <p>En una regresión logística simple modelamos el logaritmo de los <em>odds</em> mediante una relación lineal:</p>
 <p><span class="math display">\[
 \log\left(
@@ -1840,8 +1840,8 @@ X
 \]</span></p>
 <p>Lo que cambia ahora es el tipo de variable respuesta y, por tanto, el modelo utilizado para relacionar los predictores con la respuesta.</p>
 </section>
-<section id="construcción-de-la-variable-respuesta" class="level2" data-number="11.2">
-<h2 data-number="11.2" class="anchored" data-anchor-id="construcción-de-la-variable-respuesta"><span class="header-section-number">11.2</span> Construcción de la variable respuesta</h2>
+<section id="construcción-de-la-variable-respuesta" class="level3" data-number="2.11.2">
+<h3 data-number="2.11.2" class="anchored" data-anchor-id="construcción-de-la-variable-respuesta"><span class="header-section-number">2.11.2</span> Construcción de la variable respuesta</h3>
 <p>Construimos primero la variable binaria <code>salario_alto</code>.</p>
 <div id="cell-respuesta-binaria" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
@@ -1884,8 +1884,8 @@ Name: count, dtype: int64</code></pre>
 </div>
 <p>Esta exploración es importante porque la proporción de observaciones con <span class="math inline">\(Y=1\)</span> afecta la escala de las probabilidades que veremos posteriormente.</p>
 </section>
-<section id="por-qué-usamos-glm-con-familia-binomial" class="level2" data-number="11.3">
-<h2 data-number="11.3" class="anchored" data-anchor-id="por-qué-usamos-glm-con-familia-binomial"><span class="header-section-number">11.3</span> ¿Por qué usamos <code>GLM</code> con familia binomial?</h2>
+<section id="por-qué-usamos-glm-con-familia-binomial" class="level3" data-number="2.11.3">
+<h3 data-number="2.11.3" class="anchored" data-anchor-id="por-qué-usamos-glm-con-familia-binomial"><span class="header-section-number">2.11.3</span> ¿Por qué usamos <code>GLM</code> con familia binomial?</h3>
 <p>En la regresión polinomial anterior utilizamos mínimos cuadrados ordinarios mediante <code>sm.OLS()</code> porque la respuesta <code>wage</code> era cuantitativa.</p>
 <p>Ahora la variable respuesta toma únicamente los valores</p>
 <p><span class="math display">\[
@@ -1953,8 +1953,8 @@ Importante
 </div>
 </div>
 </section>
-<section id="construcción-de-la-base-polinomial" class="level2" data-number="11.4">
-<h2 data-number="11.4" class="anchored" data-anchor-id="construcción-de-la-base-polinomial"><span class="header-section-number">11.4</span> Construcción de la base polinomial</h2>
+<section id="construcción-de-la-base-polinomial" class="level3" data-number="2.11.4">
+<h3 data-number="2.11.4" class="anchored" data-anchor-id="construcción-de-la-base-polinomial"><span class="header-section-number">2.11.4</span> Construcción de la base polinomial</h3>
 <p>Utilizaremos una base de polinomios ortogonales de grado 4, igual que en el ejemplo anterior de regresión polinomial.</p>
 <div id="base-logit" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
@@ -1975,8 +1975,8 @@ Importante
 <p>La matriz <code>X_logit</code> contiene el intercepto y las funciones base polinomiales asociadas a <code>age</code>.</p>
 <p>Aunque el modelo es no lineal respecto a <code>age</code>, sigue siendo lineal respecto a los coeficientes del predictor lineal.</p>
 </section>
-<section id="ajuste-de-la-regresión-logística-polinomial" class="level2" data-number="11.5">
-<h2 data-number="11.5" class="anchored" data-anchor-id="ajuste-de-la-regresión-logística-polinomial"><span class="header-section-number">11.5</span> Ajuste de la regresión logística polinomial</h2>
+<section id="ajuste-de-la-regresión-logística-polinomial" class="level3" data-number="2.11.5">
+<h3 data-number="2.11.5" class="anchored" data-anchor-id="ajuste-de-la-regresión-logística-polinomial"><span class="header-section-number">2.11.5</span> Ajuste de la regresión logística polinomial</h3>
 <p>Ajustamos ahora el modelo.</p>
 <div id="cell-ajuste-logit" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
@@ -2065,8 +2065,8 @@ P(\texttt{wage}&gt;250\mid\texttt{age}=x)
 \]</span></p>
 <p>que los coeficientes individuales de la base ortogonal.</p>
 </section>
-<section id="predicciones-sobre-una-grilla-de-edades" class="level2" data-number="11.6">
-<h2 data-number="11.6" class="anchored" data-anchor-id="predicciones-sobre-una-grilla-de-edades"><span class="header-section-number">11.6</span> Predicciones sobre una grilla de edades</h2>
+<section id="predicciones-sobre-una-grilla-de-edades" class="level3" data-number="2.11.6">
+<h3 data-number="2.11.6" class="anchored" data-anchor-id="predicciones-sobre-una-grilla-de-edades"><span class="header-section-number">2.11.6</span> Predicciones sobre una grilla de edades</h3>
 <p>Para visualizar cómo cambia la probabilidad con la edad, evaluaremos el modelo en una secuencia fina de edades.</p>
 <div id="cell-pred-logit" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
@@ -2157,8 +2157,8 @@ P(\texttt{wage}&gt;250\mid\texttt{age}=x)
 \]</span></p>
 <p>mientras que <code>mean_ci_lower</code> y <code>mean_ci_upper</code> contienen los límites del intervalo de confianza puntual del 95% para esa probabilidad.</p>
 </section>
-<section id="probabilidad-de-tener-un-salario-alto" class="level2" data-number="11.7">
-<h2 data-number="11.7" class="anchored" data-anchor-id="probabilidad-de-tener-un-salario-alto"><span class="header-section-number">11.7</span> Probabilidad de tener un salario alto</h2>
+<section id="probabilidad-de-tener-un-salario-alto" class="level3" data-number="2.11.7">
+<h3 data-number="2.11.7" class="anchored" data-anchor-id="probabilidad-de-tener-un-salario-alto"><span class="header-section-number">2.11.7</span> Probabilidad de tener un salario alto</h3>
 <p>Graficaremos:</p>
 <ul>
 <li>las observaciones con <code>salario_alto = 0</code> en la parte inferior;</li>
@@ -2243,7 +2243,7 @@ P(\texttt{wage}&gt;250\mid\texttt{age}=x)
 <img src="parte2_files/figure-html/fig-logit-poly-output-1.png" width="760" height="566" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-logit-poly-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figura&nbsp;11.1: Probabilidad estimada de tener un salario superior a 250 mil dólares en función de la edad.
+Figura&nbsp;2.6: Probabilidad estimada de tener un salario superior a 250 mil dólares en función de la edad.
 </figcaption>
 </figure>
 </div>
@@ -2295,8 +2295,8 @@ P(\texttt{wage}&gt;250\mid\texttt{age}=x)
 </div>
 </div>
 </section>
-<section id="qué-aporta-el-término-polinomial" class="level2" data-number="11.8">
-<h2 data-number="11.8" class="anchored" data-anchor-id="qué-aporta-el-término-polinomial"><span class="header-section-number">11.8</span> ¿Qué aporta el término polinomial?</h2>
+<section id="qué-aporta-el-término-polinomial" class="level3" data-number="2.11.8">
+<h3 data-number="2.11.8" class="anchored" data-anchor-id="qué-aporta-el-término-polinomial"><span class="header-section-number">2.11.8</span> ¿Qué aporta el término polinomial?</h3>
 <p>En una regresión logística simple tendríamos</p>
 <p><span class="math display">\[
 \log\left(
@@ -2332,11 +2332,11 @@ Nota
 <p>Observen que la probabilidad estimada aumenta con la edad hasta alrededor de los 40-50 años y después disminuye, de forma consistente con lo observado en la regresión polinomial de la variable cuantitativa <code>wage</code>.</p>
 </section>
 </section>
-<section id="regresión-polinomial-vs.-regresión-logística-polinomial" class="level1" data-number="12">
-<h1 data-number="12"><span class="header-section-number">12</span> Regresión polinomial vs.&nbsp;regresión logística polinomial</h1>
+<section id="regresión-polinomial-vs.-regresión-logística-polinomial" class="level2" data-number="2.12">
+<h2 data-number="2.12" class="anchored" data-anchor-id="regresión-polinomial-vs.-regresión-logística-polinomial"><span class="header-section-number">2.12</span> Regresión polinomial vs.&nbsp;regresión logística polinomial</h2>
 <p>Podemos resumir ambos modelos utilizando la misma idea de expansión del predictor.</p>
-<section id="respuesta-cuantitativa" class="level2" data-number="12.1">
-<h2 data-number="12.1" class="anchored" data-anchor-id="respuesta-cuantitativa"><span class="header-section-number">12.1</span> Respuesta cuantitativa</h2>
+<section id="respuesta-cuantitativa" class="level3" data-number="2.12.1">
+<h3 data-number="2.12.1" class="anchored" data-anchor-id="respuesta-cuantitativa"><span class="header-section-number">2.12.1</span> Respuesta cuantitativa</h3>
 <p>Cuando <span class="math inline">\(Y\)</span> es cuantitativa, utilizamos regresión polinomial:</p>
 <p><span class="math display">\[
 E[Y\mid X]
@@ -2348,8 +2348,8 @@ E[Y\mid X]
 Y=\texttt{wage}.
 \]</span></p>
 </section>
-<section id="respuesta-binaria" class="level2" data-number="12.2">
-<h2 data-number="12.2" class="anchored" data-anchor-id="respuesta-binaria"><span class="header-section-number">12.2</span> Respuesta binaria</h2>
+<section id="respuesta-binaria" class="level3" data-number="2.12.2">
+<h3 data-number="2.12.2" class="anchored" data-anchor-id="respuesta-binaria"><span class="header-section-number">2.12.2</span> Respuesta binaria</h3>
 <p>Cuando <span class="math inline">\(Y\)</span> es binaria, utilizamos regresión logística polinomial:</p>
 <p><span class="math display">\[
 \log\left(
@@ -2385,10 +2385,10 @@ E[Y\mid X],
 <p>La idea fundamental es la misma: introducir <strong>flexibilidad mediante transformaciones de los predictores</strong>.</p>
 </section>
 </section>
-<section id="ejercicios-de-la-práctica" class="level1" data-number="13">
-<h1 data-number="13"><span class="header-section-number">13</span> Ejercicios de la práctica</h1>
-<section id="selección-del-grado-mediante-aic" class="level2" data-number="13.1">
-<h2 data-number="13.1" class="anchored" data-anchor-id="selección-del-grado-mediante-aic"><span class="header-section-number">13.1</span> Selección del grado mediante AIC</h2>
+<section id="ejercicios-de-la-práctica" class="level2" data-number="2.13">
+<h2 data-number="2.13" class="anchored" data-anchor-id="ejercicios-de-la-práctica"><span class="header-section-number">2.13</span> Ejercicios de la práctica</h2>
+<section id="selección-del-grado-mediante-aic" class="level3" data-number="2.13.1">
+<h3 data-number="2.13.1" class="anchored" data-anchor-id="selección-del-grado-mediante-aic"><span class="header-section-number">2.13.1</span> Selección del grado mediante AIC</h3>
 <p>Ajusten, para</p>
 <p><span class="math display">\[
 d=1,\ldots,8,
@@ -2405,15 +2405,15 @@ d=1,\ldots,8,
 <li>Expliquen brevemente por qué los tres criterios no tienen que producir necesariamente la misma respuesta.</li>
 </ul>
 </section>
-<section id="otro-predictor" class="level2" data-number="13.2">
-<h2 data-number="13.2" class="anchored" data-anchor-id="otro-predictor"><span class="header-section-number">13.2</span> Otro predictor</h2>
+<section id="otro-predictor" class="level3" data-number="2.13.2">
+<h3 data-number="2.13.2" class="anchored" data-anchor-id="otro-predictor"><span class="header-section-number">2.13.2</span> Otro predictor</h3>
 <p>Repitan el análisis utilizando <code>year</code> en lugar de <code>age</code>.</p>
 <p>Ajusten modelos polinomiales de distintos grados y construyan una gráfica que permita comparar los ajustes.</p>
 <p><strong>¿Encuentran evidencia de una relación no lineal igual de fuerte que la observada para <code>age</code>?</strong></p>
 <p>Justifiquen su respuesta utilizando tanto la gráfica como los resultados de los modelos.</p>
 </section>
-<section id="modelo-con-más-predictores" class="level2" data-number="13.3">
-<h2 data-number="13.3" class="anchored" data-anchor-id="modelo-con-más-predictores"><span class="header-section-number">13.3</span> Modelo con más predictores</h2>
+<section id="modelo-con-más-predictores" class="level3" data-number="2.13.3">
+<h3 data-number="2.13.3" class="anchored" data-anchor-id="modelo-con-más-predictores"><span class="header-section-number">2.13.3</span> Modelo con más predictores</h3>
 <p>Ajusten un modelo que incluya</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>poly(<span class="st">'age'</span>, degree<span class="op">=</span><span class="dv">3</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>y la variable categórica</p>
@@ -2427,8 +2427,8 @@ d=1,\ldots,8,
 <p>Interpreten brevemente el coeficiente asociado a uno de los niveles de <code>education</code>.</p>
 <p>¿Qué representa ese coeficiente cuando mantenemos constante el efecto de la edad?</p>
 </section>
-<section id="depuración-dirigida" class="level2" data-number="13.4">
-<h2 data-number="13.4" class="anchored" data-anchor-id="depuración-dirigida"><span class="header-section-number">13.4</span> Depuración dirigida</h2>
+<section id="depuración-dirigida" class="level3" data-number="2.13.4">
+<h3 data-number="2.13.4" class="anchored" data-anchor-id="depuración-dirigida"><span class="header-section-number">2.13.4</span> Depuración dirigida</h3>
 <p>Supongan que, durante la sección de validación cruzada, hubieran escrito</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>poly <span class="op">=</span> PolynomialFeatures(degree<span class="op">=</span><span class="dv">4</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>en lugar de utilizar el nombre <code>transformador_poly</code>.</p>
@@ -2439,8 +2439,8 @@ d=1,\ldots,8,
 <li>Expliquen por qué Python produciría ese error.</li>
 </ol>
 </section>
-<section id="interpretación-del-efecto-de-la-edad" class="level2" data-number="13.5">
-<h2 data-number="13.5" class="anchored" data-anchor-id="interpretación-del-efecto-de-la-edad"><span class="header-section-number">13.5</span> Interpretación del efecto de la edad</h2>
+<section id="interpretación-del-efecto-de-la-edad" class="level3" data-number="2.13.5">
+<h3 data-number="2.13.5" class="anchored" data-anchor-id="interpretación-del-efecto-de-la-edad"><span class="header-section-number">2.13.5</span> Interpretación del efecto de la edad</h3>
 <p>La tabla producida por</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>summarize(modelo_g4)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>muestra los coeficientes correspondientes a una base de polinomios ortogonales.</p>

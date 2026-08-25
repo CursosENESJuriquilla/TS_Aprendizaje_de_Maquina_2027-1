@@ -1,3 +1,3307 @@
 # Funciones escalonadas
 
+## Objetivos
 
+En esta práctica estudiaremos el uso de **funciones escalonadas** (*step functions*) para modelar relaciones no lineales entre una variable predictora y una variable respuesta.
+
+Usaremos el conjunto de datos `Wage` de `ISLP` y analizaremos la relación entre la edad, `age`, y el salario, `wage`.
+
+## Antes de comenzar
+
+Hasta ahora hemos estudiado modelos como la regresión lineal
+
+$$Y = \beta_0 + \beta_1 X + \varepsilon,$$
+
+en los cuales suponemos que el efecto de $X$ sobre la media de $Y$ es lineal:
+
+$$E[Y\mid X=x] = \beta_0+\beta_1x.$$
+
+Sin embargo, muchas relaciones reales no son lineales.
+
+Antes de introducir las funciones escalonadas, responde las siguientes preguntas.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+En el modelo
+
+$$Wage=\beta_0+\beta_1Age+\varepsilon,$$
+
+¿qué interpretación tiene $\beta_1$?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+El coeficiente $\beta_1$ representa el cambio esperado en `Wage` asociado con un incremento de una unidad en `Age`.
+
+En este caso, como `Age` está medido en años,
+
+$$\beta_1$$
+
+representaría el cambio esperado en el salario por cada año adicional de edad.
+
+La interpretación depende de que estemos suponiendo una relación lineal: el mismo incremento se aplica, por ejemplo, al pasar de 20 a 21 años que al pasar de 50 a 51 años.
+:::
+::::
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Qué limitación podría tener suponer que la relación entre edad y salario es completamente lineal?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Una relación lineal obliga a que la tasa de cambio sea constante.
+
+Sin embargo, es razonable imaginar que el salario:
+
+- aumente rápidamente durante ciertas etapas de la vida laboral;
+- se estabilice después;
+- incluso pueda disminuir en edades mayores.
+
+Por tanto, una sola recta puede ser demasiado restrictiva.
+:::
+::::
+
+## Importación de bibliotecas y datos
+
+Primero cargamos las bibliotecas que utilizaremos.
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+
+from ISLP import load_data
+```
+
+Cargamos el conjunto de datos `Wage`.
+
+```{python}
+Wage = load_data('Wage')
+
+Wage.head()
+```
+
+Podemos revisar sus dimensiones:
+
+```{python}
+Wage.shape
+```
+
+y algunas estadísticas descriptivas:
+
+```{python}
+Wage.describe()
+```
+
+Para esta práctica utilizaremos únicamente:
+
+```{python}
+age = Wage['age']
+wage = Wage['wage']
+```
+
+La variable predictora será
+
+$$X=Age$$
+
+y la respuesta será
+
+$$Y=Wage.$$
+
+## Exploración inicial
+
+Antes de construir un modelo, observemos la relación entre ambas variables.
+
+```{python}
+plt.figure(figsize=(8, 5))
+
+plt.scatter(
+    age,
+    wage,
+    facecolor='none',
+    edgecolor='gray',
+    alpha=0.5
+)
+
+plt.xlabel('Age')
+plt.ylabel('Wage')
+plt.title('Wage vs Age')
+
+plt.show()
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+A partir de la gráfica, ¿parece razonable asumir que la relación entre `age` y `wage` es perfectamente lineal?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No necesariamente.
+
+La gráfica sugiere que el salario puede aumentar durante las primeras etapas de la vida laboral, estabilizarse posteriormente y mostrar un comportamiento diferente para edades mayores.
+
+Esto sugiere que podría ser útil utilizar un modelo más flexible que una sola recta.
+:::
+::::
+
+## Funciones escalonadas
+
+Una forma sencilla de introducir no linealidad consiste en dividir el rango de $X$ en diferentes regiones.
+
+Supongamos que dividimos la edad en cuatro intervalos:
+
+$$C_0,\quad C_1,\quad C_2,\quad C_3.$$
+
+Para cada intervalo construimos una variable indicadora.
+
+Por ejemplo,
+
+$$C_1(x)=
+\begin{cases}
+1, & x\in C_1,\\
+0, & x\notin C_1.
+\end{cases}$$
+
+De manera similar construimos $C_0(x)$, $C_2(x)$ y $C_3(x)$.
+
+Podemos entonces escribir un modelo como
+
+$$Y=
+\beta_0+
+\beta_1C_1(X)
++\beta_2C_2(X)
++\beta_3C_3(X)
++\varepsilon.$$
+
+Si vamos a considerar primero el intercepto.
+
+Si una observación pertenece al grupo $C_2$, entonces
+
+$$C_1(X)=0,\qquad
+C_2(X)=1,\qquad
+C_3(X)=0$$
+
+Por tanto,
+
+$$Y=\beta_2+\varepsilon.$$
+
+El valor ajustado será constante dentro de cada intervalo.
+
+De ahí proviene el nombre **función escalonada**.
+
+### Dividir `age` utilizando cuantiles
+
+El enfoque utilizado en `ISLP` consiste en dividir `age` en cuatro grupos utilizando **cuantiles**.
+
+```{python}
+# retbins=True devuelve también los puntos de corte
+age_cut, cut_points = pd.qcut(
+    age,
+    q=4,
+    retbins=True
+)
+print("Puntos de corte:")
+print(cut_points)
+```
+
+La función
+
+``` python
+pd.qcut(age, 4)
+```
+
+divide los datos en cuatro grupos intentando colocar aproximadamente el mismo número de observaciones en cada uno.
+
+Es importante distinguir entre:
+
+``` python
+pd.cut()
+```
+
+y
+
+``` python
+pd.qcut()
+```
+
+`pd.cut()` generalmente divide el **rango de valores**, mientras que `pd.qcut()` divide las **observaciones según cuantiles**.
+
+Podemos ver cuantos datos caen en cada intervalo:
+
+```{python}
+print("\nNúmero de observaciones por grupo:")
+print(age_cut.value_counts().sort_index())
+```
+
+Podemos consultar los intervalos generados:
+
+```{python}
+age_cut.cat.categories
+```
+
+También podemos contar cuántas observaciones pertenecen a cada grupo:
+
+```{python}
+age_cut.value_counts().sort_index()
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué los cuatro intervalos obtenidos con `qcut()` no tienen necesariamente la misma amplitud?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Porque `qcut()` intenta dividir las **observaciones**, no el rango numérico.
+
+Cada intervalo debe contener aproximadamente el mismo número de individuos.
+
+Si las edades no están distribuidas uniformemente, algunos intervalos deberán ser más anchos que otros para incluir aproximadamente el mismo número de observaciones.
+:::
+::::
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Supón que en lugar de utilizar
+
+``` python
+pd.qcut(age, 4)
+```
+
+utilizáramos
+
+``` python
+pd.cut(age, 4)
+```
+
+¿Qué cambiaría conceptualmente?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Con `pd.cut(age, 4)` dividiríamos el rango entre la edad mínima y máxima en cuatro intervalos aproximadamente del mismo ancho.
+
+Con `pd.qcut(age, 4)` construimos cuatro intervalos con aproximadamente el mismo número de observaciones.
+
+Por tanto:
+
+- `cut()` controla aproximadamente la amplitud de los intervalos;
+- `qcut()` controla aproximadamente la cantidad de observaciones por intervalo.
+
+Esto también puede afectar la precisión de las estimaciones, ya que grupos con muy pocas observaciones tendrán mayor incertidumbre.
+:::
+::::
+
+## Variables indicadoras
+
+Ahora convertimos los cuatro intervalos en variables indicadoras.
+
+```{python}
+X_cat = pd.get_dummies(
+    age_cut,
+    drop_first=True
+).astype(float)
+
+X = sm.add_constant(X_cat)
+
+print("\nMatriz de diseño:")
+print(X.head())
+```
+
+La función
+
+``` python
+pd.get_dummies()
+```
+
+realiza una codificación *one-hot*.
+
+Una observación podría quedar representada como
+
+$$(1,0,0,0),$$
+
+otra como
+
+$$(0,1,0,0),$$
+
+etc.
+
+Cada fila tiene exactamente un valor igual a $1$.
+
+Podemos revisar los nombres de las columnas:
+
+```{python}
+X_cat.columns
+```
+
+y las dimensiones de la matriz:
+
+```{python}
+X_cat.shape
+```
+
+## ¿Qué pasa si utilizamos todas las variables dummy?
+
+En muchos problemas de regresión se utiliza:
+
+- un intercepto;
+- $k-1$ variables indicadoras.
+
+Pero también podemos:
+
+- **no utilizar intercepto**;
+- utilizas las cuatro variables indicadoras.
+
+Esto es perfectamente válido.
+
+Tendríamos
+
+$$C_1+C_2+C_3+C_4=1.$$
+
+Si agregáramos además un intercepto, tendríamos dependencia lineal perfecta.
+
+Por tanto, existen dos parametrizaciones posibles.
+
+### Parametrización 1
+
+Intercepto y tres variables indicadoras:
+
+$$Y=
+\beta_0+
+\beta_1C_1+
+\beta_2C_2+
+\beta_3C_3+
+\varepsilon.$$
+
+Aquí uno de los grupos funciona como referencia.
+
+### Parametrización 2
+
+Sin intercepto y con cuatro variables indicadoras:
+
+$$Y=
+\beta_1C_1+
+\beta_2C_2+
+\beta_3C_3+
+\beta_4C_4+
+\varepsilon.$$
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Qué ocurriría si agregáramos un intercepto y mantuviéramos las cuatro variables dummy?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Tendríamos multicolinealidad perfecta porque
+
+$$1=C_1+C_2+C_3+C_4.$$
+
+La columna del intercepto podría obtenerse como combinación lineal exacta de las cuatro variables dummy.
+
+A esta situación se le conoce frecuentemente como la **trampa de las variables dummy**.
+:::
+::::
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Cuál es una ventaja interpretativa de utilizar cuatro dummies sin intercepto en este ejemplo?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Cada coeficiente corresponde directamente al valor estimado del grupo.
+
+En el modelo lineal,
+
+$$\hat\beta_j$$
+
+será directamente el salario promedio del grupo $j$.
+
+Esto hace que la interpretación sea especialmente sencilla.
+:::
+::::
+
+## Ajuste mediante mínimos cuadrados
+
+Ajustamos ahora el modelo
+
+$$Wage=
+\beta_0+
+\beta_1C_1(Age)
++\beta_2C_2(Age)
++\beta_3C_3(Age)
++\varepsilon.$$
+
+Utilizamos:
+
+```{python}
+modelo_ls = sm.OLS(wage, X).fit()
+print("\n=== Regresión por mínimos cuadrados ===")
+print(modelo_ls.summary())
+```
+
+La función
+
+``` python
+sm.OLS(y, X)
+```
+
+define un modelo de regresión por mínimos cuadrados ordinarios.
+
+`OLS` significa **Ordinary Least Squares**.
+
+La instrucción
+
+``` python
+.fit()
+```
+
+estima los parámetros del modelo.
+
+Podemos consultar directamente los coeficientes:
+
+```{python}
+modelo_ls.params
+```
+
+## ¿Qué representan estos coeficientes?
+
+Con cuatro grupos de edad y tomando el primer grupo, $C_0$, como categoría de referencia, el modelo es
+
+$$Wage_i
+=
+\beta_0
++
+\beta_1C_1(Age_i)
++
+\beta_2C_2(Age_i)
++
+\beta_3C_3(Age_i)
++
+\varepsilon_i.$$
+
+Aquí $C_1$, $C_2$ y $C_3$ son variables indicadoras para los grupos distintos al de referencia.
+
+### Grupo de referencia
+
+Si una persona pertenece al grupo $C_0$, entonces
+
+$$C_1=C_2=C_3=0.$$
+
+Por tanto, el valor ajustado es
+
+$$\hat Y=\hat\beta_0.$$
+
+Así,
+
+$$\boxed{
+\hat\beta_0
+=
+\text{media estimada de }Wage\text{ en el grupo de referencia}
+}$$
+
+### Segundo grupo
+
+Si una persona pertenece al grupo $C_1$, entonces
+
+$$C_1=1,
+\qquad
+C_2=C_3=0.$$
+
+El valor ajustado es
+
+$$\hat Y
+=
+\hat\beta_0+\hat\beta_1.$$
+
+Por tanto,
+
+$$\boxed{
+\hat\beta_0+\hat\beta_1
+=
+\text{media estimada de }Wage\text{ en el grupo }C_1
+}$$
+
+y, equivalentemente,
+
+$$\boxed{
+\hat\beta_1
+=
+\bar Y_{C_1}-\bar Y_{C_0}
+}$$
+
+Es decir, $\hat\beta_1$ representa la diferencia entre la media del grupo $C_1$ y la media del grupo de referencia.
+
+### Tercer y cuarto grupo
+
+De manera análoga,
+
+$$\hat\beta_0+\hat\beta_2
+=
+\bar Y_{C_2},$$
+
+y
+
+$$\hat\beta_0+\hat\beta_3
+=
+\bar Y_{C_3}.$$
+
+Por tanto,
+
+$$\hat\beta_2
+=
+\bar Y_{C_2}-\bar Y_{C_0},$$
+
+y
+
+$$\hat\beta_3
+=
+\bar Y_{C_3}-\bar Y_{C_0}.$$
+
+En resumen,
+
+$$\boxed{
+\hat\beta_0=\bar Y_{C_0}
+}$$
+
+y para $j=1,2,3$,
+
+$$\boxed{
+\hat\beta_j
+=
+\bar Y_{C_j}
+-
+\bar Y_{C_0}
+}$$
+
+Los coeficientes tienen entonces una interpretación muy directa:
+
+- $\hat\beta_0$ es la media del grupo de referencia;
+- $\hat\beta_j$ es la diferencia entre la media del grupo $j$ y la media del grupo de referencia.
+
+## Comprobación de los coeficientes
+
+Podemos calcular directamente el salario promedio de cada grupo.
+
+```{python}
+medias_grupos = (
+    Wage
+    .assign(grupo_edad=age_cut)
+    .groupby('grupo_edad', observed=True)['wage']
+    .mean()
+)
+
+medias_grupos
+```
+
+Ahora observemos los coeficientes del modelo:
+
+```{python}
+modelo_ls.params
+```
+
+En este caso, los coeficientes **no coinciden directamente con las cuatro medias**.
+
+El intercepto coincide con la media del grupo de referencia:
+
+```{python}
+media_ref = medias_grupos.iloc[0]
+
+media_ref
+```
+
+y debe cumplirse aproximadamente que
+
+```{python}
+modelo_ls.params.iloc[0]
+```
+
+sea igual a `media_ref`.
+
+Para recuperar la media del segundo grupo debemos sumar
+
+```{python}
+modelo_ls.params.iloc[0] + modelo_ls.params.iloc[1]
+```
+
+Para el tercer grupo:
+
+```{python}
+modelo_ls.params.iloc[0] + modelo_ls.params.iloc[2]
+```
+
+Y para el cuarto:
+
+```{python}
+modelo_ls.params.iloc[0] + modelo_ls.params.iloc[3]
+```
+
+Podemos comprobar todas las medias a la vez:
+
+```{python}
+medias_desde_modelo = pd.Series(
+    [
+        modelo_ls.params.iloc[0],
+        modelo_ls.params.iloc[0] + modelo_ls.params.iloc[1],
+        modelo_ls.params.iloc[0] + modelo_ls.params.iloc[2],
+        modelo_ls.params.iloc[0] + modelo_ls.params.iloc[3]
+    ],
+    index=medias_grupos.index
+)
+
+medias_desde_modelo
+```
+
+Comparemos:
+
+```{python}
+pd.DataFrame({
+    'Media observada': medias_grupos,
+    'Media desde el modelo': medias_desde_modelo
+})
+```
+
+Los valores deben coincidir salvo pequeñas diferencias numéricas de redondeo.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué el intercepto coincide con la media del grupo de referencia y los demás coeficientes representan diferencias entre grupos?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+El modelo es
+
+$$Y_i
+=
+\beta_0
++
+\beta_1C_1(X_i)
++
+\beta_2C_2(X_i)
++
+\beta_3C_3(X_i)
++
+\varepsilon_i.$$
+
+Para el grupo de referencia, todas las variables indicadoras valen cero, por lo que
+
+$$E[Y\mid C_0]
+=
+\beta_0.$$
+
+Por mínimos cuadrados,
+
+$$\hat\beta_0
+=
+\bar Y_{C_0}.$$
+
+Para el grupo $C_1$,
+
+$$E[Y\mid C_1]
+=
+\beta_0+\beta_1.$$
+
+Por tanto,
+
+$$\hat\beta_0+\hat\beta_1
+=
+\bar Y_{C_1}.$$
+
+Como
+
+$$\hat\beta_0
+=
+\bar Y_{C_0},$$
+
+entonces
+
+$$\hat\beta_1
+=
+\bar Y_{C_1}
+-
+\bar Y_{C_0}.$$
+
+De manera análoga,
+
+$$\hat\beta_j
+=
+\bar Y_{C_j}
+-
+\bar Y_{C_0},
+\qquad j=1,2,3.$$
+
+Así, con intercepto, los coeficientes distintos al intercepto no son medias de grupo, sino diferencias respecto a la categoría de referencia.
+:::
+::::
+
+## El `summary()` del modelo de mínimos cuadrados
+
+Veamos ahora el resumen completo del modelo.
+
+```{python}
+print(modelo_ls.summary())
+```
+
+El `summary()` contiene información sobre:
+
+- la variable respuesta;
+- el tipo de modelo;
+- el número de observaciones;
+- la calidad global del ajuste;
+- los coeficientes estimados;
+- la incertidumbre asociada con cada coeficiente;
+- pruebas de hipótesis e intervalos de confianza.
+
+En este caso debemos recordar que estamos utilizando una parametrización con:
+
+- un intercepto;
+- tres variables indicadoras;
+- el primer grupo de edad como categoría de referencia.
+
+El modelo es
+
+$$Wage_i
+=
+\beta_0
++
+\beta_1C_1(Age_i)
++
+\beta_2C_2(Age_i)
++
+\beta_3C_3(Age_i)
++
+\varepsilon_i.$$
+
+### Variable dependiente y modelo
+
+En la parte superior aparecen elementos como:
+
+``` text
+Dep. Variable
+Model
+Method
+No. Observations
+```
+
+`Dep. Variable` indica la variable respuesta.
+
+En nuestro caso es `wage`.
+
+`Model: OLS` indica que se ha utilizado regresión por mínimos cuadrados ordinarios.
+
+`Method: Least Squares` indica que los coeficientes fueron estimados minimizando la suma de cuadrados de los residuos.
+
+`No. Observations` representa el número total de observaciones utilizadas para ajustar el modelo.
+
+### Los coeficientes
+
+La parte más importante del `summary()` es la tabla que contiene:
+
+``` text
+coef
+std err
+t
+P>|t|
+[0.025
+0.975]
+```
+
+La columna
+
+``` text
+coef
+```
+
+contiene las estimaciones
+
+$$\hat\beta_0,\hat\beta_1,\hat\beta_2,\hat\beta_3.$$
+
+Sin embargo, con esta parametrización los coeficientes **no representan todos directamente medias de grupo**.
+
+### Intercepto
+
+El coeficiente `const` corresponde a
+
+$$\hat\beta_0.$$
+
+Como el primer grupo es la categoría de referencia,
+
+$$\boxed{
+\hat\beta_0
+=
+\bar Y_{C_0}
+}$$
+
+es decir, el intercepto representa el salario medio estimado del grupo de referencia.
+
+En nuestros datos obtenemos aproximadamente
+
+$$\hat\beta_0=94.16.$$
+
+Por tanto, el salario medio estimado para las personas del primer intervalo de edad es aproximadamente $94.16$.
+
+### Coeficientes de las variables indicadoras
+
+Para los demás grupos,
+
+$$\boxed{
+\hat\beta_j
+=
+\bar Y_{C_j}
+-
+\bar Y_{C_0}
+}$$
+
+para $j=1,2,3$.
+
+Es decir, cada coeficiente representa la diferencia entre la media del grupo correspondiente y la media del grupo de referencia.
+
+Por ejemplo, si
+
+$$\hat\beta_1=22.50,$$
+
+esto significa que el salario medio del segundo grupo es aproximadamente $22.50$ unidades mayor que el salario medio del grupo de referencia.
+
+La media estimada del segundo grupo es entonces
+
+$$\hat\beta_0+\hat\beta_1.$$
+
+En nuestros datos,
+
+$$94.16+22.50
+\approx
+116.66.$$
+
+De manera análoga,
+
+$$\hat\mu_2
+=
+\hat\beta_0+\hat\beta_2$$
+
+y
+
+$$\hat\mu_3
+=
+\hat\beta_0+\hat\beta_3.$$
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Si el coeficiente correspondiente al intervalo $(33.75,42]$ es aproximadamente $22.50$, ¿significa que el salario medio de ese grupo es $22.50$?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No.
+
+El valor
+
+$$22.50$$
+
+representa la diferencia entre la media de ese grupo y la media del grupo de referencia.
+
+Es decir,
+
+$$\hat\beta_1
+=
+\bar Y_{C_1}
+-
+\bar Y_{C_0}.$$
+
+Como
+
+$$\hat\beta_0
+=
+94.16,$$
+
+la media estimada del grupo $C_1$ es
+
+$$\hat\mu_1
+=
+\hat\beta_0+\hat\beta_1$$
+
+y, por tanto,
+
+$$\hat\mu_1
+=
+94.16+22.50
+\approx
+116.66.$$
+:::
+::::
+
+### Error estándar
+
+La columna
+
+``` text
+std err
+```
+
+contiene el error estándar asociado con cada coeficiente estimado.
+
+Para el intercepto,
+
+$$SE(\hat\beta_0)$$
+
+mide la incertidumbre asociada con la estimación de la media del grupo de referencia.
+
+Para $j=1,2,3$,
+
+$$SE(\hat\beta_j)$$
+
+mide la incertidumbre asociada con la estimación de la diferencia
+
+$$\bar Y_{C_j}-\bar Y_{C_0}.$$
+
+Por tanto, en esta parametrización el error estándar de una dummy **no es directamente el error estándar de la media del grupo**, sino el error estándar de la diferencia respecto al grupo de referencia.
+
+Cuanto menor sea el error estándar, mayor será la precisión de la estimación correspondiente.
+
+### Estadístico `t`
+
+La columna
+
+``` text
+t
+```
+
+se calcula como
+
+$$t
+=
+\frac{\hat\beta_j-0}
+{SE(\hat\beta_j)}.$$
+
+Por tanto, el contraste es
+
+$$H_0:\beta_j=0$$
+
+contra
+
+$$H_1:\beta_j\neq0.$$
+
+Sin embargo, la interpretación depende del parámetro que estemos observando.
+
+#### Para el intercepto
+
+El contraste
+
+$$H_0:\beta_0=0$$
+
+equivale a preguntar si la media salarial del grupo de referencia es igual a cero.
+
+Es decir,
+
+$$H_0:\mu_0=0.$$
+
+Esta hipótesis no suele ser especialmente interesante en este problema.
+
+#### Para una variable indicadora
+
+Para $j=1,2,3$,
+
+$$\beta_j
+=
+\mu_j-\mu_0.$$
+
+Por tanto,
+
+$$H_0:\beta_j=0$$
+
+equivale a
+
+$$H_0:\mu_j-\mu_0=0,$$
+
+o simplemente
+
+$$\boxed{
+H_0:\mu_j=\mu_0
+}$$
+
+Así, el estadístico $t$ de cada dummy sí permite comparar directamente la media del grupo correspondiente con la media del grupo de referencia.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Qué significa, en este modelo, obtener un p-value pequeño para el coeficiente correspondiente al grupo $C_2$?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+El coeficiente correspondiente a $C_2$ representa
+
+$$\beta_2
+=
+\mu_2-\mu_0.$$
+
+Por tanto, el contraste es
+
+$$H_0:\beta_2=0,$$
+
+que equivale a
+
+$$H_0:\mu_2=\mu_0.$$
+
+Un p-value pequeño proporciona evidencia en contra de esta hipótesis.
+
+Es decir, sugiere que el salario medio del grupo $C_2$ es diferente del salario medio del grupo de referencia $C_0$.
+:::
+::::
+
+### El p-value
+
+La columna
+
+``` text
+P>|t|
+```
+
+contiene el p-value asociado con cada contraste
+
+$$H_0:\beta_j=0.$$
+
+Para `const`, el contraste se refiere a la media del grupo de referencia.
+
+Para las variables indicadoras, el contraste compara cada grupo con la categoría de referencia.
+
+Si statsmodels muestra
+
+``` text
+0.000
+```
+
+no significa que el p-value sea exactamente cero.
+
+Significa que es suficientemente pequeño como para aparecer redondeado a tres decimales.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Si los tres coeficientes correspondientes a las variables indicadoras tienen p-values pequeños, ¿podemos concluir que los cuatro grupos tienen medias significativamente diferentes entre sí?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No.
+
+Los contrastes individuales son
+
+$$H_0:\mu_1=\mu_0,$$
+
+$$H_0:\mu_2=\mu_0,$$
+
+y
+
+$$H_0:\mu_3=\mu_0.$$
+
+Por tanto, únicamente estamos comparando cada grupo con el grupo de referencia.
+
+Esto no nos dice directamente, por ejemplo, si
+
+$$\mu_1=\mu_2$$
+
+o si
+
+$$\mu_2=\mu_3.$$
+
+Para comparar dos grupos que no sean el grupo de referencia necesitamos realizar un contraste adicional.
+
+Por ejemplo, para comparar $C_1$ y $C_2$ queremos probar
+
+$$H_0:\mu_1=\mu_2.$$
+
+Como
+
+$$\mu_1=\beta_0+\beta_1$$
+
+y
+
+$$\mu_2=\beta_0+\beta_2,$$
+
+entonces
+
+$$\mu_1-\mu_2
+=
+\beta_1-\beta_2.$$
+
+Por tanto, el contraste puede escribirse como
+
+$$H_0:\beta_1-\beta_2=0.$$
+
+Así, p-values pequeños para todas las dummies no implican automáticamente que todos los grupos sean diferentes entre sí.
+:::
+::::
+
+### Intervalos de confianza
+
+Las columnas
+
+``` text
+[0.025, 0.975]
+```
+
+forman un intervalo de confianza del 95% para cada parámetro.
+
+Para el intercepto obtenemos
+
+$$IC_{95\%}(\beta_0),$$
+
+que corresponde a un intervalo para la media del grupo de referencia.
+
+Para las variables indicadoras obtenemos
+
+$$IC_{95\%}(\beta_j),$$
+
+pero recuerden que
+
+$$\beta_j
+=
+\mu_j-\mu_0.$$
+
+Por tanto, estos intervalos son intervalos de confianza para la **diferencia entre la media del grupo** $j$ y la media del grupo de referencia.
+
+No son directamente intervalos de confianza para la media del grupo $j$.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Supongamos que el intervalo de confianza del 95% para $\beta_1$ es
+
+$$[18,27].$$
+
+¿Cómo lo interpretarías?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Como
+
+$$\beta_1
+=
+\mu_1-\mu_0,$$
+
+el intervalo
+
+$$[18,27]$$
+
+indica que la diferencia estimada entre el salario medio del grupo $C_1$ y el salario medio del grupo de referencia se encuentra aproximadamente entre $18$ y $27$.
+
+Como el intervalo no contiene al cero, esto también proporciona evidencia de que las dos medias son diferentes al nivel de significancia correspondiente.
+:::
+::::
+
+#### ¿Y si queremos un intervalo para la media de otro grupo?
+
+Por ejemplo, la media del grupo $C_1$ es
+
+$$\mu_1
+=
+\beta_0+\beta_1.$$
+
+No debemos obtener su intervalo de confianza simplemente sumando los extremos de los intervalos de $\beta_0$ y $\beta_1$.
+
+La incertidumbre de una combinación lineal depende también de la covarianza entre los estimadores.
+
+Una forma correcta de obtenerla con `statsmodels` es mediante un contraste lineal.
+
+Por ejemplo, para estimar
+
+$$\beta_0+\beta_1,$$
+
+podemos utilizar:
+
+```{python}
+modelo_ls.t_test([1, 1, 0, 0])
+```
+
+Para
+
+$$\beta_0+\beta_2,$$
+
+utilizamos:
+
+```{python}
+modelo_ls.t_test([1, 0, 1, 0])
+```
+
+y para
+
+$$\beta_0+\beta_3,$$
+
+```{python}
+modelo_ls.t_test([1, 0, 0, 1])
+```
+
+### $R^2$
+
+El resumen también contiene el coeficiente de determinación.
+
+En un modelo con intercepto,
+
+$$R^2
+=
+1-
+\frac{RSS}{TSS},$$
+
+donde
+
+$$RSS
+=
+\sum_{i=1}^{n}
+(y_i-\hat y_i)^2$$
+
+es la suma de cuadrados residual, y
+
+$$TSS
+=
+\sum_{i=1}^{n}
+(y_i-\bar y)^2$$
+
+es la suma total de cuadrados.
+
+El $R^2$ mide la proporción de la variabilidad observada en `wage` que es explicada por el modelo.
+
+En este caso, la única información que utilizamos de `age` es el grupo de edad al que pertenece cada persona.
+
+Por tanto, conceptualmente estamos preguntando:
+
+> ¿Qué proporción de la variabilidad del salario puede explicarse al conocer únicamente el cuartil de edad?
+
+Un valor bajo de $R^2$ no implica necesariamente que el modelo sea incorrecto.
+
+Simplemente indica que conocer el grupo de edad explica solamente una parte de la variabilidad total del salario.
+
+Esto es razonable, ya que el salario puede depender de muchas otras variables además de la edad.
+
+### $R^2$ ajustado
+
+El `summary()` también reporta
+
+``` text
+Adj. R-squared
+```
+
+o $R^2$ ajustado.
+
+El $R^2$ ordinario nunca disminuye al agregar predictores al modelo, incluso si esos predictores aportan muy poca información.
+
+El $R^2$ ajustado introduce una penalización por el número de parámetros:
+
+$$R^2_{\text{adj}}
+=
+1
+-
+(1-R^2)
+\frac{n-1}{n-p-1},$$
+
+donde $n$ es el número de observaciones y $p$ es el número de predictores, sin contar el intercepto.
+
+Por ello, puede ser más útil cuando queremos comparar modelos con diferente número de variables.
+
+### `F-statistic` y `Prob (F-statistic)`
+
+El resumen también muestra
+
+``` text
+F-statistic
+Prob (F-statistic)
+```
+
+La prueba $F$ evalúa globalmente si las variables indicadoras asociadas con los grupos de edad aportan información al modelo.
+
+En este caso, la hipótesis nula es
+
+$$H_0:
+\beta_1=\beta_2=\beta_3=0.$$
+
+Como
+
+$$\beta_j=\mu_j-\mu_0,$$
+
+esta hipótesis equivale a
+
+$$H_0:
+\mu_0=\mu_1=\mu_2=\mu_3.$$
+
+Es decir, la prueba $F$ pregunta:
+
+> ¿Hay evidencia de que al menos uno de los grupos de edad tenga un salario medio diferente?
+
+La hipótesis alternativa es que al menos uno de los coeficientes sea distinto de cero.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Cuál es la diferencia entre la prueba $F$ global y los tests $t$ individuales?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+La prueba $F$ estudia simultáneamente
+
+$$H_0:
+\beta_1=\beta_2=\beta_3=0,$$
+
+que equivale a
+
+$$H_0:
+\mu_0=\mu_1=\mu_2=\mu_3.$$
+
+Por tanto, pregunta si existe alguna diferencia global entre los grupos.
+
+Los tests $t$ individuales estudian, uno por uno,
+
+$$H_0:\beta_j=0,$$
+
+que equivale a comparar cada grupo con el grupo de referencia.
+
+Así:
+
+- la prueba $F$ pregunta si **existe alguna diferencia entre los grupos**;
+- cada prueba $t$ pregunta si **un grupo específico difiere del grupo de referencia**.
+:::
+::::
+
+## Predicciones mediante una función escalonada
+
+Para visualizar el modelo construiremos una secuencia de edades.
+
+```{python}
+age_grid = np.linspace(
+    age.min(),
+    age.max(),
+    1000
+)
+```
+
+En nuestro caso generamos $1000$ edades entre la edad mínima y máxima del conjunto de datos.
+
+Es importante notar que `age_grid` **no contiene nuevas observaciones reales**. Es simplemente una secuencia de valores que utilizaremos para evaluar el modelo y poder dibujar la función ajustada.
+
+## Clasificar las nuevas edades
+
+Las nuevas edades deben utilizar **exactamente los mismos puntos de corte** que fueron calculados con los datos originales.
+
+Cuando construimos los cuatro grupos utilizamos:
+
+``` python
+age_cut, cut_points = pd.qcut(
+    age,
+    q=4,
+    retbins=True
+)
+```
+
+La opción
+
+``` python
+retbins=True
+```
+
+permite guardar también los puntos de corte utilizados para construir los cuartiles.
+
+Podemos verlos mediante:
+
+```{python}
+cut_points
+```
+
+Ahora clasificamos cada valor de `age_grid` utilizando esos mismos puntos de corte:
+
+```{python}
+cut_age_grid = pd.cut(
+    age_grid,
+    bins=cut_points,
+    include_lowest=True
+)
+```
+
+Aquí utilizamos `pd.cut()` porque **ya conocemos los puntos de corte**.
+
+No queremos calcular nuevos cuantiles. Solamente queremos preguntar:
+
+> ¿A cuál de los cuatro grupos originales pertenece cada nueva edad?
+
+### Construir la matriz de diseño para las nuevas edades
+
+Recordemos que nuestro modelo original utiliza:
+
+- un intercepto;
+- tres variables indicadoras;
+- el primer grupo como categoría de referencia.
+
+Por tanto, debemos construir `X_grid` exactamente de la misma manera que construimos `X`.
+
+Primero generamos las variables indicadoras eliminando la primera categoría:
+
+```{python}
+X_grid_cat = pd.get_dummies(
+    cut_age_grid,
+    drop_first=True
+).astype(float)
+```
+
+Después garantizamos que las columnas sean exactamente las mismas que las utilizadas durante el ajuste:
+
+```{python}
+X_grid_cat = X_grid_cat.reindex(
+    columns=X_cat.columns,
+    fill_value=0
+)
+```
+
+Finalmente agregamos el intercepto:
+
+```{python}
+X_grid = sm.add_constant(
+    X_grid_cat,
+    has_constant='add'
+)
+```
+
+y aseguramos el mismo orden de columnas:
+
+```{python}
+X_grid = X_grid[X.columns]
+```
+
+La matriz `X_grid` tendrá una estructura similar a:
+
+``` text
+const   C1   C2   C3
+  1      0    0    0
+  1      0    0    0
+  1      1    0    0
+  1      1    0    0
+  1      0    1    0
+  ...
+```
+
+Cada fila representa una edad de `age_grid`.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué sería incorrecto utilizar nuevamente
+
+``` python
+pd.qcut(age_grid, 4)
+```
+
+para construir las predicciones?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Porque estaríamos calculando nuevos cuantiles utilizando los puntos artificiales de `age_grid`.
+
+Los puntos de corte forman parte del modelo y fueron determinados utilizando los datos originales.
+
+Si calculáramos nuevamente los cuantiles, podríamos obtener intervalos diferentes a los utilizados durante el ajuste.
+
+Para realizar predicciones correctamente debemos mantener fija la transformación aprendida durante el entrenamiento:
+
+$$\text{datos originales}
+\longrightarrow
+\text{puntos de corte}
+\longrightarrow
+\text{modelo}.$$
+
+Después, para nuevas observaciones:
+
+$$\text{nueva edad}
+\longrightarrow
+\text{mismos puntos de corte}
+\longrightarrow
+\text{predicción}.$$
+:::
+::::
+
+## Predicciones de mínimos cuadrados
+
+Obtenemos las predicciones mediante:
+
+```{python}
+pred_ls = modelo_ls.get_prediction(
+    X_grid
+)
+
+media_ls = pred_ls.predicted_mean
+```
+
+La función
+
+``` python
+get_prediction()
+```
+
+permite obtener no solamente las predicciones del modelo, sino también información acerca de su incertidumbre.
+
+La cantidad
+
+``` python
+pred_ls.predicted_mean
+```
+
+contiene las estimaciones de
+
+$$E[Wage\mid Age].$$
+
+## ¿Qué valores toma la función escalonada?
+
+Nuestro modelo es
+
+$$Wage_i
+=
+\beta_0
++
+\beta_1C_1(Age_i)
++
+\beta_2C_2(Age_i)
++
+\beta_3C_3(Age_i)
++
+\varepsilon_i.$$
+
+Por tanto, la función ajustada es
+
+$$\hat f(x)
+=
+\widehat{E}[Wage\mid Age=x].$$
+
+Como el primer grupo, $C_0$, es la categoría de referencia, la predicción depende del intervalo al que pertenezca $x$.
+
+Para el grupo de referencia:
+
+$$\hat f(x)
+=
+\hat\beta_0.$$
+
+Para el grupo $C_1$:
+
+$$\hat f(x)
+=
+\hat\beta_0+\hat\beta_1.$$
+
+Para el grupo $C_2$:
+
+$$\hat f(x)
+=
+\hat\beta_0+\hat\beta_2.$$
+
+Y para el grupo $C_3$:
+
+$$\hat f(x)
+=
+\hat\beta_0+\hat\beta_3.$$
+
+En conjunto,
+
+$$\hat E[Wage\mid Age=x]
+=
+\begin{cases}
+\hat\beta_0, & x\in C_0,\\
+\hat\beta_0+\hat\beta_1, & x\in C_1,\\
+\hat\beta_0+\hat\beta_2, & x\in C_2,\\
+\hat\beta_0+\hat\beta_3, & x\in C_3.
+\end{cases}$$
+
+Estas cuatro cantidades son precisamente las medias estimadas de los cuatro grupos.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Si $\hat\beta_0=94.16$ y $\hat\beta_2=25.03$, ¿cuál es la predicción para una persona perteneciente al grupo $C_2$?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Para una observación perteneciente a $C_2$ tenemos
+
+$$C_1=0,\qquad
+C_2=1,\qquad
+C_3=0.$$
+
+Por tanto,
+
+$$\hat Y
+=
+\hat\beta_0+\hat\beta_2.$$
+
+Sustituyendo,
+
+$$\hat Y
+=
+94.16+25.03
+=
+119.19.$$
+
+Por tanto, el salario medio estimado para ese grupo es aproximadamente
+
+$$119.19.$$
+:::
+::::
+
+## Intervalos de confianza
+
+Calculamos intervalos de confianza del 95% mediante:
+
+```{python}
+ic_ls = pred_ls.conf_int(
+    alpha=0.05
+)
+```
+
+Aquí
+
+$$\alpha=0.05$$
+
+corresponde a un nivel de confianza de
+
+$$1-\alpha=0.95.$$
+
+Los intervalos obtenidos corresponden a la **respuesta media estimada**:
+
+$$E[Wage\mid Age].$$
+
+Es decir, para cada grupo estamos estimando la incertidumbre asociada con su salario medio.
+
+No son intervalos de predicción para el salario de una persona individual.
+
+### ¿Por qué `get_prediction()` es útil aquí?
+
+Para los grupos distintos al de referencia, la media estimada es una combinación de coeficientes.
+
+Por ejemplo,
+
+$$\mu_2
+=
+\beta_0+\beta_2.$$
+
+Su incertidumbre depende de:
+
+- la incertidumbre de $\hat\beta_0$;
+- la incertidumbre de $\hat\beta_2$;
+- la covarianza entre ambos estimadores.
+
+Por eso no sería correcto construir el intervalo de confianza simplemente sumando los extremos de los intervalos individuales de $\beta_0$ y $\beta_2$.
+
+`get_prediction()` realiza correctamente ese cálculo para cada fila de `X_grid`.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué un intervalo de predicción para el salario de una persona sería normalmente más ancho que el intervalo de confianza para la media?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+El intervalo de confianza refleja la incertidumbre sobre la media
+
+$$E[Wage\mid Age].$$
+
+Un intervalo de predicción debe considerar además la variabilidad individual de las observaciones alrededor de esa media.
+
+Conceptualmente,
+
+$$Wage_i
+=
+E[Wage\mid Age_i]
++
+\varepsilon_i.$$
+
+Por tanto, al predecir el salario de una persona debemos considerar:
+
+- la incertidumbre sobre la media estimada;
+- la variabilidad residual representada por $\varepsilon_i$.
+
+Por eso un intervalo de predicción suele ser más ancho que un intervalo de confianza para la media.
+:::
+::::
+
+## Visualización del modelo lineal escalonado
+
+Podemos representar gráficamente el resultado.
+
+```{python}
+fig, ax = plt.subplots(
+    figsize=(7, 5.5)
+)
+
+# Observaciones
+ax.scatter(
+    age,
+    wage,
+    facecolors='none',
+    edgecolors='gray',
+    alpha=0.45,
+    s=20,
+    linewidth=0.7
+)
+
+# Media estimada
+ax.plot(
+    age_grid,
+    media_ls,
+    color='green',
+    linewidth=2.2
+)
+
+# Intervalo de confianza del 95%
+ax.plot(
+    age_grid,
+    ic_ls[:, 0],
+    color='green',
+    linestyle='--',
+    linewidth=1.2
+)
+
+ax.plot(
+    age_grid,
+    ic_ls[:, 1],
+    color='green',
+    linestyle='--',
+    linewidth=1.2
+)
+
+ax.set_xlabel(
+    'Age',
+    fontsize=12
+)
+
+ax.set_ylabel(
+    'Wage',
+    fontsize=12
+)
+
+ax.tick_params(
+    axis='both',
+    labelsize=10
+)
+
+plt.tight_layout()
+plt.show()
+```
+
+La línea verde sólida representa
+
+$$\hat E[Wage\mid Age].$$
+
+Dentro de cada intervalo la predicción es constante.
+
+Las alturas de los cuatro escalones son:
+
+$$\hat\beta_0,$$
+
+$$\hat\beta_0+\hat\beta_1,$$
+
+$$\hat\beta_0+\hat\beta_2,$$
+
+y
+
+$$\hat\beta_0+\hat\beta_3.$$
+
+Las líneas discontinuas representan los intervalos de confianza del 95% para la media estimada en cada grupo.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué aparecen saltos abruptos en ciertos valores de edad?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Porque el modelo clasifica cada edad dentro de uno de los cuatro intervalos.
+
+Dentro de un mismo intervalo la predicción es constante, pero al atravesar un punto de corte cambia la combinación de variables indicadoras utilizada.
+
+Por ejemplo, antes de un punto de corte podríamos tener
+
+$$C_1=1,\qquad C_2=C_3=0,$$
+
+mientras que inmediatamente después podríamos tener
+
+$$C_2=1,\qquad C_1=C_3=0.$$
+
+La predicción cambia entonces de
+
+$$\hat\beta_0+\hat\beta_1$$
+
+a
+
+$$\hat\beta_0+\hat\beta_2.$$
+
+Por eso la función presenta un salto.
+
+Este salto es consecuencia de la discretización y no necesariamente representa un cambio abrupto real en el fenómeno.
+:::
+::::
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Dos personas tienen edades muy cercanas, pero una se encuentra justo antes de un punto de corte y la otra justo después.
+
+¿Por qué pueden recibir predicciones diferentes incluso si sus edades son casi iguales?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Porque una función escalonada utiliza únicamente la **pertenencia al intervalo**, no la distancia exacta entre las edades.
+
+Si una persona pertenece a $C_1$, recibe la predicción
+
+$$\hat\beta_0+\hat\beta_1.$$
+
+Si la otra pertenece a $C_2$, recibe
+
+$$\hat\beta_0+\hat\beta_2.$$
+
+Aunque sus edades sean muy cercanas, sus variables indicadoras son diferentes.
+
+Esta es una de las principales limitaciones de las funciones escalonadas: introducen discontinuidades artificiales en los puntos de corte.
+:::
+::::
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Cuál es simultáneamente una ventaja y una desventaja de este tipo de modelo?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Una ventaja es que no obliga a que la relación entre edad y salario sea lineal.
+
+El modelo permite que diferentes regiones de la variable `Age` tengan distintos niveles promedio de salario.
+
+Es decir, permite aproximar una función no lineal mediante una función constante a trozos.
+
+La desventaja es que la discretización elimina información sobre la posición exacta de cada observación dentro de un intervalo.
+
+Además, introduce saltos artificiales:
+
+- personas con edades diferentes dentro del mismo intervalo reciben exactamente la misma predicción;
+- personas con edades casi idénticas pueden recibir predicciones distintas si se encuentran a lados opuestos de un punto de corte.
+
+Esta limitación motiva el uso de métodos más suaves, como los *splines*.
+:::
+::::
+
+## De regresión lineal a regresión logística
+
+Ahora cambiaremos la pregunta.
+
+En lugar de modelar directamente el salario,
+
+$$Wage,$$
+
+queremos estudiar la probabilidad de que el salario sea superior a $250$.
+
+Definimos una variable binaria:
+
+$$Y=
+I(Wage>250),$$
+
+donde
+
+$$I(Wage>250)=
+\begin{cases}
+1, & Wage>250,\\
+0, & Wage\leq250.
+\end{cases}$$
+
+En Python:
+
+```{python}
+y_bin = (wage > 250).astype(int)
+
+y_bin.head()
+```
+
+La expresión
+
+``` python
+wage > 250
+```
+
+genera valores booleanos y los convierte en
+
+``` text
+1
+0
+0
+1
+...
+```
+
+Podemos contar cuántas observaciones pertenecen a cada clase:
+
+```{python}
+y_bin.value_counts()
+```
+
+y calcular la proporción global de salarios superiores a $250$:
+
+```{python}
+y_bin.mean()
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué la media de una variable binaria puede interpretarse como una proporción?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Si una variable contiene únicamente ceros y unos,
+
+$$Y_i\in\{0,1\},$$
+
+entonces
+
+$$\bar Y=
+\frac{1}{n}
+\sum_{i=1}^nY_i.$$
+
+La suma
+
+$$\sum_iY_i$$
+
+es simplemente el número de observaciones iguales a $1$.
+
+Por tanto,
+
+$$\bar Y=
+\frac{\#\{Y_i=1\}}{n}.$$
+
+Es decir, la media es exactamente la proporción de observaciones pertenecientes a la clase $1$.
+:::
+::::
+
+### Función escalonada logística
+
+Queremos modelar
+
+$$P(Wage>250\mid Age).$$
+
+Definimos
+
+$$p(x)
+=
+P(Wage>250\mid Age=x).$$
+
+Utilizamos los mismos cuatro grupos de edad construidos anteriormente.
+
+El primer grupo, $C_0$, funciona como categoría de referencia. Por tanto, utilizamos un intercepto y tres variables indicadoras:
+
+$$\log
+\left(
+\frac{p(x)}{1-p(x)}
+\right)
+=
+\beta_0
++
+\beta_1C_1(x)
++
+\beta_2C_2(x)
++
+\beta_3C_3(x).$$
+
+Ajustamos el modelo mediante:
+
+```{python}
+modelo_logit = sm.Logit(
+    y_bin,
+    X
+).fit()
+```
+
+Recordemos que `X` contiene:
+
+- una columna constante;
+- tres variables indicadoras;
+- el primer grupo de edad como categoría de referencia.
+
+Podemos ver los coeficientes estimados mediante:
+
+```{python}
+modelo_logit.params
+```
+
+### ¿Qué representan los coeficientes logísticos?
+
+Aquí debemos tener cuidado.
+
+En la regresión logística los coeficientes **no son probabilidades**.
+
+La regresión logística modela los *log-odds*:
+
+$$\operatorname{logit}(p)
+=
+\log
+\left(
+\frac{p}{1-p}
+\right).$$
+
+Como nuestro modelo incluye un intercepto y un grupo de referencia, cada coeficiente tiene una interpretación diferente.
+
+### Grupo de referencia
+
+Para una persona perteneciente al grupo de referencia $C_0$, todas las variables indicadoras valen cero:
+
+$$C_1=C_2=C_3=0.$$
+
+Por tanto,
+
+$$\log
+\left(
+\frac{p_0}{1-p_0}
+\right)
+=
+\beta_0.$$
+
+Así,
+
+$$\boxed{
+\beta_0
+=
+\operatorname{logit}(p_0)
+}$$
+
+donde
+
+$$p_0
+=
+P(Wage>250\mid Age\in C_0).$$
+
+El intercepto representa entonces los **log-odds de tener un salario superior a** $250$ en el grupo de referencia.
+
+### Los demás grupos
+
+Para el grupo $C_1$,
+
+$$C_1=1,
+\qquad
+C_2=C_3=0.$$
+
+Entonces
+
+$$\log
+\left(
+\frac{p_1}{1-p_1}
+\right)
+=
+\beta_0+\beta_1.$$
+
+Para el grupo $C_2$,
+
+$$\log
+\left(
+\frac{p_2}{1-p_2}
+\right)
+=
+\beta_0+\beta_2.$$
+
+Y para el grupo $C_3$,
+
+$$\log
+\left(
+\frac{p_3}{1-p_3}
+\right)
+=
+\beta_0+\beta_3.$$
+
+Por tanto,
+
+$$\boxed{
+\beta_j
+=
+\operatorname{logit}(p_j)
+-
+\operatorname{logit}(p_0)
+}$$
+
+para $j=1,2,3$.
+
+Los coeficientes distintos al intercepto representan diferencias en *log-odds* respecto al grupo de referencia.
+
+### De probabilidad a odds
+
+Si una probabilidad es $p$, sus *odds* se definen como
+
+$$\frac{p}{1-p}.$$
+
+Por ejemplo, si
+
+$$p=0.20,$$
+
+entonces
+
+$$\text{odds}
+=
+\frac{0.20}{0.80}
+=
+0.25.$$
+
+Esto puede interpretarse como aproximadamente un caso favorable por cada cuatro desfavorables.
+
+Por otro lado, si
+
+$$p=0.50,$$
+
+entonces
+
+$$\text{odds}=1.$$
+
+Y si
+
+$$p=0.80,$$
+
+entonces
+
+$$\text{odds}
+=
+\frac{0.80}{0.20}
+=
+4.$$
+
+Es decir, existen aproximadamente cuatro casos favorables por cada caso desfavorable.
+
+### De odds a log-odds
+
+La regresión logística utiliza el logaritmo de los odds:
+
+$$\log
+\left(
+\frac{p}{1-p}
+\right).$$
+
+Esta transformación se conoce como función **logit**.
+
+Si definimos
+
+$$\eta
+=
+\log
+\left(
+\frac{p}{1-p}
+\right),$$
+
+la transformación inversa permite recuperar la probabilidad:
+
+$$p
+=
+\frac{e^\eta}
+{1+e^\eta}.$$
+
+Equivalentemente,
+
+$$p
+=
+\frac{1}{1+e^{-\eta}}.$$
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Si el log-odds de un grupo es igual a cero, ¿qué probabilidad corresponde a ese grupo?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Si
+
+$$\log
+\left(
+\frac{p}{1-p}
+\right)
+=
+0,$$
+
+entonces
+
+$$\frac{p}{1-p}
+=
+e^0
+=
+1.$$
+
+Por tanto,
+
+$$p=1-p,$$
+
+y finalmente
+
+$$p=0.5.$$
+
+Así, un log-odds igual a cero corresponde a una probabilidad de $0.5$.
+:::
+::::
+
+### Odds ratios
+
+Una ventaja de la parametrización con grupo de referencia es que los coeficientes tienen una interpretación directa mediante **odds ratios**.
+
+Sabemos que
+
+$$\beta_j
+=
+\operatorname{logit}(p_j)
+-
+\operatorname{logit}(p_0).$$
+
+Entonces,
+
+$$\beta_j
+=
+\log(odds_j)
+-
+\log(odds_0).$$
+
+Utilizando propiedades de los logaritmos,
+
+$$\beta_j
+=
+\log
+\left(
+\frac{odds_j}{odds_0}
+\right).$$
+
+Al exponenciar,
+
+$$\boxed{
+e^{\beta_j}
+=
+\frac{odds_j}{odds_0}
+}$$
+
+Por tanto, $e^{\beta_j}$ es el **odds ratio del grupo** $j$ respecto al grupo de referencia.
+
+Podemos calcularlos mediante:
+
+```{python}
+np.exp(modelo_logit.params)
+```
+
+Para los coeficientes asociados con las variables indicadoras:
+
+- si $e^{\beta_j}>1$, los odds son mayores que en el grupo de referencia;
+- si $e^{\beta_j}<1$, los odds son menores;
+- si $e^{\beta_j}=1$, los odds son iguales.
+
+::: callout-warning
+Un odds ratio de $2$ significa que los **odds** son dos veces mayores.
+
+No significa necesariamente que la probabilidad sea dos veces mayor.
+:::
+
+### Transformar los coeficientes a probabilidades
+
+Con nuestra parametrización actual **no podemos transformar cada coeficiente individual mediante la función logística y asumir que obtenemos la probabilidad de cada grupo**.
+
+Por ejemplo,
+
+``` python
+1 / (1 + np.exp(-modelo_logit.params))
+```
+
+no produce directamente las cuatro probabilidades de grupo.
+
+¿Por qué?
+
+Porque para los grupos distintos al de referencia debemos considerar la suma del intercepto y el coeficiente correspondiente.
+
+Para el grupo de referencia:
+
+$$p_0
+=
+\frac{1}
+{1+e^{-\beta_0}}.$$
+
+Para el grupo $C_1$:
+
+$$p_1
+=
+\frac{1}
+{1+e^{-(\beta_0+\beta_1)}}.$$
+
+Para el grupo $C_2$:
+
+$$p_2
+=
+\frac{1}
+{1+e^{-(\beta_0+\beta_2)}}.$$
+
+Y para el grupo $C_3$:
+
+$$p_3
+=
+\frac{1}
+{1+e^{-(\beta_0+\beta_3)}}.$$
+
+Podemos calcularlas en Python:
+
+```{python}
+b = modelo_logit.params
+
+probabilidades_grupos = pd.Series(
+    [
+        1 / (1 + np.exp(-b.iloc[0])),
+        1 / (1 + np.exp(-(b.iloc[0] + b.iloc[1]))),
+        1 / (1 + np.exp(-(b.iloc[0] + b.iloc[2]))),
+        1 / (1 + np.exp(-(b.iloc[0] + b.iloc[3])))
+    ],
+    index=age_cut.cat.categories
+)
+
+probabilidades_grupos
+```
+
+Estas cantidades sí representan las probabilidades estimadas de tener `wage > 250` en cada uno de los cuatro grupos.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué no podemos interpretar
+
+``` python
+1 / (1 + np.exp(-modelo_logit.params.iloc[1]))
+```
+
+como la probabilidad del segundo grupo?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Porque `modelo_logit.params.iloc[1]` corresponde a $\hat\beta_1$, y $\hat\beta_1$ no representa el log-odds absoluto del segundo grupo.
+
+Representa la diferencia entre los log-odds del segundo grupo y los del grupo de referencia:
+
+$$\beta_1
+=
+\operatorname{logit}(p_1)
+-
+\operatorname{logit}(p_0).$$
+
+El log-odds del segundo grupo es
+
+$$\beta_0+\beta_1.$$
+
+Por tanto, su probabilidad es
+
+$$p_1
+=
+\frac{1}
+{1+e^{-(\beta_0+\beta_1)}}.$$
+:::
+::::
+
+### Comprobar las probabilidades directamente
+
+Como `y_bin` contiene únicamente ceros y unos, su media dentro de cada grupo es la proporción de observaciones con
+
+$$Wage>250.$$
+
+Podemos calcular directamente estas proporciones:
+
+```{python}
+proporciones_observadas = (
+    pd.DataFrame({
+        'grupo_edad': age_cut,
+        'high_wage': y_bin
+    })
+    .groupby(
+        'grupo_edad',
+        observed=True
+    )['high_wage']
+    .mean()
+)
+
+proporciones_observadas
+```
+
+Comparemos con las probabilidades obtenidas a partir del modelo:
+
+```{python}
+pd.DataFrame({
+    'Proporción observada': proporciones_observadas,
+    'Probabilidad del modelo': probabilidades_grupos
+})
+```
+
+Los valores deben coincidir salvo pequeñas diferencias numéricas de redondeo.
+
+Esto ocurre porque dentro de cada grupo la regresión logística estima una probabilidad constante.
+
+En otras palabras,
+
+$$\boxed{
+\hat p_j
+=
+\frac{
+\#\{Wage>250\text{ en el grupo }j\}
+}{
+\#\{\text{observaciones en el grupo }j\}
+}
+}$$
+
+La diferencia es que, con nuestra parametrización:
+
+$$\operatorname{logit}(\hat p_0)
+=
+\hat\beta_0,$$
+
+mientras que para $j=1,2,3$,
+
+$$\operatorname{logit}(\hat p_j)
+=
+\hat\beta_0+\hat\beta_j.$$
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Resume la interpretación de los coeficientes de los modelos `OLS` y `Logit` cuando utilizamos un intercepto y el primer grupo como categoría de referencia.
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+En el modelo de mínimos cuadrados,
+
+$$\hat\beta_0
+=
+\bar Y_{C_0}$$
+
+es la media salarial del grupo de referencia.
+
+Para los demás grupos,
+
+$$\hat\beta_j
+=
+\bar Y_{C_j}
+-
+\bar Y_{C_0}.$$
+
+Por tanto, los coeficientes representan diferencias de medias respecto al grupo de referencia.
+
+En la regresión logística,
+
+$$\hat\beta_0
+=
+\operatorname{logit}(\hat p_0)$$
+
+representa los log-odds del grupo de referencia.
+
+Para $j=1,2,3$,
+
+$$\hat\beta_j
+=
+\operatorname{logit}(\hat p_j)
+-
+\operatorname{logit}(\hat p_0).$$
+
+Por tanto, los coeficientes representan diferencias en log-odds respecto al grupo de referencia.
+
+Al exponenciar,
+
+$$e^{\hat\beta_j}$$
+
+obtenemos el odds ratio del grupo $j$ respecto al grupo de referencia.
+:::
+::::
+
+### El `summary()` de la regresión logística
+
+Veamos ahora:
+
+```{python}
+print(modelo_logit.summary())
+```
+
+La estructura tiene semejanzas con el resumen de OLS, pero también diferencias importantes.
+
+#### `Model: Logit`
+
+`Model: Logit` indica que se ha ajustado un modelo de regresión logística.
+
+La variable respuesta es binaria:
+
+$$Y=I(Wage>250).$$
+
+A diferencia de OLS, los parámetros se estiman mediante **máxima verosimilitud**.
+
+#### `coef`
+
+La columna
+
+``` text
+coef
+```
+
+contiene
+
+$$\hat\beta_0,
+\hat\beta_1,
+\hat\beta_2,
+\hat\beta_3.$$
+
+Su interpretación es:
+
+$$\hat\beta_0
+=
+\operatorname{logit}(\hat p_0),$$
+
+y
+
+$$\hat\beta_j
+=
+\operatorname{logit}(\hat p_j)
+-
+\operatorname{logit}(\hat p_0),
+\qquad j=1,2,3.$$
+
+Por tanto:
+
+- `const` representa los log-odds del grupo de referencia;
+- cada coeficiente de una dummy representa la diferencia de log-odds respecto al grupo de referencia.
+
+#### `std err`
+
+La columna
+
+``` text
+std err
+```
+
+contiene el error estándar de cada coeficiente.
+
+Para el intercepto,
+
+$$SE(\hat\beta_0)$$
+
+mide la incertidumbre asociada con los log-odds del grupo de referencia.
+
+Para los demás coeficientes,
+
+$$SE(\hat\beta_j)$$
+
+mide la incertidumbre asociada con la diferencia de log-odds entre el grupo $j$ y el grupo de referencia.
+
+#### Estadístico `z`
+
+En lugar del estadístico $t$ utilizado en OLS, aparece
+
+``` text
+z
+```
+
+y se calcula aproximadamente como
+
+$$z
+=
+\frac{\hat\beta_j}
+{SE(\hat\beta_j)}.$$
+
+Este estadístico se utiliza para contrastar
+
+$$H_0:\beta_j=0.$$
+
+Pero nuevamente la interpretación depende de si estamos mirando el intercepto o una variable indicadora.
+
+#### `P>|z|`
+
+Para el intercepto, el contraste
+
+$$H_0:\beta_0=0$$
+
+equivale a
+
+$$\operatorname{logit}(p_0)=0.$$
+
+Como un logit igual a cero corresponde a
+
+$$p_0=0.5,$$
+
+el p-value de `const` contrasta si la probabilidad del grupo de referencia es igual a $0.5$.
+
+#### Para las variables indicadoras
+
+Para $j=1,2,3$,
+
+$$\beta_j
+=
+\operatorname{logit}(p_j)
+-
+\operatorname{logit}(p_0).$$
+
+Por tanto,
+
+$$H_0:\beta_j=0$$
+
+equivale a
+
+$$\operatorname{logit}(p_j)
+=
+\operatorname{logit}(p_0).$$
+
+Como la función logit es monótona, esto equivale a
+
+$$\boxed{
+H_0:p_j=p_0
+}$$
+
+o, equivalentemente,
+
+$$\boxed{
+H_0:OR_j=1
+}$$
+
+donde $OR_j$ es el odds ratio del grupo $j$ respecto al grupo de referencia.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Si `P>|z|` es muy pequeño para el coeficiente correspondiente a $C_2$, ¿qué podemos concluir?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+El contraste es
+
+$$H_0:\beta_2=0.$$
+
+Como
+
+$$\beta_2
+=
+\operatorname{logit}(p_2)
+-
+\operatorname{logit}(p_0),$$
+
+esto equivale a contrastar
+
+$$H_0:p_2=p_0.$$
+
+Por tanto, un p-value pequeño proporciona evidencia de que la probabilidad de tener un salario superior a $250$ en el grupo $C_2$ es diferente de la del grupo de referencia.
+
+Equivalentemente, proporciona evidencia de que
+
+$$e^{\beta_2}\neq1.$$
+:::
+::::
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Si los tres coeficientes asociados con las variables indicadoras tienen p-values pequeños, ¿podemos concluir que las probabilidades de los cuatro grupos son todas diferentes entre sí?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No.
+
+Los contrastes realizados por el `summary()` son:
+
+$$H_0:p_1=p_0,$$
+
+$$H_0:p_2=p_0,$$
+
+y
+
+$$H_0:p_3=p_0.$$
+
+Por tanto, todos los grupos se comparan únicamente con el grupo de referencia.
+
+Esto no nos permite concluir directamente, por ejemplo, si
+
+$$p_1=p_2$$
+
+o
+
+$$p_2=p_3.$$
+
+Para comparar dos grupos distintos al de referencia necesitamos contrastes adicionales.
+
+Por ejemplo, comparar $C_1$ y $C_2$ equivale a estudiar
+
+$$H_0:\beta_1-\beta_2=0.$$
+:::
+::::
+
+### Intervalos de confianza de los coeficientes
+
+Las columnas
+
+``` text
+[0.025, 0.975]
+```
+
+corresponden a intervalos de confianza del 95% para los coeficientes.
+
+Para el intercepto representan un intervalo para
+
+$$
+\operatorname{logit}(p_0).
+$$
+
+Para las variables indicadoras representan intervalos para diferencias de log-odds:
+
+| \$\$\operatorname{logit}(p_j)  |
+|--------------------------------|
+| \operatorname{logit}(p_0).\$\$ |
+
+Si un intervalo para $\beta_j$ no contiene al cero, esto proporciona evidencia de una diferencia respecto al grupo de referencia.
+
+También podemos exponenciar los límites para obtener un intervalo de confianza para el odds ratio.
+
+Si
+
+$$
+IC_{95\%}(\beta_j)
+=
+[L_j,U_j],
+$$
+
+entonces
+
+$$
+IC_{95\%}(OR_j)
+=
+[e^{L_j},e^{U_j}].
+$$
+
+### Pseudo-$R^2$
+
+En el resumen logístico aparece:
+
+``` text
+Pseudo R-squ.
+```
+
+Este valor **no es equivalente al** $R^2$ de una regresión lineal.
+
+Statsmodels reporta habitualmente el pseudo-$R^2$ de McFadden:
+
+$$
+R^2_{\text{McFadden}}
+=
+1-
+\frac{\log L_{\text{modelo}}}
+{\log L_{\text{nulo}}}.
+$$
+
+No debe interpretarse como:
+
+> "El modelo explica cierto porcentaje de la variabilidad".
+
+Se utiliza principalmente como una medida relativa de ajuste y para comparar modelos logísticos ajustados sobre los mismos datos.
+
+### Log-Likelihood
+
+El `summary()` también presenta:
+
+``` text
+Log-Likelihood
+```
+
+La regresión logística se estima mediante **máxima verosimilitud**.
+
+La función de verosimilitud mide qué tan compatibles son los parámetros del modelo con las respuestas observadas.
+
+Statsmodels reporta su logaritmo:
+
+$$\log L.$$
+
+Al comparar modelos ajustados sobre los mismos datos, un log-likelihood mayor, es decir, menos negativo, representa un mejor ajuste.
+
+### `LL-Null`
+
+`LL-Null` corresponde al log-likelihood del modelo nulo.
+
+En nuestro caso, el modelo nulo contiene solamente un intercepto:
+
+$$\operatorname{logit}(p)
+=
+\beta_0.$$
+
+Es decir, supone una única probabilidad para todos los individuos, independientemente de su edad.
+
+Sirve como referencia para evaluar si incorporar los grupos de edad mejora el modelo.
+
+### `LLR p-value`
+
+El `LLR p-value` corresponde a una prueba de razón de verosimilitudes.
+
+Compara el modelo completo
+
+$$\operatorname{logit}(p(x))
+=
+\beta_0+
+\beta_1C_1(x)+
+\beta_2C_2(x)+
+\beta_3C_3(x)$$
+
+con el modelo nulo
+
+$$\operatorname{logit}(p)
+=
+\beta_0.$$
+
+La hipótesis nula es
+
+$$H_0:
+\beta_1=\beta_2=\beta_3=0.$$
+
+Esto equivale a
+
+$$H_0:
+p_0=p_1=p_2=p_3.$$
+
+Es decir:
+
+> la probabilidad de tener un salario superior a $250$ es la misma en los cuatro grupos de edad.
+
+Un p-value pequeño proporciona evidencia de que al menos uno de los grupos tiene una probabilidad diferente.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué el `LLR p-value` responde una pregunta diferente a los p-values individuales?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Cada p-value individual compara un grupo específico con el grupo de referencia:
+
+$$H_0:p_j=p_0.$$
+
+El `LLR p-value`, en cambio, realiza una prueba global:
+
+$$H_0:
+p_0=p_1=p_2=p_3.$$
+
+Por tanto:
+
+- los tests individuales preguntan si un grupo particular difiere del grupo de referencia;
+- el test de razón de verosimilitudes pregunta si existe alguna diferencia entre los grupos en conjunto.
+:::
+::::
+
+### Convergencia
+
+Al ajustar el modelo aparece un mensaje similar a:
+
+``` text
+Optimization terminated successfully.
+```
+
+A diferencia de OLS, la regresión logística no posee una expresión cerrada simple para los estimadores.
+
+Los coeficientes se obtienen mediante un procedimiento numérico iterativo que busca maximizar la función de verosimilitud.
+
+Que el algoritmo haya convergido significa que encontró una solución numérica estable de acuerdo con los criterios del método de optimización.
+
+### Predicciones logísticas
+
+Para predecir sobre la grilla de edades utilizamos la misma matriz `X_grid` que construimos anteriormente:
+
+```{python}
+pred_logit = modelo_logit.get_prediction(
+    X_grid
+)
+
+media_logit = pred_logit.predicted
+```
+
+La cantidad
+
+``` python
+media_logit
+```
+
+contiene probabilidades estimadas:
+
+$$\hat p(x)
+=
+\widehat{P}(Wage>250\mid Age=x).$$
+
+Como estamos utilizando una función escalonada,
+
+$$\hat p(x)
+=
+\begin{cases}
+\hat p_0, & x\in C_0,\\
+\hat p_1, & x\in C_1,\\
+\hat p_2, & x\in C_2,\\
+\hat p_3, & x\in C_3.
+\end{cases}$$
+
+Pero estas probabilidades se obtienen a partir de:
+
+$$\hat p_0
+=
+\frac{1}
+{1+e^{-\hat\beta_0}},$$
+
+y para $j=1,2,3$,
+
+$$\hat p_j
+=
+\frac{1}
+{1+e^{-(\hat\beta_0+\hat\beta_j)}}.$$
+
+### Intervalos de confianza logísticos
+
+Podemos obtener información sobre la incertidumbre de las probabilidades mediante:
+
+```{python}
+ic_logit = pred_logit.summary_frame(
+    alpha=0.05
+)
+
+ic_logit.head()
+```
+
+Extraemos los límites:
+
+```{python}
+ic_logit_low = ic_logit['ci_lower']
+ic_logit_high = ic_logit['ci_upper']
+```
+
+Estos valores forman intervalos de confianza del 95% para
+
+$$P(Wage>250\mid Age=x).$$
+
+Es importante distinguirlos de los intervalos que aparecen directamente en `modelo_logit.summary()`.
+
+En el `summary()` los intervalos corresponden a los **coeficientes en escala log-odds**.
+
+Aquí los intervalos corresponden directamente a las **probabilidades predichas**.
+
+### Rug plot
+
+En la gráfica logística la respuesta es binaria.
+
+Para visualizar dónde se encuentran las observaciones utilizaremos un **rug plot**.
+
+Separamos las edades de los individuos con
+
+$$Wage>250$$
+
+y las de aquellos con
+
+$$Wage\leq250.$$
+
+```{python}
+rug_high = age[y_bin == 1]
+rug_low = age[y_bin == 0]
+```
+
+Cada pequeña línea vertical representa una observación.
+
+- Las marcas superiores corresponden a individuos con `wage > 250`.
+- Las marcas inferiores corresponden a individuos con `wage <= 250`.
+
+### Visualización de la regresión logística escalonada
+
+```{python}
+fig, ax = plt.subplots(
+    figsize=(7, 5.5)
+)
+
+# Probabilidad estimada
+ax.plot(
+    age_grid,
+    media_logit,
+    color='green',
+    linewidth=2.2
+)
+
+# Intervalo de confianza del 95%
+ax.plot(
+    age_grid,
+    ic_logit_low,
+    color='green',
+    linestyle='--',
+    linewidth=1.2
+)
+
+ax.plot(
+    age_grid,
+    ic_logit_high,
+    color='green',
+    linestyle='--',
+    linewidth=1.2
+)
+
+# Rug plot
+rug_high = age[y_bin == 1]
+rug_low = age[y_bin == 0]
+
+y_min = 0
+y_max = 0.21
+
+# Wage > 250
+ax.plot(
+    rug_high,
+    np.full(
+        len(rug_high),
+        y_max
+    ),
+    '|',
+    color='gray',
+    alpha=0.55,
+    markersize=8,
+    markeredgewidth=0.8
+)
+
+# Wage <= 250
+ax.plot(
+    rug_low,
+    np.full(
+        len(rug_low),
+        y_min
+    ),
+    '|',
+    color='gray',
+    alpha=0.30,
+    markersize=8,
+    markeredgewidth=0.8
+)
+
+ax.set_xlabel(
+    'Age',
+    fontsize=12
+)
+
+ax.set_ylabel(
+    'Pr(Wage > 250 | Age)',
+    fontsize=12
+)
+
+ax.set_ylim(
+    y_min,
+    y_max
+)
+
+ax.tick_params(
+    axis='both',
+    labelsize=10
+)
+
+plt.tight_layout()
+plt.show()
+```
+
+La línea verde sólida representa
+
+$$\widehat{P}(Wage>250\mid Age).$$
+
+Dentro de cada intervalo la probabilidad estimada es constante.
+
+Las líneas discontinuas representan intervalos de confianza del 95% para esa probabilidad.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué la línea verde tiene forma escalonada aunque estemos utilizando regresión logística?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+La función logística transforma los log-odds en probabilidades, pero las variables predictoras siguen siendo variables indicadoras de pertenencia a intervalos.
+
+Dentro de cada grupo, el predictor lineal es constante.
+
+Para el grupo de referencia:
+
+$$\eta(x)=\beta_0.$$
+
+Para los demás grupos:
+
+$$\eta(x)=\beta_0+\beta_j.$$
+
+Por tanto, después de aplicar la función logística,
+
+$$p(x)
+=
+\frac{1}
+{1+e^{-\eta(x)}},$$
+
+la probabilidad también permanece constante dentro de cada intervalo.
+
+La regresión logística no elimina la naturaleza escalonada de la transformación de `Age`.
+:::
+::::
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Cuál es la principal diferencia entre el panel de mínimos cuadrados y el panel logístico?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+En el modelo de mínimos cuadrados estamos estimando
+
+$$E[Wage\mid Age].$$
+
+Cada escalón representa el salario promedio estimado dentro de un grupo de edad.
+
+En el modelo logístico estamos estimando
+
+$$P(Wage>250\mid Age).$$
+
+Cada escalón representa la probabilidad estimada de superar el umbral de $250$ dentro de un grupo de edad.
+
+Por tanto:
+
+$$\boxed{
+\text{OLS}
+\longrightarrow
+\text{medias por grupo}
+}$$
+
+mientras que
+
+$$\boxed{
+\text{Logit}
+\longrightarrow
+\text{probabilidades por grupo}
+}$$
+
+En ambos casos, las predicciones son constantes dentro de cada intervalo porque `Age` fue discretizada.
+:::
+::::
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Supón que utilizamos $20$ intervalos en lugar de $4$. ¿El modelo sería necesariamente mejor?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No necesariamente.
+
+Con más intervalos obtenemos un modelo más flexible.
+
+Sin embargo, cada grupo contiene menos observaciones, por lo que las estimaciones pueden volverse más variables.
+
+Esto refleja nuevamente el compromiso entre sesgo y varianza.
+
+Con pocos intervalos:
+
+- el modelo es rígido;
+- puede tener mayor sesgo;
+- suele tener menor varianza.
+
+Con muchos intervalos:
+
+- el modelo es más flexible;
+- puede tener menor sesgo;
+- puede tener mayor varianza.
+
+Por tanto, aumentar el número de intervalos no garantiza una mejor capacidad de generalización.
+:::
+::::
+
+## Ejercicios
+
+### Ejercicio 1.
+
+Repite el análisis de `Wage` utilizando los mismos cuatro grupos de edad, pero ahora construye el modelo con **cuatro variables indicadoras y sin intercepto**.
+
+1.  Ajusta el modelo de mínimos cuadrados.
+2.  Interpreta los coeficientes estimados.
+3.  Verifica que cada coeficiente coincida con la media salarial del grupo correspondiente.
+4.  Ajusta también el modelo logístico para
+
+$$Y=I(Wage>250).$$
+
+5.  Transforma los coeficientes logísticos en probabilidades.
+6.  Compara las predicciones obtenidas con las del modelo con intercepto.
+
+Explica qué cambia entre ambas parametrizaciones y qué permanece igual.
+
+### Ejercicio 2.
+
+En lugar de dividir `Age` en cuatro grupos, construye una función escalonada utilizando **seis grupos definidos mediante cuantiles**.
+
+1.  Ajusta el modelo de mínimos cuadrados.
+2.  Grafica la función escalonada estimada con sus intervalos de confianza.
+3.  Compara el resultado con el modelo de cuatro grupos.
+4.  Analiza cómo cambia la flexibilidad del modelo.
+5.  Comenta qué ocurre con el número de observaciones dentro de cada intervalo y con la incertidumbre de las estimaciones.
+
+Relaciona tus observaciones con el compromiso entre sesgo y varianza.
+
+### Ejercicio 3.
+
+En el análisis anterior definimos
+
+$$Y=I(Wage>250).$$
+
+Repite el modelo logístico utilizando ahora los siguientes umbrales:
+
+$$Y=I(Wage>150),$$
+
+$$Y=I(Wage>200),$$
+
+y
+
+$$Y=I(Wage>250).$$
+
+Para cada umbral:
+
+1.  ajusta el modelo logístico utilizando los mismos cuatro grupos de edad;
+2.  calcula las probabilidades estimadas para cada grupo;
+3.  grafica la función escalonada correspondiente;
+4.  compara cómo cambian las probabilidades al aumentar el umbral.
+
+Explica por qué las probabilidades deben disminuir al utilizar umbrales más altos.
+
+### Ejercicio 4.
+
+Construye dos funciones escalonadas para `Age` utilizando cuatro grupos:
+
+- una mediante `pd.qcut()`;
+- otra mediante `pd.cut()`.
+
+Para cada caso:
+
+1.  identifica los puntos de corte;
+2.  calcula el número de observaciones por grupo;
+3.  ajusta un modelo de mínimos cuadrados;
+4.  compara las medias estimadas;
+5.  grafica ambas funciones escalonadas.
+
+Discute las diferencias entre dividir el **número de observaciones** y dividir el **rango de la variable**.
+
+### Ejercicio 5.
+
+Utiliza nuevamente el conjunto de datos `Wage`, pero ahora selecciona otra variable continua como predictor, por ejemplo `year`.
+
+1.  Explora gráficamente la relación entre esa variable y `wage`.
+2.  Divide el predictor en cuatro grupos mediante cuantiles.
+3.  Ajusta una función escalonada mediante mínimos cuadrados.
+4.  Interpreta los coeficientes.
+5.  Construye una variable binaria basada en `wage` y ajusta una regresión logística escalonada.
+6.  Compara el comportamiento del nuevo predictor con el observado para `age`.
+
+Discute si una función escalonada parece apropiada para esa relación.

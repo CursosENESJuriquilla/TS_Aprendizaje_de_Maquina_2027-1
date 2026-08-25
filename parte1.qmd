@@ -14,7 +14,7 @@ Al terminar este ejercicio se buscará responder:
 - ¿Por qué la exactitud (*accuracy*) puede ser una métrica engañosa?
 
 
-[Diapositivas](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/Material/Tema1.pdf)
+[Diapositivas](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/Tema1.pdf)
 
 ------------------------------------------------------------------------
 
