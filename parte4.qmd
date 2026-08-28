@@ -1,1 +1,1282 @@
-# Funciones base
+# Splines de regresión con funciones base
+
+
+## Objetivos
+
+En esta práctica estudiaremos cómo ajustar relaciones no lineales utilizando **splines de regresión**.
+
+Trabajaremos nuevamente con el conjunto de datos `Wage`.
+
+## Librerías
+
+Comenzamos importando las librerías necesarias.
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+
+from ISLP import load_data
+
+from ISLP.models import (
+    ModelSpec as MS,
+    summarize,
+    bs,
+    ns,
+    poly
+)
+
+from ISLP.transforms import (
+    BSpline,
+    NaturalSpline
+)
+```
+
+Las funciones principales que utilizaremos son:
+
+- `BSpline()`: construye directamente una matriz de funciones base B-spline;
+- `bs()`: permite incluir un B-spline dentro de `ModelSpec`;
+- `NaturalSpline()`: construye una base para un spline cúbico natural;
+- `ns()`: permite especificar un spline natural dentro de `ModelSpec`;
+- `sm.OLS()`: ajusta el modelo lineal una vez construidas las funciones base.
+
+Aunque el ajuste final utiliza regresión lineal, la relación entre $X$ y $Y$ puede ser no lineal porque reemplazamos $X$ por funciones transformadas de $X$.
+
+
+## Cargar los datos `Wage`
+
+```{python}
+Wage = load_data("Wage")
+
+Wage.head()
+```
+
+Recordemos algunas de las variables disponibles.
+
+```{python}
+Wage.columns
+```
+
+Utilizaremos:
+
+- `age`: edad del trabajador;
+- `wage`: salario.
+
+```{python}
+age = Wage["age"]
+wage = Wage["wage"]
+```
+
+Veamos algunas estadísticas descriptivas.
+
+```{python}
+Wage[["age", "wage"]].describe()
+```
+
+## Visualización inicial
+
+Antes de ajustar cualquier modelo, observemos los datos.
+
+```{python}
+plt.figure(figsize=(8, 5))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.25
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("Salario en función de la edad")
+
+plt.show()
+```
+
+La nube de puntos no sugiere una relación estrictamente lineal.
+
+Parece existir una tendencia general:
+
+- el salario aumenta durante parte del rango de edades;
+- posteriormente el crecimiento se estabiliza;
+- hacia edades mayores puede observarse una disminución.
+
+Esto motiva el uso de modelos capaces de representar relaciones no lineales.
+
+## ¿Qué es un spline?
+
+Un spline cúbico es una función construida mediante distintos polinomios cúbicos definidos en diferentes regiones del predictor.
+
+Si tenemos nodos
+
+$$
+\xi_1,\xi_2,\ldots,\xi_K,
+$$
+
+estos dividen el rango de $X$ en $K+1$ regiones.
+
+Los polinomios se unen imponiendo continuidad de:
+
+$$
+f, f', \text{ y } f''.
+$$
+
+Por ello obtenemos una curva suave incluso en los puntos donde cambia el polinomio.
+
+Una representación posible de un spline cúbico es
+
+$$
+f(x)
+=
+\beta_0
++\beta_1x
++\beta_2x^2
++\beta_3x^3
++
+\sum_{k=1}^{K}
+\beta_{3+k}(x-\xi_k)_+^3.
+$$
+
+Sin embargo, computacionalmente suele ser más conveniente utilizar bases B-spline.
+
+
+## Construir directamente una base B-spline
+
+Comencemos colocando tres nodos interiores en
+
+$$
+25,\qquad 40,\qquad 60.
+$$
+
+Utilizamos `BSpline()`.
+
+```{python}
+bs_transform = BSpline(
+    internal_knots=[25, 40, 60],
+    intercept=True
+)
+
+bs_transform
+```
+
+Todavía no hemos construido las funciones base.
+
+Primero debemos ajustar el transformador al predictor.
+
+```{python}
+bs_transform = bs_transform.fit(age)
+```
+
+Ahora transformamos las edades.
+
+```{python}
+bs_age = bs_transform.transform(age)
+
+bs_age
+```
+
+Veamos sus dimensiones.
+
+```{python}
+bs_age.shape
+```
+
+
+¿Por qué aparecen **7 columnas**?
+
+Tenemos:
+
+- un spline cúbico;
+- $K=3$ nodos interiores;
+- intercepto incluido.
+
+Para un spline cúbico con $K$ nodos tenemos
+
+$$
+K+4
+$$
+
+funciones base.
+
+Por tanto,
+
+$$
+3+4=7.
+$$
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Si utilizáramos $K=5$ nodos interiores, ¿cuántas columnas tendría la base cúbica incluyendo el intercepto?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Para un spline cúbico con $K$ nodos:
+
+$$
+K+4
+$$
+
+grados de libertad.
+
+Si
+
+$$
+K=5,
+$$
+
+entonces:
+
+$$
+5+4=9.
+$$
+
+La matriz tendría **9 columnas**.
+:::
+::::
+
+
+## ¿Qué representan las columnas de la base?
+
+Las columnas de `bs_age` no deben interpretarse como variables originales independientes.
+
+Cada columna corresponde a una **función base** evaluada sobre `age`.
+
+Podemos visualizar estas funciones. Primero ordenamos las edades, para que las curvas se dibujen de izquierda a derecha:
+
+```{python}
+age_order = np.argsort(age.to_numpy())
+
+age_sorted = age.to_numpy()[age_order]
+```
+
+Como `bs_age` es un `DataFrame` de pandas, utilizamos `.iloc` para ordenar sus filas:
+
+```{python}
+bs_sorted = bs_age.iloc[age_order, :].to_numpy()
+```
+
+
+Ahora graficamos cada una de las funciones base:
+
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+for j in range(bs_sorted.shape[1]):
+    plt.plot(
+        age_sorted,
+        bs_sorted[:, j],
+        label=f"Base {j + 1}"
+    )
+
+plt.xlabel("Edad")
+plt.ylabel("Valor de la función base")
+plt.title("Funciones base B-spline")
+plt.legend()
+plt.show()
+```
+
+Cada columna de la matriz representa una función
+
+$$
+b_j(x)
+$$
+
+evaluada para todos los valores de `age`.
+
+Por ello, la matriz tiene la forma
+
+$$
+\begin{pmatrix}
+b_1(x_1) & b_2(x_1) & \cdots & b_p(x_1)\\
+b_1(x_2) & b_2(x_2) & \cdots & b_p(x_2)\\
+\vdots & \vdots & \ddots & \vdots\\
+b_1(x_n) & b_2(x_n) & \cdots & b_p(x_n)
+\end{pmatrix}.
+$$
+
+Cada función base tiene influencia principalmente sobre una región determinada del dominio.
+
+Esta característica permite modificar localmente la forma del ajuste sin alterar drásticamente toda la curva.
+
+
+## Ajustar el spline como un modelo lineal
+
+En lugar de construir manualmente la matriz anterior, podemos utilizar `bs()` dentro de `ModelSpec`.
+
+Definimos un spline para `age` con los mismos nodos.
+
+```{python}
+bs_age_spec = MS([
+    bs(
+        "age",
+        internal_knots=[25, 40, 60]
+    )
+])
+```
+
+Ahora ajustamos la especificación a los datos.
+
+```{python}
+bs_age_spec = bs_age_spec.fit(Wage)
+```
+
+Construimos la matriz de diseño.
+
+```{python}
+X_bs = bs_age_spec.transform(Wage)
+
+X_bs.head()
+```
+
+Veamos sus dimensiones.
+
+```{python}
+X_bs.shape
+```
+
+Ahora ajustamos una regresión lineal.
+
+```{python}
+model_bs = sm.OLS(
+    wage,
+    X_bs
+).fit()
+```
+
+Podemos resumir el modelo.
+
+```{python}
+summarize(model_bs)
+```
+
+
+
+## ¿Por qué aparecen menos coeficientes de spline?
+
+En el ejemplo anterior `BSpline(..., intercept=True)` produjo 7 columnas.
+
+Sin embargo, cuando utilizamos
+
+```python
+bs("age", internal_knots=[25, 40, 60])
+```
+
+dentro de `ModelSpec`, normalmente aparece un intercepto general del modelo y seis términos asociados al spline.
+
+Esto ocurre porque `bs()` utiliza por defecto
+
+```python
+intercept=False
+```
+
+para evitar introducir redundancia con el intercepto global.
+
+Conceptualmente tenemos:
+
+$$
+\text{intercepto general}
++
+\text{funciones base del spline}.
+$$
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué sería problemático introducir dos columnas que representaran exactamente el mismo intercepto?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Porque las columnas serían linealmente dependientes.
+
+Esto produciría una matriz de diseño que no tiene rango completo y los parámetros no podrían identificarse de manera única.
+
+Por ello, cuando el modelo ya contiene un intercepto general, normalmente la base del spline no incluye otro intercepto independiente.
+
+:::
+::::
+
+:::{.callout-note}
+Podemos simplificar los nombres de la tabla como sigue:
+
+```python
+bs_age_spec = MS([bs('age', internal_knots=[25,40,60], name='bs(age)')])
+
+X_bs = bs_age.fit_transform(Wage)
+
+model_bs = sm.OLS(wage, X_bs).fit()
+
+summarize(model_bs)
+```
+:::
+
+
+## Predicciones sobre una malla de edades
+
+Para visualizar el ajuste construiremos una secuencia de edades.
+
+```{python}
+age_grid = np.linspace(
+    age.min(),
+    age.max(),
+    500
+)
+```
+
+Creamos un `DataFrame` con estas nuevas observaciones.
+
+```{python}
+age_grid_df = pd.DataFrame({
+    "age": age_grid
+})
+```
+
+Ahora debemos transformar las nuevas edades utilizando **la misma base aprendida con los datos originales**.
+
+```{python}
+X_grid_bs = bs_age_spec.transform(age_grid_df)
+```
+
+Calculamos las predicciones.
+
+```{python}
+pred_bs = model_bs.get_prediction(X_grid_bs)
+```
+
+Obtenemos el resumen de predicciones.
+
+```{python}
+pred_bs_summary = pred_bs.summary_frame()
+
+pred_bs_summary.head()
+```
+
+Las columnas incluyen, entre otras:
+
+- `mean`: predicción media;
+- `mean_ci_lower`: límite inferior del intervalo de confianza;
+- `mean_ci_upper`: límite superior del intervalo de confianza.
+
+
+## Graficar el spline cúbico
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.20
+)
+
+plt.plot(
+    age_grid,
+    pred_bs_summary["mean"],
+    linewidth=2
+)
+
+plt.plot(
+    age_grid,
+    pred_bs_summary["mean_ci_lower"],
+    linestyle="--"
+)
+
+plt.plot(
+    age_grid,
+    pred_bs_summary["mean_ci_upper"],
+    linestyle="--"
+)
+
+plt.axvline(25, linestyle=":")
+plt.axvline(40, linestyle=":")
+plt.axvline(60, linestyle=":")
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("Spline cúbico con nodos en 25, 40 y 60")
+
+plt.show()
+```
+
+Las líneas verticales indican los nodos.
+
+Es importante notar que la curva no presenta saltos en ellos.
+
+
+## Inspeccionar los nodos
+
+Podemos recuperar los nodos utilizados por un objeto `BSpline`.
+
+```{python}
+bs_check = BSpline(
+    internal_knots=[25, 40, 60]
+).fit(age)
+
+bs_check.internal_knots_
+```
+
+
+
+## Elegir la complejidad mediante grados de libertad
+
+No siempre necesitamos especificar manualmente los nodos.
+
+Podemos indicar directamente los grados de libertad.
+
+Por ejemplo:
+
+```{python}
+bs_df6 = BSpline(
+    df=6
+).fit(age)
+```
+
+Inspeccionamos los nodos seleccionados automáticamente.
+
+```{python}
+bs_df6.internal_knots_
+```
+
+
+
+Estos valores corresponden aproximadamente a los cuantiles:
+
+$$
+25\%,\qquad 50\%,\qquad 75\%.
+$$
+
+Podemos comprobarlos directamente.
+
+```{python}
+age.quantile([0.25, 0.50, 0.75])
+```
+
+Esto ilustra una estrategia común:
+
+1. especificar la complejidad deseada;
+2. colocar automáticamente los nodos en cuantiles de los datos.
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué puede ser preferible colocar los nodos en cuantiles en lugar de distribuirlos uniformemente sobre el rango de $X$?
+
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Porque los cuantiles tienen en cuenta la distribución de los datos.
+
+Al colocar los nodos en cuantiles, cada región contiene aproximadamente un número similar de observaciones.
+
+Si los datos están concentrados en una región pequeña, colocar nodos uniformemente en el rango podría dejar muchos nodos en regiones con muy pocos datos.
+
+
+:::
+::::
+
+
+
+## Ajustar un spline usando grados de libertad
+
+Ahora utilizaremos directamente `df=6`.
+
+```{python}
+bs_df_spec = MS([
+    bs(
+        "age",
+        df=6
+    )
+]).fit(Wage)
+```
+
+Construimos la matriz y ajustamos el modelo.
+
+```{python}
+X_bs_df = bs_df_spec.transform(Wage)
+
+model_bs_df = sm.OLS(
+    wage,
+    X_bs_df
+).fit()
+
+summarize(model_bs_df)
+```
+
+
+## Visualizar el spline con `df=6`
+
+Transformamos la malla de edades.
+
+```{python}
+X_grid_bs_df = bs_df_spec.transform(age_grid_df)
+```
+
+Calculamos las predicciones.
+
+```{python}
+pred_bs_df = model_bs_df.get_prediction(
+    X_grid_bs_df
+).summary_frame()
+```
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.20
+)
+
+plt.plot(
+    age_grid,
+    pred_bs_df["mean"],
+    linewidth=2
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("Spline cúbico con 6 grados de libertad")
+
+plt.show()
+```
+
+Hasta ahora solo estamos cambiando los grados de libertad.
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Cuál de las siguientes afirmaciones es correcta?
+
+a. Aumentar los grados de libertad siempre mejora la capacidad de generalización.
+
+b. Aumentar los grados de libertad aumenta la flexibilidad del modelo.
+
+c. Un spline con más grados de libertad siempre tendrá menor error de prueba.
+
+d. Los grados de libertad no afectan la forma del spline.
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+La respuesta correcta es:
+
+**b. Aumentar los grados de libertad aumenta la flexibilidad del modelo.**
+
+Un modelo más flexible puede reducir el error de entrenamiento, pero también puede aumentar el riesgo de sobreajuste.
+
+Por ello la complejidad debe elegirse utilizando datos de validación o validación cruzada.
+
+
+:::
+::::
+
+## Splines de grado cero
+
+Los splines no tienen que ser cúbicos.
+
+Podemos modificar el grado mediante el argumento `degree`.
+
+Por ejemplo,
+
+```python
+degree=0
+```
+
+produce funciones constantes por regiones.
+
+```{python}
+bs_degree0_spec = MS([
+    bs(
+        "age",
+        df=3,
+        degree=0
+    )
+]).fit(Wage)
+```
+
+Construimos la matriz.
+
+```{python}
+X_degree0 = bs_degree0_spec.transform(Wage)
+```
+
+Ajustamos el modelo.
+
+```{python}
+model_degree0 = sm.OLS(
+    wage,
+    X_degree0
+).fit()
+
+summarize(model_degree0)
+```
+
+
+
+## Visualizar el spline de grado cero
+
+```{python}
+X_grid_degree0 = bs_degree0_spec.transform(
+    age_grid_df
+)
+
+pred_degree0 = model_degree0.predict(
+    X_grid_degree0
+)
+```
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.20
+)
+
+plt.plot(
+    age_grid,
+    pred_degree0,
+    linewidth=2
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("Spline de grado 0")
+
+plt.show()
+```
+
+El resultado es una función escalonada.
+
+Esto muestra que las funciones escalonadas que estudiamos anteriormente también pueden interpretarse dentro del marco general de los splines.
+
+
+## Conexión con `qcut()`
+
+Anteriormente podíamos dividir `age` en grupos utilizando cuantiles.
+
+Por ejemplo:
+
+```{python}
+age_bins = pd.qcut(
+    age,
+    q=4
+)
+
+age_bins.value_counts().sort_index()
+```
+
+Esto genera cuatro regiones separadas aproximadamente por los percentiles
+
+$$
+25\%,\qquad 50\%,\qquad 75\%.
+$$
+
+Un spline de grado cero con los nodos correspondientes produce esencialmente el mismo tipo de ajuste: una constante diferente en cada región.
+
+La parametrización de los coeficientes puede ser distinta, pero la función ajustada representa el mismo tipo de estructura segmentada.
+
+
+
+## Splines cúbicos naturales
+
+Los splines cúbicos convencionales pueden ser relativamente inestables en los extremos del rango del predictor.
+
+Un **spline cúbico natural** agrega restricciones adicionales para que la función sea lineal en las regiones exteriores.
+
+Es decir, fuera de los nodos de frontera, el ajuste deja de comportarse como un polinomio cúbico general.
+
+Esto suele producir mayor estabilidad cerca de los extremos.
+
+
+
+## Ajustar un spline natural
+
+Utilizaremos cinco grados de libertad.
+
+```{python}
+ns_age_spec = MS([
+    ns(
+        "age",
+        df=5
+    )
+]).fit(Wage)
+```
+
+Construimos la matriz de diseño.
+
+```{python}
+X_ns = ns_age_spec.transform(Wage)
+
+X_ns.head()
+```
+
+Ajustamos el modelo.
+
+```{python}
+model_ns = sm.OLS(
+    wage,
+    X_ns
+).fit()
+
+summarize(model_ns)
+```
+
+
+
+## Graficar el spline natural
+
+Transformamos la malla de edades.
+
+```{python}
+X_grid_ns = ns_age_spec.transform(
+    age_grid_df
+)
+```
+
+Obtenemos predicciones e intervalos.
+
+```{python}
+pred_ns = model_ns.get_prediction(
+    X_grid_ns
+).summary_frame()
+```
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.20
+)
+
+plt.plot(
+    age_grid,
+    pred_ns["mean"],
+    linewidth=2
+)
+
+plt.plot(
+    age_grid,
+    pred_ns["mean_ci_lower"],
+    linestyle="--"
+)
+
+plt.plot(
+    age_grid,
+    pred_ns["mean_ci_upper"],
+    linestyle="--"
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("Spline cúbico natural")
+
+plt.show()
+```
+
+
+## Comparar spline cúbico y spline natural
+
+Construiremos dos modelos con complejidad similar.
+
+```{python}
+cubic_spec = MS([
+    bs(
+        "age",
+        df=5
+    )
+]).fit(Wage)
+
+natural_spec = MS([
+    ns(
+        "age",
+        df=5
+    )
+]).fit(Wage)
+```
+
+Ajustamos ambos modelos.
+
+```{python}
+model_cubic = sm.OLS(
+    wage,
+    cubic_spec.transform(Wage)
+).fit()
+
+model_natural = sm.OLS(
+    wage,
+    natural_spec.transform(Wage)
+).fit()
+```
+
+Calculamos las predicciones.
+
+```{python}
+pred_cubic = model_cubic.predict(
+    cubic_spec.transform(age_grid_df)
+)
+
+pred_natural = model_natural.predict(
+    natural_spec.transform(age_grid_df)
+)
+```
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.15
+)
+
+plt.plot(
+    age_grid,
+    pred_cubic,
+    linewidth=2,
+    label="Spline cúbico"
+)
+
+plt.plot(
+    age_grid,
+    pred_natural,
+    linewidth=2,
+    label="Spline cúbico natural"
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("Spline cúbico vs. spline natural")
+plt.legend()
+
+plt.show()
+```
+
+Observen especialmente el comportamiento en los extremos del rango de `age`.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Cuál es la principal diferencia entre un spline cúbico ordinario y un spline cúbico natural?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+El spline cúbico natural impone restricciones adicionales en los extremos.
+
+En particular, el ajuste es lineal fuera de los nodos de frontera.
+
+Esto reduce la flexibilidad en regiones donde normalmente hay menos información y puede producir estimaciones más estables.
+
+:::
+::::
+
+
+## Comparación con regresión polinómica
+
+Ahora compararemos un spline con una regresión polinómica.
+
+Construimos primero un polinomio de grado 15.
+
+```{python}
+poly15_spec = MS([
+    poly(
+        "age",
+        degree=15
+    )
+]).fit(Wage)
+```
+
+Ajustamos el modelo.
+
+```{python}
+model_poly15 = sm.OLS(
+    wage,
+    poly15_spec.transform(Wage)
+).fit()
+```
+
+Ahora ajustamos un spline natural con 15 grados de libertad.
+
+```{python}
+ns15_spec = MS([
+    ns(
+        "age",
+        df=15
+    )
+]).fit(Wage)
+
+model_ns15 = sm.OLS(
+    wage,
+    ns15_spec.transform(Wage)
+).fit()
+```
+
+Calculamos predicciones.
+
+```{python}
+pred_poly15 = model_poly15.predict(
+    poly15_spec.transform(age_grid_df)
+)
+
+pred_ns15 = model_ns15.predict(
+    ns15_spec.transform(age_grid_df)
+)
+```
+
+
+
+## Visualizar la comparación
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.15
+)
+
+plt.plot(
+    age_grid,
+    pred_poly15,
+    linewidth=2,
+    label="Polinomio grado 15"
+)
+
+plt.plot(
+    age_grid,
+    pred_ns15,
+    linewidth=2,
+    label="Spline natural, df = 15"
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("Regresión polinómica vs. spline natural")
+plt.legend()
+
+plt.show()
+```
+
+Ambos modelos son muy flexibles.
+
+Sin embargo, utilizan esa flexibilidad de forma diferente.
+
+En la regresión polinómica aumentamos el grado:
+
+$$
+1,x,x^2,\ldots,x^{15}.
+$$
+
+En un spline mantenemos polinomios de grado bajo y aumentamos el número de funciones base o nodos.
+
+Por ello los splines suelen producir un comportamiento más estable, especialmente cerca de las fronteras.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué un polinomio de grado 15 puede presentar un comportamiento extremo cerca de los límites aunque ajuste razonablemente bien la región central?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Porque la regresión polinómica es global.
+
+Cada término del polinomio afecta todo el dominio de $X$.
+
+Los términos de grado alto, como
+
+$$
+x^{15},
+$$
+
+pueden cambiar rápidamente cuando $x$ se encuentra cerca de los extremos.
+
+Por ello pequeñas modificaciones en los coeficientes pueden producir grandes cambios en la curva en esas regiones.
+
+Los splines permiten introducir flexibilidad de forma más localizada.
+
+:::
+::::
+
+
+## Error de entrenamiento y complejidad
+
+Podemos comparar diferentes grados de libertad utilizando el error cuadrático medio sobre los datos de entrenamiento.
+
+Definimos
+
+$$
+\operatorname{MSE}
+=
+\frac{1}{n}
+\sum_{i=1}^{n}
+\left(y_i-\hat y_i\right)^2.
+$$
+
+```{python}
+dfs = range(3, 16)
+
+results = []
+
+for df in dfs:
+
+    spec = MS([
+        bs(
+            "age",
+            df=df
+        )
+    ]).fit(Wage)
+
+    X = spec.transform(Wage)
+
+    model = sm.OLS(
+        wage,
+        X
+    ).fit()
+
+    predictions = model.predict(X)
+
+    mse = np.mean(
+        (wage - predictions) ** 2
+    )
+
+    results.append({
+        "df": df,
+        "MSE_train": mse
+    })
+```
+
+Convertimos los resultados en un `DataFrame`.
+
+```{python}
+results_df = pd.DataFrame(results)
+
+results_df
+```
+
+
+
+## Graficar el error de entrenamiento
+
+```{python}
+plt.figure(figsize=(8, 5))
+
+plt.plot(
+    results_df["df"],
+    results_df["MSE_train"],
+    marker="o"
+)
+
+plt.xlabel("Grados de libertad")
+plt.ylabel("MSE de entrenamiento")
+plt.title("Complejidad del spline y error de entrenamiento")
+
+plt.show()
+```
+
+¿Qué ocurre con el error de entrenamiento conforme aumenta la flexibilidad?
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Debemos elegir automáticamente el modelo con menor MSE de entrenamiento?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No.
+
+Aumentar la flexibilidad suele disminuir el error de entrenamiento, pero esto no garantiza mejor capacidad predictiva sobre datos nuevos.
+
+Un modelo demasiado flexible puede sobreajustar.
+
+Para seleccionar la complejidad del spline es preferible utilizar validación cruzada.
+
+:::
+::::
+
+## Ejercicios
+
+### Ejercicio 1
+
+Construye un spline cúbico para `age` utilizando nodos interiores en
+
+$$
+30,\qquad 45,\qquad 55.
+$$
+
+Realiza lo siguiente:
+
+1. ajusta el modelo;
+2. obtén sus predicciones sobre `age_grid`;
+3. grafica los datos y la curva ajustada;
+4. marca los nodos con líneas verticales;
+5. compara visualmente el resultado con el spline que utilizó nodos en $25$, $40$ y $60$.
+
+
+### Ejercicio 2
+
+Compara splines cúbicos con
+
+$$
+df=4,\qquad df=8,\qquad df=14.
+$$
+
+Grafica las tres curvas sobre la misma nube de puntos.
+
+Después responde:
+
+- ¿cuál es el modelo menos flexible?
+- ¿cuál es el más flexible?
+- ¿en qué regiones son más visibles las diferencias?
+
+
+
+### Ejercicio 3
+
+Ajusta:
+
+1. un spline cúbico con `df=8`;
+2. un spline cúbico natural con `df=8`.
+
+Grafica ambos modelos.
+
+Después observa especialmente:
+
+- las edades más pequeñas;
+- las edades más grandes.
+
+¿Qué diferencia encuentras?
+
+
+### Ejercicio 4
+
+Explica con tus propias palabras la diferencia entre:
+
+1. regresión polinómica;
+2. funciones escalonadas;
+3. spline cúbico;
+4. spline cúbico natural.
+
+
+### Ejercicio 5
+
+Supón que queremos estudiar la relación entre `age` y `wage`, pero no sabemos cuántos grados de libertad utilizar.
+
+Describe un procedimiento apropiado para seleccionar la complejidad del spline.
+
+No es necesario implementarlo todavía.
+

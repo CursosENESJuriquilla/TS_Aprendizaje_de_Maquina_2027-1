@@ -102,8 +102,6 @@
         "\n",
         "## Objetivos\n",
         "\n",
-        "Al finalizar esta práctica podrán:\n",
-        "\n",
         "- Ajustar modelos de **regresión polinomial** utilizando una base de **polinomios ortogonales**.\n",
         "- Construir e interpretar **intervalos de confianza puntuales** para la  curva de regresión estimada.\n",
         "- Comparar modelos polinomiales con diferentes grados de flexibilidad.\n",
@@ -121,7 +119,7 @@
         "\n",
         "Comenzaremos cargando las librerías necesarias."
       ],
-      "id": "c8e41d0a"
+      "id": "de5eef8b"
     },
     {
       "cell_type": "code",
@@ -166,7 +164,7 @@
         "Tengan cuidado de no utilizar el nombre `poly` para guardar otros objetos, pues `poly` ya identifica a la función que importamos desde `ISLP.models`.\n",
         ":::\n",
         "\n",
-        "# Datos `Wage`\n",
+        "## Datos `Wage`\n",
         "\n",
         "Trabajaremos con el conjunto de datos `Wage`, que contiene información sobre salarios y algunas características de trabajadores de la región del Atlántico medio de Estados Unidos.\n",
         "\n",
@@ -192,9 +190,9 @@
         "Antes de aceptar esta suposición, exploremos los datos.\n",
         "\n",
         "\n",
-        "## Carga y exploración inicial"
+        "### Carga y exploración inicial"
       ],
-      "id": "c06e559c"
+      "id": "b5006f8f"
     },
     {
       "cell_type": "code",
@@ -236,11 +234,11 @@
         ":::\n",
         "\n",
         "\n",
-        "## Relación entre edad y salario\n",
+        "### Relación entre edad y salario\n",
         "\n",
         "Visualicemos ahora ambas variables."
       ],
-      "id": "846ef8b5"
+      "id": "0b8795bc"
     },
     {
       "cell_type": "code",
@@ -300,7 +298,7 @@
         "Esto motiva utilizar un modelo más flexible.\n",
         "\n",
         "\n",
-        "# De la regresión lineal a la regresión polinomial\n",
+        "## De la regresión lineal a la regresión polinomial\n",
         "\n",
         "En lugar de imponer\n",
         "\n",
@@ -336,7 +334,7 @@
         "lineal y estimar los parámetros mediante mínimos cuadrados ordinarios.\n",
         "\n",
         "\n",
-        "## ¿Por qué polinomios ortogonales?\n",
+        "### ¿Por qué polinomios ortogonales?\n",
         "\n",
         "Las variables\n",
         "\n",
@@ -375,7 +373,7 @@
         "\n",
         "\n",
         "\n",
-        "# Ajuste de un polinomio de grado 4\n",
+        "## Ajuste de un polinomio de grado 4\n",
         "\n",
         "Comenzaremos utilizando un polinomio de grado 4:\n",
         "\n",
@@ -388,7 +386,7 @@
         "\n",
         "Construiremos una base polinomial utilizando `poly()` y ajustaremos el modelo mediante mínimos cuadrados ordinarios."
       ],
-      "id": "a5ba66e3"
+      "id": "48909282"
     },
     {
       "cell_type": "code",
@@ -463,14 +461,14 @@
         ":::\n",
         "\n",
         "\n",
-        "# Curva ajustada\n",
+        "## Curva ajustada\n",
         "\n",
         "Para visualizar el modelo necesitamos evaluarlo en diferentes edades.\n",
         "\n",
         "Construiremos una secuencia fina de valores que cubra todo el rango\n",
         "observado de `age`."
       ],
-      "id": "f2743012"
+      "id": "759d3c13"
     },
     {
       "cell_type": "code",
@@ -521,7 +519,7 @@
         "debemos utilizar exactamente esa misma transformación para predecir\n",
         "sobre nuevos valores de `age`.\n",
         "\n",
-        "## Curva e intervalo de confianza\n",
+        "### Curva e intervalo de confianza\n",
         "\n",
         "Para cada edad $x_0$, el modelo produce una estimación\n",
         "\n",
@@ -535,7 +533,7 @@
         "\n",
         "Graficaremos un intervalo de confianza puntual del 95%.\n"
       ],
-      "id": "269cd890"
+      "id": "d7f27db9"
     },
     {
       "cell_type": "code",
@@ -619,7 +617,7 @@
         ":::\n",
         "\n",
         "\n",
-        "# Intervalo de confianza vs. intervalo de predicción\n",
+        "## Intervalo de confianza vs. intervalo de predicción\n",
         "\n",
         "Existe una distinción importante entre estimar el **salario promedio** y\n",
         "predecir el salario de **una persona individual**.\n",
@@ -651,14 +649,14 @@
         "Por esta razón, el **intervalo de predicción es más ancho**.\n",
         "\n",
         "\n",
-        "## Comparación gráfica\n",
+        "### Comparación gráfica\n",
         "\n",
         "`statsmodels` proporciona ambos intervalos en `summary_frame()`:\n",
         "\n",
         "- `mean_ci_lower`, `mean_ci_upper`: intervalo para la media.\n",
         "- `obs_ci_lower`, `obs_ci_upper`: intervalo para una nueva observación."
       ],
-      "id": "96d75808"
+      "id": "0834f970"
     },
     {
       "cell_type": "code",
@@ -724,7 +722,7 @@
         "\n",
         "Por ello, conocer la edad puede ser útil para describir la tendencia media, pero no necesariamente permite predecir con gran precisión el salario de una persona particular.\n",
         "\n",
-        "# ¿Qué cambia al aumentar el grado?\n",
+        "## ¿Qué cambia al aumentar el grado?\n",
         "\n",
         "Hasta ahora elegimos $d=4$. Sin embargo, esta elección fue arbitraria.\n",
         "\n",
@@ -736,7 +734,7 @@
         "\n",
         "Al aumentar $d$ aumenta la **flexibilidad** del modelo."
       ],
-      "id": "ad741448"
+      "id": "3eb51a1c"
     },
     {
       "cell_type": "code",
@@ -819,7 +817,7 @@
         "Necesitamos, por tanto, algún criterio para seleccionar $d$.\n",
         "\n",
         "\n",
-        "# Selección del grado del polinomio\n",
+        "## Selección del grado del polinomio\n",
         "\n",
         "Estudiaremos dos perspectivas diferentes:\n",
         "\n",
@@ -827,7 +825,7 @@
         "2. un enfoque **predictivo**, mediante validación cruzada.\n",
         "\n",
         "\n",
-        "## Enfoque clásico: comparación de modelos anidados\n",
+        "### Enfoque clásico: comparación de modelos anidados\n",
         "\n",
         "Los modelos polinomiales tienen una estructura natural de anidamiento.\n",
         "\n",
@@ -861,7 +859,7 @@
         "\n",
         "Ajustemos modelos de grados 1 a 5."
       ],
-      "id": "de710bc8"
+      "id": "f076baad"
     },
     {
       "cell_type": "code",
@@ -955,7 +953,7 @@
         ":::\n",
         "\n",
         "\n",
-        "# Enfoque predictivo: validación cruzada\n",
+        "### Enfoque predictivo: validación cruzada\n",
         "\n",
         "La comparación anterior plantea una pregunta inferencial.\n",
         "\n",
@@ -977,9 +975,9 @@
         "El grado con menor error de validación cruzada será nuestro candidato desde una perspectiva predictiva.\n",
         "\n",
         "\n",
-        "## Implementación"
+        "### Implementación"
       ],
-      "id": "24d6a43e"
+      "id": "5cb09e94"
     },
     {
       "cell_type": "code",
@@ -1074,9 +1072,9 @@
         "Aquí utilizamos `PolynomialFeatures` porque se integra de manera sencilla con el flujo de validación cruzada de `scikit-learn`.\n",
         ":::\n",
         "\n",
-        "## Error de validación cruzada"
+        "### Error de validación cruzada"
       ],
-      "id": "5be0fdc9"
+      "id": "9ed2e517"
     },
     {
       "cell_type": "code",
@@ -1147,7 +1145,7 @@
         ":::\n",
         "\n",
         "\n",
-        "## Dos preguntas diferentes\n",
+        "### Dos preguntas diferentes\n",
         "\n",
         "Los dos procedimientos utilizados no responden exactamente a la misma pregunta.\n",
         "\n",
@@ -1204,7 +1202,7 @@
         ":::\n",
         "\n",
         "\n",
-        "# Regresión logística polinomial\n",
+        "## Regresión logística polinomial\n",
         "\n",
         "Hasta ahora hemos trabajado con `wage` como una variable respuesta\n",
         "cuantitativa. Consideremos ahora una pregunta diferente:\n",
@@ -1231,7 +1229,7 @@
         "P(\\texttt{wage}>250\\mid \\texttt{age}=x).\n",
         "$$\n",
         "\n",
-        "## Recordatorio: regresión logística\n",
+        "### Recordatorio: regresión logística\n",
         "\n",
         "En una regresión logística simple modelamos el logaritmo de los *odds* mediante una relación lineal:\n",
         "\n",
@@ -1286,11 +1284,11 @@
         "Lo que cambia ahora es el tipo de variable respuesta y, por tanto, el modelo utilizado para relacionar los predictores con la respuesta.\n",
         "\n",
         "\n",
-        "## Construcción de la variable respuesta\n",
+        "### Construcción de la variable respuesta\n",
         "\n",
         "Construimos primero la variable binaria `salario_alto`."
       ],
-      "id": "95297f50"
+      "id": "e4aa3cd5"
     },
     {
       "cell_type": "code",
@@ -1329,7 +1327,7 @@
         "Esta exploración es importante porque la proporción de observaciones con $Y=1$ afecta la escala de las probabilidades que veremos posteriormente.\n",
         "\n",
         "\n",
-        "## ¿Por qué usamos `GLM` con familia binomial?\n",
+        "### ¿Por qué usamos `GLM` con familia binomial?\n",
         "\n",
         "En la regresión polinomial anterior utilizamos mínimos cuadrados ordinarios mediante `sm.OLS()` porque la respuesta `wage` era cuantitativa.\n",
         "\n",
@@ -1424,11 +1422,11 @@
         ":::\n",
         "\n",
         "\n",
-        "## Construcción de la base polinomial\n",
+        "### Construcción de la base polinomial\n",
         "\n",
         "Utilizaremos una base de polinomios ortogonales de grado 4, igual que en el ejemplo anterior de regresión polinomial."
       ],
-      "id": "518fb79a"
+      "id": "db9bc7dd"
     },
     {
       "cell_type": "code",
@@ -1461,11 +1459,11 @@
         "Aunque el modelo es no lineal respecto a `age`, sigue siendo lineal respecto a los coeficientes del predictor lineal.\n",
         "\n",
         "\n",
-        "## Ajuste de la regresión logística polinomial\n",
+        "### Ajuste de la regresión logística polinomial\n",
         "\n",
         "Ajustamos ahora el modelo."
       ],
-      "id": "42dd5839"
+      "id": "33fc9cb2"
     },
     {
       "cell_type": "code",
@@ -1515,11 +1513,11 @@
         "que los coeficientes individuales de la base ortogonal.\n",
         "\n",
         "\n",
-        "## Predicciones sobre una grilla de edades\n",
+        "### Predicciones sobre una grilla de edades\n",
         "\n",
         "Para visualizar cómo cambia la probabilidad con la edad, evaluaremos el modelo en una secuencia fina de edades."
       ],
-      "id": "12b08535"
+      "id": "27cdb565"
     },
     {
       "cell_type": "code",
@@ -1568,7 +1566,7 @@
         "mientras que `mean_ci_lower` y `mean_ci_upper` contienen los límites del intervalo de confianza puntual del 95% para esa probabilidad.\n",
         "\n",
         "\n",
-        "## Probabilidad de tener un salario alto\n",
+        "### Probabilidad de tener un salario alto\n",
         "\n",
         "Graficaremos:\n",
         "\n",
@@ -1577,7 +1575,7 @@
         "- la probabilidad estimada $\\hat p(x)$;\n",
         "- el intervalo de confianza puntual del 95%."
       ],
-      "id": "832c305a"
+      "id": "2c3d3223"
     },
     {
       "cell_type": "code",
@@ -1709,7 +1707,7 @@
         "La expansión polinomial permite que el log-*odds* cambie de forma no lineal y, por tanto, que la probabilidad estimada tenga una forma más flexible.\n",
         ":::\n",
         "\n",
-        "## ¿Qué aporta el término polinomial?\n",
+        "### ¿Qué aporta el término polinomial?\n",
         "\n",
         "En una regresión logística simple tendríamos\n",
         "\n",
@@ -1745,11 +1743,11 @@
         "Observen que la probabilidad estimada aumenta con la edad hasta alrededor de los 40-50 años y después disminuye, de forma consistente con lo observado en la regresión polinomial de la variable cuantitativa `wage`.\n",
         "\n",
         "\n",
-        "# Regresión polinomial vs. regresión logística polinomial\n",
+        "## Regresión polinomial vs. regresión logística polinomial\n",
         "\n",
         "Podemos resumir ambos modelos utilizando la misma idea de expansión del predictor.\n",
         "\n",
-        "## Respuesta cuantitativa\n",
+        "### Respuesta cuantitativa\n",
         "\n",
         "Cuando $Y$ es cuantitativa, utilizamos regresión polinomial:\n",
         "\n",
@@ -1765,7 +1763,7 @@
         "Y=\\texttt{wage}.\n",
         "$$\n",
         "\n",
-        "## Respuesta binaria\n",
+        "### Respuesta binaria\n",
         "\n",
         "Cuando $Y$ es binaria, utilizamos regresión logística polinomial:\n",
         "\n",
@@ -1812,10 +1810,10 @@
         "La idea fundamental es la misma: introducir **flexibilidad mediante transformaciones de los predictores**.\n",
         "\n",
         "\n",
-        "# Ejercicios de la práctica\n",
+        "## Ejercicios de la práctica\n",
         "\n",
         "\n",
-        "## Selección del grado mediante AIC\n",
+        "### Selección del grado mediante AIC\n",
         "\n",
         "Ajusten, para\n",
         "\n",
@@ -1844,7 +1842,7 @@
         "- Expliquen brevemente por qué los tres criterios no tienen que producir necesariamente la misma respuesta.\n",
         "\n",
         "\n",
-        "## Otro predictor\n",
+        "### Otro predictor\n",
         "\n",
         "Repitan el análisis utilizando `year` en lugar de `age`.\n",
         "\n",
@@ -1855,7 +1853,7 @@
         "Justifiquen su respuesta utilizando tanto la gráfica como los resultados de los modelos.\n",
         "\n",
         "\n",
-        "## Modelo con más predictores\n",
+        "### Modelo con más predictores\n",
         "\n",
         "Ajusten un modelo que incluya\n",
         "\n",
@@ -1885,7 +1883,7 @@
         "¿Qué representa ese coeficiente cuando mantenemos constante el efecto de la edad?\n",
         "\n",
         "\n",
-        "## Depuración dirigida\n",
+        "### Depuración dirigida\n",
         "\n",
         "Supongan que, durante la sección de validación cruzada, hubieran escrito\n",
         "\n",
@@ -1902,7 +1900,7 @@
         "3. Expliquen por qué Python produciría ese error.\n",
         "\n",
         "\n",
-        "## Interpretación del efecto de la edad\n",
+        "### Interpretación del efecto de la edad\n",
         "\n",
         "La tabla producida por\n",
         "\n",
@@ -1927,7 +1925,7 @@
         "\n",
         "¿Esperarían que ese efecto fuera el mismo para una persona de 25 años que para una de 60 años? Justifiquen.\n"
       ],
-      "id": "1a34723c"
+      "id": "0d9a8f82"
     }
   ],
   "metadata": {

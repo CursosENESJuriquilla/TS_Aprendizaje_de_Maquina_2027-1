@@ -265,7 +265,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Funciones base</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Splines de regresión con funciones base</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -573,7 +573,7 @@ window.Quarto = {
 <section id="importación-de-bibliotecas-y-datos" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="importación-de-bibliotecas-y-datos"><span class="header-section-number">3.3</span> Importación de bibliotecas y datos</h2>
 <p>Primero cargamos las bibliotecas que utilizaremos.</p>
-<div id="ad34c8bd" class="cell" data-execution_count="1">
+<div id="4f772374" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -585,14 +585,14 @@ window.Quarto = {
 </details>
 </div>
 <p>Cargamos el conjunto de datos <code>Wage</code>.</p>
-<div id="45de210b" class="cell" data-execution_count="2">
+<div id="6c05dd51" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Wage <span class="op">=</span> load_data(<span class="st">'Wage'</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Wage.head()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="267">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
 
@@ -691,22 +691,22 @@ window.Quarto = {
 </div>
 </div>
 <p>Podemos revisar sus dimensiones:</p>
-<div id="b35ef7ab" class="cell" data-execution_count="3">
+<div id="6463a6b4" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Wage.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="268">
+<div class="cell-output cell-output-display" data-execution_count="3">
 <pre><code>(3000, 11)</code></pre>
 </div>
 </div>
 <p>y algunas estadísticas descriptivas:</p>
-<div id="041b250d" class="cell" data-execution_count="4">
+<div id="652bf9bc" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Wage.describe()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="269">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 
 
@@ -784,7 +784,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Para esta práctica utilizaremos únicamente:</p>
-<div id="9c3378e9" class="cell" data-execution_count="5">
+<div id="c55283dd" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>age <span class="op">=</span> Wage[<span class="st">'age'</span>]</span>
@@ -799,7 +799,7 @@ window.Quarto = {
 <section id="exploración-inicial" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="exploración-inicial"><span class="header-section-number">3.4</span> Exploración inicial</h2>
 <p>Antes de construir un modelo, observemos la relación entre ambas variables.</p>
-<div id="61c304d3" class="cell" data-execution_count="6">
+<div id="e89a0fbb" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
@@ -890,7 +890,7 @@ C_3(X)=0\]</span></p>
 <section id="dividir-age-utilizando-cuantiles" class="level3" data-number="3.5.1">
 <h3 data-number="3.5.1" class="anchored" data-anchor-id="dividir-age-utilizando-cuantiles"><span class="header-section-number">3.5.1</span> Dividir <code>age</code> utilizando cuantiles</h3>
 <p>El enfoque utilizado en <code>ISLP</code> consiste en dividir <code>age</code> en cuatro grupos utilizando <strong>cuantiles</strong>.</p>
-<div id="5ce6a996" class="cell" data-execution_count="7">
+<div id="dcac4818" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># retbins=True devuelve también los puntos de corte</span></span>
@@ -916,7 +916,7 @@ C_3(X)=0\]</span></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>pd.qcut()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>pd.cut()</code> generalmente divide el <strong>rango de valores</strong>, mientras que <code>pd.qcut()</code> divide las <strong>observaciones según cuantiles</strong>.</p>
 <p>Podemos ver cuantos datos caen en cada intervalo:</p>
-<div id="5ef18e18" class="cell" data-execution_count="8">
+<div id="ddccabdc" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Número de observaciones por grupo:"</span>)</span>
@@ -934,22 +934,22 @@ Name: count, dtype: int64</code></pre>
 </div>
 </div>
 <p>Podemos consultar los intervalos generados:</p>
-<div id="06d2162e" class="cell" data-execution_count="9">
+<div id="67787a3b" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>age_cut.cat.categories</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="274">
+<div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>IntervalIndex([(17.999, 33.75], (33.75, 42.0], (42.0, 51.0], (51.0, 80.0]], dtype='interval[float64, right]')</code></pre>
 </div>
 </div>
 <p>También podemos contar cuántas observaciones pertenecen a cada grupo:</p>
-<div id="acebf92d" class="cell" data-execution_count="10">
+<div id="76ea1f28" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>age_cut.value_counts().sort_index()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="275">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>age
 (17.999, 33.75]    750
 (33.75, 42.0]      759
@@ -1034,7 +1034,7 @@ Name: count, dtype: int64</code></pre>
 <section id="variables-indicadoras" class="level2" data-number="3.6">
 <h2 data-number="3.6" class="anchored" data-anchor-id="variables-indicadoras"><span class="header-section-number">3.6</span> Variables indicadoras</h2>
 <p>Ahora convertimos los cuatro intervalos en variables indicadoras.</p>
-<div id="f73dd820" class="cell" data-execution_count="11">
+<div id="048c0ca1" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>X_cat <span class="op">=</span> pd.get_dummies(</span>
@@ -1068,22 +1068,22 @@ Matriz de diseño:
 <p>etc.</p>
 <p>Cada fila tiene exactamente un valor igual a <span class="math inline">\(1\)</span>.</p>
 <p>Podemos revisar los nombres de las columnas:</p>
-<div id="484f36f1" class="cell" data-execution_count="12">
+<div id="64272ea1" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>X_cat.columns</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="277">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>CategoricalIndex([(33.75, 42.0], (42.0, 51.0], (51.0, 80.0]], categories=[(17.999, 33.75], (33.75, 42.0], (42.0, 51.0], (51.0, 80.0]], ordered=True, dtype='category')</code></pre>
 </div>
 </div>
 <p>y las dimensiones de la matriz:</p>
-<div id="5e940eff" class="cell" data-execution_count="13">
+<div id="0455ebb2" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>X_cat.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="278">
+<div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>(3000, 3)</code></pre>
 </div>
 </div>
@@ -1202,7 +1202,7 @@ Matriz de diseño:
 +\beta_3C_3(Age)
 +\varepsilon.\]</span></p>
 <p>Utilizamos:</p>
-<div id="f630a0d4" class="cell" data-execution_count="14">
+<div id="c68ebf8e" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>modelo_ls <span class="op">=</span> sm.OLS(wage, X).fit()</span>
@@ -1217,8 +1217,8 @@ Matriz de diseño:
 Dep. Variable:                   wage   R-squared:                       0.060
 Model:                            OLS   Adj. R-squared:                  0.059
 Method:                 Least Squares   F-statistic:                     63.30
-Date:                Mon, 24 Aug 2026   Prob (F-statistic):           1.12e-39
-Time:                        20:03:56   Log-Likelihood:                -15358.
+Date:                Fri, 28 Aug 2026   Prob (F-statistic):           1.12e-39
+Time:                        09:51:43   Log-Likelihood:                -15358.
 No. Observations:                3000   AIC:                         3.072e+04
 Df Residuals:                    2996   BIC:                         3.075e+04
 Df Model:                           3                                         
@@ -1249,12 +1249,12 @@ Notes:
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>.fit()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>estima los parámetros del modelo.</p>
 <p>Podemos consultar directamente los coeficientes:</p>
-<div id="6e00bed7" class="cell" data-execution_count="15">
+<div id="43a5931d" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>modelo_ls.params</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="280">
+<div class="cell-output cell-output-display" data-execution_count="15">
 <pre><code>const            94.158392
 (33.75, 42.0]    22.502418
 (42.0, 51.0]     25.030273
@@ -1355,7 +1355,7 @@ C_2=C_3=0.\]</span></p>
 <section id="comprobación-de-los-coeficientes" class="level2" data-number="3.10">
 <h2 data-number="3.10" class="anchored" data-anchor-id="comprobación-de-los-coeficientes"><span class="header-section-number">3.10</span> Comprobación de los coeficientes</h2>
 <p>Podemos calcular directamente el salario promedio de cada grupo.</p>
-<div id="cdf7eda7" class="cell" data-execution_count="16">
+<div id="89546c33" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>medias_grupos <span class="op">=</span> (</span>
@@ -1367,7 +1367,7 @@ C_2=C_3=0.\]</span></p>
 <span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>medias_grupos</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="281">
+<div class="cell-output cell-output-display" data-execution_count="16">
 <pre><code>grupo_edad
 (17.999, 33.75]     94.158392
 (33.75, 42.0]      116.660810
@@ -1377,12 +1377,12 @@ Name: wage, dtype: float64</code></pre>
 </div>
 </div>
 <p>Ahora observemos los coeficientes del modelo:</p>
-<div id="63e2815b" class="cell" data-execution_count="17">
+<div id="7e9f2d19" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>modelo_ls.params</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="282">
+<div class="cell-output cell-output-display" data-execution_count="17">
 <pre><code>const            94.158392
 (33.75, 42.0]    22.502418
 (42.0, 51.0]     25.030273
@@ -1392,60 +1392,60 @@ dtype: float64</code></pre>
 </div>
 <p>En este caso, los coeficientes <strong>no coinciden directamente con las cuatro medias</strong>.</p>
 <p>El intercepto coincide con la media del grupo de referencia:</p>
-<div id="4d75a06b" class="cell" data-execution_count="18">
+<div id="d676b77e" class="cell" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>media_ref <span class="op">=</span> medias_grupos.iloc[<span class="dv">0</span>]</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>media_ref</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="283">
+<div class="cell-output cell-output-display" data-execution_count="18">
 <pre><code>np.float64(94.15839203351904)</code></pre>
 </div>
 </div>
 <p>y debe cumplirse aproximadamente que</p>
-<div id="0209dadc" class="cell" data-execution_count="19">
+<div id="5db8058e" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>modelo_ls.params.iloc[<span class="dv">0</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="284">
+<div class="cell-output cell-output-display" data-execution_count="19">
 <pre><code>np.float64(94.15839203351882)</code></pre>
 </div>
 </div>
 <p>sea igual a <code>media_ref</code>.</p>
 <p>Para recuperar la media del segundo grupo debemos sumar</p>
-<div id="b44e712e" class="cell" data-execution_count="20">
+<div id="d253df98" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>modelo_ls.params.iloc[<span class="dv">0</span>] <span class="op">+</span> modelo_ls.params.iloc[<span class="dv">1</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="285">
+<div class="cell-output cell-output-display" data-execution_count="20">
 <pre><code>np.float64(116.66080999753618)</code></pre>
 </div>
 </div>
 <p>Para el tercer grupo:</p>
-<div id="3fac1c1a" class="cell" data-execution_count="21">
+<div id="bdf37c2c" class="cell" data-execution_count="21">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>modelo_ls.params.iloc[<span class="dv">0</span>] <span class="op">+</span> modelo_ls.params.iloc[<span class="dv">2</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="286">
+<div class="cell-output cell-output-display" data-execution_count="21">
 <pre><code>np.float64(119.188664863958)</code></pre>
 </div>
 </div>
 <p>Y para el cuarto:</p>
-<div id="4d1f682c" class="cell" data-execution_count="22">
+<div id="9cf20b31" class="cell" data-execution_count="22">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>modelo_ls.params.iloc[<span class="dv">0</span>] <span class="op">+</span> modelo_ls.params.iloc[<span class="dv">3</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="287">
+<div class="cell-output cell-output-display" data-execution_count="22">
 <pre><code>np.float64(116.57171602093007)</code></pre>
 </div>
 </div>
 <p>Podemos comprobar todas las medias a la vez:</p>
-<div id="bd7b950f" class="cell" data-execution_count="23">
+<div id="7816156f" class="cell" data-execution_count="23">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>medias_desde_modelo <span class="op">=</span> pd.Series(</span>
@@ -1460,7 +1460,7 @@ dtype: float64</code></pre>
 <span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>medias_desde_modelo</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="288">
+<div class="cell-output cell-output-display" data-execution_count="23">
 <pre><code>grupo_edad
 (17.999, 33.75]     94.158392
 (33.75, 42.0]      116.660810
@@ -1470,7 +1470,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <p>Comparemos:</p>
-<div id="60d9ed52" class="cell" data-execution_count="24">
+<div id="0bd8cc7f" class="cell" data-execution_count="24">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({</span>
@@ -1478,7 +1478,7 @@ dtype: float64</code></pre>
 <span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Media desde el modelo'</span>: medias_desde_modelo</span>
 <span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="289">
+<div class="cell-output cell-output-display" data-execution_count="24">
 <div>
 
 
@@ -1601,7 +1601,7 @@ dtype: float64</code></pre>
 <section id="el-summary-del-modelo-de-mínimos-cuadrados" class="level2" data-number="3.11">
 <h2 data-number="3.11" class="anchored" data-anchor-id="el-summary-del-modelo-de-mínimos-cuadrados"><span class="header-section-number">3.11</span> El <code>summary()</code> del modelo de mínimos cuadrados</h2>
 <p>Veamos ahora el resumen completo del modelo.</p>
-<div id="4af66fcc" class="cell" data-execution_count="25">
+<div id="3a5f6a61" class="cell" data-execution_count="25">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(modelo_ls.summary())</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1612,8 +1612,8 @@ dtype: float64</code></pre>
 Dep. Variable:                   wage   R-squared:                       0.060
 Model:                            OLS   Adj. R-squared:                  0.059
 Method:                 Least Squares   F-statistic:                     63.30
-Date:                Mon, 24 Aug 2026   Prob (F-statistic):           1.12e-39
-Time:                        20:03:56   Log-Likelihood:                -15358.
+Date:                Fri, 28 Aug 2026   Prob (F-statistic):           1.12e-39
+Time:                        09:51:43   Log-Likelihood:                -15358.
 No. Observations:                3000   AIC:                         3.072e+04
 Df Residuals:                    2996   BIC:                         3.075e+04
 Df Model:                           3                                         
@@ -2014,12 +2014,12 @@ H_0:\mu_j=\mu_0
 <p>Por ejemplo, para estimar</p>
 <p><span class="math display">\[\beta_0+\beta_1,\]</span></p>
 <p>podemos utilizar:</p>
-<div id="d1a3057f" class="cell" data-execution_count="26">
+<div id="baaa9aa0" class="cell" data-execution_count="26">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>modelo_ls.t_test([<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="291">
+<div class="cell-output cell-output-display" data-execution_count="26">
 <pre><code>&lt;class 'statsmodels.stats.contrast.ContrastResults'&gt;
                              Test for Constraints                             
 ==============================================================================
@@ -2032,12 +2032,12 @@ c0           116.6608      1.470     79.385      0.000     113.779     119.542
 <p>Para</p>
 <p><span class="math display">\[\beta_0+\beta_2,\]</span></p>
 <p>utilizamos:</p>
-<div id="ce3a7a2b" class="cell" data-execution_count="27">
+<div id="41b05789" class="cell" data-execution_count="27">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>modelo_ls.t_test([<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="292">
+<div class="cell-output cell-output-display" data-execution_count="27">
 <pre><code>&lt;class 'statsmodels.stats.contrast.ContrastResults'&gt;
                              Test for Constraints                             
 ==============================================================================
@@ -2049,12 +2049,12 @@ c0           119.1887      1.416     84.147      0.000     116.411     121.966
 </div>
 <p>y para</p>
 <p><span class="math display">\[\beta_0+\beta_3,\]</span></p>
-<div id="6cbddc49" class="cell" data-execution_count="28">
+<div id="32c51d44" class="cell" data-execution_count="28">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>modelo_ls.t_test([<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="293">
+<div class="cell-output cell-output-display" data-execution_count="28">
 <pre><code>&lt;class 'statsmodels.stats.contrast.ContrastResults'&gt;
                              Test for Constraints                             
 ==============================================================================
@@ -2178,7 +2178,7 @@ Prob (F-statistic)</code></pre>
 <section id="predicciones-mediante-una-función-escalonada" class="level2" data-number="3.12">
 <h2 data-number="3.12" class="anchored" data-anchor-id="predicciones-mediante-una-función-escalonada"><span class="header-section-number">3.12</span> Predicciones mediante una función escalonada</h2>
 <p>Para visualizar el modelo construiremos una secuencia de edades.</p>
-<div id="65f0e2d3" class="cell" data-execution_count="29">
+<div id="6baa4a92" class="cell" data-execution_count="29">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>age_grid <span class="op">=</span> np.linspace(</span>
@@ -2204,17 +2204,17 @@ Prob (F-statistic)</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>retbins<span class="op">=</span><span class="va">True</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>permite guardar también los puntos de corte utilizados para construir los cuartiles.</p>
 <p>Podemos verlos mediante:</p>
-<div id="ad04974e" class="cell" data-execution_count="30">
+<div id="9467dd59" class="cell" data-execution_count="30">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>cut_points</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="295">
+<div class="cell-output cell-output-display" data-execution_count="30">
 <pre><code>array([18.  , 33.75, 42.  , 51.  , 80.  ])</code></pre>
 </div>
 </div>
 <p>Ahora clasificamos cada valor de <code>age_grid</code> utilizando esos mismos puntos de corte:</p>
-<div id="71e46c4e" class="cell" data-execution_count="31">
+<div id="63d10609" class="cell" data-execution_count="31">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>cut_age_grid <span class="op">=</span> pd.cut(</span>
@@ -2239,7 +2239,7 @@ Prob (F-statistic)</code></pre>
 </ul>
 <p>Por tanto, debemos construir <code>X_grid</code> exactamente de la misma manera que construimos <code>X</code>.</p>
 <p>Primero generamos las variables indicadoras eliminando la primera categoría:</p>
-<div id="4216e5a6" class="cell" data-execution_count="32">
+<div id="b3a60c62" class="cell" data-execution_count="32">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>X_grid_cat <span class="op">=</span> pd.get_dummies(</span>
@@ -2249,7 +2249,7 @@ Prob (F-statistic)</code></pre>
 </details>
 </div>
 <p>Después garantizamos que las columnas sean exactamente las mismas que las utilizadas durante el ajuste:</p>
-<div id="d4a1c30e" class="cell" data-execution_count="33">
+<div id="0723448e" class="cell" data-execution_count="33">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>X_grid_cat <span class="op">=</span> X_grid_cat.reindex(</span>
@@ -2259,7 +2259,7 @@ Prob (F-statistic)</code></pre>
 </details>
 </div>
 <p>Finalmente agregamos el intercepto:</p>
-<div id="0dff57b6" class="cell" data-execution_count="34">
+<div id="d06a8b9c" class="cell" data-execution_count="34">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>X_grid <span class="op">=</span> sm.add_constant(</span>
@@ -2269,7 +2269,7 @@ Prob (F-statistic)</code></pre>
 </details>
 </div>
 <p>y aseguramos el mismo orden de columnas:</p>
-<div id="ec38454e" class="cell" data-execution_count="35">
+<div id="476c362e" class="cell" data-execution_count="35">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>X_grid <span class="op">=</span> X_grid[X.columns]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2334,7 +2334,7 @@ Prob (F-statistic)</code></pre>
 <section id="predicciones-de-mínimos-cuadrados" class="level2" data-number="3.14">
 <h2 data-number="3.14" class="anchored" data-anchor-id="predicciones-de-mínimos-cuadrados"><span class="header-section-number">3.14</span> Predicciones de mínimos cuadrados</h2>
 <p>Obtenemos las predicciones mediante:</p>
-<div id="04414271" class="cell" data-execution_count="36">
+<div id="13a91688" class="cell" data-execution_count="36">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>pred_ls <span class="op">=</span> modelo_ls.get_prediction(</span>
@@ -2445,7 +2445,7 @@ C_3=0.\]</span></p>
 <section id="intervalos-de-confianza-1" class="level2" data-number="3.16">
 <h2 data-number="3.16" class="anchored" data-anchor-id="intervalos-de-confianza-1"><span class="header-section-number">3.16</span> Intervalos de confianza</h2>
 <p>Calculamos intervalos de confianza del 95% mediante:</p>
-<div id="fe1f1f4f" class="cell" data-execution_count="37">
+<div id="eaa4e0c1" class="cell" data-execution_count="37">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>ic_ls <span class="op">=</span> pred_ls.conf_int(</span>
@@ -2524,7 +2524,7 @@ E[Wage\mid Age_i]
 <section id="visualización-del-modelo-lineal-escalonado" class="level2" data-number="3.17">
 <h2 data-number="3.17" class="anchored" data-anchor-id="visualización-del-modelo-lineal-escalonado"><span class="header-section-number">3.17</span> Visualización del modelo lineal escalonado</h2>
 <p>Podemos representar gráficamente el resultado.</p>
-<div id="de36c13e" class="cell" data-execution_count="38">
+<div id="86519a1c" class="cell" data-execution_count="38">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(</span>
@@ -2734,14 +2734,14 @@ I(Wage&gt;250),\]</span></p>
 0, &amp; Wage\leq250.
 \end{cases}\]</span></p>
 <p>En Python:</p>
-<div id="fe556c72" class="cell" data-execution_count="39">
+<div id="ff41a2f2" class="cell" data-execution_count="39">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>y_bin <span class="op">=</span> (wage <span class="op">&gt;</span> <span class="dv">250</span>).astype(<span class="bu">int</span>)</span>
 <span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>y_bin.head()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="304">
+<div class="cell-output cell-output-display" data-execution_count="39">
 <pre><code>0    0
 1    0
 2    0
@@ -2759,12 +2759,12 @@ Name: wage, dtype: int64</code></pre>
 1
 ...</code></pre>
 <p>Podemos contar cuántas observaciones pertenecen a cada clase:</p>
-<div id="9b5ee4b9" class="cell" data-execution_count="40">
+<div id="fad73090" class="cell" data-execution_count="40">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>y_bin.value_counts()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="305">
+<div class="cell-output cell-output-display" data-execution_count="40">
 <pre><code>wage
 0    2921
 1      79
@@ -2772,12 +2772,12 @@ Name: count, dtype: int64</code></pre>
 </div>
 </div>
 <p>y calcular la proporción global de salarios superiores a <span class="math inline">\(250\)</span>:</p>
-<div id="bc273247" class="cell" data-execution_count="41">
+<div id="48577702" class="cell" data-execution_count="41">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>y_bin.mean()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="306">
+<div class="cell-output cell-output-display" data-execution_count="41">
 <pre><code>np.float64(0.026333333333333334)</code></pre>
 </div>
 </div>
@@ -2845,7 +2845,7 @@ P(Wage&gt;250\mid Age=x).\]</span></p>
 +
 \beta_3C_3(x).\]</span></p>
 <p>Ajustamos el modelo mediante:</p>
-<div id="336ced9f" class="cell" data-execution_count="42">
+<div id="8a68f4ed" class="cell" data-execution_count="42">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>modelo_logit <span class="op">=</span> sm.Logit(</span>
@@ -2866,12 +2866,12 @@ P(Wage&gt;250\mid Age=x).\]</span></p>
 <li>el primer grupo de edad como categoría de referencia.</li>
 </ul>
 <p>Podemos ver los coeficientes estimados mediante:</p>
-<div id="979ee49b" class="cell" data-execution_count="43">
+<div id="bc84ed91" class="cell" data-execution_count="43">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>modelo_logit.params</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="308">
+<div class="cell-output cell-output-display" data-execution_count="43">
 <pre><code>const           -5.003946
 (33.75, 42.0]    1.492401
 (42.0, 51.0]     1.665384
@@ -3082,12 +3082,12 @@ e^{\beta_j}
 }\]</span></p>
 <p>Por tanto, <span class="math inline">\(e^{\beta_j}\)</span> es el <strong>odds ratio del grupo</strong> <span class="math inline">\(j\)</span> respecto al grupo de referencia.</p>
 <p>Podemos calcularlos mediante:</p>
-<div id="01529c90" class="cell" data-execution_count="44">
+<div id="f30b595a" class="cell" data-execution_count="44">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb98"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>np.exp(modelo_logit.params)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="309">
+<div class="cell-output cell-output-display" data-execution_count="44">
 <pre><code>const            0.006711
 (33.75, 42.0]    4.447761
 (42.0, 51.0]     5.287706
@@ -3145,7 +3145,7 @@ Advertencia
 \frac{1}
 {1+e^{-(\beta_0+\beta_3)}}.\]</span></p>
 <p>Podemos calcularlas en Python:</p>
-<div id="e7aba76e" class="cell" data-execution_count="45">
+<div id="e96feb1c" class="cell" data-execution_count="45">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb101"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> modelo_logit.params</span>
@@ -3162,7 +3162,7 @@ Advertencia
 <span id="cb101-12"><a href="#cb101-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb101-13"><a href="#cb101-13" aria-hidden="true" tabindex="-1"></a>probabilidades_grupos</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="310">
+<div class="cell-output cell-output-display" data-execution_count="45">
 <pre><code>(17.999, 33.75]    0.006667
 (33.75, 42.0]      0.028986
 (42.0, 51.0]       0.034272
@@ -3221,7 +3221,7 @@ dtype: float64</code></pre>
 <p>Como <code>y_bin</code> contiene únicamente ceros y unos, su media dentro de cada grupo es la proporción de observaciones con</p>
 <p><span class="math display">\[Wage&gt;250.\]</span></p>
 <p>Podemos calcular directamente estas proporciones:</p>
-<div id="d91a29e1" class="cell" data-execution_count="46">
+<div id="102f5b7c" class="cell" data-execution_count="46">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb104"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>proporciones_observadas <span class="op">=</span> (</span>
@@ -3238,7 +3238,7 @@ dtype: float64</code></pre>
 <span id="cb104-12"><a href="#cb104-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb104-13"><a href="#cb104-13" aria-hidden="true" tabindex="-1"></a>proporciones_observadas</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="311">
+<div class="cell-output cell-output-display" data-execution_count="46">
 <pre><code>grupo_edad
 (17.999, 33.75]    0.006667
 (33.75, 42.0]      0.028986
@@ -3248,7 +3248,7 @@ Name: high_wage, dtype: float64</code></pre>
 </div>
 </div>
 <p>Comparemos con las probabilidades obtenidas a partir del modelo:</p>
-<div id="b1346e61" class="cell" data-execution_count="47">
+<div id="444b1f61" class="cell" data-execution_count="47">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb106"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({</span>
@@ -3256,7 +3256,7 @@ Name: high_wage, dtype: float64</code></pre>
 <span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Probabilidad del modelo'</span>: probabilidades_grupos</span>
 <span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="312">
+<div class="cell-output cell-output-display" data-execution_count="47">
 <div>
 
 
@@ -3374,7 +3374,7 @@ Name: high_wage, dtype: float64</code></pre>
 <section id="el-summary-de-la-regresión-logística" class="level3" data-number="3.18.10">
 <h3 data-number="3.18.10" class="anchored" data-anchor-id="el-summary-de-la-regresión-logística"><span class="header-section-number">3.18.10</span> El <code>summary()</code> de la regresión logística</h3>
 <p>Veamos ahora:</p>
-<div id="cb84b9a3" class="cell" data-execution_count="48">
+<div id="2263438a" class="cell" data-execution_count="48">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb107"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(modelo_logit.summary())</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -3385,8 +3385,8 @@ Name: high_wage, dtype: float64</code></pre>
 Dep. Variable:                   wage   No. Observations:                 3000
 Model:                          Logit   Df Residuals:                     2996
 Method:                           MLE   Df Model:                            3
-Date:                Mon, 24 Aug 2026   Pseudo R-squ.:                 0.02757
-Time:                        20:03:57   Log-Likelihood:                -355.20
+Date:                Fri, 28 Aug 2026   Pseudo R-squ.:                 0.02757
+Time:                        09:51:44   Log-Likelihood:                -355.20
 converged:                       True   LL-Null:                       -365.27
 Covariance Type:            nonrobust   LLR p-value:                 0.0001589
 =================================================================================
@@ -3727,7 +3727,7 @@ p_0=p_1=p_2=p_3.\]</span></p>
 <section id="predicciones-logísticas" class="level3" data-number="3.18.17">
 <h3 data-number="3.18.17" class="anchored" data-anchor-id="predicciones-logísticas"><span class="header-section-number">3.18.17</span> Predicciones logísticas</h3>
 <p>Para predecir sobre la grilla de edades utilizamos la misma matriz <code>X_grid</code> que construimos anteriormente:</p>
-<div id="1d3deecb" class="cell" data-execution_count="49">
+<div id="d9766cf0" class="cell" data-execution_count="49">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb116"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>pred_logit <span class="op">=</span> modelo_logit.get_prediction(</span>
@@ -3766,7 +3766,7 @@ p_0=p_1=p_2=p_3.\]</span></p>
 <section id="intervalos-de-confianza-logísticos" class="level3" data-number="3.18.18">
 <h3 data-number="3.18.18" class="anchored" data-anchor-id="intervalos-de-confianza-logísticos"><span class="header-section-number">3.18.18</span> Intervalos de confianza logísticos</h3>
 <p>Podemos obtener información sobre la incertidumbre de las probabilidades mediante:</p>
-<div id="22749d9b" class="cell" data-execution_count="50">
+<div id="5810f26a" class="cell" data-execution_count="50">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb118"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>ic_logit <span class="op">=</span> pred_logit.summary_frame(</span>
@@ -3775,7 +3775,7 @@ p_0=p_1=p_2=p_3.\]</span></p>
 <span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb118-5"><a href="#cb118-5" aria-hidden="true" tabindex="-1"></a>ic_logit.head()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="315">
+<div class="cell-output cell-output-display" data-execution_count="50">
 <div>
 
 
@@ -3832,7 +3832,7 @@ p_0=p_1=p_2=p_3.\]</span></p>
 </div>
 </div>
 <p>Extraemos los límites:</p>
-<div id="df72fc12" class="cell" data-execution_count="51">
+<div id="c425387b" class="cell" data-execution_count="51">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb119"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>ic_logit_low <span class="op">=</span> ic_logit[<span class="st">'ci_lower'</span>]</span>
@@ -3853,7 +3853,7 @@ p_0=p_1=p_2=p_3.\]</span></p>
 <p><span class="math display">\[Wage&gt;250\]</span></p>
 <p>y las de aquellos con</p>
 <p><span class="math display">\[Wage\leq250.\]</span></p>
-<div id="e3a608e0" class="cell" data-execution_count="52">
+<div id="897ea0e3" class="cell" data-execution_count="52">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb120"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>rug_high <span class="op">=</span> age[y_bin <span class="op">==</span> <span class="dv">1</span>]</span>
@@ -3868,7 +3868,7 @@ p_0=p_1=p_2=p_3.\]</span></p>
 </section>
 <section id="visualización-de-la-regresión-logística-escalonada" class="level3" data-number="3.18.20">
 <h3 data-number="3.18.20" class="anchored" data-anchor-id="visualización-de-la-regresión-logística-escalonada"><span class="header-section-number">3.18.20</span> Visualización de la regresión logística escalonada</h3>
-<div id="91907a6d" class="cell" data-execution_count="53">
+<div id="c2ab9045" class="cell" data-execution_count="53">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb121"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(</span>
@@ -4634,8 +4634,8 @@ p_0=p_1=p_2=p_3.\]</span></p>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./parte4.html" class="pagination-link" aria-label="Funciones base">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Funciones base</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./parte4.html" class="pagination-link" aria-label="Splines de regresión con funciones base">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Splines de regresión con funciones base</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

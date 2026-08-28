@@ -33,7 +33,7 @@ book:
       chapters:
           - parte2.qmd # regresión polinomial
           - parte3.qmd # funciones escalonadas
-          - parte4.qmd
+          - parte4.qmd # Splines de regresión y funciones base
           - parte5.qmd
           - parte6.qmd
           - parte7.qmd
