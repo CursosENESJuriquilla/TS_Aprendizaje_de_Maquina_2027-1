@@ -1800,5 +1800,203 @@
       "**Modelos no lineales**",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Splines de regresión con funciones base</span>"
     ]
+  },
+  {
+    "objectID": "parte5.html",
+    "href": "parte5.html",
+    "title": "5  Splines de suavizamiento",
+    "section": "",
+    "text": "5.1 Librerías\nRecapitulando: en las secciones anteriores construimos modelos flexibles utilizando regresión polinómica, funciones escalonadas, funciones base y splines de regresión.\nEn un spline de regresión, una decisión importante consiste en determinar el número y la posición de los nodos (knots).\nLos splines de suavizamiento (smoothing splines) utilizan una estrategia diferente. En lugar de controlar la flexibilidad seleccionando explícitamente un pequeño conjunto de nodos, buscamos una función \\(g(x)\\) que logre un equilibrio entre:\nMatemáticamente, buscamos una función que minimice\n\\[\n\\sum_{i=1}^{n}\n\\left(y_i-g(x_i)\\right)^2\n+\n\\lambda\n\\int\n\\left[g''(t)\\right]^2dt.\n\\]\nEl primer término mide el error de ajuste, mientras que el segundo penaliza funciones demasiado irregulares.\nEl parámetro \\(\\lambda\\) controla el compromiso entre ambos objetivos:\nComenzamos importando las bibliotecas necesarias.\nCódigo\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nfrom ISLP import load_data\nfrom pygam import LinearGAM, s\nLa biblioteca pygam permite ajustar modelos aditivos generalizados o GAMs (Generalized Additive Models).\nUn spline de suavizamiento con un único predictor puede verse como un caso particular de un GAM. Por ahora utilizaremos pygam únicamente para estudiar splines de suavizamiento.\nLos GAMs con varios predictores y diferentes tipos de términos los estudiaremos más adelante.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#cargar-los-datos",
+    "href": "parte5.html#cargar-los-datos",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.2 Cargar los datos",
+    "text": "5.2 Cargar los datos\nUtilizaremos nuevamente el conjunto de datos Wage.\n\n\nCódigo\nWage = load_data(\"Wage\")\n\nWage.head()\n\n\n\n\n\n\n\n\n\nyear\nage\nmaritl\nrace\neducation\nregion\njobclass\nhealth\nhealth_ins\nlogwage\nwage\n\n\n\n\n0\n2006\n18\n1. Never Married\n1. White\n1. &lt; HS Grad\n2. Middle Atlantic\n1. Industrial\n1. &lt;=Good\n2. No\n4.318063\n75.043154\n\n\n1\n2004\n24\n1. Never Married\n1. White\n4. College Grad\n2. Middle Atlantic\n2. Information\n2. &gt;=Very Good\n2. No\n4.255273\n70.476020\n\n\n2\n2003\n45\n2. Married\n1. White\n3. Some College\n2. Middle Atlantic\n1. Industrial\n1. &lt;=Good\n1. Yes\n4.875061\n130.982177\n\n\n3\n2003\n43\n2. Married\n3. Asian\n4. College Grad\n2. Middle Atlantic\n2. Information\n2. &gt;=Very Good\n1. Yes\n5.041393\n154.685293\n\n\n4\n2005\n50\n4. Divorced\n1. White\n2. HS Grad\n2. Middle Atlantic\n2. Information\n1. &lt;=Good\n1. Yes\n4.318063\n75.043154\n\n\n\n\n\n\n\nNos interesa estudiar la relación entre:\n\nage: edad del trabajador;\nwage: salario.\n\nExtraemos estas dos variables.\n\n\nCódigo\nage = Wage[\"age\"]\ny = Wage[\"wage\"]\n\n\nPodemos visualizar los datos originales.\n\n\nCódigo\nplt.figure(figsize=(9, 6))\n\nplt.scatter(\n    age,\n    y,\n    alpha=0.3\n)\n\nplt.xlabel(\"Edad\")\nplt.ylabel(\"Salario\")\nplt.title(\"Relación entre edad y salario\")\n\nplt.show()\n\n\n\n\n\n\n\n\n\nLa relación no parece completamente lineal. El salario parece aumentar durante las primeras décadas de la vida laboral y posteriormente estabilizarse o disminuir.\nNuestro objetivo será modelar esta relación mediante una curva suave.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#preparar-el-predictor-para-pygam",
+    "href": "parte5.html#preparar-el-predictor-para-pygam",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.3 Preparar el predictor para pygam",
+    "text": "5.3 Preparar el predictor para pygam\npygam espera que los predictores se proporcionen en forma de una matriz.\nActualmente age es un vector:\n\n\nCódigo\nnp.asarray(age).shape\n\n\n(3000,)\n\n\nLo transformamos en una matriz con una sola columna.\n\n\nCódigo\nX_age = np.asarray(age).reshape(-1, 1)\n\n\nAhora podemos revisar sus dimensiones.\n\n\nCódigo\nX_age.shape\n\n\n(3000, 1)\n\n\nLa instrucción\nreshape(-1, 1)\nindica que queremos construir una matriz con:\n\nuna columna;\ntantas filas como sean necesarias.\n\nPor ejemplo, un vector\n\\[\n(20,30,40,50)\n\\]\nse transforma conceptualmente en\n\\[\n\\begin{pmatrix}\n20\\\\\n30\\\\\n40\\\\\n50\n\\end{pmatrix}.\n\\]\nEsto no cambia los datos; solamente cambia la forma en la que están organizados.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#nuestro-primer-spline-de-suavizamiento",
+    "href": "parte5.html#nuestro-primer-spline-de-suavizamiento",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.4 Nuestro primer spline de suavizamiento",
+    "text": "5.4 Nuestro primer spline de suavizamiento\nConstruiremos un primer modelo.\n\n\nCódigo\ngam = LinearGAM(\n    s(0, lam=0.6)\n)\n\ngam.fit(X_age, y)\n\n\nLinearGAM(callbacks=[Deviance(), Diffs()], fit_intercept=True, \n   max_iter=100, scale=None, terms=s(0) + intercept, tol=0.0001, \n   verbose=False)\n\n\nVeamos las partes de esta instrucción.\n\n5.4.1 LinearGAM()\nLinearGAM() utiliza una función de pérdida basada en errores cuadrados, por lo que es apropiado cuando la variable respuesta es cuantitativa.\nEn nuestro caso:\n\\[\nY=\\text{wage}.\n\\]\n\n\n5.4.2 s(0)\nLa función\ns(0)\nindica que queremos modelar la primera columna de la matriz \\(X\\) mediante un término suave.\nComo X_age solamente contiene una columna,\ns(0)\ncorresponde a age.\n\n\n5.4.3 lam\nEl argumento\nlam=0.6\ncorresponde al parámetro de penalización \\(\\lambda\\) que estudiamos anteriormente.\nPor tanto, pygam está resolviendo numéricamente un problema que busca equilibrar ajuste y suavidad.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#construir-valores-para-realizar-predicciones",
+    "href": "parte5.html#construir-valores-para-realizar-predicciones",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.5 Construir valores para realizar predicciones",
+    "text": "5.5 Construir valores para realizar predicciones\nPara visualizar el modelo no queremos obtener predicciones únicamente en las edades observadas.\nConstruiremos una secuencia de edades desde la edad mínima hasta la máxima.\n\n\nCódigo\nage_grid = np.linspace(\n    age.min(),\n    age.max(),\n    500\n)\n\n\nPara utilizar estos valores con pygam, también debemos convertirlos en una matriz.\n\n\nCódigo\nage_grid_matrix = age_grid.reshape(-1, 1)\n\n\nAhora calculamos las predicciones.\n\n\nCódigo\npred = gam.predict(age_grid_matrix)",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#visualizar-el-spline",
+    "href": "parte5.html#visualizar-el-spline",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.6 Visualizar el spline",
+    "text": "5.6 Visualizar el spline\nPodemos representar simultáneamente los datos y la curva estimada.\n\n\nCódigo\nplt.figure(figsize=(9, 6))\n\nplt.scatter(\n    age,\n    y,\n    alpha=0.3\n)\n\nplt.plot(\n    age_grid,\n    pred,\n    linewidth=3\n)\n\nplt.xlabel(\"Edad\")\nplt.ylabel(\"Salario\")\nplt.title(\"Spline de suavizamiento\")\n\nplt.show()\n\n\n\n\n\n\n\n\n\nLa curva resultante es suave y permite capturar una relación no lineal entre edad y salario.\nSin embargo, esta curva depende del valor elegido para \\(\\lambda\\).\nLa pregunta ahora es:\n\n\n\n\n\n\nAdvertencia🧠 Pregunta\n\n\n\n¿qué ocurre si cambiamos \\(\\lambda\\)?\n\n\n\n\n\n\nTipSolución",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#efecto-del-parámetro-lambda",
+    "href": "parte5.html#efecto-del-parámetro-lambda",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.7 Efecto del parámetro \\(\\lambda\\)",
+    "text": "5.7 Efecto del parámetro \\(\\lambda\\)\nRecordemos que el modelo minimiza una expresión de la forma\n\\[\n\\text{Error de ajuste}\n+\n\\lambda\n\\left(\\text{penalización por rugosidad}\\right).\n\\]\nPor tanto, esperamos que:\n\\[\n\\lambda\\downarrow\n\\quad\\Longrightarrow\\quad\n\\text{mayor flexibilidad},\n\\]\nmientras que\n\\[\n\\lambda\\uparrow\n\\quad\\Longrightarrow\\quad\n\\text{mayor suavidad}.\n\\]\nVamos a comprobarlo empíricamente.\nConsideraremos valores de \\(\\lambda\\) desde\n\\[\n10^{-2}\n\\]\nhasta\n\\[\n10^6.\n\\]\n\n\nCódigo\nlambdas = np.logspace(-2, 6, 5)\n\nlambdas\n\n\narray([1.e-02, 1.e+00, 1.e+02, 1.e+04, 1.e+06])\n\n\nLa función np.logspace() construye valores igualmente espaciados en una escala logarítmica.\nEsto resulta útil porque queremos comparar valores de \\(\\lambda\\) que difieren por varios órdenes de magnitud.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#comparar-diferentes-valores-de-lambda",
+    "href": "parte5.html#comparar-diferentes-valores-de-lambda",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.8 Comparar diferentes valores de \\(\\lambda\\)",
+    "text": "5.8 Comparar diferentes valores de \\(\\lambda\\)\nAjustaremos un spline diferente para cada valor de \\(\\lambda\\).\n\n\nCódigo\nplt.figure(figsize=(10, 7))\n\nplt.scatter(\n    age,\n    y,\n    alpha=0.25\n)\n\nfor lam in lambdas:\n\n    gam_lam = LinearGAM(\n        s(0, lam=lam)\n    )\n\n    gam_lam.fit(X_age, y)\n\n    pred_lam = gam_lam.predict(age_grid_matrix)\n\n    plt.plot(\n        age_grid,\n        pred_lam,\n        linewidth=2,\n        label=fr\"$\\lambda={lam:.0e}$\"\n    )\n\nplt.xlabel(\"Edad\")\nplt.ylabel(\"Salario\")\nplt.title(r\"Efecto del parámetro $\\lambda$\")\nplt.legend()\n\nplt.show()\n\n\n\n\n\n\n\n\n\nObserven cuidadosamente cómo cambia la forma de la curva.\nCuando \\(\\lambda\\) es pequeño, la penalización tiene poca importancia y el modelo puede adaptarse más a los datos.\nCuando \\(\\lambda\\) aumenta, la penalización adquiere mayor peso y la curva se vuelve progresivamente más suave.\nPara valores suficientemente grandes de \\(\\lambda\\), el ajuste comienza a aproximarse a una relación lineal.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#lambda-y-complejidad-del-modelo",
+    "href": "parte5.html#lambda-y-complejidad-del-modelo",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.9 \\(\\lambda\\) y complejidad del modelo",
+    "text": "5.9 \\(\\lambda\\) y complejidad del modelo\nEl número de parámetros de un spline de suavizamiento no describe directamente su complejidad.\nPor ello utilizamos los grados de libertad efectivos.\nLa relación general es\n\\[\n\\lambda\\uparrow\n\\quad\\Longrightarrow\\quad\ndf_\\lambda\\downarrow.\n\\]\nEs decir:\n\n\\(\\lambda\\) pequeño \\(\\rightarrow\\) más grados de libertad efectivos;\n\\(\\lambda\\) grande \\(\\rightarrow\\) menos grados de libertad efectivos.\n\nEsto conecta directamente con el compromiso sesgo-varianza:\n\\[\n\\text{mayor flexibilidad}\n\\quad\\Longrightarrow\\quad\n\\text{menor sesgo y mayor varianza},\n\\]\nmientras que\n\\[\n\\text{menor flexibilidad}\n\\quad\\Longrightarrow\\quad\n\\text{mayor sesgo y menor varianza}.\n\\]",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#cómo-elegimos-lambda",
+    "href": "parte5.html#cómo-elegimos-lambda",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.10 ¿Cómo elegimos \\(\\lambda\\)?",
+    "text": "5.10 ¿Cómo elegimos \\(\\lambda\\)?\nHasta ahora hemos elegido \\(\\lambda\\) manualmente.\nPor ejemplo:\nlam=0.6\nPero no existe una razón particular para pensar que ese valor sea el mejor para nuestros datos.\nUna estrategia más adecuada consiste en seleccionar \\(\\lambda\\) utilizando los propios datos.\npygam proporciona el método\ngridsearch()\npara realizar esta búsqueda.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#búsqueda-de-lambda",
+    "href": "parte5.html#búsqueda-de-lambda",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.11 Búsqueda de \\(\\lambda\\)",
+    "text": "5.11 Búsqueda de \\(\\lambda\\)\nPrimero definimos una colección de posibles valores.\n\n\nCódigo\nlam_grid = np.logspace(-3, 5, 30)\n\n\nAhora realizamos la búsqueda.\n\n\nCódigo\ngam_opt = LinearGAM(\n    s(0)\n)\n\ngam_opt.gridsearch(\n    X_age,\n    y,\n    lam=lam_grid,\n    progress=False\n)\n\n\nLinearGAM(callbacks=[Deviance(), Diffs()], fit_intercept=True, \n   max_iter=100, scale=None, terms=s(0) + intercept, tol=0.0001, \n   verbose=False)\n\n\ngridsearch() ajusta modelos utilizando diferentes valores del parámetro de suavizamiento y selecciona una opción de acuerdo con el criterio utilizado internamente por pygam.\nPodemos consultar el valor seleccionado.\n\n\nCódigo\ngam_opt.lam\n\n\n[[np.float64(174.33288221999874)]]\n\n\nEs importante distinguir entre dos ideas:\n\nexplorar manualmente \\(\\lambda\\), para comprender su efecto sobre la curva;\nseleccionar \\(\\lambda\\) mediante un criterio basado en los datos, para construir el modelo final.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#comparar-un-valor-arbitrario-con-el-valor-seleccionado",
+    "href": "parte5.html#comparar-un-valor-arbitrario-con-el-valor-seleccionado",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.12 Comparar un valor arbitrario con el valor seleccionado",
+    "text": "5.12 Comparar un valor arbitrario con el valor seleccionado\nComparemos el modelo inicial, que utilizaba\n\\[\n\\lambda=0.6,\n\\]\ncon el modelo obtenido mediante la búsqueda.\n\n\nCódigo\npred_default = gam.predict(age_grid_matrix)\npred_opt = gam_opt.predict(age_grid_matrix)\n\nplt.figure(figsize=(10, 7))\n\nplt.scatter(\n    age,\n    y,\n    alpha=0.25\n)\n\nplt.plot(\n    age_grid,\n    pred_default,\n    linewidth=3,\n    label=r\"$\\lambda=0.6$\"\n)\n\nplt.plot(\n    age_grid,\n    pred_opt,\n    linewidth=3,\n    label=\"Lambda seleccionado\"\n)\n\nplt.xlabel(\"Edad\")\nplt.ylabel(\"Salario\")\nplt.title(\"Comparación de splines de suavizamiento\")\nplt.legend()\n\nplt.show()\n\n\n\n\n\n\n\n\n\nDos valores diferentes de \\(\\lambda\\) no necesariamente producen curvas visualmente muy diferentes.\nEsto es importante: aumentar la complejidad del modelo solamente tiene sentido si los datos proporcionan evidencia de que esa complejidad adicional es útil.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#grados-de-libertad-efectivos-del-modelo",
+    "href": "parte5.html#grados-de-libertad-efectivos-del-modelo",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.13 Grados de libertad efectivos del modelo",
+    "text": "5.13 Grados de libertad efectivos del modelo\nRecordemos que teóricamente los grados de libertad efectivos pueden escribirse como\n\\[\ndf_\\lambda\n=\n\\operatorname{tr}(S_\\lambda).\n\\]\nNo corresponden simplemente al número de coeficientes almacenados en el modelo.\nRepresentan la flexibilidad efectiva que queda después de aplicar la penalización.\npygam calcula esta cantidad durante el ajuste.\nPodemos inspeccionarla mediante:\n\n\nCódigo\ngam_opt.statistics_[\"edof\"]\n\n\nnp.float64(6.061955860252559)\n\n\nComparemos ahora varios valores de \\(\\lambda\\).\n\n\nCódigo\nresultados = []\n\nfor lam in np.logspace(-2, 6, 9):\n\n    modelo = LinearGAM(\n        s(0, lam=lam)\n    ).fit(X_age, y)\n\n    resultados.append({\n        \"lambda\": lam,\n        \"df_efectivos\": modelo.statistics_[\"edof\"]\n    })\n\ndf_lambda = pd.DataFrame(resultados)\n\ndf_lambda\n\n\n\n\n\n\n\n\n\nlambda\ndf_efectivos\n\n\n\n\n0\n0.01\n18.747147\n\n\n1\n0.10\n17.320972\n\n\n2\n1.00\n14.408054\n\n\n3\n10.00\n10.305159\n\n\n4\n100.00\n6.752265\n\n\n5\n1000.00\n4.299985\n\n\n6\n10000.00\n2.793035\n\n\n7\n100000.00\n2.132564\n\n\n8\n1000000.00\n2.014363\n\n\n\n\n\n\n\nAhora podemos visualizar la relación.\n\n\nCódigo\nplt.figure(figsize=(9, 6))\n\nplt.plot(\n    df_lambda[\"lambda\"],\n    df_lambda[\"df_efectivos\"],\n    marker=\"o\"\n)\n\nplt.xscale(\"log\")\n\nplt.xlabel(r\"$\\lambda$\")\nplt.ylabel(\"Grados de libertad efectivos\")\nplt.title(r\"Relación entre $\\lambda$ y los grados de libertad efectivos\")\n\nplt.show()\n\n\n\n\n\n\n\n\n\nEsta gráfica permite observar directamente la relación\n\\[\n\\boxed{\n\\lambda\\uparrow\n\\quad\\Longrightarrow\\quad\ndf_\\lambda\\downarrow\n}\n\\]\nque habíamos estudiado teóricamente.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#podemos-controlar-la-complejidad-usando-grados-de-libertad",
+    "href": "parte5.html#podemos-controlar-la-complejidad-usando-grados-de-libertad",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.14 ¿Podemos controlar la complejidad usando grados de libertad?",
+    "text": "5.14 ¿Podemos controlar la complejidad usando grados de libertad?\nConceptualmente podemos pensar en dos maneras equivalentes de describir la complejidad:\n\\[\n\\lambda\n\\qquad\\text{o}\\qquad\ndf_\\lambda.\n\\]\nUn valor pequeño de \\(\\lambda\\) corresponde a un número mayor de grados de libertad efectivos.\nUn valor grande de \\(\\lambda\\) corresponde a un número menor de grados de libertad efectivos.\nEn algunas implementaciones es posible buscar el valor de \\(\\lambda\\) que produzca aproximadamente un número deseado de grados de libertad.\nSin embargo, para esta práctica nos concentraremos en la idea más importante:\n\n\n\n\n\n\nImportante\n\n\n\n\\(\\lambda\\) controla la penalización y los grados de libertad efectivos describen la flexibilidad resultante.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#comparación-con-una-regresión-lineal",
+    "href": "parte5.html#comparación-con-una-regresión-lineal",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.15 Comparación con una regresión lineal",
+    "text": "5.15 Comparación con una regresión lineal\nLa teoría de los splines de suavizamiento nos dice que cuando la penalización es muy grande,\n\\[\n\\lambda\\rightarrow\\infty,\n\\]\nla curva tiende hacia una función lineal.\nPodemos comprobar esta idea comparando un spline fuertemente penalizado con una regresión lineal.\nPrimero ajustamos la regresión lineal.\n\n\nCódigo\ncoef_lineal = np.polyfit(\n    age,\n    y,\n    deg=1\n)\n\npred_lineal = np.polyval(\n    coef_lineal,\n    age_grid\n)\n\n\nAhora ajustamos un spline con una penalización muy grande.\n\n\nCódigo\ngam_suave = LinearGAM(\n    s(0, lam=1e10)\n)\n\ngam_suave.fit(X_age, y)\n\npred_suave = gam_suave.predict(\n    age_grid_matrix\n)\n\n\nComparamos ambos ajustes.\n\n\nCódigo\nplt.figure(figsize=(10, 7))\n\nplt.scatter(\n    age,\n    y,\n    alpha=0.25\n)\n\nplt.plot(\n    age_grid,\n    pred_suave,\n    linewidth=3,\n    label=\"Spline con penalización grande\"\n)\n\nplt.plot(\n    age_grid,\n    pred_lineal,\n    linestyle=\"--\",\n    linewidth=3,\n    label=\"Regresión lineal\"\n)\n\nplt.xlabel(\"Edad\")\nplt.ylabel(\"Salario\")\nplt.title(\"Spline fuertemente penalizado y regresión lineal\")\nplt.legend()\n\nplt.show()\n\n\n\n\n\n\n\n\n\nLas dos curvas deberían ser muy similares.\nLa razón es que una penalización muy grande fuerza a que\n\\[\ng''(x)\\approx0.\n\\]\nSi la segunda derivada es cero, entonces la función es lineal:\n\\[\ng(x)=\\beta_0+\\beta_1x.\n\\]\nCon esto conectamos directamente la implementación computacional con el resultado teórico.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#smoothing-splines-y-gams",
+    "href": "parte5.html#smoothing-splines-y-gams",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.16 Smoothing splines y GAMs",
+    "text": "5.16 Smoothing splines y GAMs\nLa biblioteca pygam se diseñó para trabajar con modelos aditivos generalizados (Generalized Additive Models, GAMs).\nUn GAM permite construir modelos de la forma\n\\[\nY\n=\n\\beta_0+\nf_1(X_1)+\nf_2(X_2)+\n\\cdots+\nf_p(X_p)\n+\n\\varepsilon,\n\\]\ndonde algunas de las funciones \\(f_j\\) pueden ser relaciones suaves estimadas a partir de los datos.\nPor ejemplo, podríamos considerar un modelo conceptual como\n\\[\n\\text{Wage}\n=\n\\beta_0+\nf_1(\\text{Age})+\nf_2(\\text{Year})+\n\\text{Education}\n+\n\\varepsilon.\n\\]\nEn esta práctica solamente hemos considerado\n\\[\n\\text{Wage}\n=\n\\beta_0+\nf(\\text{Age})+\n\\varepsilon.\n\\]\nPor tanto, estamos utilizando únicamente un término suave y un predictor.\nLos GAMs permiten combinar simultáneamente varios términos suaves, lineales y categóricos. Estudiaremos esa extensión más adelante.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#ejercicios",
+    "href": "parte5.html#ejercicios",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.17 Ejercicios",
+    "text": "5.17 Ejercicios\n\n5.17.1 Ejercicio 1. Efecto de \\(\\lambda\\)\nAjusta splines de suavizamiento utilizando los siguientes valores:\n\\[\n\\lambda=\n10^{-4},\\;\n10^{-2},\\;\n1,\\;\n10^2,\\;\n10^4,\\;\n10^8.\n\\]\nRepresenta todos los ajustes en una misma gráfica.\nPreguntas:\n\n¿Qué ocurre con la curva conforme aumenta \\(\\lambda\\)?\n¿Cuál de los modelos parece más flexible?\n¿Cuál parece presentar mayor sesgo?\n¿Cuál podría presentar mayor varianza?\n\n\n\n5.17.2 Ejercicio 2. Grados de libertad efectivos\nPara cada uno de los valores de \\(\\lambda\\) del ejercicio anterior, obtén los grados de libertad efectivos mediante\nmodelo.statistics_[\"edof\"]\nConstruye una tabla con las columnas:\n\n\n\n\\(\\lambda\\)\nGrados de libertad efectivos\n\n\n\n\n\n\n\n\n\nDespués representa gráficamente\n\\[\ndf_\\lambda\n\\quad\\text{contra}\\quad\n\\lambda.\n\\]\nUtiliza escala logarítmica para el eje correspondiente a \\(\\lambda\\).\nPregunta: ¿los resultados coinciden con la relación teórica esperada?\n\n\n5.17.3 Ejercicio 3. Selección de \\(\\lambda\\)\nUtiliza gridsearch() para seleccionar automáticamente un valor de \\(\\lambda\\).\nConsidera como candidatos\n\\[\n10^{-4}\\leq\\lambda\\leq10^6.\n\\]\nDespués:\n\nreporta el valor seleccionado;\nreporta sus grados de libertad efectivos;\ngrafica el spline resultante;\ncompáralo con los ajustes obtenidos manualmente.\n\nPregunta: ¿el procedimiento seleccionó un modelo relativamente flexible o relativamente suave?\nJustifica tu respuesta utilizando tanto la gráfica como los grados de libertad efectivos.\n\n\n5.17.4 Ejercicio 4. El límite lineal\nAjusta splines utilizando valores cada vez mayores de \\(\\lambda\\).\nPor ejemplo:\n\\[\n10^2,\\quad\n10^4,\\quad\n10^6,\\quad\n10^8,\\quad\n10^{10}.\n\\]\nAjusta también una regresión lineal de wage sobre age.\nRepresenta todos los modelos.\nPregunta: ¿qué observas conforme \\(\\lambda\\) aumenta? Explica el resultado utilizando la penalización\n\\[\n\\lambda\\int[g''(t)]^2dt.\n\\]\n\n\n5.17.5 Ejercicio 5. Interpretación\nSin ejecutar código, responde:\n\nSi un spline tiene muchos grados de libertad efectivos, ¿esperas que \\(\\lambda\\) sea grande o pequeño?\nSi \\(\\lambda\\rightarrow\\infty\\), ¿qué tipo de función esperamos obtener?\n¿Por qué no es conveniente seleccionar \\(\\lambda\\) únicamente observando qué modelo tiene el menor error de entrenamiento?\n¿Cuál es la diferencia conceptual entre el número de parámetros del spline y sus grados de libertad efectivos?\n¿Qué relación existe entre \\(\\lambda\\), flexibilidad, sesgo y varianza?\n\n\n\n5.17.6 Ejercicio 6. Otro predictor\nRepite el análisis utilizando year como predictor y wage como variable respuesta.\n\nConstruye un spline de suavizamiento.\nExplora distintos valores de \\(\\lambda\\).\nObtén el valor seleccionado mediante gridsearch().\nObtén los grados de libertad efectivos.\nCompara la relación year–wage con la relación age–wage.\n\nPregunta: ¿parece necesaria la misma cantidad de flexibilidad para modelar ambas relaciones? Justifica tu respuesta.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
+  },
+  {
+    "objectID": "parte5.html#ejercicio-7.-reflexión",
+    "href": "parte5.html#ejercicio-7.-reflexión",
+    "title": "5  Splines de suavizamiento",
+    "section": "5.18 Ejercicio 7. Reflexión",
+    "text": "5.18 Ejercicio 7. Reflexión\nSupongamos que dos splines producen prácticamente el mismo desempeño predictivo:\n\nModelo A: \\(df_\\lambda=15\\);\nModelo B: \\(df_\\lambda=5\\).\n\n¿Cuál preferirías?\nExplica tu respuesta considerando:\n\ncomplejidad;\ninterpretabilidad;\nriesgo de sobreajuste.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Splines de suavizamiento</span>"
+    ]
   }
 ]

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>5&nbsp; Splines de regresión – Temas Selectos de Aprendizaje de Máquina</title>
+<title>5&nbsp; Splines de suavizamiento – Temas Selectos de Aprendizaje de Máquina</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,10 +23,45 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -73,7 +108,42 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Buscar"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
+
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -87,7 +157,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./parte2.html"><strong>Modelos no lineales</strong></a></li><li class="breadcrumb-item"><a href="./parte5.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Splines de regresión</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./parte2.html"><strong>Modelos no lineales</strong></a></li><li class="breadcrumb-item"><a href="./parte5.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Splines de suavizamiento</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
@@ -195,25 +265,25 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Funciones base</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Splines de regresión con funciones base</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte5.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Splines de regresión</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Splines de suavizamiento</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Splines de suavizamiento</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regresión Local</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte7.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regresión local</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">GAMs</span></span></a>
   </div>
 </li>
       </ul>
@@ -230,7 +300,58 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte9.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Métodos modernos de Gradient Boosting</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>Máquinas de Soporte Vectorial</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>Aprendizaje no supervisado</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>Interpretabilidad y explicabilidad de modelos</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -240,15 +361,51 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#librerías" id="toc-librerías" class="nav-link active" data-scroll-target="#librerías"><span class="header-section-number">5.1</span> Librerías</a></li>
+  <li><a href="#cargar-los-datos" id="toc-cargar-los-datos" class="nav-link" data-scroll-target="#cargar-los-datos"><span class="header-section-number">5.2</span> Cargar los datos</a></li>
+  <li><a href="#preparar-el-predictor-para-pygam" id="toc-preparar-el-predictor-para-pygam" class="nav-link" data-scroll-target="#preparar-el-predictor-para-pygam"><span class="header-section-number">5.3</span> Preparar el predictor para <code>pygam</code></a></li>
+  <li><a href="#nuestro-primer-spline-de-suavizamiento" id="toc-nuestro-primer-spline-de-suavizamiento" class="nav-link" data-scroll-target="#nuestro-primer-spline-de-suavizamiento"><span class="header-section-number">5.4</span> Nuestro primer spline de suavizamiento</a>
+  <ul>
+  <li><a href="#lineargam" id="toc-lineargam" class="nav-link" data-scroll-target="#lineargam"><span class="header-section-number">5.4.1</span> <code>LinearGAM()</code></a></li>
+  <li><a href="#s0" id="toc-s0" class="nav-link" data-scroll-target="#s0"><span class="header-section-number">5.4.2</span> <code>s(0)</code></a></li>
+  <li><a href="#lam" id="toc-lam" class="nav-link" data-scroll-target="#lam"><span class="header-section-number">5.4.3</span> <code>lam</code></a></li>
+  </ul></li>
+  <li><a href="#construir-valores-para-realizar-predicciones" id="toc-construir-valores-para-realizar-predicciones" class="nav-link" data-scroll-target="#construir-valores-para-realizar-predicciones"><span class="header-section-number">5.5</span> Construir valores para realizar predicciones</a></li>
+  <li><a href="#visualizar-el-spline" id="toc-visualizar-el-spline" class="nav-link" data-scroll-target="#visualizar-el-spline"><span class="header-section-number">5.6</span> Visualizar el spline</a></li>
+  <li><a href="#efecto-del-parámetro-lambda" id="toc-efecto-del-parámetro-lambda" class="nav-link" data-scroll-target="#efecto-del-parámetro-lambda"><span class="header-section-number">5.7</span> Efecto del parámetro <span class="math inline">\(\lambda\)</span></a></li>
+  <li><a href="#comparar-diferentes-valores-de-lambda" id="toc-comparar-diferentes-valores-de-lambda" class="nav-link" data-scroll-target="#comparar-diferentes-valores-de-lambda"><span class="header-section-number">5.8</span> Comparar diferentes valores de <span class="math inline">\(\lambda\)</span></a></li>
+  <li><a href="#lambda-y-complejidad-del-modelo" id="toc-lambda-y-complejidad-del-modelo" class="nav-link" data-scroll-target="#lambda-y-complejidad-del-modelo"><span class="header-section-number">5.9</span> <span class="math inline">\(\lambda\)</span> y complejidad del modelo</a></li>
+  <li><a href="#cómo-elegimos-lambda" id="toc-cómo-elegimos-lambda" class="nav-link" data-scroll-target="#cómo-elegimos-lambda"><span class="header-section-number">5.10</span> ¿Cómo elegimos <span class="math inline">\(\lambda\)</span>?</a></li>
+  <li><a href="#búsqueda-de-lambda" id="toc-búsqueda-de-lambda" class="nav-link" data-scroll-target="#búsqueda-de-lambda"><span class="header-section-number">5.11</span> Búsqueda de <span class="math inline">\(\lambda\)</span></a></li>
+  <li><a href="#comparar-un-valor-arbitrario-con-el-valor-seleccionado" id="toc-comparar-un-valor-arbitrario-con-el-valor-seleccionado" class="nav-link" data-scroll-target="#comparar-un-valor-arbitrario-con-el-valor-seleccionado"><span class="header-section-number">5.12</span> Comparar un valor arbitrario con el valor seleccionado</a></li>
+  <li><a href="#grados-de-libertad-efectivos-del-modelo" id="toc-grados-de-libertad-efectivos-del-modelo" class="nav-link" data-scroll-target="#grados-de-libertad-efectivos-del-modelo"><span class="header-section-number">5.13</span> Grados de libertad efectivos del modelo</a></li>
+  <li><a href="#podemos-controlar-la-complejidad-usando-grados-de-libertad" id="toc-podemos-controlar-la-complejidad-usando-grados-de-libertad" class="nav-link" data-scroll-target="#podemos-controlar-la-complejidad-usando-grados-de-libertad"><span class="header-section-number">5.14</span> ¿Podemos controlar la complejidad usando grados de libertad?</a></li>
+  <li><a href="#comparación-con-una-regresión-lineal" id="toc-comparación-con-una-regresión-lineal" class="nav-link" data-scroll-target="#comparación-con-una-regresión-lineal"><span class="header-section-number">5.15</span> Comparación con una regresión lineal</a></li>
+  <li><a href="#smoothing-splines-y-gams" id="toc-smoothing-splines-y-gams" class="nav-link" data-scroll-target="#smoothing-splines-y-gams"><span class="header-section-number">5.16</span> Smoothing splines y GAMs</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">5.17</span> Ejercicios</a>
+  <ul>
+  <li><a href="#ejercicio-1.-efecto-de-lambda" id="toc-ejercicio-1.-efecto-de-lambda" class="nav-link" data-scroll-target="#ejercicio-1.-efecto-de-lambda"><span class="header-section-number">5.17.1</span> Ejercicio 1. Efecto de <span class="math inline">\(\lambda\)</span></a></li>
+  <li><a href="#ejercicio-2.-grados-de-libertad-efectivos" id="toc-ejercicio-2.-grados-de-libertad-efectivos" class="nav-link" data-scroll-target="#ejercicio-2.-grados-de-libertad-efectivos"><span class="header-section-number">5.17.2</span> Ejercicio 2. Grados de libertad efectivos</a></li>
+  <li><a href="#ejercicio-3.-selección-de-lambda" id="toc-ejercicio-3.-selección-de-lambda" class="nav-link" data-scroll-target="#ejercicio-3.-selección-de-lambda"><span class="header-section-number">5.17.3</span> Ejercicio 3. Selección de <span class="math inline">\(\lambda\)</span></a></li>
+  <li><a href="#ejercicio-4.-el-límite-lineal" id="toc-ejercicio-4.-el-límite-lineal" class="nav-link" data-scroll-target="#ejercicio-4.-el-límite-lineal"><span class="header-section-number">5.17.4</span> Ejercicio 4. El límite lineal</a></li>
+  <li><a href="#ejercicio-5.-interpretación" id="toc-ejercicio-5.-interpretación" class="nav-link" data-scroll-target="#ejercicio-5.-interpretación"><span class="header-section-number">5.17.5</span> Ejercicio 5. Interpretación</a></li>
+  <li><a href="#ejercicio-6.-otro-predictor" id="toc-ejercicio-6.-otro-predictor" class="nav-link" data-scroll-target="#ejercicio-6.-otro-predictor"><span class="header-section-number">5.17.6</span> Ejercicio 6. Otro predictor</a></li>
+  </ul></li>
+  <li><a href="#ejercicio-7.-reflexión" id="toc-ejercicio-7.-reflexión" class="nav-link" data-scroll-target="#ejercicio-7.-reflexión"><span class="header-section-number">5.18</span> Ejercicio 7. Reflexión</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./parte2.html"><strong>Modelos no lineales</strong></a></li><li class="breadcrumb-item"><a href="./parte5.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Splines de regresión</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./parte2.html"><strong>Modelos no lineales</strong></a></li><li class="breadcrumb-item"><a href="./parte5.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Splines de suavizamiento</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Splines de regresión</span></h1>
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Splines de suavizamiento</span></h1>
 </div>
 
 
@@ -265,8 +422,1051 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>Recapitulando: en las secciones anteriores construimos modelos flexibles utilizando regresión polinómica, funciones escalonadas, funciones base y splines de regresión.</p>
+<p>En un <strong>spline de regresión</strong>, una decisión importante consiste en determinar el número y la posición de los nodos (<em>knots</em>).</p>
+<p>Los <strong>splines de suavizamiento</strong> (<em>smoothing splines</em>) utilizan una estrategia diferente. En lugar de controlar la flexibilidad seleccionando explícitamente un pequeño conjunto de nodos, buscamos una función <span class="math inline">\(g(x)\)</span> que logre un equilibrio entre:</p>
+<ul>
+<li>ajustarse bien a los datos;</li>
+<li>mantenerse suficientemente suave.</li>
+</ul>
+<p>Matemáticamente, buscamos una función que minimice</p>
+<p><span class="math display">\[
+\sum_{i=1}^{n}
+\left(y_i-g(x_i)\right)^2
++
+\lambda
+\int
+\left[g''(t)\right]^2dt.
+\]</span></p>
+<p>El primer término mide el error de ajuste, mientras que el segundo penaliza funciones demasiado irregulares.</p>
+<p>El parámetro <span class="math inline">\(\lambda\)</span> controla el compromiso entre ambos objetivos:</p>
+<ul>
+<li>valores pequeños de <span class="math inline">\(\lambda\)</span> permiten ajustes más flexibles;</li>
+<li>valores grandes de <span class="math inline">\(\lambda\)</span> producen curvas más suaves.</li>
+</ul>
+<section id="librerías" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="librerías"><span class="header-section-number">5.1</span> Librerías</h2>
+<p>Comenzamos importando las bibliotecas necesarias.</p>
+<div id="f8f8fa2c" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ISLP <span class="im">import</span> load_data</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pygam <span class="im">import</span> LinearGAM, s</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>La biblioteca <code>pygam</code> permite ajustar modelos aditivos generalizados o <strong>GAMs</strong> (<em>Generalized Additive Models</em>).</p>
+<p>Un spline de suavizamiento con un único predictor puede verse como un caso particular de un GAM. Por ahora utilizaremos <code>pygam</code> únicamente para estudiar splines de suavizamiento.</p>
+<p>Los GAMs con varios predictores y diferentes tipos de términos los estudiaremos más adelante.</p>
+</section>
+<section id="cargar-los-datos" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="cargar-los-datos"><span class="header-section-number">5.2</span> Cargar los datos</h2>
+<p>Utilizaremos nuevamente el conjunto de datos <code>Wage</code>.</p>
+<div id="90ceb95d" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Wage <span class="op">=</span> load_data(<span class="st">"Wage"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Wage.head()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
 
 
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">year</th>
+<th data-quarto-table-cell-role="th">age</th>
+<th data-quarto-table-cell-role="th">maritl</th>
+<th data-quarto-table-cell-role="th">race</th>
+<th data-quarto-table-cell-role="th">education</th>
+<th data-quarto-table-cell-role="th">region</th>
+<th data-quarto-table-cell-role="th">jobclass</th>
+<th data-quarto-table-cell-role="th">health</th>
+<th data-quarto-table-cell-role="th">health_ins</th>
+<th data-quarto-table-cell-role="th">logwage</th>
+<th data-quarto-table-cell-role="th">wage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>2006</td>
+<td>18</td>
+<td>1. Never Married</td>
+<td>1. White</td>
+<td>1. &lt; HS Grad</td>
+<td>2. Middle Atlantic</td>
+<td>1. Industrial</td>
+<td>1. &lt;=Good</td>
+<td>2. No</td>
+<td>4.318063</td>
+<td>75.043154</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>2004</td>
+<td>24</td>
+<td>1. Never Married</td>
+<td>1. White</td>
+<td>4. College Grad</td>
+<td>2. Middle Atlantic</td>
+<td>2. Information</td>
+<td>2. &gt;=Very Good</td>
+<td>2. No</td>
+<td>4.255273</td>
+<td>70.476020</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>2003</td>
+<td>45</td>
+<td>2. Married</td>
+<td>1. White</td>
+<td>3. Some College</td>
+<td>2. Middle Atlantic</td>
+<td>1. Industrial</td>
+<td>1. &lt;=Good</td>
+<td>1. Yes</td>
+<td>4.875061</td>
+<td>130.982177</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>2003</td>
+<td>43</td>
+<td>2. Married</td>
+<td>3. Asian</td>
+<td>4. College Grad</td>
+<td>2. Middle Atlantic</td>
+<td>2. Information</td>
+<td>2. &gt;=Very Good</td>
+<td>1. Yes</td>
+<td>5.041393</td>
+<td>154.685293</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>2005</td>
+<td>50</td>
+<td>4. Divorced</td>
+<td>1. White</td>
+<td>2. HS Grad</td>
+<td>2. Middle Atlantic</td>
+<td>2. Information</td>
+<td>1. &lt;=Good</td>
+<td>1. Yes</td>
+<td>4.318063</td>
+<td>75.043154</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Nos interesa estudiar la relación entre:</p>
+<ul>
+<li><code>age</code>: edad del trabajador;</li>
+<li><code>wage</code>: salario.</li>
+</ul>
+<p>Extraemos estas dos variables.</p>
+<div id="315a18db" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>age <span class="op">=</span> Wage[<span class="st">"age"</span>]</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> Wage[<span class="st">"wage"</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Podemos visualizar los datos originales.</p>
+<div id="430e86f1" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    age,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.3</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Edad"</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Salario"</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Relación entre edad y salario"</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte5_files/figure-html/cell-5-output-1.png" width="743" height="525" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La relación no parece completamente lineal. El salario parece aumentar durante las primeras décadas de la vida laboral y posteriormente estabilizarse o disminuir.</p>
+<p>Nuestro objetivo será modelar esta relación mediante una curva suave.</p>
+</section>
+<section id="preparar-el-predictor-para-pygam" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="preparar-el-predictor-para-pygam"><span class="header-section-number">5.3</span> Preparar el predictor para <code>pygam</code></h2>
+<p><code>pygam</code> espera que los predictores se proporcionen en forma de una <strong>matriz</strong>.</p>
+<p>Actualmente <code>age</code> es un vector:</p>
+<div id="47dfd8bd" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>np.asarray(age).shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>(3000,)</code></pre>
+</div>
+</div>
+<p>Lo transformamos en una matriz con una sola columna.</p>
+<div id="a2fc73eb" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>X_age <span class="op">=</span> np.asarray(age).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Ahora podemos revisar sus dimensiones.</p>
+<div id="9823a52d" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>X_age.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>(3000, 1)</code></pre>
+</div>
+</div>
+<p>La instrucción</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>indica que queremos construir una matriz con:</p>
+<ul>
+<li>una columna;</li>
+<li>tantas filas como sean necesarias.</li>
+</ul>
+<p>Por ejemplo, un vector</p>
+<p><span class="math display">\[
+(20,30,40,50)
+\]</span></p>
+<p>se transforma conceptualmente en</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+20\\
+30\\
+40\\
+50
+\end{pmatrix}.
+\]</span></p>
+<p>Esto no cambia los datos; solamente cambia la forma en la que están organizados.</p>
+</section>
+<section id="nuestro-primer-spline-de-suavizamiento" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="nuestro-primer-spline-de-suavizamiento"><span class="header-section-number">5.4</span> Nuestro primer spline de suavizamiento</h2>
+<p>Construiremos un primer modelo.</p>
+<div id="051ba1ce" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>gam <span class="op">=</span> LinearGAM(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">0</span>, lam<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>gam.fit(X_age, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>LinearGAM(callbacks=[Deviance(), Diffs()], fit_intercept=True, 
+   max_iter=100, scale=None, terms=s(0) + intercept, tol=0.0001, 
+   verbose=False)</code></pre>
+</div>
+</div>
+<p>Veamos las partes de esta instrucción.</p>
+<section id="lineargam" class="level3" data-number="5.4.1">
+<h3 data-number="5.4.1" class="anchored" data-anchor-id="lineargam"><span class="header-section-number">5.4.1</span> <code>LinearGAM()</code></h3>
+<p><code>LinearGAM()</code> utiliza una función de pérdida basada en errores cuadrados, por lo que es apropiado cuando la variable respuesta es cuantitativa.</p>
+<p>En nuestro caso:</p>
+<p><span class="math display">\[
+Y=\text{wage}.
+\]</span></p>
+</section>
+<section id="s0" class="level3" data-number="5.4.2">
+<h3 data-number="5.4.2" class="anchored" data-anchor-id="s0"><span class="header-section-number">5.4.2</span> <code>s(0)</code></h3>
+<p>La función</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>s(<span class="dv">0</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>indica que queremos modelar la primera columna de la matriz <span class="math inline">\(X\)</span> mediante un término suave.</p>
+<p>Como <code>X_age</code> solamente contiene una columna,</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>s(<span class="dv">0</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>corresponde a <code>age</code>.</p>
+</section>
+<section id="lam" class="level3" data-number="5.4.3">
+<h3 data-number="5.4.3" class="anchored" data-anchor-id="lam"><span class="header-section-number">5.4.3</span> <code>lam</code></h3>
+<p>El argumento</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>lam<span class="op">=</span><span class="fl">0.6</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>corresponde al parámetro de penalización <span class="math inline">\(\lambda\)</span> que estudiamos anteriormente.</p>
+<p>Por tanto, <code>pygam</code> está resolviendo numéricamente un problema que busca equilibrar ajuste y suavidad.</p>
+</section>
+</section>
+<section id="construir-valores-para-realizar-predicciones" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="construir-valores-para-realizar-predicciones"><span class="header-section-number">5.5</span> Construir valores para realizar predicciones</h2>
+<p>Para visualizar el modelo no queremos obtener predicciones únicamente en las edades observadas.</p>
+<p>Construiremos una secuencia de edades desde la edad mínima hasta la máxima.</p>
+<div id="63980984" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>age_grid <span class="op">=</span> np.linspace(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    age.<span class="bu">min</span>(),</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    age.<span class="bu">max</span>(),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">500</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Para utilizar estos valores con <code>pygam</code>, también debemos convertirlos en una matriz.</p>
+<div id="b9a03d13" class="cell" data-execution_count="10">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>age_grid_matrix <span class="op">=</span> age_grid.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Ahora calculamos las predicciones.</p>
+<div id="86ff5508" class="cell" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> gam.predict(age_grid_matrix)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="visualizar-el-spline" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="visualizar-el-spline"><span class="header-section-number">5.6</span> Visualizar el spline</h2>
+<p>Podemos representar simultáneamente los datos y la curva estimada.</p>
+<div id="98f3f871" class="cell" data-execution_count="12">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    age,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.3</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    age_grid,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    pred,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Edad"</span>)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Salario"</span>)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Spline de suavizamiento"</span>)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte5_files/figure-html/cell-13-output-1.png" width="743" height="525" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La curva resultante es suave y permite capturar una relación no lineal entre edad y salario.</p>
+<p>Sin embargo, esta curva depende del valor elegido para <span class="math inline">\(\lambda\)</span>.</p>
+<p>La pregunta ahora es:</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>🧠 Pregunta
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿qué ocurre si cambiamos <span class="math inline">\(\lambda\)</span>?</p>
+<div class="callout callout-style-default callout-tip no-icon callout-empty-content callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="efecto-del-parámetro-lambda" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="efecto-del-parámetro-lambda"><span class="header-section-number">5.7</span> Efecto del parámetro <span class="math inline">\(\lambda\)</span></h2>
+<p>Recordemos que el modelo minimiza una expresión de la forma</p>
+<p><span class="math display">\[
+\text{Error de ajuste}
++
+\lambda
+\left(\text{penalización por rugosidad}\right).
+\]</span></p>
+<p>Por tanto, esperamos que:</p>
+<p><span class="math display">\[
+\lambda\downarrow
+\quad\Longrightarrow\quad
+\text{mayor flexibilidad},
+\]</span></p>
+<p>mientras que</p>
+<p><span class="math display">\[
+\lambda\uparrow
+\quad\Longrightarrow\quad
+\text{mayor suavidad}.
+\]</span></p>
+<p>Vamos a comprobarlo empíricamente.</p>
+<p>Consideraremos valores de <span class="math inline">\(\lambda\)</span> desde</p>
+<p><span class="math display">\[
+10^{-2}
+\]</span></p>
+<p>hasta</p>
+<p><span class="math display">\[
+10^6.
+\]</span></p>
+<div id="28aa266d" class="cell" data-execution_count="13">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>lambdas <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">2</span>, <span class="dv">6</span>, <span class="dv">5</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>lambdas</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>array([1.e-02, 1.e+00, 1.e+02, 1.e+04, 1.e+06])</code></pre>
+</div>
+</div>
+<p>La función <code>np.logspace()</code> construye valores igualmente espaciados en una escala logarítmica.</p>
+<p>Esto resulta útil porque queremos comparar valores de <span class="math inline">\(\lambda\)</span> que difieren por varios órdenes de magnitud.</p>
+</section>
+<section id="comparar-diferentes-valores-de-lambda" class="level2" data-number="5.8">
+<h2 data-number="5.8" class="anchored" data-anchor-id="comparar-diferentes-valores-de-lambda"><span class="header-section-number">5.8</span> Comparar diferentes valores de <span class="math inline">\(\lambda\)</span></h2>
+<p>Ajustaremos un spline diferente para cada valor de <span class="math inline">\(\lambda\)</span>.</p>
+<div id="54e585f5" class="cell" data-execution_count="14">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">7</span>))</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    age,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.25</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lam <span class="kw">in</span> lambdas:</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    gam_lam <span class="op">=</span> LinearGAM(</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        s(<span class="dv">0</span>, lam<span class="op">=</span>lam)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    gam_lam.fit(X_age, y)</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    pred_lam <span class="op">=</span> gam_lam.predict(age_grid_matrix)</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>    plt.plot(</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>        age_grid,</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>        pred_lam,</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>        linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>        label<span class="op">=</span><span class="vs">fr"</span><span class="dv">$</span><span class="er">\</span><span class="vs">lambda=</span><span class="sc">{</span>lam<span class="sc">:.0e}</span><span class="dv">$</span><span class="vs">"</span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Edad"</span>)</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Salario"</span>)</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="vs">r"Efecto del parámetro </span><span class="dv">$</span><span class="er">\</span><span class="vs">lambda</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte5_files/figure-html/cell-15-output-1.png" width="817" height="599" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Observen cuidadosamente cómo cambia la forma de la curva.</p>
+<p>Cuando <span class="math inline">\(\lambda\)</span> es pequeño, la penalización tiene poca importancia y el modelo puede adaptarse más a los datos.</p>
+<p>Cuando <span class="math inline">\(\lambda\)</span> aumenta, la penalización adquiere mayor peso y la curva se vuelve progresivamente más suave.</p>
+<p>Para valores suficientemente grandes de <span class="math inline">\(\lambda\)</span>, el ajuste comienza a aproximarse a una relación lineal.</p>
+</section>
+<section id="lambda-y-complejidad-del-modelo" class="level2" data-number="5.9">
+<h2 data-number="5.9" class="anchored" data-anchor-id="lambda-y-complejidad-del-modelo"><span class="header-section-number">5.9</span> <span class="math inline">\(\lambda\)</span> y complejidad del modelo</h2>
+<p>El número de parámetros de un spline de suavizamiento no describe directamente su complejidad.</p>
+<p>Por ello utilizamos los <strong>grados de libertad efectivos</strong>.</p>
+<p>La relación general es</p>
+<p><span class="math display">\[
+\lambda\uparrow
+\quad\Longrightarrow\quad
+df_\lambda\downarrow.
+\]</span></p>
+<p>Es decir:</p>
+<ul>
+<li><span class="math inline">\(\lambda\)</span> pequeño <span class="math inline">\(\rightarrow\)</span> más grados de libertad efectivos;</li>
+<li><span class="math inline">\(\lambda\)</span> grande <span class="math inline">\(\rightarrow\)</span> menos grados de libertad efectivos.</li>
+</ul>
+<p>Esto conecta directamente con el compromiso sesgo-varianza:</p>
+<p><span class="math display">\[
+\text{mayor flexibilidad}
+\quad\Longrightarrow\quad
+\text{menor sesgo y mayor varianza},
+\]</span></p>
+<p>mientras que</p>
+<p><span class="math display">\[
+\text{menor flexibilidad}
+\quad\Longrightarrow\quad
+\text{mayor sesgo y menor varianza}.
+\]</span></p>
+<hr>
+</section>
+<section id="cómo-elegimos-lambda" class="level2" data-number="5.10">
+<h2 data-number="5.10" class="anchored" data-anchor-id="cómo-elegimos-lambda"><span class="header-section-number">5.10</span> ¿Cómo elegimos <span class="math inline">\(\lambda\)</span>?</h2>
+<p>Hasta ahora hemos elegido <span class="math inline">\(\lambda\)</span> manualmente.</p>
+<p>Por ejemplo:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>lam<span class="op">=</span><span class="fl">0.6</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Pero no existe una razón particular para pensar que ese valor sea el mejor para nuestros datos.</p>
+<p>Una estrategia más adecuada consiste en seleccionar <span class="math inline">\(\lambda\)</span> utilizando los propios datos.</p>
+<p><code>pygam</code> proporciona el método</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>gridsearch()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>para realizar esta búsqueda.</p>
+</section>
+<section id="búsqueda-de-lambda" class="level2" data-number="5.11">
+<h2 data-number="5.11" class="anchored" data-anchor-id="búsqueda-de-lambda"><span class="header-section-number">5.11</span> Búsqueda de <span class="math inline">\(\lambda\)</span></h2>
+<p>Primero definimos una colección de posibles valores.</p>
+<div id="dca3e564" class="cell" data-execution_count="15">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>lam_grid <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">30</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Ahora realizamos la búsqueda.</p>
+<div id="ff134b51" class="cell" data-execution_count="16">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>gam_opt <span class="op">=</span> LinearGAM(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">0</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>gam_opt.gridsearch(</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    X_age,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    lam<span class="op">=</span>lam_grid,</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    progress<span class="op">=</span><span class="va">False</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<pre><code>LinearGAM(callbacks=[Deviance(), Diffs()], fit_intercept=True, 
+   max_iter=100, scale=None, terms=s(0) + intercept, tol=0.0001, 
+   verbose=False)</code></pre>
+</div>
+</div>
+<p><code>gridsearch()</code> ajusta modelos utilizando diferentes valores del parámetro de suavizamiento y selecciona una opción de acuerdo con el criterio utilizado internamente por <code>pygam</code>.</p>
+<p>Podemos consultar el valor seleccionado.</p>
+<div id="ad8fb184" class="cell" data-execution_count="17">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>gam_opt.lam</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>[[np.float64(174.33288221999874)]]</code></pre>
+</div>
+</div>
+<p>Es importante distinguir entre dos ideas:</p>
+<ol type="1">
+<li><strong>explorar manualmente <span class="math inline">\(\lambda\)</span></strong>, para comprender su efecto sobre la curva;</li>
+<li><strong>seleccionar <span class="math inline">\(\lambda\)</span> mediante un criterio basado en los datos</strong>, para construir el modelo final.</li>
+</ol>
+</section>
+<section id="comparar-un-valor-arbitrario-con-el-valor-seleccionado" class="level2" data-number="5.12">
+<h2 data-number="5.12" class="anchored" data-anchor-id="comparar-un-valor-arbitrario-con-el-valor-seleccionado"><span class="header-section-number">5.12</span> Comparar un valor arbitrario con el valor seleccionado</h2>
+<p>Comparemos el modelo inicial, que utilizaba</p>
+<p><span class="math display">\[
+\lambda=0.6,
+\]</span></p>
+<p>con el modelo obtenido mediante la búsqueda.</p>
+<div id="94a5b0f3" class="cell" data-execution_count="18">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>pred_default <span class="op">=</span> gam.predict(age_grid_matrix)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>pred_opt <span class="op">=</span> gam_opt.predict(age_grid_matrix)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">7</span>))</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    age,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.25</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    age_grid,</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>    pred_default,</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="er">\</span><span class="vs">lambda=0</span><span class="dv">.</span><span class="vs">6</span><span class="dv">$</span><span class="vs">"</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>    age_grid,</span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>    pred_opt,</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Lambda seleccionado"</span></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Edad"</span>)</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Salario"</span>)</span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Comparación de splines de suavizamiento"</span>)</span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte5_files/figure-html/cell-19-output-1.png" width="817" height="599" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Dos valores diferentes de <span class="math inline">\(\lambda\)</span> no necesariamente producen curvas visualmente muy diferentes.</p>
+<p>Esto es importante: aumentar la complejidad del modelo solamente tiene sentido si los datos proporcionan evidencia de que esa complejidad adicional es útil.</p>
+<hr>
+</section>
+<section id="grados-de-libertad-efectivos-del-modelo" class="level2" data-number="5.13">
+<h2 data-number="5.13" class="anchored" data-anchor-id="grados-de-libertad-efectivos-del-modelo"><span class="header-section-number">5.13</span> Grados de libertad efectivos del modelo</h2>
+<p>Recordemos que teóricamente los grados de libertad efectivos pueden escribirse como</p>
+<p><span class="math display">\[
+df_\lambda
+=
+\operatorname{tr}(S_\lambda).
+\]</span></p>
+<p>No corresponden simplemente al número de coeficientes almacenados en el modelo.</p>
+<p>Representan la <strong>flexibilidad efectiva</strong> que queda después de aplicar la penalización.</p>
+<p><code>pygam</code> calcula esta cantidad durante el ajuste.</p>
+<p>Podemos inspeccionarla mediante:</p>
+<div id="02c2f851" class="cell" data-execution_count="19">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>gam_opt.statistics_[<span class="st">"edof"</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="19">
+<pre><code>np.float64(6.061955860252559)</code></pre>
+</div>
+</div>
+<p>Comparemos ahora varios valores de <span class="math inline">\(\lambda\)</span>.</p>
+<div id="aa05a672" class="cell" data-execution_count="20">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>resultados <span class="op">=</span> []</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> lam <span class="kw">in</span> np.logspace(<span class="op">-</span><span class="dv">2</span>, <span class="dv">6</span>, <span class="dv">9</span>):</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    modelo <span class="op">=</span> LinearGAM(</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>        s(<span class="dv">0</span>, lam<span class="op">=</span>lam)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    ).fit(X_age, y)</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    resultados.append({</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"lambda"</span>: lam,</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"df_efectivos"</span>: modelo.statistics_[<span class="st">"edof"</span>]</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>df_lambda <span class="op">=</span> pd.DataFrame(resultados)</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>df_lambda</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="20">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">lambda</th>
+<th data-quarto-table-cell-role="th">df_efectivos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>0.01</td>
+<td>18.747147</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>0.10</td>
+<td>17.320972</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>1.00</td>
+<td>14.408054</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>10.00</td>
+<td>10.305159</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>100.00</td>
+<td>6.752265</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>1000.00</td>
+<td>4.299985</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>10000.00</td>
+<td>2.793035</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>100000.00</td>
+<td>2.132564</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>1000000.00</td>
+<td>2.014363</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Ahora podemos visualizar la relación.</p>
+<div id="96b9d442" class="cell" data-execution_count="21">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    df_lambda[<span class="st">"lambda"</span>],</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    df_lambda[<span class="st">"df_efectivos"</span>],</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    marker<span class="op">=</span><span class="st">"o"</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">"log"</span>)</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="vs">r"</span><span class="dv">$</span><span class="er">\</span><span class="vs">lambda</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Grados de libertad efectivos"</span>)</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="vs">r"Relación entre </span><span class="dv">$</span><span class="er">\</span><span class="vs">lambda</span><span class="dv">$</span><span class="vs"> y los grados de libertad efectivos"</span>)</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte5_files/figure-html/cell-22-output-1.png" width="747" height="528" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Esta gráfica permite observar directamente la relación</p>
+<p><span class="math display">\[
+\boxed{
+\lambda\uparrow
+\quad\Longrightarrow\quad
+df_\lambda\downarrow
+}
+\]</span></p>
+<p>que habíamos estudiado teóricamente.</p>
+</section>
+<section id="podemos-controlar-la-complejidad-usando-grados-de-libertad" class="level2" data-number="5.14">
+<h2 data-number="5.14" class="anchored" data-anchor-id="podemos-controlar-la-complejidad-usando-grados-de-libertad"><span class="header-section-number">5.14</span> ¿Podemos controlar la complejidad usando grados de libertad?</h2>
+<p>Conceptualmente podemos pensar en dos maneras equivalentes de describir la complejidad:</p>
+<p><span class="math display">\[
+\lambda
+\qquad\text{o}\qquad
+df_\lambda.
+\]</span></p>
+<p>Un valor pequeño de <span class="math inline">\(\lambda\)</span> corresponde a un número mayor de grados de libertad efectivos.</p>
+<p>Un valor grande de <span class="math inline">\(\lambda\)</span> corresponde a un número menor de grados de libertad efectivos.</p>
+<p>En algunas implementaciones es posible buscar el valor de <span class="math inline">\(\lambda\)</span> que produzca aproximadamente un número deseado de grados de libertad.</p>
+<p>Sin embargo, para esta práctica nos concentraremos en la idea más importante:</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math inline">\(\lambda\)</span> controla la penalización y los grados de libertad efectivos describen la flexibilidad resultante.</p>
+</div>
+</div>
+</section>
+<section id="comparación-con-una-regresión-lineal" class="level2" data-number="5.15">
+<h2 data-number="5.15" class="anchored" data-anchor-id="comparación-con-una-regresión-lineal"><span class="header-section-number">5.15</span> Comparación con una regresión lineal</h2>
+<p>La teoría de los splines de suavizamiento nos dice que cuando la penalización es muy grande,</p>
+<p><span class="math display">\[
+\lambda\rightarrow\infty,
+\]</span></p>
+<p>la curva tiende hacia una función lineal.</p>
+<p>Podemos comprobar esta idea comparando un spline fuertemente penalizado con una regresión lineal.</p>
+<p>Primero ajustamos la regresión lineal.</p>
+<div id="e60d35ae" class="cell" data-execution_count="22">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>coef_lineal <span class="op">=</span> np.polyfit(</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    age,</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    deg<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>pred_lineal <span class="op">=</span> np.polyval(</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    coef_lineal,</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    age_grid</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Ahora ajustamos un spline con una penalización muy grande.</p>
+<div id="7d4e1188" class="cell" data-execution_count="23">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>gam_suave <span class="op">=</span> LinearGAM(</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">0</span>, lam<span class="op">=</span><span class="fl">1e10</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>gam_suave.fit(X_age, y)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>pred_suave <span class="op">=</span> gam_suave.predict(</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    age_grid_matrix</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Comparamos ambos ajustes.</p>
+<div id="795c9cc5" class="cell" data-execution_count="24">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">7</span>))</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    age,</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.25</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>    age_grid,</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>    pred_suave,</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Spline con penalización grande"</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>    age_grid,</span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>    pred_lineal,</span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=</span><span class="st">"--"</span>,</span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Regresión lineal"</span></span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Edad"</span>)</span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Salario"</span>)</span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Spline fuertemente penalizado y regresión lineal"</span>)</span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte5_files/figure-html/cell-25-output-1.png" width="817" height="599" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Las dos curvas deberían ser muy similares.</p>
+<p>La razón es que una penalización muy grande fuerza a que</p>
+<p><span class="math display">\[
+g''(x)\approx0.
+\]</span></p>
+<p>Si la segunda derivada es cero, entonces la función es lineal:</p>
+<p><span class="math display">\[
+g(x)=\beta_0+\beta_1x.
+\]</span></p>
+<p>Con esto conectamos directamente la implementación computacional con el resultado teórico.</p>
+</section>
+<section id="smoothing-splines-y-gams" class="level2" data-number="5.16">
+<h2 data-number="5.16" class="anchored" data-anchor-id="smoothing-splines-y-gams"><span class="header-section-number">5.16</span> Smoothing splines y GAMs</h2>
+<p>La biblioteca <code>pygam</code> se diseñó para trabajar con <strong>modelos aditivos generalizados</strong> (<em>Generalized Additive Models</em>, GAMs).</p>
+<p>Un GAM permite construir modelos de la forma</p>
+<p><span class="math display">\[
+Y
+=
+\beta_0+
+f_1(X_1)+
+f_2(X_2)+
+\cdots+
+f_p(X_p)
++
+\varepsilon,
+\]</span></p>
+<p>donde algunas de las funciones <span class="math inline">\(f_j\)</span> pueden ser relaciones suaves estimadas a partir de los datos.</p>
+<p>Por ejemplo, podríamos considerar un modelo conceptual como</p>
+<p><span class="math display">\[
+\text{Wage}
+=
+\beta_0+
+f_1(\text{Age})+
+f_2(\text{Year})+
+\text{Education}
++
+\varepsilon.
+\]</span></p>
+<p>En esta práctica solamente hemos considerado</p>
+<p><span class="math display">\[
+\text{Wage}
+=
+\beta_0+
+f(\text{Age})+
+\varepsilon.
+\]</span></p>
+<p>Por tanto, estamos utilizando únicamente <strong>un término suave y un predictor</strong>.</p>
+<p>Los GAMs permiten combinar simultáneamente varios términos suaves, lineales y categóricos. Estudiaremos esa extensión más adelante.</p>
+</section>
+<section id="ejercicios" class="level2" data-number="5.17">
+<h2 data-number="5.17" class="anchored" data-anchor-id="ejercicios"><span class="header-section-number">5.17</span> Ejercicios</h2>
+<section id="ejercicio-1.-efecto-de-lambda" class="level3" data-number="5.17.1">
+<h3 data-number="5.17.1" class="anchored" data-anchor-id="ejercicio-1.-efecto-de-lambda"><span class="header-section-number">5.17.1</span> Ejercicio 1. Efecto de <span class="math inline">\(\lambda\)</span></h3>
+<p>Ajusta splines de suavizamiento utilizando los siguientes valores:</p>
+<p><span class="math display">\[
+\lambda=
+10^{-4},\;
+10^{-2},\;
+1,\;
+10^2,\;
+10^4,\;
+10^8.
+\]</span></p>
+<p>Representa todos los ajustes en una misma gráfica.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="1">
+<li>¿Qué ocurre con la curva conforme aumenta <span class="math inline">\(\lambda\)</span>?</li>
+<li>¿Cuál de los modelos parece más flexible?</li>
+<li>¿Cuál parece presentar mayor sesgo?</li>
+<li>¿Cuál podría presentar mayor varianza?</li>
+</ol>
+</section>
+<section id="ejercicio-2.-grados-de-libertad-efectivos" class="level3" data-number="5.17.2">
+<h3 data-number="5.17.2" class="anchored" data-anchor-id="ejercicio-2.-grados-de-libertad-efectivos"><span class="header-section-number">5.17.2</span> Ejercicio 2. Grados de libertad efectivos</h3>
+<p>Para cada uno de los valores de <span class="math inline">\(\lambda\)</span> del ejercicio anterior, obtén los grados de libertad efectivos mediante</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>modelo.statistics_[<span class="st">"edof"</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Construye una tabla con las columnas:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th><span class="math inline">\(\lambda\)</span></th>
+<th>Grados de libertad efectivos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Después representa gráficamente</p>
+<p><span class="math display">\[
+df_\lambda
+\quad\text{contra}\quad
+\lambda.
+\]</span></p>
+<p>Utiliza escala logarítmica para el eje correspondiente a <span class="math inline">\(\lambda\)</span>.</p>
+<p><strong>Pregunta:</strong> ¿los resultados coinciden con la relación teórica esperada?</p>
+</section>
+<section id="ejercicio-3.-selección-de-lambda" class="level3" data-number="5.17.3">
+<h3 data-number="5.17.3" class="anchored" data-anchor-id="ejercicio-3.-selección-de-lambda"><span class="header-section-number">5.17.3</span> Ejercicio 3. Selección de <span class="math inline">\(\lambda\)</span></h3>
+<p>Utiliza <code>gridsearch()</code> para seleccionar automáticamente un valor de <span class="math inline">\(\lambda\)</span>.</p>
+<p>Considera como candidatos</p>
+<p><span class="math display">\[
+10^{-4}\leq\lambda\leq10^6.
+\]</span></p>
+<p>Después:</p>
+<ol type="1">
+<li>reporta el valor seleccionado;</li>
+<li>reporta sus grados de libertad efectivos;</li>
+<li>grafica el spline resultante;</li>
+<li>compáralo con los ajustes obtenidos manualmente.</li>
+</ol>
+<p><strong>Pregunta:</strong> ¿el procedimiento seleccionó un modelo relativamente flexible o relativamente suave?</p>
+<p>Justifica tu respuesta utilizando tanto la gráfica como los grados de libertad efectivos.</p>
+</section>
+<section id="ejercicio-4.-el-límite-lineal" class="level3" data-number="5.17.4">
+<h3 data-number="5.17.4" class="anchored" data-anchor-id="ejercicio-4.-el-límite-lineal"><span class="header-section-number">5.17.4</span> Ejercicio 4. El límite lineal</h3>
+<p>Ajusta splines utilizando valores cada vez mayores de <span class="math inline">\(\lambda\)</span>.</p>
+<p>Por ejemplo:</p>
+<p><span class="math display">\[
+10^2,\quad
+10^4,\quad
+10^6,\quad
+10^8,\quad
+10^{10}.
+\]</span></p>
+<p>Ajusta también una regresión lineal de <code>wage</code> sobre <code>age</code>.</p>
+<p>Representa todos los modelos.</p>
+<p><strong>Pregunta:</strong> ¿qué observas conforme <span class="math inline">\(\lambda\)</span> aumenta? Explica el resultado utilizando la penalización</p>
+<p><span class="math display">\[
+\lambda\int[g''(t)]^2dt.
+\]</span></p>
+</section>
+<section id="ejercicio-5.-interpretación" class="level3" data-number="5.17.5">
+<h3 data-number="5.17.5" class="anchored" data-anchor-id="ejercicio-5.-interpretación"><span class="header-section-number">5.17.5</span> Ejercicio 5. Interpretación</h3>
+<p>Sin ejecutar código, responde:</p>
+<ol type="1">
+<li>Si un spline tiene muchos grados de libertad efectivos, ¿esperas que <span class="math inline">\(\lambda\)</span> sea grande o pequeño?</li>
+<li>Si <span class="math inline">\(\lambda\rightarrow\infty\)</span>, ¿qué tipo de función esperamos obtener?</li>
+<li>¿Por qué no es conveniente seleccionar <span class="math inline">\(\lambda\)</span> únicamente observando qué modelo tiene el menor error de entrenamiento?</li>
+<li>¿Cuál es la diferencia conceptual entre el número de parámetros del spline y sus grados de libertad efectivos?</li>
+<li>¿Qué relación existe entre <span class="math inline">\(\lambda\)</span>, flexibilidad, sesgo y varianza?</li>
+</ol>
+</section>
+<section id="ejercicio-6.-otro-predictor" class="level3" data-number="5.17.6">
+<h3 data-number="5.17.6" class="anchored" data-anchor-id="ejercicio-6.-otro-predictor"><span class="header-section-number">5.17.6</span> Ejercicio 6. Otro predictor</h3>
+<p>Repite el análisis utilizando <code>year</code> como predictor y <code>wage</code> como variable respuesta.</p>
+<ol type="1">
+<li>Construye un spline de suavizamiento.</li>
+<li>Explora distintos valores de <span class="math inline">\(\lambda\)</span>.</li>
+<li>Obtén el valor seleccionado mediante <code>gridsearch()</code>.</li>
+<li>Obtén los grados de libertad efectivos.</li>
+<li>Compara la relación <code>year</code>–<code>wage</code> con la relación <code>age</code>–<code>wage</code>.</li>
+</ol>
+<p><strong>Pregunta:</strong> ¿parece necesaria la misma cantidad de flexibilidad para modelar ambas relaciones? Justifica tu respuesta.</p>
+</section>
+</section>
+<section id="ejercicio-7.-reflexión" class="level2" data-number="5.18">
+<h2 data-number="5.18" class="anchored" data-anchor-id="ejercicio-7.-reflexión"><span class="header-section-number">5.18</span> Ejercicio 7. Reflexión</h2>
+<p>Supongamos que dos splines producen prácticamente el mismo desempeño predictivo:</p>
+<ul>
+<li>Modelo A: <span class="math inline">\(df_\lambda=15\)</span>;</li>
+<li>Modelo B: <span class="math inline">\(df_\lambda=5\)</span>.</li>
+</ul>
+<p>¿Cuál preferirías?</p>
+<p>Explica tu respuesta considerando:</p>
+<ul>
+<li>complejidad;</li>
+<li>interpretabilidad;</li>
+<li>riesgo de sobreajuste.</li>
+</ul>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -710,13 +1910,13 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./parte4.html" class="pagination-link" aria-label="Funciones base">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Funciones base</span></span>
+      <a href="./parte4.html" class="pagination-link" aria-label="Splines de regresión con funciones base">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Splines de regresión con funciones base</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./parte6.html" class="pagination-link" aria-label="Splines de suavizamiento">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Splines de suavizamiento</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./parte6.html" class="pagination-link" aria-label="Regresión Local">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regresión Local</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

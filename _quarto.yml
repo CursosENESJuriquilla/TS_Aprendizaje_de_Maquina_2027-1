@@ -34,9 +34,9 @@ book:
           - parte2.qmd # regresión polinomial
           - parte3.qmd # funciones escalonadas
           - parte4.qmd # Splines de regresión y funciones base
-          - parte5.qmd
-          - parte6.qmd
-          - parte7.qmd
+          - parte5.qmd # Splines de suavizamiento
+          - parte6.qmd # Regresión local
+          - parte7.qmd # GAMs
     - part: "**Métodos de ensamble y optimización de modelos**"
       chapters:
           - parte9.qmd
