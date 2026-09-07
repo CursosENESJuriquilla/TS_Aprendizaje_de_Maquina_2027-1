@@ -277,13 +277,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Splines de suavizamiento</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regresión Local</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte7.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regresión local</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">GAMs: Modelos Aditivos Generalizados</span></span></a>
   </div>
 </li>
       </ul>
@@ -482,54 +482,40 @@ window.Quarto = {
 <div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>En regresión lineal modelamos la media condicional de <span class="math inline">\(Y\)</span>:</p>
-<p><span class="math display">\[
-E[Y\mid X]
+<p><span class="math display">\[E[Y\mid X]
 =
-\beta_0+\beta_1X_1+\cdots+\beta_pX_p.
-\]</span></p>
+\beta_0+\beta_1X_1+\cdots+\beta_pX_p.\]</span></p>
 <p>Los coeficientes se estiman mediante <strong>mínimos cuadrados</strong>, minimizando</p>
-<p><span class="math display">\[
-\operatorname{RSS}(\boldsymbol{\beta})
+<p><span class="math display">\[\operatorname{RSS}(\boldsymbol{\beta})
 =
 \sum_{i=1}^{n}
 \left(
 y_i-\beta_0-\sum_{j=1}^{p}\beta_jx_{ij}
-\right)^2.
-\]</span></p>
+\right)^2.\]</span></p>
 <p>En forma matricial,</p>
-<p><span class="math display">\[
-\hat{\boldsymbol{\beta}}
+<p><span class="math display">\[\hat{\boldsymbol{\beta}}
 =
 \arg\min_{\boldsymbol{\beta}}
 \left\|
 \mathbf y-\mathbf X\boldsymbol{\beta}
-\right\|_2^2.
-\]</span></p>
+\right\|_2^2.\]</span></p>
 <p>Si <span class="math inline">\(\mathbf X^\top\mathbf X\)</span> es invertible, la solución es</p>
-<p><span class="math display">\[
-\hat{\boldsymbol{\beta}}
+<p><span class="math display">\[\hat{\boldsymbol{\beta}}
 =
 (\mathbf X^\top\mathbf X)^{-1}
-\mathbf X^\top\mathbf y.
-\]</span></p>
+\mathbf X^\top\mathbf y.\]</span></p>
 <p>En regresión logística, para una respuesta <span class="math inline">\(Y\in\{0,1\}\)</span>, definimos</p>
-<p><span class="math display">\[
-p(X)=P(Y=1\mid X).
-\]</span></p>
+<p><span class="math display">\[p(X)=P(Y=1\mid X).\]</span></p>
 <p>En lugar de modelar directamente <span class="math inline">\(p(X)\)</span> mediante una recta, modelamos el log-<em>odds</em>:</p>
-<p><span class="math display">\[
-\log\left(
+<p><span class="math display">\[\log\left(
 \frac{p(X)}{1-p(X)}
 \right)
 =
-\beta_0+\beta_1X_1+\cdots+\beta_pX_p.
-\]</span></p>
+\beta_0+\beta_1X_1+\cdots+\beta_pX_p.\]</span></p>
 <p>Finalmente, recuerden que un modelo es <strong>lineal</strong> cuando es lineal en sus parámetros. Por ejemplo,</p>
-<p><span class="math display">\[
-Y
+<p><span class="math display">\[Y
 =
-\beta_0+\beta_1X+\beta_2X^2+\varepsilon
-\]</span></p>
+\beta_0+\beta_1X+\beta_2X^2+\varepsilon\]</span></p>
 <p>no es una recta como función de <span class="math inline">\(X\)</span>, pero sigue siendo un modelo lineal en los parámetros <span class="math inline">\(\beta_0,\beta_1,\beta_2\)</span>.</p>
 <p>Esta última observación será precisamente el punto de partida de la regresión polinomial.</p>
 </div>
@@ -608,11 +594,9 @@ Nota
 <p><strong>¿Cómo cambia el salario esperado de una persona en función de su edad?</strong></p>
 </blockquote>
 <p>En una regresión lineal simple modelaríamos esta relación mediante</p>
-<p><span class="math display">\[
-E[\text{wage}\mid\text{age}]
+<p><span class="math display">\[E[\text{wage}\mid\text{age}]
 =
-\beta_0+\beta_1\text{age}.
-\]</span></p>
+\beta_0+\beta_1\text{age}.\]</span></p>
 <p>Este modelo supone que el salario esperado cambia a una tasa constante con respecto a la edad.</p>
 <p>Antes de aceptar esta suposición, exploremos los datos.</p>
 <section id="carga-y-exploración-inicial" class="level3" data-number="2.4.1">
@@ -781,42 +765,28 @@ Figura&nbsp;2.1: Salario en función de la edad.
 <section id="de-la-regresión-lineal-a-la-regresión-polinomial" class="level2" data-number="2.5">
 <h2 data-number="2.5" class="anchored" data-anchor-id="de-la-regresión-lineal-a-la-regresión-polinomial"><span class="header-section-number">2.5</span> De la regresión lineal a la regresión polinomial</h2>
 <p>En lugar de imponer</p>
-<p><span class="math display">\[
-E[Y\mid X=x]
+<p><span class="math display">\[E[Y\mid X=x]
 =
-\beta_0+\beta_1x,
-\]</span></p>
+\beta_0+\beta_1x,\]</span></p>
 <p>podemos considerar</p>
-<p><span class="math display">\[
-E[Y\mid X=x]
+<p><span class="math display">\[E[Y\mid X=x]
 =
-\beta_0+\beta_1x+\beta_2x^2+\cdots+\beta_dx^d.
-\]</span></p>
-<p>A este modelo lo llamamos <strong>regresión polinomial de grado <span class="math inline">\(d\)</span></strong>.</p>
+\beta_0+\beta_1x+\beta_2x^2+\cdots+\beta_dx^d.\]</span></p>
+<p>A este modelo lo llamamos <strong>regresión polinomial de grado</strong> <span class="math inline">\(d\)</span>.</p>
 <p>Aunque la relación entre <span class="math inline">\(X\)</span> y la respuesta ya no es una recta, observen que el modelo sigue siendo <strong>lineal en los parámetros</strong></p>
-<p><span class="math display">\[
-\beta_0,\beta_1,\ldots,\beta_d.
-\]</span></p>
+<p><span class="math display">\[\beta_0,\beta_1,\ldots,\beta_d.\]</span></p>
 <p>Podemos pensar que simplemente hemos creado nuevos predictores:</p>
-<p><span class="math display">\[
-X,\quad X^2,\quad X^3,\quad\ldots,\quad X^d.
-\]</span></p>
+<p><span class="math display">\[X,\quad X^2,\quad X^3,\quad\ldots,\quad X^d.\]</span></p>
 <p>Por tanto, podemos seguir utilizando las herramientas de regresión lineal y estimar los parámetros mediante mínimos cuadrados ordinarios.</p>
 <section id="por-qué-polinomios-ortogonales" class="level3" data-number="2.5.1">
 <h3 data-number="2.5.1" class="anchored" data-anchor-id="por-qué-polinomios-ortogonales"><span class="header-section-number">2.5.1</span> ¿Por qué polinomios ortogonales?</h3>
 <p>Las variables</p>
-<p><span class="math display">\[
-X,\quad X^2,\quad X^3,\quad\ldots
-\]</span></p>
+<p><span class="math display">\[X,\quad X^2,\quad X^3,\quad\ldots\]</span></p>
 <p>pueden estar fuertemente correlacionadas entre sí.</p>
 <p>En lugar de trabajar directamente con la base</p>
-<p><span class="math display">\[
-1,x,x^2,\ldots,x^d,
-\]</span></p>
+<p><span class="math display">\[1,x,x^2,\ldots,x^d,\]</span></p>
 <p>podemos utilizar otra base</p>
-<p><span class="math display">\[
-P_0(x),P_1(x),\ldots,P_d(x)
-\]</span></p>
+<p><span class="math display">\[P_0(x),P_1(x),\ldots,P_d(x)\]</span></p>
 <p>formada por <strong>polinomios ortogonales</strong>.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -829,9 +799,7 @@ Nota
 </div>
 <div class="callout-body-container callout-body">
 <p>Los polinomios</p>
-<p><span class="math display">\[
-1,x,x^2,\ldots,x^d
-\]</span></p>
+<p><span class="math display">\[1,x,x^2,\ldots,x^d\]</span></p>
 <p>y una base de polinomios ortogonales de grado hasta <span class="math inline">\(d\)</span> generan el <strong>mismo espacio de funciones polinomiales</strong>.</p>
 <p>Por tanto, cambiar de base modifica los coeficientes que aparecen en la salida del modelo, pero <strong>no modifica el espacio de modelos que podemos ajustar</strong> ni, salvo diferencias numéricas, las predicciones obtenidas.</p>
 </div>
@@ -841,12 +809,10 @@ Nota
 <section id="ajuste-de-un-polinomio-de-grado-4" class="level2" data-number="2.6">
 <h2 data-number="2.6" class="anchored" data-anchor-id="ajuste-de-un-polinomio-de-grado-4"><span class="header-section-number">2.6</span> Ajuste de un polinomio de grado 4</h2>
 <p>Comenzaremos utilizando un polinomio de grado 4:</p>
-<p><span class="math display">\[
-E[\text{wage}\mid\text{age}=x]
+<p><span class="math display">\[E[\text{wage}\mid\text{age}=x]
 =
 \beta_0+\beta_1x+\beta_2x^2+
-\beta_3x^3+\beta_4x^4.
-\]</span></p>
+\beta_3x^3+\beta_4x^4.\]</span></p>
 <p>Construiremos una base polinomial utilizando <code>poly()</code> y ajustaremos el modelo mediante mínimos cuadrados ordinarios.</p>
 <div id="cell-ajuste-poly4" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
@@ -938,14 +904,10 @@ E[\text{wage}\mid\text{age}=x]
 <p>Además del intercepto aparecen cuatro términos correspondientes a la base polinomial de grado 4.</p>
 <p>La significancia de los términos puede estudiarse mediante sus estadísticos y valores <span class="math inline">\(p\)</span>. Sin embargo, debemos tener cuidado con su interpretación.</p>
 <p>Como utilizamos una base de <strong>polinomios ortogonales</strong>, los coeficientes no son directamente los coeficientes de</p>
-<p><span class="math display">\[
-x,\quad x^2,\quad x^3,\quad x^4.
-\]</span></p>
+<p><span class="math display">\[x,\quad x^2,\quad x^3,\quad x^4.\]</span></p>
 <p>Por ello, un coeficiente individual no debe interpretarse como ``el cambio en salario producido por aumentar la edad en una unidad’’.</p>
 <p>Para interpretar el efecto de la edad resulta más útil estudiar la función ajustada completa</p>
-<p><span class="math display">\[
-\hat f(x)
-\]</span></p>
+<p><span class="math display">\[\hat f(x)\]</span></p>
 <p>o cantidades derivadas de ella, como su pendiente local.</p>
 </div>
 </div>
@@ -963,9 +925,7 @@ Tip
 <p>Los coeficientes de esta tabla <strong>no se interpretan individualmente como en una regresión lineal simple</strong>.</p>
 <p>La variable <code>age</code> entra al modelo a través de varias funciones base ortogonales simultáneamente. Por ello, los coeficientes corresponden a esas funciones base y no directamente a <span class="math inline">\(x,x^2,x^3,x^4\)</span>.</p>
 <p>Una cantidad mucho más útil para interpretar el modelo es la <strong>curva ajustada completa</strong></p>
-<p><span class="math display">\[
-\hat f(x)=\widehat{E[Y\mid X=x]}.
-\]</span></p>
+<p><span class="math display">\[\hat f(x)=\widehat{E[Y\mid X=x]}.\]</span></p>
 </div>
 </div>
 </section>
@@ -1074,11 +1034,9 @@ Tip
 <section id="curva-e-intervalo-de-confianza" class="level3" data-number="2.7.1">
 <h3 data-number="2.7.1" class="anchored" data-anchor-id="curva-e-intervalo-de-confianza"><span class="header-section-number">2.7.1</span> Curva e intervalo de confianza</h3>
 <p>Para cada edad <span class="math inline">\(x_0\)</span>, el modelo produce una estimación</p>
-<p><span class="math display">\[
-\hat f(x_0)
+<p><span class="math display">\[\hat f(x_0)
 =
-\widehat{E[Y\mid X=x_0]}.
-\]</span></p>
+\widehat{E[Y\mid X=x_0]}.\]</span></p>
 <p>Además, podemos cuantificar la incertidumbre asociada a esta estimación.</p>
 <p>Graficaremos un intervalo de confianza puntual del 95%.</p>
 <div id="cell-fig-banda-confianza" class="cell" data-execution_count="6">
@@ -1130,12 +1088,10 @@ Figura&nbsp;2.2: Curva polinomial de grado 4 e intervalo de confianza puntual de
 </div>
 </div>
 <p>La curva representa</p>
-<p><span class="math display">\[
-\widehat{E[\text{wage}\mid\text{age}=x]}.
-\]</span></p>
+<p><span class="math display">\[\widehat{E[\text{wage}\mid\text{age}=x]}.\]</span></p>
 <p>La banda responde aproximadamente a la pregunta:</p>
 <blockquote class="blockquote">
-<p><strong>¿En qué rango estimamos que se encuentra el salario promedio de los trabajadores de edad <span class="math inline">\(x\)</span>?</strong></p>
+<p><strong>¿En qué rango estimamos que se encuentra el salario promedio de los trabajadores de edad</strong> <span class="math inline">\(x\)</span>?</p>
 </blockquote>
 <p>Observen también el ancho de la banda.</p>
 <ul>
@@ -1158,9 +1114,7 @@ Figura&nbsp;2.2: Curva polinomial de grado 4 e intervalo de confianza puntual de
 <p>La banda de confianza no tiene el mismo ancho para todas las edades.</p>
 <p>En general, es más estrecha en regiones donde tenemos una mayor concentración de observaciones y se ensancha hacia los extremos del rango de <code>age</code>.</p>
 <p>La razón es que tenemos menos información para estimar la relación en esas regiones. En consecuencia, aumenta la incertidumbre asociada a</p>
-<p><span class="math display">\[
-\hat f(x).
-\]</span></p>
+<p><span class="math display">\[\hat f(x).\]</span></p>
 <p>Además, los modelos polinomiales pueden ser particularmente inestables cerca de los extremos del rango observado.</p>
 </div>
 </div>
@@ -1174,22 +1128,18 @@ Figura&nbsp;2.2: Curva polinomial de grado 4 e intervalo de confianza puntual de
 <section id="intervalo-de-confianza" class="level3" data-number="2.8.1">
 <h3 data-number="2.8.1" class="anchored" data-anchor-id="intervalo-de-confianza"><span class="header-section-number">2.8.1</span> Intervalo de confianza</h3>
 <blockquote class="blockquote">
-<p><strong>¿Dónde se encuentra el salario promedio de los trabajadores de edad <span class="math inline">\(x_0\)</span>?</strong></p>
+<p><strong>¿Dónde se encuentra el salario promedio de los trabajadores de edad</strong> <span class="math inline">\(x_0\)</span>?</p>
 </blockquote>
 <p>Queremos estimar</p>
-<p><span class="math display">\[
-E[Y\mid X=x_0].
-\]</span></p>
+<p><span class="math display">\[E[Y\mid X=x_0].\]</span></p>
 </section>
 <section id="intervalo-de-predicción" class="level3" data-number="2.8.2">
 <h3 data-number="2.8.2" class="anchored" data-anchor-id="intervalo-de-predicción"><span class="header-section-number">2.8.2</span> Intervalo de predicción</h3>
 <blockquote class="blockquote">
-<p><strong>¿Qué salario podría tener un nuevo trabajador de edad <span class="math inline">\(x_0\)</span>?</strong></p>
+<p><strong>¿Qué salario podría tener un nuevo trabajador de edad</strong> <span class="math inline">\(x_0\)</span>?</p>
 </blockquote>
 <p>Ahora queremos predecir una nueva observación</p>
-<p><span class="math display">\[
-Y_{\text{nuevo}}\mid X=x_0.
-\]</span></p>
+<p><span class="math display">\[Y_{\text{nuevo}}\mid X=x_0.\]</span></p>
 <p>El segundo intervalo debe incorporar no solamente la incertidumbre de <span class="math inline">\(\hat f(x_0)\)</span>, sino también la variabilidad individual representada por el término de error <span class="math inline">\(\varepsilon\)</span>.</p>
 <p>Por esta razón, el <strong>intervalo de predicción es más ancho</strong>.</p>
 </section>
@@ -1268,9 +1218,7 @@ Figura&nbsp;2.3: Intervalo de confianza para la media e intervalo de predicción
 <h2 data-number="2.9" class="anchored" data-anchor-id="qué-cambia-al-aumentar-el-grado"><span class="header-section-number">2.9</span> ¿Qué cambia al aumentar el grado?</h2>
 <p>Hasta ahora elegimos <span class="math inline">\(d=4\)</span>. Sin embargo, esta elección fue arbitraria.</p>
 <p>Comparemos modelos de grados</p>
-<p><span class="math display">\[
-d=1,2,3,4.
-\]</span></p>
+<p><span class="math display">\[d=1,2,3,4.\]</span></p>
 <p>Al aumentar <span class="math inline">\(d\)</span> aumenta la <strong>flexibilidad</strong> del modelo.</p>
 <div id="cell-fig-comparacion-grados" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
@@ -1368,25 +1316,19 @@ Figura&nbsp;2.4: Comparación de regresiones polinomiales de grados 1, 2, 3 y 4.
 <h3 data-number="2.10.1" class="anchored" data-anchor-id="enfoque-clásico-comparación-de-modelos-anidados"><span class="header-section-number">2.10.1</span> Enfoque clásico: comparación de modelos anidados</h3>
 <p>Los modelos polinomiales tienen una estructura natural de anidamiento.</p>
 <p>Por ejemplo,</p>
-<p><span class="math display">\[
-\begin{aligned}
+<p><span class="math display">\[\begin{aligned}
 d=1 &amp;: \quad \beta_0+\beta_1x,\\
 d=2 &amp;: \quad \beta_0+\beta_1x+\beta_2x^2,\\
 d=3 &amp;: \quad \beta_0+\beta_1x+\beta_2x^2+\beta_3x^3.
-\end{aligned}
-\]</span></p>
+\end{aligned}\]</span></p>
 <p>El modelo de grado <span class="math inline">\(d-1\)</span> está contenido dentro del modelo de grado <span class="math inline">\(d\)</span>.</p>
 <p>Por ello podemos preguntar si agregar el siguiente grado produce una mejora estadísticamente detectable.</p>
 <p>Al comparar grados <span class="math inline">\(d-1\)</span> y <span class="math inline">\(d\)</span>, planteamos</p>
-<p><span class="math display">\[
-H_0:
-\text{el modelo de grado }d-1\text{ es suficiente}
-\]</span></p>
+<p><span class="math display">\[H_0:
+\text{el modelo de grado }d-1\text{ es suficiente}\]</span></p>
 <p>contra</p>
-<p><span class="math display">\[
-H_1:
-\text{el término adicional mejora el ajuste}.
-\]</span></p>
+<p><span class="math display">\[H_1:
+\text{el término adicional mejora el ajuste}.\]</span></p>
 <p>Ajustemos modelos de grados 1 a 5.</p>
 <div id="cell-anova-anidada" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
@@ -1510,11 +1452,9 @@ H_1:
 <p>La primera comparación permite evaluar si pasar de un modelo lineal a uno cuadrático mejora significativamente el ajuste.</p>
 <p>Si el valor <span class="math inline">\(p\)</span> correspondiente a esta comparación es pequeño, encontramos evidencia de que el modelo lineal es insuficiente.</p>
 <p>Después debemos continuar leyendo las comparaciones de manera secuencial:</p>
-<p><span class="math display">\[
-d=1\rightarrow2,\qquad
+<p><span class="math display">\[d=1\rightarrow2,\qquad
 d=2\rightarrow3,\qquad
-d=3\rightarrow4,\qquad\ldots
-\]</span></p>
+d=3\rightarrow4,\qquad\ldots\]</span></p>
 <p>Mientras el valor <span class="math inline">\(p\)</span> sea suficientemente pequeño, encontramos evidencia de que agregar flexibilidad mejora el ajuste.</p>
 <p>Cuando agregar el siguiente término deja de producir una mejora estadísticamente significativa, no encontramos evidencia suficiente para justificar ese aumento de complejidad.</p>
 <p>Por tanto, el grado seleccionado corresponde al modelo anterior a la primera ampliación que deja de aportar una mejora significativa.</p>
@@ -1651,9 +1591,7 @@ Nota
 </div>
 <div class="callout-body-container callout-body">
 <p>En esta sección <code>PolynomialFeatures</code> genera las potencias ordinarias</p>
-<p><span class="math display">\[
-x,x^2,\ldots,x^d,
-\]</span></p>
+<p><span class="math display">\[x,x^2,\ldots,x^d,\]</span></p>
 <p>mientras que anteriormente utilizamos una base de polinomios ortogonales.</p>
 <p>En mínimos cuadrados ordinarios, ambas bases generan el mismo espacio de polinomios de grado menor o igual que <span class="math inline">\(d\)</span> y, salvo diferencias numéricas, producen las mismas predicciones.</p>
 <p>Aquí utilizamos <code>PolynomialFeatures</code> porque se integra de manera sencilla con el flujo de validación cruzada de <code>scikit-learn</code>.</p>
@@ -1720,11 +1658,9 @@ Figura&nbsp;2.5: Error cuadrático medio promedio mediante validación cruzada d
 <div id="callout-16" class="callout-16-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>El criterio de validación cruzada selecciona el grado que minimiza el error cuadrático medio promedio:</p>
-<p><span class="math display">\[
-d_{\mathrm{CV}}
+<p><span class="math display">\[d_{\mathrm{CV}}
 =
-\arg\min_d \operatorname{ECM}_{\mathrm{CV}}(d).
-\]</span></p>
+\arg\min_d \operatorname{ECM}_{\mathrm{CV}}(d).\]</span></p>
 <p>El valor concreto aparece en la salida de</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>d_optimo</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>y corresponde al mínimo de la gráfica.</p>
@@ -1785,59 +1721,45 @@ Advertencia
 <p><strong>¿Cómo cambia con la edad la probabilidad de que una persona tenga un salario superior a 250 mil dólares?</strong></p>
 </blockquote>
 <p>Definimos una nueva variable respuesta binaria:</p>
-<p><span class="math display">\[
-Y=
+<p><span class="math display">\[Y=
 \begin{cases}
 1, &amp; \text{si } \texttt{wage}&gt;250,\\
 0, &amp; \text{si } \texttt{wage}\leq 250.
-\end{cases}
-\]</span></p>
+\end{cases}\]</span></p>
 <p>Por tanto, ahora queremos modelar la probabilidad</p>
-<p><span class="math display">\[
-p(x)
+<p><span class="math display">\[p(x)
 =
 P(Y=1\mid X=x)
 =
-P(\texttt{wage}&gt;250\mid \texttt{age}=x).
-\]</span></p>
+P(\texttt{wage}&gt;250\mid \texttt{age}=x).\]</span></p>
 <section id="recordatorio-regresión-logística" class="level3" data-number="2.11.1">
 <h3 data-number="2.11.1" class="anchored" data-anchor-id="recordatorio-regresión-logística"><span class="header-section-number">2.11.1</span> Recordatorio: regresión logística</h3>
 <p>En una regresión logística simple modelamos el logaritmo de los <em>odds</em> mediante una relación lineal:</p>
-<p><span class="math display">\[
-\log\left(
+<p><span class="math display">\[\log\left(
 \frac{p(x)}{1-p(x)}
 \right)
 =
-\beta_0+\beta_1x.
-\]</span></p>
+\beta_0+\beta_1x.\]</span></p>
 <p>La cantidad</p>
-<p><span class="math display">\[
-\frac{p(x)}{1-p(x)}
-\]</span></p>
+<p><span class="math display">\[\frac{p(x)}{1-p(x)}\]</span></p>
 <p>se conoce como los <em>odds</em>, mientras que</p>
-<p><span class="math display">\[
-\log\left(
+<p><span class="math display">\[\log\left(
 \frac{p(x)}{1-p(x)}
-\right)
-\]</span></p>
+\right)\]</span></p>
 <p>es el <em>logit</em> o log-<em>odds</em>.</p>
 <p>En este modelo se supone que el log-<em>odds</em> cambia linealmente con respecto a <span class="math inline">\(x\)</span>.</p>
 <p>Sin embargo, al igual que en regresión lineal, esta suposición puede ser demasiado restrictiva.</p>
 <p>Podemos introducir términos polinomiales y considerar</p>
-<p><span class="math display">\[
-\log\left(
+<p><span class="math display">\[\log\left(
 \frac{p(x)}{1-p(x)}
 \right)
 =
-\beta_0+\beta_1x+\beta_2x^2+\cdots+\beta_dx^d.
-\]</span></p>
+\beta_0+\beta_1x+\beta_2x^2+\cdots+\beta_dx^d.\]</span></p>
 <p>Esta es una <strong>regresión logística polinomial</strong>.</p>
 <p>La idea es exactamente la misma que utilizamos antes:</p>
-<p><span class="math display">\[
-X
+<p><span class="math display">\[X
 \longmapsto
-(X,X^2,\ldots,X^d).
-\]</span></p>
+(X,X^2,\ldots,X^d).\]</span></p>
 <p>Lo que cambia ahora es el tipo de variable respuesta y, por tanto, el modelo utilizado para relacionar los predictores con la respuesta.</p>
 </section>
 <section id="construcción-de-la-variable-respuesta" class="level3" data-number="2.11.2">
@@ -1888,9 +1810,7 @@ Name: count, dtype: int64</code></pre>
 <h3 data-number="2.11.3" class="anchored" data-anchor-id="por-qué-usamos-glm-con-familia-binomial"><span class="header-section-number">2.11.3</span> ¿Por qué usamos <code>GLM</code> con familia binomial?</h3>
 <p>En la regresión polinomial anterior utilizamos mínimos cuadrados ordinarios mediante <code>sm.OLS()</code> porque la respuesta <code>wage</code> era cuantitativa.</p>
 <p>Ahora la variable respuesta toma únicamente los valores</p>
-<p><span class="math display">\[
-Y\in\{0,1\}.
-\]</span></p>
+<p><span class="math display">\[Y\in\{0,1\}.\]</span></p>
 <p>Por esta razón utilizaremos un <strong>modelo lineal generalizado</strong>, o GLM por sus siglas en inglés.</p>
 <p>En <code>statsmodels</code> escribimos:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>sm.GLM(</span>
@@ -1902,36 +1822,26 @@ Y\in\{0,1\}.
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>family<span class="op">=</span>sm.families.Binomial()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>indica que la variable respuesta sigue una distribución binomial.</p>
 <p>Para una observación individual, esto equivale al caso Bernoulli:</p>
-<p><span class="math display">\[
-Y_i\sim\operatorname{Bernoulli}(p_i),
-\]</span></p>
+<p><span class="math display">\[Y_i\sim\operatorname{Bernoulli}(p_i),\]</span></p>
 <p>donde</p>
-<p><span class="math display">\[
-P(Y_i=1)=p_i
-\]</span></p>
+<p><span class="math display">\[P(Y_i=1)=p_i\]</span></p>
 <p>y</p>
-<p><span class="math display">\[
-P(Y_i=0)=1-p_i.
-\]</span></p>
+<p><span class="math display">\[P(Y_i=0)=1-p_i.\]</span></p>
 <p>Además, <code>statsmodels</code> utiliza por defecto la función de enlace <strong>logit</strong> para la familia binomial. Por tanto, el modelo que se ajusta tiene la forma</p>
-<p><span class="math display">\[
-\log\left(
+<p><span class="math display">\[\log\left(
 \frac{p_i}{1-p_i}
 \right)
 =
-\eta_i,
-\]</span></p>
+\eta_i,\]</span></p>
 <p>donde <span class="math inline">\(\eta_i\)</span> es el predictor lineal.</p>
 <p>En nuestro caso, como utilizaremos un polinomio de grado 4 en <code>age</code>,</p>
-<p><span class="math display">\[
-\eta_i
+<p><span class="math display">\[\eta_i
 =
 \beta_0
 +\beta_1P_1(\texttt{age}_i)
 +\beta_2P_2(\texttt{age}_i)
 +\beta_3P_3(\texttt{age}_i)
-+\beta_4P_4(\texttt{age}_i),
-\]</span></p>
++\beta_4P_4(\texttt{age}_i),\]</span></p>
 <p>donde <span class="math inline">\(P_1,\ldots,P_4\)</span> son los polinomios de la base ortogonal construida por <code>ISLP.models.poly</code>.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -2047,22 +1957,18 @@ Importante
 </div>
 <p>Los coeficientes se estiman mediante <strong>máxima verosimilitud</strong>, no mediante mínimos cuadrados.</p>
 <p>El modelo ajustado tiene la forma</p>
-<p><span class="math display">\[
-\log\left(
+<p><span class="math display">\[\log\left(
 \frac{\hat p(x)}{1-\hat p(x)}
 \right)
 =
 \hat\beta_0
 +\hat\beta_1P_1(x)
 +\cdots
-+\hat\beta_4P_4(x).
-\]</span></p>
++\hat\beta_4P_4(x).\]</span></p>
 <p>Sin embargo, normalmente nos interesa más interpretar la probabilidad estimada</p>
-<p><span class="math display">\[
-\hat p(x)
+<p><span class="math display">\[\hat p(x)
 =
-P(\texttt{wage}&gt;250\mid\texttt{age}=x)
-\]</span></p>
+P(\texttt{wage}&gt;250\mid\texttt{age}=x)\]</span></p>
 <p>que los coeficientes individuales de la base ortogonal.</p>
 </section>
 <section id="predicciones-sobre-una-grilla-de-edades" class="level3" data-number="2.11.6">
@@ -2152,9 +2058,7 @@ P(\texttt{wage}&gt;250\mid\texttt{age}=x)
 </div>
 </div>
 <p>La columna <code>mean</code> contiene la probabilidad estimada</p>
-<p><span class="math display">\[
-\hat p(x),
-\]</span></p>
+<p><span class="math display">\[\hat p(x),\]</span></p>
 <p>mientras que <code>mean_ci_lower</code> y <code>mean_ci_upper</code> contienen los límites del intervalo de confianza puntual del 95% para esa probabilidad.</p>
 </section>
 <section id="probabilidad-de-tener-un-salario-alto" class="level3" data-number="2.11.7">
@@ -2250,11 +2154,9 @@ Figura&nbsp;2.6: Probabilidad estimada de tener un salario superior a 250 mil d�
 </div>
 </div>
 <p>La curva representa</p>
-<p><span class="math display">\[
-\widehat{
+<p><span class="math display">\[\widehat{
 P(\texttt{wage}&gt;250\mid\texttt{age}=x)
-}.
-\]</span></p>
+}.\]</span></p>
 <p>Observen que las probabilidades estimadas son pequeñas. Esto es consistente con el hecho de que tener un salario superior a 250 es un evento poco frecuente en este conjunto de datos.</p>
 <p>Analicen la forma de la curva:</p>
 <ol type="1">
@@ -2277,18 +2179,14 @@ P(\texttt{wage}&gt;250\mid\texttt{age}=x)
 <div class="callout-body-container callout-body">
 <p>La probabilidad estimada no cambia de manera monótona con la edad.</p>
 <p>El modelo muestra una región en la que</p>
-<p><span class="math display">\[
-P(\texttt{wage}&gt;250\mid\texttt{age}=x)
-\]</span></p>
+<p><span class="math display">\[P(\texttt{wage}&gt;250\mid\texttt{age}=x)\]</span></p>
 <p>aumenta con la edad, alcanza valores relativamente altos en edades intermedias y posteriormente disminuye.</p>
 <p>Una regresión logística con un único término lineal,</p>
-<p><span class="math display">\[
-\log\left(
+<p><span class="math display">\[\log\left(
 \frac{p(x)}{1-p(x)}
 \right)
 =
-\beta_0+\beta_1x,
-\]</span></p>
+\beta_0+\beta_1x,\]</span></p>
 <p>sería más restrictiva, ya que obliga al log-<em>odds</em> a ser una función lineal de la edad.</p>
 <p>La expansión polinomial permite que el log-<em>odds</em> cambie de forma no lineal y, por tanto, que la probabilidad estimada tenga una forma más flexible.</p>
 </div>
@@ -2298,22 +2196,18 @@ P(\texttt{wage}&gt;250\mid\texttt{age}=x)
 <section id="qué-aporta-el-término-polinomial" class="level3" data-number="2.11.8">
 <h3 data-number="2.11.8" class="anchored" data-anchor-id="qué-aporta-el-término-polinomial"><span class="header-section-number">2.11.8</span> ¿Qué aporta el término polinomial?</h3>
 <p>En una regresión logística simple tendríamos</p>
-<p><span class="math display">\[
-\log\left(
+<p><span class="math display">\[\log\left(
 \frac{p(x)}{1-p(x)}
 \right)
 =
-\beta_0+\beta_1x.
-\]</span></p>
+\beta_0+\beta_1x.\]</span></p>
 <p>Esto obliga al log-<em>odds</em> a cambiar linealmente con la edad.</p>
 <p>Al utilizar un polinomio,</p>
-<p><span class="math display">\[
-\log\left(
+<p><span class="math display">\[\log\left(
 \frac{p(x)}{1-p(x)}
 \right)
 =
-\beta_0+\beta_1x+\cdots+\beta_dx^d,
-\]</span></p>
+\beta_0+\beta_1x+\cdots+\beta_dx^d,\]</span></p>
 <p>permitimos que el log-<em>odds</em>, y por tanto la probabilidad <span class="math inline">\(p(x)\)</span>, presente una forma mucho más flexible.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -2338,50 +2232,36 @@ Nota
 <section id="respuesta-cuantitativa" class="level3" data-number="2.12.1">
 <h3 data-number="2.12.1" class="anchored" data-anchor-id="respuesta-cuantitativa"><span class="header-section-number">2.12.1</span> Respuesta cuantitativa</h3>
 <p>Cuando <span class="math inline">\(Y\)</span> es cuantitativa, utilizamos regresión polinomial:</p>
-<p><span class="math display">\[
-E[Y\mid X]
+<p><span class="math display">\[E[Y\mid X]
 =
-\beta_0+\beta_1X+\cdots+\beta_dX^d.
-\]</span></p>
+\beta_0+\beta_1X+\cdots+\beta_dX^d.\]</span></p>
 <p>En nuestro ejemplo,</p>
-<p><span class="math display">\[
-Y=\texttt{wage}.
-\]</span></p>
+<p><span class="math display">\[Y=\texttt{wage}.\]</span></p>
 </section>
 <section id="respuesta-binaria" class="level3" data-number="2.12.2">
 <h3 data-number="2.12.2" class="anchored" data-anchor-id="respuesta-binaria"><span class="header-section-number">2.12.2</span> Respuesta binaria</h3>
 <p>Cuando <span class="math inline">\(Y\)</span> es binaria, utilizamos regresión logística polinomial:</p>
-<p><span class="math display">\[
-\log\left(
+<p><span class="math display">\[\log\left(
 \frac{p(X)}{1-p(X)}
 \right)
 =
-\beta_0+\beta_1X+\cdots+\beta_dX^d.
-\]</span></p>
+\beta_0+\beta_1X+\cdots+\beta_dX^d.\]</span></p>
 <p>En nuestro ejemplo,</p>
-<p><span class="math display">\[
-Y=I(\texttt{wage}&gt;250).
-\]</span></p>
+<p><span class="math display">\[Y=I(\texttt{wage}&gt;250).\]</span></p>
 <p>En ambos casos aplicamos la transformación</p>
-<p><span class="math display">\[
-X
+<p><span class="math display">\[X
 \longmapsto
-(X,X^2,\ldots,X^d).
-\]</span></p>
+(X,X^2,\ldots,X^d).\]</span></p>
 <p>La diferencia principal está en <strong>qué cantidad modelamos</strong>:</p>
-<p><span class="math display">\[
-\text{Regresión polinomial}
+<p><span class="math display">\[\text{Regresión polinomial}
 \quad\longrightarrow\quad
-E[Y\mid X],
-\]</span></p>
+E[Y\mid X],\]</span></p>
 <p>mientras que</p>
-<p><span class="math display">\[
-\text{Regresión logística polinomial}
+<p><span class="math display">\[\text{Regresión logística polinomial}
 \quad\longrightarrow\quad
 \log\left(
 \frac{p(X)}{1-p(X)}
-\right).
-\]</span></p>
+\right).\]</span></p>
 <p>La idea fundamental es la misma: introducir <strong>flexibilidad mediante transformaciones de los predictores</strong>.</p>
 </section>
 </section>
@@ -2390,9 +2270,7 @@ E[Y\mid X],
 <section id="selección-del-grado-mediante-aic" class="level3" data-number="2.13.1">
 <h3 data-number="2.13.1" class="anchored" data-anchor-id="selección-del-grado-mediante-aic"><span class="header-section-number">2.13.1</span> Selección del grado mediante AIC</h3>
 <p>Ajusten, para</p>
-<p><span class="math display">\[
-d=1,\ldots,8,
-\]</span></p>
+<p><span class="math display">\[d=1,\ldots,8,\]</span></p>
 <p>el modelo</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>MS([poly(<span class="st">'age'</span>, degree<span class="op">=</span>d)])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>y obtengan el AIC de cada modelo mediante</p>
@@ -2449,9 +2327,7 @@ d=1,\ldots,8,
 <p><strong>¿Cuál es el cambio esperado en el salario cuando la edad aumenta un año?</strong></p>
 </blockquote>
 <p>¿Qué cantidad relacionada con la curva</p>
-<p><span class="math display">\[
-\hat f(x)
-\]</span></p>
+<p><span class="math display">\[\hat f(x)\]</span></p>
 <p>deberían estudiar para responder esta pregunta?</p>
 <p>¿Esperarían que ese efecto fuera el mismo para una persona de 25 años que para una de 60 años? Justifiquen.</p>
 

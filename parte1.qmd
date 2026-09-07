@@ -1,6 +1,5 @@
 # Introducción al Aprendizaje Automático"
 
-
 ## Objetivo del ejercicio
 
 ::: {.callout-note appearance="simple"}
@@ -13,12 +12,9 @@ Al terminar este ejercicio se buscará responder:
 - ¿Por qué el escalamiento y la imputación se ajustan **solo con el conjunto de entrenamiento**?
 - ¿Por qué la exactitud (*accuracy*) puede ser una métrica engañosa?
 
-
 [Diapositivas](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/Tema1.pdf)
 
 ------------------------------------------------------------------------
-
-
 
 ## Planteamiento del problema {#sec-planteamiento}
 

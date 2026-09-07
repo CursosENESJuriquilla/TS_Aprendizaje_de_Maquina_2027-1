@@ -2754,9 +2754,7 @@ corresponden a intervalos de confianza del 95% para los coeficientes.
 
 Para el intercepto representan un intervalo para
 
-$$
-\operatorname{logit}(p_0).
-$$
+$$\operatorname{logit}(p_0).$$
 
 Para las variables indicadoras representan intervalos para diferencias de log-odds:
 
@@ -2770,19 +2768,15 @@ También podemos exponenciar los límites para obtener un intervalo de confianza
 
 Si
 
-$$
-IC_{95\%}(\beta_j)
+$$IC_{95\%}(\beta_j)
 =
-[L_j,U_j],
-$$
+[L_j,U_j],$$
 
 entonces
 
-$$
-IC_{95\%}(OR_j)
+$$IC_{95\%}(OR_j)
 =
-[e^{L_j},e^{U_j}].
-$$
+[e^{L_j},e^{U_j}].$$
 
 ### Pseudo-$R^2$
 
@@ -2796,13 +2790,11 @@ Este valor **no es equivalente al** $R^2$ de una regresión lineal.
 
 Statsmodels reporta habitualmente el pseudo-$R^2$ de McFadden:
 
-$$
-R^2_{\text{McFadden}}
+$$R^2_{\text{McFadden}}
 =
 1-
 \frac{\log L_{\text{modelo}}}
-{\log L_{\text{nulo}}}.
-$$
+{\log L_{\text{nulo}}}.$$
 
 No debe interpretarse como:
 

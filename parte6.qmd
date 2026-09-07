@@ -1,1 +1,1353 @@
 # Regresión Local
+
+
+En las secciones anteriores hemos estudiado diferentes estrategias para modelar relaciones no lineales.
+
+Por ejemplo:
+
+- la **regresión polinomial** utiliza transformaciones globales de la variable predictora;
+- las **step functions** dividen el dominio en intervalos;
+- los **splines de regresión** construyen funciones suaves a partir de funciones base;
+- los **smoothing splines** controlan la flexibilidad mediante una penalización.
+
+En esta práctica estudiaremos una estrategia diferente: la **regresión local**.
+
+La idea fundamental es sencilla:
+
+Para estimar la respuesta en un punto $x_0$, utilizamos principalmente las observaciones que se encuentran cerca de $x_0$.
+
+Esto significa que no construiremos una única ecuación global para todo el conjunto de datos. En su lugar, realizaremos pequeños ajustes locales en diferentes regiones del dominio.
+
+## Librerías y preparación de datos
+
+Utilizaremos nuevamente el conjunto de datos `Wage`.
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+import statsmodels.api as sm
+
+from ISLP import load_data
+```
+
+Cargamos los datos.
+
+```{python}
+Wage = load_data("Wage")
+```
+
+Podemos revisar las primeras observaciones.
+
+```{python}
+Wage.head()
+```
+
+Nos concentraremos en dos variables:
+
+- `age`: edad del individuo;
+- `wage`: salario.
+
+```{python}
+age = Wage["age"]
+wage = Wage["wage"]
+```
+
+
+
+## Exploración inicial
+
+Antes de ajustar cualquier modelo, observemos la relación entre edad y salario.
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.4
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("Relación entre edad y salario")
+
+plt.show()
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿La relación entre `age` y `wage` parece completamente lineal?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Discusión
+
+No parece existir una relación completamente lineal.
+
+En términos generales, el salario parece aumentar durante una parte de la vida laboral, pero este comportamiento cambia conforme aumenta la edad.
+
+Una única recta podría ser demasiado restrictiva para describir esta estructura.
+
+Esto motiva el uso de métodos más flexibles.
+
+:::
+::::
+
+
+## La idea de regresión local
+
+Supongamos que queremos estimar el salario esperado para una edad particular $x_0$.
+
+En lugar de utilizar todas las observaciones con la misma importancia, podemos:
+
+1. identificar las observaciones cercanas a $x_0$;
+2. asignar mayor peso a las observaciones más próximas;
+3. ajustar una regresión utilizando esos pesos;
+4. evaluar el modelo obtenido en $x_0$.
+
+En el caso de una regresión lineal local, buscamos coeficientes $\beta_0$ y $\beta_1$ que minimicen
+
+$$
+\sum_{i=1}^{n}
+K_{i0}
+\left(
+y_i-\beta_0-\beta_1x_i
+\right)^2,
+$$
+
+donde
+
+$$
+K_{i0}=K(x_i,x_0)
+$$
+
+representa el peso de la observación $i$ cuando queremos realizar una predicción en $x_0$.
+
+Las observaciones cercanas reciben pesos grandes y las observaciones alejadas reciben pesos pequeños o incluso cero.
+
+Una vez estimados los coeficientes, la predicción es
+
+$$
+\hat f(x_0)
+=
+\hat\beta_0+\hat\beta_1x_0.
+$$
+
+Para construir una curva completa, repetimos este procedimiento para muchos valores de $x_0$.
+
+
+## LOWESS en Python
+
+`statsmodels` proporciona la función `lowess()` dentro del módulo `nonparametric`.
+
+```{python}
+lowess = sm.nonparametric.lowess
+```
+
+**LOWESS** significa *Locally Weighted Scatterplot Smoothing*.
+
+El método realiza ajustes locales ponderados a lo largo del dominio.
+
+En su forma básica utilizaremos:
+
+```python
+lowess(
+    endog,
+    exog,
+    frac=...
+)
+```
+
+donde:
+
+- `endog` contiene la variable respuesta;
+- `exog` contiene la variable predictora;
+- `frac` controla la proporción de observaciones utilizadas en cada ajuste local.
+
+En nuestro caso:
+
+```python
+lowess(
+    wage,
+    age,
+    frac=0.5
+)
+```
+
+## Primer ajuste LOWESS
+
+Comencemos utilizando
+
+$$
+s=0.5.
+$$
+
+Esto significa que cada ajuste local utiliza aproximadamente el $50\%$ de las observaciones.
+
+```{python}
+fit_05 = lowess(
+    wage,
+    age,
+    frac=0.5
+)
+```
+
+Veamos qué contiene el resultado.
+
+```{python}
+fit_05[:10]
+```
+
+También podemos revisar sus dimensiones.
+
+```{python}
+fit_05.shape
+```
+
+### ¿Qué devuelve `lowess()`?
+
+Por defecto, `lowess()` devuelve un arreglo con dos columnas.
+
+```{python}
+fit_05[:5]
+```
+
+La primera columna contiene los valores ordenados de la variable predictora y la segunda contiene los valores ajustados:
+
+$$
+\begin{array}{cc}
+x & \hat f(x)
+\end{array}
+$$
+
+Podemos separarlos.
+
+```{python}
+x_lowess = fit_05[:, 0]
+y_lowess = fit_05[:, 1]
+```
+
+## Visualización del ajuste
+
+Ahora podemos representar la curva LOWESS junto con las observaciones originales.
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.35,
+    label="Datos"
+)
+
+plt.plot(
+    x_lowess,
+    y_lowess,
+    linewidth=3,
+    color = "green",
+    label="LOWESS: span = 0.5"
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("Regresión local")
+plt.legend()
+
+plt.show()
+```
+
+A diferencia de una regresión lineal global, la curva puede adaptarse a cambios en la relación entre edad y salario en diferentes regiones del dominio.
+
+## El parámetro `frac`
+
+En `statsmodels`, el argumento
+
+```python
+frac
+```
+
+desempeña el papel del **span** $s$ que estudiamos teóricamente.
+
+Si tenemos $n$ observaciones, aproximadamente
+
+$$
+k=sn
+$$
+
+observaciones participan en cada ajuste local.
+
+Por ejemplo, si
+
+$$
+s=0.2,
+$$
+
+se utiliza aproximadamente el $20\%$ de las observaciones.
+
+Mientras que con
+
+$$
+s=0.7,
+$$
+
+se utiliza aproximadamente el $70\%$.
+
+Podemos verificar cuántas observaciones representan estos porcentajes en `Wage`.
+
+```{python}
+n = len(Wage)
+
+for span in [0.2, 0.5, 0.7]:
+    k = int(np.ceil(span * n))
+    print(f"span = {span}: aproximadamente {k} observaciones")
+```
+
+
+
+## Comparación de diferentes valores del span
+
+Ajustemos modelos con
+
+$$
+s=0.2,\qquad s=0.5,\qquad s=0.7.
+$$
+
+```{python}
+spans = [0.2, 0.5, 0.7]
+
+fits = {}
+
+for span in spans:
+    fits[span] = lowess(
+        wage,
+        age,
+        frac=span
+    )
+```
+
+Ahora representamos los tres ajustes.
+
+```{python}
+plt.figure(figsize=(10, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.25,
+    label="Datos"
+)
+
+for span in spans:
+    fitted = fits[span]
+
+    plt.plot(
+        fitted[:, 0],
+        fitted[:, 1],
+        linewidth=3,
+        label=f"span = {span}"
+    )
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("Efecto del span en la regresión local")
+plt.legend()
+
+plt.show()
+```
+
+### ¿Qué observamos?
+
+Cuando el span es pequeño, cada ajuste utiliza pocas observaciones cercanas.
+
+Por tanto, el modelo es más **local** y puede adaptarse rápidamente a cambios en los datos.
+
+Cuando el span aumenta, cada ajuste utiliza una fracción mayor de las observaciones.
+
+La curva resultante tiende a ser más **suave y global**.
+
+En términos generales:
+
+$$
+s\downarrow
+\quad\Longrightarrow\quad
+\text{mayor flexibilidad}
+$$
+
+y
+
+$$
+s\uparrow
+\quad\Longrightarrow\quad
+\text{mayor suavidad}.
+$$
+
+
+## ¿Qué significa realmente hacer un ajuste local?
+
+La función `lowess()` realiza automáticamente los cálculos necesarios.
+
+Sin embargo, podemos estudiar manualmente la idea central del algoritmo.
+
+Supongamos que queremos estimar el salario para
+
+$$
+x_0=40.
+$$
+
+```{python}
+x0 = 40
+```
+
+Utilicemos inicialmente un span de
+
+$$
+s=0.2.
+$$
+
+```{python}
+span = 0.2
+n = len(age)
+
+k = int(np.ceil(span * n))
+
+k
+```
+
+Por tanto, seleccionaremos aproximadamente las $k$ observaciones cuya edad se encuentra más cerca de 40.
+
+
+## Calcular la distancia respecto a $x_0$
+
+Para cada observación calculamos
+
+$$
+d_i=|x_i-x_0|.
+$$
+
+```{python}
+distance = np.abs(age.to_numpy() - x0)
+```
+
+Podemos ordenar estas distancias.
+
+```{python}
+nearest_idx = np.argsort(distance)[:k]
+```
+
+`np.argsort()` devuelve los índices que ordenarían el arreglo de menor a mayor.
+
+Por tanto,
+
+```python
+np.argsort(distance)[:k]
+```
+
+selecciona los índices de las $k$ observaciones más cercanas a $x_0$.
+
+Extraemos esas observaciones.
+
+```{python}
+age_local = age.to_numpy()[nearest_idx]
+wage_local = wage.to_numpy()[nearest_idx]
+distance_local = distance[nearest_idx]
+```
+
+
+
+## Visualizar el vecindario
+
+Podemos visualizar qué observaciones participan en este ajuste local.
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.15,
+    label="Resto de los datos"
+)
+
+plt.scatter(
+    age_local,
+    wage_local,
+    alpha=0.7,
+    label="Vecindario local"
+)
+
+plt.axvline(
+    x=x0,
+    linestyle="--",
+    label=r"$x_0=40$"
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("Observaciones utilizadas alrededor de $x_0$")
+plt.legend()
+
+plt.show()
+```
+
+Esta gráfica permite visualizar la primera parte del algoritmo:
+
+> Para realizar una predicción en $x_0$, nos concentramos en una región local del conjunto de datos.
+
+Sin embargo, todavía falta algo importante.
+
+Dentro de ese vecindario, **no todas las observaciones tendrán la misma importancia**.
+
+
+## Construcción de pesos locales
+
+Necesitamos una función que asigne pesos grandes a las observaciones cercanas a $x_0$ y pesos pequeños a las más alejadas.
+
+Una posibilidad muy utilizada es la función **tricúbica**.
+
+Si $d_i$ es la distancia entre $x_i$ y $x_0$, primero normalizamos mediante
+
+$$
+u_i=\frac{d_i}{d_{\max}},
+$$
+
+donde $d_{\max}$ es la mayor distancia dentro del vecindario.
+
+Después definimos
+
+$$
+w_i=
+\left(1-u_i^3\right)^3,
+\qquad 0\leq u_i\leq 1.
+$$
+
+La observación más alejada del vecindario tendrá peso cero.
+
+Calculemos estos pesos.
+
+```{python}
+d_max = distance_local.max()
+
+u = distance_local / d_max
+
+weights = (1 - u**3)**3
+```
+
+Podemos revisar algunos de los valores obtenidos.
+
+```{python}
+weights[:10]
+```
+
+
+## Distancia y peso
+
+Construyamos una pequeña tabla para entender la relación entre la distancia y el peso.
+
+```{python}
+local_info = pd.DataFrame({
+    "age": age_local,
+    "wage": wage_local,
+    "distance": distance_local,
+    "weight": weights
+})
+
+local_info = local_info.sort_values("distance")
+
+local_info.head(15)
+```
+
+Observemos que, en general:
+
+$$
+d_i\downarrow
+\quad\Longrightarrow\quad
+w_i\uparrow.
+$$
+
+Es decir, cuanto más cerca se encuentra una observación de $x_0$, mayor influencia tendrá sobre el ajuste.
+
+
+
+## Visualizar la función de pesos
+
+Podemos representar directamente la relación entre distancia y peso.
+
+```{python}
+order = np.argsort(distance_local)
+
+plt.figure(figsize=(8, 5))
+
+plt.plot(
+    distance_local[order],
+    weights[order],
+    marker="o"
+)
+
+plt.xlabel(r"Distancia a $x_0$")
+plt.ylabel("Peso")
+plt.title("Pesos utilizados en el ajuste local")
+
+plt.show()
+```
+
+La función de pesos disminuye conforme aumenta la distancia respecto al punto objetivo.
+
+
+## Visualizar los pesos sobre los datos
+
+También podemos representar los pesos mediante el tamaño de los puntos.
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.1
+)
+
+plt.scatter(
+    age_local,
+    wage_local,
+    s=20 + 180 * weights,
+    alpha=0.6,
+    label="Observaciones ponderadas"
+)
+
+plt.axvline(
+    x=x0,
+    linestyle="--",
+    label=r"$x_0=40$"
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("Importancia de las observaciones alrededor de $x_0$")
+plt.legend()
+
+plt.show()
+```
+
+Los puntos de mayor tamaño corresponden a observaciones con mayor peso.
+
+Esta gráfica representa visualmente la idea
+
+$$
+K_{i0}=K(x_i,x_0).
+$$
+
+## Ajustar una regresión lineal ponderada
+
+Ahora ajustaremos una regresión lineal utilizando únicamente el vecindario seleccionado.
+
+El modelo local es
+
+$$
+y_i=\beta_0+\beta_1x_i+\varepsilon_i.
+$$
+
+Pero los parámetros se estiman minimizando
+
+$$
+\sum_i
+w_i
+\left(
+y_i-\beta_0-\beta_1x_i
+\right)^2.
+$$
+
+En `statsmodels` podemos utilizar `WLS`, que significa **Weighted Least Squares**.
+
+Primero construimos la matriz de diseño.
+
+```{python}
+X_local = sm.add_constant(age_local)
+```
+
+Después ajustamos el modelo ponderado.
+
+```{python}
+local_model = sm.WLS(
+    wage_local,
+    X_local,
+    weights=weights
+).fit()
+```
+
+Podemos examinar los coeficientes.
+
+```{python}
+local_model.params
+```
+
+Estos corresponden a
+
+$$
+\hat\beta_0
+\qquad\text{y}\qquad
+\hat\beta_1.
+$$
+
+
+## Predicción en $x_0$
+
+La predicción local es
+
+$$
+\hat f(x_0)
+=
+\hat\beta_0+\hat\beta_1x_0.
+$$
+
+Podemos calcularla directamente.
+
+```{python}
+beta0, beta1 = local_model.params
+
+prediction_x0 = beta0 + beta1 * x0
+
+prediction_x0
+```
+
+Esta predicción fue construida utilizando principalmente información de observaciones cercanas a los 40 años.
+
+
+## Visualizar la recta local
+
+La recta que acabamos de estimar solamente pretende describir adecuadamente el comportamiento de los datos **alrededor de $x_0$**.
+
+Construimos algunos valores dentro del vecindario.
+
+```{python}
+x_local_grid = np.linspace(
+    age_local.min(),
+    age_local.max(),
+    100
+)
+
+y_local_grid = beta0 + beta1 * x_local_grid
+```
+
+Representamos el ajuste.
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.1
+)
+
+plt.scatter(
+    age_local,
+    wage_local,
+    s=20 + 180 * weights,
+    alpha=0.6,
+    label="Vecindario"
+)
+
+plt.plot(
+    x_local_grid,
+    y_local_grid,
+    linewidth=3,
+    label="Regresión lineal local"
+)
+
+plt.scatter(
+    [x0],
+    [prediction_x0],
+    s=100,
+    zorder=5,
+    label=r"$\hat{f}(x_0)$"
+)
+
+plt.axvline(
+    x=x0,
+    linestyle="--"
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title(r"Ajuste local alrededor de $x_0=40$")
+plt.legend()
+
+plt.show()
+```
+
+### Punto importante
+
+La recta anterior **no es el modelo final para todas las edades**.
+
+Solamente la utilizamos para obtener
+
+$$
+\hat f(40).
+$$
+
+Si ahora queremos estimar
+
+$$
+\hat f(50),
+$$
+
+debemos:
+
+1. seleccionar un nuevo vecindario;
+2. calcular nuevas distancias;
+3. calcular nuevos pesos;
+4. ajustar una nueva regresión;
+5. evaluar esa nueva recta en $x_0=50$.
+
+Esta es la razón por la que la regresión local se considera un método **basado en memoria**.
+
+
+## De muchas rectas locales a una curva
+
+Podemos repetir conceptualmente el procedimiento anterior para muchos valores:
+
+$$
+x_0^{(1)},x_0^{(2)},\ldots,x_0^{(m)}.
+$$
+
+Para cada uno obtenemos una predicción
+
+$$
+\hat f(x_0^{(j)}).
+$$
+
+Al reunir todas estas predicciones obtenemos una curva.
+
+Esto explica algo que inicialmente puede parecer extraño:
+
+> Si estamos ajustando regresiones lineales, ¿por qué el resultado final es una curva?
+
+Porque **no utilizamos la misma recta en todo el dominio**.
+
+En diferentes regiones tenemos diferentes valores de
+
+$$
+\hat\beta_0
+\qquad\text{y}\qquad
+\hat\beta_1.
+$$
+
+
+## Comparación con una regresión lineal global
+
+Para hacer más clara la diferencia, ajustemos también una regresión lineal ordinaria.
+
+```{python}
+X_global = sm.add_constant(age)
+
+global_model = sm.OLS(
+    wage,
+    X_global
+).fit()
+```
+
+Construimos una secuencia de edades.
+
+```{python}
+age_grid = np.linspace(
+    age.min(),
+    age.max(),
+    500
+)
+```
+
+Calculamos las predicciones de la regresión lineal.
+
+```{python}
+X_grid = sm.add_constant(age_grid)
+
+global_pred = global_model.predict(X_grid)
+```
+
+Y calculamos un ajuste LOWESS.
+
+```{python}
+fit_lowess = lowess(
+    wage,
+    age,
+    frac=0.5
+)
+```
+
+Comparamos ambos modelos.
+
+```{python}
+plt.figure(figsize=(10, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.2
+)
+
+plt.plot(
+    age_grid,
+    global_pred,
+    linewidth=3,
+    label="Regresión lineal global"
+)
+
+plt.plot(
+    fit_lowess[:, 0],
+    fit_lowess[:, 1],
+    linewidth=3,
+    label="Regresión local"
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("Modelo global vs. modelo local")
+plt.legend()
+
+plt.show()
+```
+
+La regresión lineal obliga a que la relación tenga la forma
+
+$$
+\hat f(x)=\hat\beta_0+\hat\beta_1x
+$$
+
+en todo el dominio.
+
+En cambio, la regresión local permite que la pendiente cambie de una región a otra.
+
+
+## ¿Qué ocurre con spans muy pequeños?
+
+Hasta ahora utilizamos valores moderados del span.
+
+Probemos ahora
+
+$$
+s=0.05.
+$$
+
+```{python}
+small_span = lowess(
+    wage,
+    age,
+    frac=0.05
+)
+```
+
+Comparamos con un ajuste más suave.
+
+```{python}
+smooth_span = lowess(
+    wage,
+    age,
+    frac=0.7
+)
+```
+
+```{python}
+plt.figure(figsize=(10, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.2
+)
+
+plt.plot(
+    small_span[:, 0],
+    small_span[:, 1],
+    linewidth=3,
+    label="span = 0.05"
+)
+
+plt.plot(
+    smooth_span[:, 0],
+    smooth_span[:, 1],
+    linewidth=3,
+    label="span = 0.70"
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("Spans pequeños y grandes")
+plt.legend()
+
+plt.show()
+```
+
+Un span extremadamente pequeño puede producir un ajuste demasiado sensible a fluctuaciones locales.
+
+Esto se relaciona con el compromiso entre **sesgo y varianza**:
+
+- span pequeño $\rightarrow$ mayor flexibilidad, menor sesgo y potencialmente mayor varianza;
+- span grande $\rightarrow$ menor flexibilidad, mayor sesgo y potencialmente menor varianza.
+
+
+## El span como hiperparámetro
+
+El span no se estima directamente mediante mínimos cuadrados.
+
+Es un **hiperparámetro** que debemos seleccionar.
+
+Una posibilidad sería elegirlo visualmente, pero esto introduce subjetividad.
+
+Una estrategia más sistemática consiste en utilizar **validación cruzada**.
+
+La idea general es comparar varios valores candidatos:
+
+$$
+s_1,s_2,\ldots,s_m
+$$
+
+y seleccionar aquel que produzca el menor error de predicción sobre observaciones que no fueron utilizadas para construir el ajuste correspondiente.
+
+
+
+## Una consideración importante: predecir con LOWESS
+
+LOWESS no funciona exactamente como los modelos de `scikit-learn` que hemos utilizado anteriormente.
+
+Normalmente no hacemos:
+
+```python
+model.fit(X_train, y_train)
+model.predict(X_test)
+```
+
+La función `lowess()` construye directamente el suavizado para determinados valores de $x$.
+
+Por ejemplo, podemos indicar explícitamente los puntos en los que queremos obtener el ajuste utilizando el argumento `xvals`.
+
+```{python}
+age_grid = np.linspace(
+    age.min(),
+    age.max(),
+    500
+)
+
+fit_grid = lowess(
+    wage,
+    age,
+    frac=0.5,
+    xvals=age_grid
+)
+```
+
+Ahora `fit_grid` contiene directamente las predicciones correspondientes a `age_grid`.
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.scatter(
+    age,
+    wage,
+    alpha=0.25
+)
+
+plt.plot(
+    age_grid,
+    fit_grid,
+    linewidth=3
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Salario")
+plt.title("LOWESS evaluado sobre una malla")
+
+plt.show()
+```
+
+Esto será útil cuando queramos evaluar el método sobre observaciones de validación.
+
+
+## Selección del span mediante validación cruzada
+
+Podemos explorar varios valores candidatos.
+
+```{python}
+candidate_spans = [
+    0.1,
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8
+]
+```
+
+Para mantener clara la idea, construiremos una validación cruzada manual.
+
+```{python}
+from sklearn.model_selection import KFold
+from sklearn.metrics import mean_squared_error
+```
+
+Utilizaremos 5 particiones.
+
+```{python}
+kf = KFold(
+    n_splits=5,
+    shuffle=True,
+    random_state=123
+)
+```
+
+Preparamos los datos como arreglos.
+
+```{python}
+X = age.to_numpy()
+y = wage.to_numpy()
+```
+
+Ahora evaluamos cada span.
+
+```{python}
+cv_results = []
+
+for span in candidate_spans:
+
+    fold_mse = []
+
+    for train_idx, test_idx in kf.split(X):
+
+        X_train = X[train_idx]
+        y_train = y[train_idx]
+
+        X_test = X[test_idx]
+        y_test = y[test_idx]
+
+        y_pred = lowess(
+            y_train,
+            X_train,
+            frac=span,
+            xvals=X_test
+        )
+
+        mse = mean_squared_error(
+            y_test,
+            y_pred
+        )
+
+        fold_mse.append(mse)
+
+    cv_results.append({
+        "span": span,
+        "MSE": np.mean(fold_mse)
+    })
+```
+
+Convertimos los resultados en un `DataFrame`.
+
+```{python}
+cv_results = pd.DataFrame(cv_results)
+
+cv_results
+```
+
+
+## Visualizar el error de validación
+
+```{python}
+plt.figure(figsize=(8, 5))
+
+plt.plot(
+    cv_results["span"],
+    cv_results["MSE"],
+    marker="o"
+)
+
+plt.xlabel("Span")
+plt.ylabel("MSE de validación cruzada")
+plt.title("Selección del span")
+
+plt.show()
+```
+
+Podemos identificar el span con menor error.
+
+```{python}
+best_row = cv_results.loc[
+    cv_results["MSE"].idxmin()
+]
+
+best_row
+```
+
+Así, el span puede seleccionarse de manera similar a otros hiperparámetros que hemos estudiado.
+
+
+
+## Comparación con smoothing splines
+
+Tanto la regresión local como los smoothing splines permiten construir relaciones no lineales suaves.
+
+Sin embargo, controlan la flexibilidad de maneras diferentes.
+
+En regresión local:
+
+$$
+s\downarrow
+\quad\Longrightarrow\quad
+\text{mayor flexibilidad}.
+$$
+
+En smoothing splines:
+
+$$
+\lambda\downarrow
+\quad\Longrightarrow\quad
+\text{menor penalización y mayor flexibilidad}.
+$$
+
+La diferencia conceptual es importante:
+
+- el **span** controla cuántas observaciones intervienen localmente;
+- $\lambda$ controla cuánto penalizamos la curvatura global de la función.
+
+
+
+## Regresión local y GAMs
+
+Más adelante estudiaremos los **Generalized Additive Models (GAMs)**.
+
+Algunas implementaciones de GAMs permiten utilizar suavizadores locales como componentes del modelo.
+
+Por ejemplo, conceptualmente podríamos tener un modelo de la forma
+
+$$
+Y
+=
+\beta_0
++
+f_1(X_1)
++
+f_2(X_2)
++
+\varepsilon,
+$$
+
+donde alguna de las funciones $f_j$ puede construirse mediante un método de suavizamiento.
+
+Por ahora no entraremos en los detalles de los GAMs.
+
+Lo importante es reconocer que los métodos estudiados hasta ahora —splines, smoothing splines y regresión local— proporcionan distintas formas de construir relaciones flexibles entre predictores y respuesta.
+
+
+## Ejercicios
+
+### Ejercicio 1. Efecto del span
+
+Ajusta modelos LOWESS utilizando
+
+$$
+s=0.1,\quad
+s=0.3,\quad
+s=0.5,\quad
+s=0.7,\quad
+s=0.9.
+$$
+
+Representa todos los ajustes sobre la misma gráfica.
+
+Responde:
+
+1. ¿Cuál produce la curva más flexible?
+2. ¿Cuál produce la curva más suave?
+3. ¿En qué regiones del dominio observas mayores diferencias entre los modelos?
+
+
+
+### Ejercicio 2. Un ajuste local
+
+Repite el procedimiento manual para
+
+$$
+x_0=55
+$$
+
+utilizando
+
+$$
+s=0.2.
+$$
+
+Calcula:
+
+1. el número $k$ de observaciones utilizadas;
+2. las distancias respecto a $x_0$;
+3. los pesos tricúbicos;
+4. la regresión lineal ponderada;
+5. la predicción $\hat f(55)$.
+
+Construye una gráfica que muestre el vecindario, los pesos y la recta local.
+
+
+
+### Ejercicio 3. Cambiar el span localmente
+
+Mantén
+
+$$
+x_0=55
+$$
+
+y repite el ajuste manual utilizando
+
+$$
+s=0.1,\quad 0.3,\quad 0.6.
+$$
+
+Compara las tres predicciones.
+
+¿Qué ocurre con el tamaño del vecindario?
+
+¿Cómo cambia la recta local?
+
+
+
+### Ejercicio 4. Modelo global vs. local
+
+Ajusta:
+
+1. una regresión lineal global;
+2. una regresión polinomial de grado 4;
+3. un modelo LOWESS.
+
+Representa los tres ajustes sobre los mismos datos.
+
+Discute las principales diferencias entre las tres estrategias.
+
+
+### Ejercicio 5. Selección del span
+
+Utiliza validación cruzada para comparar
+
+$$
+s\in
+\{0.05,0.10,0.15,\ldots,0.90\}.
+$$
+
+Determina el span que minimiza el MSE promedio de validación.
+
+Finalmente, ajusta LOWESS utilizando ese span y representa el resultado.
+
+
+
+### Ejercicio 6. Interpretación
+
+Explica con tus propias palabras por qué una colección de regresiones lineales locales puede producir una función global no lineal.
+
+Tu explicación debe hacer referencia a:
+
+- $x_0$;
+- el vecindario;
+- los pesos;
+- $\hat\beta_0$;
+- $\hat\beta_1$.

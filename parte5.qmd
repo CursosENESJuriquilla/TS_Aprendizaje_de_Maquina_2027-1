@@ -884,7 +884,7 @@ Repite el análisis utilizando `year` como predictor y `wage` como variable resp
 
 **Pregunta:** ¿parece necesaria la misma cantidad de flexibilidad para modelar ambas relaciones? Justifica tu respuesta.
 
-## Ejercicio 7. Reflexión
+### Ejercicio 7. Reflexión
 
 Supongamos que dos splines producen prácticamente el mismo desempeño predictivo:
 

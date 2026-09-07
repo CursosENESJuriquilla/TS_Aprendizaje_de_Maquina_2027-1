@@ -277,13 +277,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Splines de suavizamiento</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regresión Local</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte7.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Regresión local</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">GAMs: Modelos Aditivos Generalizados</span></span></a>
   </div>
 </li>
       </ul>
@@ -433,7 +433,7 @@ window.Quarto = {
 <section id="librerías" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="librerías"><span class="header-section-number">4.2</span> Librerías</h2>
 <p>Comenzamos importando las librerías necesarias.</p>
-<div id="27bf4f7f" class="cell" data-execution_count="1">
+<div id="59af74d8" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -469,7 +469,7 @@ window.Quarto = {
 </section>
 <section id="cargar-los-datos-wage" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="cargar-los-datos-wage"><span class="header-section-number">4.3</span> Cargar los datos <code>Wage</code></h2>
-<div id="78ffc153" class="cell" data-execution_count="2">
+<div id="efbd375a" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Wage <span class="op">=</span> load_data(<span class="st">"Wage"</span>)</span>
@@ -575,7 +575,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Recordemos algunas de las variables disponibles.</p>
-<div id="27dc12e3" class="cell" data-execution_count="3">
+<div id="a96dc0e2" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Wage.columns</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -591,7 +591,7 @@ window.Quarto = {
 <li><code>age</code>: edad del trabajador;</li>
 <li><code>wage</code>: salario.</li>
 </ul>
-<div id="9b27f928" class="cell" data-execution_count="4">
+<div id="b7cc4f3f" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>age <span class="op">=</span> Wage[<span class="st">"age"</span>]</span>
@@ -599,7 +599,7 @@ window.Quarto = {
 </details>
 </div>
 <p>Veamos algunas estadísticas descriptivas.</p>
-<div id="7b95dd2c" class="cell" data-execution_count="5">
+<div id="7615df2c" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Wage[[<span class="st">"age"</span>, <span class="st">"wage"</span>]].describe()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -667,7 +667,7 @@ window.Quarto = {
 <section id="visualización-inicial" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="visualización-inicial"><span class="header-section-number">4.4</span> Visualización inicial</h2>
 <p>Antes de ajustar cualquier modelo, observemos los datos.</p>
-<div id="b6ee2f1f" class="cell" data-execution_count="6">
+<div id="d1e35045" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
@@ -705,18 +705,13 @@ window.Quarto = {
 <h2 data-number="4.5" class="anchored" data-anchor-id="qué-es-un-spline"><span class="header-section-number">4.5</span> ¿Qué es un spline?</h2>
 <p>Un spline cúbico es una función construida mediante distintos polinomios cúbicos definidos en diferentes regiones del predictor.</p>
 <p>Si tenemos nodos</p>
-<p><span class="math display">\[
-\xi_1,\xi_2,\ldots,\xi_K,
-\]</span></p>
+<p><span class="math display">\[\xi_1,\xi_2,\ldots,\xi_K,\]</span></p>
 <p>estos dividen el rango de <span class="math inline">\(X\)</span> en <span class="math inline">\(K+1\)</span> regiones.</p>
 <p>Los polinomios se unen imponiendo continuidad de:</p>
-<p><span class="math display">\[
-f, f', \text{ y } f''.
-\]</span></p>
+<p><span class="math display">\[f, f', \text{ y } f''.\]</span></p>
 <p>Por ello obtenemos una curva suave incluso en los puntos donde cambia el polinomio.</p>
 <p>Una representación posible de un spline cúbico es</p>
-<p><span class="math display">\[
-f(x)
+<p><span class="math display">\[f(x)
 =
 \beta_0
 +\beta_1x
@@ -724,18 +719,15 @@ f(x)
 +\beta_3x^3
 +
 \sum_{k=1}^{K}
-\beta_{3+k}(x-\xi_k)_+^3.
-\]</span></p>
+\beta_{3+k}(x-\xi_k)_+^3.\]</span></p>
 <p>Sin embargo, computacionalmente suele ser más conveniente utilizar bases B-spline.</p>
 </section>
 <section id="construir-directamente-una-base-b-spline" class="level2" data-number="4.6">
 <h2 data-number="4.6" class="anchored" data-anchor-id="construir-directamente-una-base-b-spline"><span class="header-section-number">4.6</span> Construir directamente una base B-spline</h2>
 <p>Comencemos colocando tres nodos interiores en</p>
-<p><span class="math display">\[
-25,\qquad 40,\qquad 60.
-\]</span></p>
+<p><span class="math display">\[25,\qquad 40,\qquad 60.\]</span></p>
 <p>Utilizamos <code>BSpline()</code>.</p>
-<div id="2facd81b" class="cell" data-execution_count="7">
+<div id="2c51b914" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>bs_transform <span class="op">=</span> BSpline(</span>
@@ -1666,14 +1658,14 @@ forceTheme('sk-container-id-1');</script>
 </div>
 <p>Todavía no hemos construido las funciones base.</p>
 <p>Primero debemos ajustar el transformador al predictor.</p>
-<div id="1487d347" class="cell" data-execution_count="8">
+<div id="7a09474a" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>bs_transform <span class="op">=</span> bs_transform.fit(age)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Ahora transformamos las edades.</p>
-<div id="29e020a8" class="cell" data-execution_count="9">
+<div id="4056b7d0" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>bs_age <span class="op">=</span> bs_transform.transform(age)</span>
@@ -1816,7 +1808,7 @@ forceTheme('sk-container-id-1');</script>
 </div>
 </div>
 <p>Veamos sus dimensiones.</p>
-<div id="25067081" class="cell" data-execution_count="10">
+<div id="79b54038" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>bs_age.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1833,14 +1825,10 @@ forceTheme('sk-container-id-1');</script>
 <li>intercepto incluido.</li>
 </ul>
 <p>Para un spline cúbico con <span class="math inline">\(K\)</span> nodos tenemos</p>
-<p><span class="math display">\[
-K+4
-\]</span></p>
+<p><span class="math display">\[K+4\]</span></p>
 <p>funciones base.</p>
 <p>Por tanto,</p>
-<p><span class="math display">\[
-3+4=7.
-\]</span></p>
+<p><span class="math display">\[3+4=7.\]</span></p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1865,18 +1853,12 @@ K+4
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Para un spline cúbico con <span class="math inline">\(K\)</span> nodos:</p>
-<p><span class="math display">\[
-K+4
-\]</span></p>
+<p><span class="math display">\[K+4\]</span></p>
 <p>grados de libertad.</p>
 <p>Si</p>
-<p><span class="math display">\[
-K=5,
-\]</span></p>
+<p><span class="math display">\[K=5,\]</span></p>
 <p>entonces:</p>
-<p><span class="math display">\[
-5+4=9.
-\]</span></p>
+<p><span class="math display">\[5+4=9.\]</span></p>
 <p>La matriz tendría <strong>9 columnas</strong>.</p>
 </div>
 </div>
@@ -1889,7 +1871,7 @@ K=5,
 <p>Las columnas de <code>bs_age</code> no deben interpretarse como variables originales independientes.</p>
 <p>Cada columna corresponde a una <strong>función base</strong> evaluada sobre <code>age</code>.</p>
 <p>Podemos visualizar estas funciones. Primero ordenamos las edades, para que las curvas se dibujen de izquierda a derecha:</p>
-<div id="33250ffa" class="cell" data-execution_count="11">
+<div id="40ce3c8a" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>age_order <span class="op">=</span> np.argsort(age.to_numpy())</span>
@@ -1898,14 +1880,14 @@ K=5,
 </details>
 </div>
 <p>Como <code>bs_age</code> es un <code>DataFrame</code> de pandas, utilizamos <code>.iloc</code> para ordenar sus filas:</p>
-<div id="0ad240bd" class="cell" data-execution_count="12">
+<div id="7d598a66" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bs_sorted <span class="op">=</span> bs_age.iloc[age_order, :].to_numpy()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Ahora graficamos cada una de las funciones base:</p>
-<div id="a6a87a58" class="cell" data-execution_count="13">
+<div id="ad72dcec" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -1932,19 +1914,15 @@ K=5,
 </div>
 </div>
 <p>Cada columna de la matriz representa una función</p>
-<p><span class="math display">\[
-b_j(x)
-\]</span></p>
+<p><span class="math display">\[b_j(x)\]</span></p>
 <p>evaluada para todos los valores de <code>age</code>.</p>
 <p>Por ello, la matriz tiene la forma</p>
-<p><span class="math display">\[
-\begin{pmatrix}
+<p><span class="math display">\[\begin{pmatrix}
 b_1(x_1) &amp; b_2(x_1) &amp; \cdots &amp; b_p(x_1)\\
 b_1(x_2) &amp; b_2(x_2) &amp; \cdots &amp; b_p(x_2)\\
 \vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
 b_1(x_n) &amp; b_2(x_n) &amp; \cdots &amp; b_p(x_n)
-\end{pmatrix}.
-\]</span></p>
+\end{pmatrix}.\]</span></p>
 <p>Cada función base tiene influencia principalmente sobre una región determinada del dominio.</p>
 <p>Esta característica permite modificar localmente la forma del ajuste sin alterar drásticamente toda la curva.</p>
 </section>
@@ -1952,7 +1930,7 @@ b_1(x_n) &amp; b_2(x_n) &amp; \cdots &amp; b_p(x_n)
 <h2 data-number="4.8" class="anchored" data-anchor-id="ajustar-el-spline-como-un-modelo-lineal"><span class="header-section-number">4.8</span> Ajustar el spline como un modelo lineal</h2>
 <p>En lugar de construir manualmente la matriz anterior, podemos utilizar <code>bs()</code> dentro de <code>ModelSpec</code>.</p>
 <p>Definimos un spline para <code>age</code> con los mismos nodos.</p>
-<div id="78e36e59" class="cell" data-execution_count="14">
+<div id="9b19000a" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bs_age_spec <span class="op">=</span> MS([</span>
@@ -1964,14 +1942,14 @@ b_1(x_n) &amp; b_2(x_n) &amp; \cdots &amp; b_p(x_n)
 </details>
 </div>
 <p>Ahora ajustamos la especificación a los datos.</p>
-<div id="ceb14ad9" class="cell" data-execution_count="15">
+<div id="ca55c66e" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>bs_age_spec <span class="op">=</span> bs_age_spec.fit(Wage)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Construimos la matriz de diseño.</p>
-<div id="4fd660fa" class="cell" data-execution_count="16">
+<div id="db4c64ff" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>X_bs <span class="op">=</span> bs_age_spec.transform(Wage)</span>
@@ -2053,7 +2031,7 @@ b_1(x_n) &amp; b_2(x_n) &amp; \cdots &amp; b_p(x_n)
 </div>
 </div>
 <p>Veamos sus dimensiones.</p>
-<div id="e97a2697" class="cell" data-execution_count="17">
+<div id="d61b544d" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>X_bs.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2063,7 +2041,7 @@ b_1(x_n) &amp; b_2(x_n) &amp; \cdots &amp; b_p(x_n)
 </div>
 </div>
 <p>Ahora ajustamos una regresión lineal.</p>
-<div id="8f823f76" class="cell" data-execution_count="18">
+<div id="9c3a6f3c" class="cell" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model_bs <span class="op">=</span> sm.OLS(</span>
@@ -2073,7 +2051,7 @@ b_1(x_n) &amp; b_2(x_n) &amp; \cdots &amp; b_p(x_n)
 </details>
 </div>
 <p>Podemos resumir el modelo.</p>
-<div id="6fae514c" class="cell" data-execution_count="19">
+<div id="ce0c7b8a" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>summarize(model_bs)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2159,11 +2137,9 @@ b_1(x_n) &amp; b_2(x_n) &amp; \cdots &amp; b_p(x_n)
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>intercept<span class="op">=</span><span class="va">False</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>para evitar introducir redundancia con el intercepto global.</p>
 <p>Conceptualmente tenemos:</p>
-<p><span class="math display">\[
-\text{intercepto general}
+<p><span class="math display">\[\text{intercepto general}
 +
-\text{funciones base del spline}.
-\]</span></p>
+\text{funciones base del spline}.\]</span></p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2219,7 +2195,7 @@ Nota
 <section id="predicciones-sobre-una-malla-de-edades" class="level2" data-number="4.10">
 <h2 data-number="4.10" class="anchored" data-anchor-id="predicciones-sobre-una-malla-de-edades"><span class="header-section-number">4.10</span> Predicciones sobre una malla de edades</h2>
 <p>Para visualizar el ajuste construiremos una secuencia de edades.</p>
-<div id="f3847c01" class="cell" data-execution_count="20">
+<div id="5263a0a1" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>age_grid <span class="op">=</span> np.linspace(</span>
@@ -2230,7 +2206,7 @@ Nota
 </details>
 </div>
 <p>Creamos un <code>DataFrame</code> con estas nuevas observaciones.</p>
-<div id="f92faa5c" class="cell" data-execution_count="21">
+<div id="bbdb1566" class="cell" data-execution_count="21">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>age_grid_df <span class="op">=</span> pd.DataFrame({</span>
@@ -2239,21 +2215,21 @@ Nota
 </details>
 </div>
 <p>Ahora debemos transformar las nuevas edades utilizando <strong>la misma base aprendida con los datos originales</strong>.</p>
-<div id="42f64aba" class="cell" data-execution_count="22">
+<div id="8617e4d5" class="cell" data-execution_count="22">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>X_grid_bs <span class="op">=</span> bs_age_spec.transform(age_grid_df)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Calculamos las predicciones.</p>
-<div id="ccac672d" class="cell" data-execution_count="23">
+<div id="de5e902c" class="cell" data-execution_count="23">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>pred_bs <span class="op">=</span> model_bs.get_prediction(X_grid_bs)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Obtenemos el resumen de predicciones.</p>
-<div id="da5b2dde" class="cell" data-execution_count="24">
+<div id="e365d050" class="cell" data-execution_count="24">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>pred_bs_summary <span class="op">=</span> pred_bs.summary_frame()</span>
@@ -2337,7 +2313,7 @@ Nota
 </section>
 <section id="graficar-el-spline-cúbico" class="level2" data-number="4.11">
 <h2 data-number="4.11" class="anchored" data-anchor-id="graficar-el-spline-cúbico"><span class="header-section-number">4.11</span> Graficar el spline cúbico</h2>
-<div id="5319de22" class="cell" data-execution_count="25">
+<div id="0c0803e5" class="cell" data-execution_count="25">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -2390,7 +2366,7 @@ Nota
 <section id="inspeccionar-los-nodos" class="level2" data-number="4.12">
 <h2 data-number="4.12" class="anchored" data-anchor-id="inspeccionar-los-nodos"><span class="header-section-number">4.12</span> Inspeccionar los nodos</h2>
 <p>Podemos recuperar los nodos utilizados por un objeto <code>BSpline</code>.</p>
-<div id="034bd140" class="cell" data-execution_count="26">
+<div id="9afbd672" class="cell" data-execution_count="26">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>bs_check <span class="op">=</span> BSpline(</span>
@@ -2409,7 +2385,7 @@ Nota
 <p>No siempre necesitamos especificar manualmente los nodos.</p>
 <p>Podemos indicar directamente los grados de libertad.</p>
 <p>Por ejemplo:</p>
-<div id="77a60686" class="cell" data-execution_count="27">
+<div id="58a304f1" class="cell" data-execution_count="27">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>bs_df6 <span class="op">=</span> BSpline(</span>
@@ -2418,7 +2394,7 @@ Nota
 </details>
 </div>
 <p>Inspeccionamos los nodos seleccionados automáticamente.</p>
-<div id="29458fbd" class="cell" data-execution_count="28">
+<div id="0f24d954" class="cell" data-execution_count="28">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>bs_df6.internal_knots_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2428,11 +2404,9 @@ Nota
 </div>
 </div>
 <p>Estos valores corresponden aproximadamente a los cuantiles:</p>
-<p><span class="math display">\[
-25\%,\qquad 50\%,\qquad 75\%.
-\]</span></p>
+<p><span class="math display">\[25\%,\qquad 50\%,\qquad 75\%.\]</span></p>
 <p>Podemos comprobarlos directamente.</p>
-<div id="43287c78" class="cell" data-execution_count="29">
+<div id="7bbbde72" class="cell" data-execution_count="29">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>age.quantile([<span class="fl">0.25</span>, <span class="fl">0.50</span>, <span class="fl">0.75</span>])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2484,7 +2458,7 @@ Name: age, dtype: float64</code></pre>
 <section id="ajustar-un-spline-usando-grados-de-libertad" class="level2" data-number="4.14">
 <h2 data-number="4.14" class="anchored" data-anchor-id="ajustar-un-spline-usando-grados-de-libertad"><span class="header-section-number">4.14</span> Ajustar un spline usando grados de libertad</h2>
 <p>Ahora utilizaremos directamente <code>df=6</code>.</p>
-<div id="26939b95" class="cell" data-execution_count="30">
+<div id="13d17c98" class="cell" data-execution_count="30">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>bs_df_spec <span class="op">=</span> MS([</span>
@@ -2496,7 +2470,7 @@ Name: age, dtype: float64</code></pre>
 </details>
 </div>
 <p>Construimos la matriz y ajustamos el modelo.</p>
-<div id="496050bb" class="cell" data-execution_count="31">
+<div id="b7af75d1" class="cell" data-execution_count="31">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>X_bs_df <span class="op">=</span> bs_df_spec.transform(Wage)</span>
@@ -2582,14 +2556,14 @@ Name: age, dtype: float64</code></pre>
 <section id="visualizar-el-spline-con-df6" class="level2" data-number="4.15">
 <h2 data-number="4.15" class="anchored" data-anchor-id="visualizar-el-spline-con-df6"><span class="header-section-number">4.15</span> Visualizar el spline con <code>df=6</code></h2>
 <p>Transformamos la malla de edades.</p>
-<div id="4fd7d734" class="cell" data-execution_count="32">
+<div id="520c31a3" class="cell" data-execution_count="32">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>X_grid_bs_df <span class="op">=</span> bs_df_spec.transform(age_grid_df)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Calculamos las predicciones.</p>
-<div id="6bd5edc0" class="cell" data-execution_count="33">
+<div id="d5892ecf" class="cell" data-execution_count="33">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>pred_bs_df <span class="op">=</span> model_bs_df.get_prediction(</span>
@@ -2597,7 +2571,7 @@ Name: age, dtype: float64</code></pre>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>).summary_frame()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="0f40c2f6" class="cell" data-execution_count="34">
+<div id="ea95fe1a" class="cell" data-execution_count="34">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -2675,7 +2649,7 @@ Name: age, dtype: float64</code></pre>
 <p>Por ejemplo,</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>degree<span class="op">=</span><span class="dv">0</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>produce funciones constantes por regiones.</p>
-<div id="2322d2d3" class="cell" data-execution_count="35">
+<div id="4fc8f9e2" class="cell" data-execution_count="35">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>bs_degree0_spec <span class="op">=</span> MS([</span>
@@ -2688,14 +2662,14 @@ Name: age, dtype: float64</code></pre>
 </details>
 </div>
 <p>Construimos la matriz.</p>
-<div id="e2c29403" class="cell" data-execution_count="36">
+<div id="fd2207d4" class="cell" data-execution_count="36">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>X_degree0 <span class="op">=</span> bs_degree0_spec.transform(Wage)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Ajustamos el modelo.</p>
-<div id="f7153403" class="cell" data-execution_count="37">
+<div id="58c7eb1e" class="cell" data-execution_count="37">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>model_degree0 <span class="op">=</span> sm.OLS(</span>
@@ -2757,7 +2731,7 @@ Name: age, dtype: float64</code></pre>
 </section>
 <section id="visualizar-el-spline-de-grado-cero" class="level2" data-number="4.17">
 <h2 data-number="4.17" class="anchored" data-anchor-id="visualizar-el-spline-de-grado-cero"><span class="header-section-number">4.17</span> Visualizar el spline de grado cero</h2>
-<div id="fbd1e272" class="cell" data-execution_count="38">
+<div id="25316e5c" class="cell" data-execution_count="38">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>X_grid_degree0 <span class="op">=</span> bs_degree0_spec.transform(</span>
@@ -2769,7 +2743,7 @@ Name: age, dtype: float64</code></pre>
 <span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="b43f74de" class="cell" data-execution_count="39">
+<div id="c3c23b87" class="cell" data-execution_count="39">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -2807,7 +2781,7 @@ Name: age, dtype: float64</code></pre>
 <h2 data-number="4.18" class="anchored" data-anchor-id="conexión-con-qcut"><span class="header-section-number">4.18</span> Conexión con <code>qcut()</code></h2>
 <p>Anteriormente podíamos dividir <code>age</code> en grupos utilizando cuantiles.</p>
 <p>Por ejemplo:</p>
-<div id="27168821" class="cell" data-execution_count="40">
+<div id="46a1dc67" class="cell" data-execution_count="40">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>age_bins <span class="op">=</span> pd.qcut(</span>
@@ -2827,9 +2801,7 @@ Name: count, dtype: int64</code></pre>
 </div>
 </div>
 <p>Esto genera cuatro regiones separadas aproximadamente por los percentiles</p>
-<p><span class="math display">\[
-25\%,\qquad 50\%,\qquad 75\%.
-\]</span></p>
+<p><span class="math display">\[25\%,\qquad 50\%,\qquad 75\%.\]</span></p>
 <p>Un spline de grado cero con los nodos correspondientes produce esencialmente el mismo tipo de ajuste: una constante diferente en cada región.</p>
 <p>La parametrización de los coeficientes puede ser distinta, pero la función ajustada representa el mismo tipo de estructura segmentada.</p>
 </section>
@@ -2843,7 +2815,7 @@ Name: count, dtype: int64</code></pre>
 <section id="ajustar-un-spline-natural" class="level2" data-number="4.20">
 <h2 data-number="4.20" class="anchored" data-anchor-id="ajustar-un-spline-natural"><span class="header-section-number">4.20</span> Ajustar un spline natural</h2>
 <p>Utilizaremos cinco grados de libertad.</p>
-<div id="684540cc" class="cell" data-execution_count="41">
+<div id="e78fcb69" class="cell" data-execution_count="41">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>ns_age_spec <span class="op">=</span> MS([</span>
@@ -2855,7 +2827,7 @@ Name: count, dtype: int64</code></pre>
 </details>
 </div>
 <p>Construimos la matriz de diseño.</p>
-<div id="5fa3725f" class="cell" data-execution_count="42">
+<div id="7250fbbc" class="cell" data-execution_count="42">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>X_ns <span class="op">=</span> ns_age_spec.transform(Wage)</span>
@@ -2931,7 +2903,7 @@ Name: count, dtype: int64</code></pre>
 </div>
 </div>
 <p>Ajustamos el modelo.</p>
-<div id="a5a87d1f" class="cell" data-execution_count="43">
+<div id="624f5d0e" class="cell" data-execution_count="43">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>model_ns <span class="op">=</span> sm.OLS(</span>
@@ -3008,7 +2980,7 @@ Name: count, dtype: int64</code></pre>
 <section id="graficar-el-spline-natural" class="level2" data-number="4.21">
 <h2 data-number="4.21" class="anchored" data-anchor-id="graficar-el-spline-natural"><span class="header-section-number">4.21</span> Graficar el spline natural</h2>
 <p>Transformamos la malla de edades.</p>
-<div id="0e630a2f" class="cell" data-execution_count="44">
+<div id="57827d45" class="cell" data-execution_count="44">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>X_grid_ns <span class="op">=</span> ns_age_spec.transform(</span>
@@ -3017,7 +2989,7 @@ Name: count, dtype: int64</code></pre>
 </details>
 </div>
 <p>Obtenemos predicciones e intervalos.</p>
-<div id="2412ee9c" class="cell" data-execution_count="45">
+<div id="4a6158f2" class="cell" data-execution_count="45">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>pred_ns <span class="op">=</span> model_ns.get_prediction(</span>
@@ -3025,7 +2997,7 @@ Name: count, dtype: int64</code></pre>
 <span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>).summary_frame()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="657bb917" class="cell" data-execution_count="46">
+<div id="32764bef" class="cell" data-execution_count="46">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -3072,7 +3044,7 @@ Name: count, dtype: int64</code></pre>
 <section id="comparar-spline-cúbico-y-spline-natural" class="level2" data-number="4.22">
 <h2 data-number="4.22" class="anchored" data-anchor-id="comparar-spline-cúbico-y-spline-natural"><span class="header-section-number">4.22</span> Comparar spline cúbico y spline natural</h2>
 <p>Construiremos dos modelos con complejidad similar.</p>
-<div id="d534b423" class="cell" data-execution_count="47">
+<div id="c5659234" class="cell" data-execution_count="47">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>cubic_spec <span class="op">=</span> MS([</span>
@@ -3091,7 +3063,7 @@ Name: count, dtype: int64</code></pre>
 </details>
 </div>
 <p>Ajustamos ambos modelos.</p>
-<div id="9e39d8df" class="cell" data-execution_count="48">
+<div id="d6b636d4" class="cell" data-execution_count="48">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>model_cubic <span class="op">=</span> sm.OLS(</span>
@@ -3106,7 +3078,7 @@ Name: count, dtype: int64</code></pre>
 </details>
 </div>
 <p>Calculamos las predicciones.</p>
-<div id="10188228" class="cell" data-execution_count="49">
+<div id="796854f7" class="cell" data-execution_count="49">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>pred_cubic <span class="op">=</span> model_cubic.predict(</span>
@@ -3118,7 +3090,7 @@ Name: count, dtype: int64</code></pre>
 <span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="3210d04f" class="cell" data-execution_count="50">
+<div id="a3c7c848" class="cell" data-execution_count="50">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -3195,7 +3167,7 @@ Name: count, dtype: int64</code></pre>
 <h2 data-number="4.23" class="anchored" data-anchor-id="comparación-con-regresión-polinómica"><span class="header-section-number">4.23</span> Comparación con regresión polinómica</h2>
 <p>Ahora compararemos un spline con una regresión polinómica.</p>
 <p>Construimos primero un polinomio de grado 15.</p>
-<div id="7b2e68d7" class="cell" data-execution_count="51">
+<div id="1e85803f" class="cell" data-execution_count="51">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>poly15_spec <span class="op">=</span> MS([</span>
@@ -3207,7 +3179,7 @@ Name: count, dtype: int64</code></pre>
 </details>
 </div>
 <p>Ajustamos el modelo.</p>
-<div id="c1a04725" class="cell" data-execution_count="52">
+<div id="3ba0ac89" class="cell" data-execution_count="52">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>model_poly15 <span class="op">=</span> sm.OLS(</span>
@@ -3217,7 +3189,7 @@ Name: count, dtype: int64</code></pre>
 </details>
 </div>
 <p>Ahora ajustamos un spline natural con 15 grados de libertad.</p>
-<div id="85859943" class="cell" data-execution_count="53">
+<div id="e191c754" class="cell" data-execution_count="53">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>ns15_spec <span class="op">=</span> MS([</span>
@@ -3234,7 +3206,7 @@ Name: count, dtype: int64</code></pre>
 </details>
 </div>
 <p>Calculamos predicciones.</p>
-<div id="850d30a3" class="cell" data-execution_count="54">
+<div id="54310d45" class="cell" data-execution_count="54">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>pred_poly15 <span class="op">=</span> model_poly15.predict(</span>
@@ -3249,7 +3221,7 @@ Name: count, dtype: int64</code></pre>
 </section>
 <section id="visualizar-la-comparación" class="level2" data-number="4.24">
 <h2 data-number="4.24" class="anchored" data-anchor-id="visualizar-la-comparación"><span class="header-section-number">4.24</span> Visualizar la comparación</h2>
-<div id="3d90076e" class="cell" data-execution_count="55">
+<div id="e4af8c53" class="cell" data-execution_count="55">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -3292,9 +3264,7 @@ Name: count, dtype: int64</code></pre>
 <p>Ambos modelos son muy flexibles.</p>
 <p>Sin embargo, utilizan esa flexibilidad de forma diferente.</p>
 <p>En la regresión polinómica aumentamos el grado:</p>
-<p><span class="math display">\[
-1,x,x^2,\ldots,x^{15}.
-\]</span></p>
+<p><span class="math display">\[1,x,x^2,\ldots,x^{15}.\]</span></p>
 <p>En un spline mantenemos polinomios de grado bajo y aumentamos el número de funciones base o nodos.</p>
 <p>Por ello los splines suelen producir un comportamiento más estable, especialmente cerca de las fronteras.</p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -3323,9 +3293,7 @@ Name: count, dtype: int64</code></pre>
 <p>Porque la regresión polinómica es global.</p>
 <p>Cada término del polinomio afecta todo el dominio de <span class="math inline">\(X\)</span>.</p>
 <p>Los términos de grado alto, como</p>
-<p><span class="math display">\[
-x^{15},
-\]</span></p>
+<p><span class="math display">\[x^{15},\]</span></p>
 <p>pueden cambiar rápidamente cuando <span class="math inline">\(x\)</span> se encuentra cerca de los extremos.</p>
 <p>Por ello pequeñas modificaciones en los coeficientes pueden producir grandes cambios en la curva en esas regiones.</p>
 <p>Los splines permiten introducir flexibilidad de forma más localizada.</p>
@@ -3339,14 +3307,12 @@ x^{15},
 <h2 data-number="4.25" class="anchored" data-anchor-id="error-de-entrenamiento-y-complejidad"><span class="header-section-number">4.25</span> Error de entrenamiento y complejidad</h2>
 <p>Podemos comparar diferentes grados de libertad utilizando el error cuadrático medio sobre los datos de entrenamiento.</p>
 <p>Definimos</p>
-<p><span class="math display">\[
-\operatorname{MSE}
+<p><span class="math display">\[\operatorname{MSE}
 =
 \frac{1}{n}
 \sum_{i=1}^{n}
-\left(y_i-\hat y_i\right)^2.
-\]</span></p>
-<div id="aa51af50" class="cell" data-execution_count="56">
+\left(y_i-\hat y_i\right)^2.\]</span></p>
+<div id="4acf8ccb" class="cell" data-execution_count="56">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>dfs <span class="op">=</span> <span class="bu">range</span>(<span class="dv">3</span>, <span class="dv">16</span>)</span>
@@ -3382,7 +3348,7 @@ x^{15},
 </details>
 </div>
 <p>Convertimos los resultados en un <code>DataFrame</code>.</p>
-<div id="c79f2650" class="cell" data-execution_count="57">
+<div id="488730b2" class="cell" data-execution_count="57">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>results_df <span class="op">=</span> pd.DataFrame(results)</span>
@@ -3476,7 +3442,7 @@ x^{15},
 </section>
 <section id="graficar-el-error-de-entrenamiento" class="level2" data-number="4.26">
 <h2 data-number="4.26" class="anchored" data-anchor-id="graficar-el-error-de-entrenamiento"><span class="header-section-number">4.26</span> Graficar el error de entrenamiento</h2>
-<div id="3412f0b2" class="cell" data-execution_count="58">
+<div id="e6cf0eb0" class="cell" data-execution_count="58">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
@@ -3540,9 +3506,7 @@ x^{15},
 <section id="ejercicio-1" class="level3" data-number="4.27.1">
 <h3 data-number="4.27.1" class="anchored" data-anchor-id="ejercicio-1"><span class="header-section-number">4.27.1</span> Ejercicio 1</h3>
 <p>Construye un spline cúbico para <code>age</code> utilizando nodos interiores en</p>
-<p><span class="math display">\[
-30,\qquad 45,\qquad 55.
-\]</span></p>
+<p><span class="math display">\[30,\qquad 45,\qquad 55.\]</span></p>
 <p>Realiza lo siguiente:</p>
 <ol type="1">
 <li>ajusta el modelo;</li>
@@ -3555,9 +3519,7 @@ x^{15},
 <section id="ejercicio-2" class="level3" data-number="4.27.2">
 <h3 data-number="4.27.2" class="anchored" data-anchor-id="ejercicio-2"><span class="header-section-number">4.27.2</span> Ejercicio 2</h3>
 <p>Compara splines cúbicos con</p>
-<p><span class="math display">\[
-df=4,\qquad df=8,\qquad df=14.
-\]</span></p>
+<p><span class="math display">\[df=4,\qquad df=8,\qquad df=14.\]</span></p>
 <p>Grafica las tres curvas sobre la misma nube de puntos.</p>
 <p>Después responde:</p>
 <ul>
