@@ -448,10 +448,18 @@ window.Quarto = {
 <p>La idea fundamental es sencilla:</p>
 <p>Para estimar la respuesta en un punto <span class="math inline">\(x_0\)</span>, utilizamos principalmente las observaciones que se encuentran cerca de <span class="math inline">\(x_0\)</span>.</p>
 <p>Esto significa que no construiremos una única ecuación global para todo el conjunto de datos. En su lugar, realizaremos pequeños ajustes locales en diferentes regiones del dominio.</p>
+<div class="diapositivas">
+<div class="diapositivas-title">
+<p>📝 <strong>Diapositivas</strong></p>
+</div>
+<div class="diapositivas-body">
+<p><a href="https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/2.7_Regresión_Local.pdf">Ver diapositivas Regresión Local</a></p>
+</div>
+</div>
 <section id="librerías-y-preparación-de-datos" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="librerías-y-preparación-de-datos"><span class="header-section-number">6.1</span> Librerías y preparación de datos</h2>
 <p>Utilizaremos nuevamente el conjunto de datos <code>Wage</code>.</p>
-<div id="a515e827" class="cell" data-execution_count="1">
+<div id="45d537b4" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -464,19 +472,19 @@ window.Quarto = {
 </details>
 </div>
 <p>Cargamos los datos.</p>
-<div id="724d53a1" class="cell" data-execution_count="2">
+<div id="15cfb054" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Wage <span class="op">=</span> load_data(<span class="st">"Wage"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Podemos revisar las primeras observaciones.</p>
-<div id="6eaccef6" class="cell" data-execution_count="3">
+<div id="35d021cc" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Wage.head()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="53">
 <div>
 
 
@@ -579,7 +587,7 @@ window.Quarto = {
 <li><code>age</code>: edad del individuo;</li>
 <li><code>wage</code>: salario.</li>
 </ul>
-<div id="ea5b2137" class="cell" data-execution_count="4">
+<div id="d323fbda" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>age <span class="op">=</span> Wage[<span class="st">"age"</span>]</span>
@@ -590,7 +598,7 @@ window.Quarto = {
 <section id="exploración-inicial" class="level2" data-number="6.2">
 <h2 data-number="6.2" class="anchored" data-anchor-id="exploración-inicial"><span class="header-section-number">6.2</span> Exploración inicial</h2>
 <p>Antes de ajustar cualquier modelo, observemos la relación entre edad y salario.</p>
-<div id="bc78cb4b" class="cell" data-execution_count="5">
+<div id="c160dcc4" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -659,31 +667,25 @@ window.Quarto = {
 <li>evaluar el modelo obtenido en <span class="math inline">\(x_0\)</span>.</li>
 </ol>
 <p>En el caso de una regresión lineal local, buscamos coeficientes <span class="math inline">\(\beta_0\)</span> y <span class="math inline">\(\beta_1\)</span> que minimicen</p>
-<p><span class="math display">\[
-\sum_{i=1}^{n}
+<p><span class="math display">\[\sum_{i=1}^{n}
 K_{i0}
 \left(
 y_i-\beta_0-\beta_1x_i
-\right)^2,
-\]</span></p>
+\right)^2,\]</span></p>
 <p>donde</p>
-<p><span class="math display">\[
-K_{i0}=K(x_i,x_0)
-\]</span></p>
+<p><span class="math display">\[K_{i0}=K(x_i,x_0)\]</span></p>
 <p>representa el peso de la observación <span class="math inline">\(i\)</span> cuando queremos realizar una predicción en <span class="math inline">\(x_0\)</span>.</p>
 <p>Las observaciones cercanas reciben pesos grandes y las observaciones alejadas reciben pesos pequeños o incluso cero.</p>
 <p>Una vez estimados los coeficientes, la predicción es</p>
-<p><span class="math display">\[
-\hat f(x_0)
+<p><span class="math display">\[\hat f(x_0)
 =
-\hat\beta_0+\hat\beta_1x_0.
-\]</span></p>
+\hat\beta_0+\hat\beta_1x_0.\]</span></p>
 <p>Para construir una curva completa, repetimos este procedimiento para muchos valores de <span class="math inline">\(x_0\)</span>.</p>
 </section>
 <section id="lowess-en-python" class="level2" data-number="6.4">
 <h2 data-number="6.4" class="anchored" data-anchor-id="lowess-en-python"><span class="header-section-number">6.4</span> LOWESS en Python</h2>
 <p><code>statsmodels</code> proporciona la función <code>lowess()</code> dentro del módulo <code>nonparametric</code>.</p>
-<div id="9180d228" class="cell" data-execution_count="6">
+<div id="ff1a969f" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>lowess <span class="op">=</span> sm.nonparametric.lowess</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -713,11 +715,9 @@ K_{i0}=K(x_i,x_0)
 <section id="primer-ajuste-lowess" class="level2" data-number="6.5">
 <h2 data-number="6.5" class="anchored" data-anchor-id="primer-ajuste-lowess"><span class="header-section-number">6.5</span> Primer ajuste LOWESS</h2>
 <p>Comencemos utilizando</p>
-<p><span class="math display">\[
-s=0.5.
-\]</span></p>
+<p><span class="math display">\[s=0.5.\]</span></p>
 <p>Esto significa que cada ajuste local utiliza aproximadamente el <span class="math inline">\(50\%\)</span> de las observaciones.</p>
-<div id="4ef4fd8d" class="cell" data-execution_count="7">
+<div id="887172f5" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit_05 <span class="op">=</span> lowess(</span>
@@ -728,12 +728,12 @@ s=0.5.
 </details>
 </div>
 <p>Veamos qué contiene el resultado.</p>
-<div id="e42b83e6" class="cell" data-execution_count="8">
+<div id="1b6d690f" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fit_05[:<span class="dv">10</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="58">
 <pre><code>array([[18.        , 66.16357852],
        [18.        , 66.16357852],
        [18.        , 66.16357852],
@@ -747,24 +747,24 @@ s=0.5.
 </div>
 </div>
 <p>También podemos revisar sus dimensiones.</p>
-<div id="fa3290fd" class="cell" data-execution_count="9">
+<div id="886df213" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit_05.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="59">
 <pre><code>(3000, 2)</code></pre>
 </div>
 </div>
 <section id="qué-devuelve-lowess" class="level3" data-number="6.5.1">
 <h3 data-number="6.5.1" class="anchored" data-anchor-id="qué-devuelve-lowess"><span class="header-section-number">6.5.1</span> ¿Qué devuelve <code>lowess()</code>?</h3>
 <p>Por defecto, <code>lowess()</code> devuelve un arreglo con dos columnas.</p>
-<div id="898e72cc" class="cell" data-execution_count="10">
+<div id="5fd22932" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fit_05[:<span class="dv">5</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="60">
 <pre><code>array([[18.        , 66.16357852],
        [18.        , 66.16357852],
        [18.        , 66.16357852],
@@ -773,13 +773,11 @@ s=0.5.
 </div>
 </div>
 <p>La primera columna contiene los valores ordenados de la variable predictora y la segunda contiene los valores ajustados:</p>
-<p><span class="math display">\[
-\begin{array}{cc}
+<p><span class="math display">\[\begin{array}{cc}
 x &amp; \hat f(x)
-\end{array}
-\]</span></p>
+\end{array}\]</span></p>
 <p>Podemos separarlos.</p>
-<div id="8198a273" class="cell" data-execution_count="11">
+<div id="a6e70688" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>x_lowess <span class="op">=</span> fit_05[:, <span class="dv">0</span>]</span>
@@ -791,7 +789,7 @@ x &amp; \hat f(x)
 <section id="visualización-del-ajuste" class="level2" data-number="6.6">
 <h2 data-number="6.6" class="anchored" data-anchor-id="visualización-del-ajuste"><span class="header-section-number">6.6</span> Visualización del ajuste</h2>
 <p>Ahora podemos representar la curva LOWESS junto con las observaciones originales.</p>
-<div id="2e42ade6" class="cell" data-execution_count="12">
+<div id="6fc2b5de" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -834,22 +832,16 @@ x &amp; \hat f(x)
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>frac</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>desempeña el papel del <strong>span</strong> <span class="math inline">\(s\)</span> que estudiamos teóricamente.</p>
 <p>Si tenemos <span class="math inline">\(n\)</span> observaciones, aproximadamente</p>
-<p><span class="math display">\[
-k=sn
-\]</span></p>
+<p><span class="math display">\[k=sn\]</span></p>
 <p>observaciones participan en cada ajuste local.</p>
 <p>Por ejemplo, si</p>
-<p><span class="math display">\[
-s=0.2,
-\]</span></p>
+<p><span class="math display">\[s=0.2,\]</span></p>
 <p>se utiliza aproximadamente el <span class="math inline">\(20\%\)</span> de las observaciones.</p>
 <p>Mientras que con</p>
-<p><span class="math display">\[
-s=0.7,
-\]</span></p>
+<p><span class="math display">\[s=0.7,\]</span></p>
 <p>se utiliza aproximadamente el <span class="math inline">\(70\%\)</span>.</p>
 <p>Podemos verificar cuántas observaciones representan estos porcentajes en <code>Wage</code>.</p>
-<div id="02d8d26b" class="cell" data-execution_count="13">
+<div id="0e890edc" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="bu">len</span>(Wage)</span>
@@ -868,10 +860,8 @@ span = 0.7: aproximadamente 2100 observaciones</code></pre>
 <section id="comparación-de-diferentes-valores-del-span" class="level2" data-number="6.8">
 <h2 data-number="6.8" class="anchored" data-anchor-id="comparación-de-diferentes-valores-del-span"><span class="header-section-number">6.8</span> Comparación de diferentes valores del span</h2>
 <p>Ajustemos modelos con</p>
-<p><span class="math display">\[
-s=0.2,\qquad s=0.5,\qquad s=0.7.
-\]</span></p>
-<div id="51521881" class="cell" data-execution_count="14">
+<p><span class="math display">\[s=0.2,\qquad s=0.5,\qquad s=0.7.\]</span></p>
+<div id="ae092637" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>spans <span class="op">=</span> [<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span>]</span>
@@ -887,7 +877,7 @@ s=0.2,\qquad s=0.5,\qquad s=0.7.
 </details>
 </div>
 <p>Ahora representamos los tres ajustes.</p>
-<div id="4f642b58" class="cell" data-execution_count="15">
+<div id="c0c5e798" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
@@ -931,17 +921,13 @@ s=0.2,\qquad s=0.5,\qquad s=0.7.
 <p>Cuando el span aumenta, cada ajuste utiliza una fracción mayor de las observaciones.</p>
 <p>La curva resultante tiende a ser más <strong>suave y global</strong>.</p>
 <p>En términos generales:</p>
-<p><span class="math display">\[
-s\downarrow
+<p><span class="math display">\[s\downarrow
 \quad\Longrightarrow\quad
-\text{mayor flexibilidad}
-\]</span></p>
+\text{mayor flexibilidad}\]</span></p>
 <p>y</p>
-<p><span class="math display">\[
-s\uparrow
+<p><span class="math display">\[s\uparrow
 \quad\Longrightarrow\quad
-\text{mayor suavidad}.
-\]</span></p>
+\text{mayor suavidad}.\]</span></p>
 </section>
 </section>
 <section id="qué-significa-realmente-hacer-un-ajuste-local" class="level2" data-number="6.9">
@@ -949,20 +935,16 @@ s\uparrow
 <p>La función <code>lowess()</code> realiza automáticamente los cálculos necesarios.</p>
 <p>Sin embargo, podemos estudiar manualmente la idea central del algoritmo.</p>
 <p>Supongamos que queremos estimar el salario para</p>
-<p><span class="math display">\[
-x_0=40.
-\]</span></p>
-<div id="e4c2c74d" class="cell" data-execution_count="16">
+<p><span class="math display">\[x_0=40.\]</span></p>
+<div id="3348758d" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> <span class="dv">40</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Utilicemos inicialmente un span de</p>
-<p><span class="math display">\[
-s=0.2.
-\]</span></p>
-<div id="eea52b24" class="cell" data-execution_count="17">
+<p><span class="math display">\[s=0.2.\]</span></p>
+<div id="3f8a07ae" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>span <span class="op">=</span> <span class="fl">0.2</span></span>
@@ -972,7 +954,7 @@ s=0.2.
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>k</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="17">
+<div class="cell-output cell-output-display" data-execution_count="67">
 <pre><code>600</code></pre>
 </div>
 </div>
@@ -981,17 +963,15 @@ s=0.2.
 <section id="calcular-la-distancia-respecto-a-x_0" class="level2" data-number="6.10">
 <h2 data-number="6.10" class="anchored" data-anchor-id="calcular-la-distancia-respecto-a-x_0"><span class="header-section-number">6.10</span> Calcular la distancia respecto a <span class="math inline">\(x_0\)</span></h2>
 <p>Para cada observación calculamos</p>
-<p><span class="math display">\[
-d_i=|x_i-x_0|.
-\]</span></p>
-<div id="9a83d0a9" class="cell" data-execution_count="18">
+<p><span class="math display">\[d_i=|x_i-x_0|.\]</span></p>
+<div id="9dbbd771" class="cell" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>distance <span class="op">=</span> np.<span class="bu">abs</span>(age.to_numpy() <span class="op">-</span> x0)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Podemos ordenar estas distancias.</p>
-<div id="ea1eac8c" class="cell" data-execution_count="19">
+<div id="4c9b20a9" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>nearest_idx <span class="op">=</span> np.argsort(distance)[:k]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1002,7 +982,7 @@ d_i=|x_i-x_0|.
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>np.argsort(distance)[:k]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>selecciona los índices de las <span class="math inline">\(k\)</span> observaciones más cercanas a <span class="math inline">\(x_0\)</span>.</p>
 <p>Extraemos esas observaciones.</p>
-<div id="510b859e" class="cell" data-execution_count="20">
+<div id="317736e1" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>age_local <span class="op">=</span> age.to_numpy()[nearest_idx]</span>
@@ -1014,7 +994,7 @@ d_i=|x_i-x_0|.
 <section id="visualizar-el-vecindario" class="level2" data-number="6.11">
 <h2 data-number="6.11" class="anchored" data-anchor-id="visualizar-el-vecindario"><span class="header-section-number">6.11</span> Visualizar el vecindario</h2>
 <p>Podemos visualizar qué observaciones participan en este ajuste local.</p>
-<div id="836820c7" class="cell" data-execution_count="21">
+<div id="f2daba5b" class="cell" data-execution_count="21">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -1066,19 +1046,15 @@ d_i=|x_i-x_0|.
 <p>Necesitamos una función que asigne pesos grandes a las observaciones cercanas a <span class="math inline">\(x_0\)</span> y pesos pequeños a las más alejadas.</p>
 <p>Una posibilidad muy utilizada es la función <strong>tricúbica</strong>.</p>
 <p>Si <span class="math inline">\(d_i\)</span> es la distancia entre <span class="math inline">\(x_i\)</span> y <span class="math inline">\(x_0\)</span>, primero normalizamos mediante</p>
-<p><span class="math display">\[
-u_i=\frac{d_i}{d_{\max}},
-\]</span></p>
+<p><span class="math display">\[u_i=\frac{d_i}{d_{\max}},\]</span></p>
 <p>donde <span class="math inline">\(d_{\max}\)</span> es la mayor distancia dentro del vecindario.</p>
 <p>Después definimos</p>
-<p><span class="math display">\[
-w_i=
+<p><span class="math display">\[w_i=
 \left(1-u_i^3\right)^3,
-\qquad 0\leq u_i\leq 1.
-\]</span></p>
+\qquad 0\leq u_i\leq 1.\]</span></p>
 <p>La observación más alejada del vecindario tendrá peso cero.</p>
 <p>Calculemos estos pesos.</p>
-<div id="80892fb5" class="cell" data-execution_count="22">
+<div id="a7f7aa0f" class="cell" data-execution_count="22">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>d_max <span class="op">=</span> distance_local.<span class="bu">max</span>()</span>
@@ -1089,12 +1065,12 @@ w_i=
 </details>
 </div>
 <p>Podemos revisar algunos de los valores obtenidos.</p>
-<div id="c0ea2d6c" class="cell" data-execution_count="23">
+<div id="507c981e" class="cell" data-execution_count="23">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>weights[:<span class="dv">10</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="23">
+<div class="cell-output cell-output-display" data-execution_count="73">
 <pre><code>array([1., 1., 1., 1., 1., 1., 1., 1., 1., 1.])</code></pre>
 </div>
 </div>
@@ -1102,7 +1078,7 @@ w_i=
 <section id="distancia-y-peso" class="level2" data-number="6.13">
 <h2 data-number="6.13" class="anchored" data-anchor-id="distancia-y-peso"><span class="header-section-number">6.13</span> Distancia y peso</h2>
 <p>Construyamos una pequeña tabla para entender la relación entre la distancia y el peso.</p>
-<div id="3513fe54" class="cell" data-execution_count="24">
+<div id="f673101e" class="cell" data-execution_count="24">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>local_info <span class="op">=</span> pd.DataFrame({</span>
@@ -1116,7 +1092,7 @@ w_i=
 <span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>local_info.head(<span class="dv">15</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="24">
+<div class="cell-output cell-output-display" data-execution_count="74">
 <div>
 
 
@@ -1243,17 +1219,15 @@ w_i=
 </div>
 </div>
 <p>Observemos que, en general:</p>
-<p><span class="math display">\[
-d_i\downarrow
+<p><span class="math display">\[d_i\downarrow
 \quad\Longrightarrow\quad
-w_i\uparrow.
-\]</span></p>
+w_i\uparrow.\]</span></p>
 <p>Es decir, cuanto más cerca se encuentra una observación de <span class="math inline">\(x_0\)</span>, mayor influencia tendrá sobre el ajuste.</p>
 </section>
 <section id="visualizar-la-función-de-pesos" class="level2" data-number="6.14">
 <h2 data-number="6.14" class="anchored" data-anchor-id="visualizar-la-función-de-pesos"><span class="header-section-number">6.14</span> Visualizar la función de pesos</h2>
 <p>Podemos representar directamente la relación entre distancia y peso.</p>
-<div id="1e5223f4" class="cell" data-execution_count="25">
+<div id="f4d93093" class="cell" data-execution_count="25">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>order <span class="op">=</span> np.argsort(distance_local)</span>
@@ -1285,7 +1259,7 @@ w_i\uparrow.
 <section id="visualizar-los-pesos-sobre-los-datos" class="level2" data-number="6.15">
 <h2 data-number="6.15" class="anchored" data-anchor-id="visualizar-los-pesos-sobre-los-datos"><span class="header-section-number">6.15</span> Visualizar los pesos sobre los datos</h2>
 <p>También podemos representar los pesos mediante el tamaño de los puntos.</p>
-<div id="23c3d7e7" class="cell" data-execution_count="26">
+<div id="7f48ff96" class="cell" data-execution_count="26">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -1327,35 +1301,29 @@ w_i\uparrow.
 </div>
 <p>Los puntos de mayor tamaño corresponden a observaciones con mayor peso.</p>
 <p>Esta gráfica representa visualmente la idea</p>
-<p><span class="math display">\[
-K_{i0}=K(x_i,x_0).
-\]</span></p>
+<p><span class="math display">\[K_{i0}=K(x_i,x_0).\]</span></p>
 </section>
 <section id="ajustar-una-regresión-lineal-ponderada" class="level2" data-number="6.16">
 <h2 data-number="6.16" class="anchored" data-anchor-id="ajustar-una-regresión-lineal-ponderada"><span class="header-section-number">6.16</span> Ajustar una regresión lineal ponderada</h2>
 <p>Ahora ajustaremos una regresión lineal utilizando únicamente el vecindario seleccionado.</p>
 <p>El modelo local es</p>
-<p><span class="math display">\[
-y_i=\beta_0+\beta_1x_i+\varepsilon_i.
-\]</span></p>
+<p><span class="math display">\[y_i=\beta_0+\beta_1x_i+\varepsilon_i.\]</span></p>
 <p>Pero los parámetros se estiman minimizando</p>
-<p><span class="math display">\[
-\sum_i
+<p><span class="math display">\[\sum_i
 w_i
 \left(
 y_i-\beta_0-\beta_1x_i
-\right)^2.
-\]</span></p>
+\right)^2.\]</span></p>
 <p>En <code>statsmodels</code> podemos utilizar <code>WLS</code>, que significa <strong>Weighted Least Squares</strong>.</p>
 <p>Primero construimos la matriz de diseño.</p>
-<div id="f7b87c22" class="cell" data-execution_count="27">
+<div id="fc4e516a" class="cell" data-execution_count="27">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>X_local <span class="op">=</span> sm.add_constant(age_local)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Después ajustamos el modelo ponderado.</p>
-<div id="a5318bed" class="cell" data-execution_count="28">
+<div id="bd616ef8" class="cell" data-execution_count="28">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>local_model <span class="op">=</span> sm.WLS(</span>
@@ -1366,32 +1334,28 @@ y_i-\beta_0-\beta_1x_i
 </details>
 </div>
 <p>Podemos examinar los coeficientes.</p>
-<div id="8ee7367a" class="cell" data-execution_count="29">
+<div id="ff5e82b8" class="cell" data-execution_count="29">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>local_model.params</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="29">
+<div class="cell-output cell-output-display" data-execution_count="79">
 <pre><code>array([209.24639572,  -2.28423526])</code></pre>
 </div>
 </div>
 <p>Estos corresponden a</p>
-<p><span class="math display">\[
-\hat\beta_0
+<p><span class="math display">\[\hat\beta_0
 \qquad\text{y}\qquad
-\hat\beta_1.
-\]</span></p>
+\hat\beta_1.\]</span></p>
 </section>
 <section id="predicción-en-x_0" class="level2" data-number="6.17">
 <h2 data-number="6.17" class="anchored" data-anchor-id="predicción-en-x_0"><span class="header-section-number">6.17</span> Predicción en <span class="math inline">\(x_0\)</span></h2>
 <p>La predicción local es</p>
-<p><span class="math display">\[
-\hat f(x_0)
+<p><span class="math display">\[\hat f(x_0)
 =
-\hat\beta_0+\hat\beta_1x_0.
-\]</span></p>
+\hat\beta_0+\hat\beta_1x_0.\]</span></p>
 <p>Podemos calcularla directamente.</p>
-<div id="67970d9b" class="cell" data-execution_count="30">
+<div id="53bf1ea8" class="cell" data-execution_count="30">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>beta0, beta1 <span class="op">=</span> local_model.params</span>
@@ -1400,7 +1364,7 @@ y_i-\beta_0-\beta_1x_i
 <span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>prediction_x0</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="30">
+<div class="cell-output cell-output-display" data-execution_count="80">
 <pre><code>np.float64(117.8769852639784)</code></pre>
 </div>
 </div>
@@ -1408,9 +1372,9 @@ y_i-\beta_0-\beta_1x_i
 </section>
 <section id="visualizar-la-recta-local" class="level2" data-number="6.18">
 <h2 data-number="6.18" class="anchored" data-anchor-id="visualizar-la-recta-local"><span class="header-section-number">6.18</span> Visualizar la recta local</h2>
-<p>La recta que acabamos de estimar solamente pretende describir adecuadamente el comportamiento de los datos <strong>alrededor de <span class="math inline">\(x_0\)</span></strong>.</p>
+<p>La recta que acabamos de estimar solamente pretende describir adecuadamente el comportamiento de los datos <strong>alrededor de</strong> <span class="math inline">\(x_0\)</span>.</p>
 <p>Construimos algunos valores dentro del vecindario.</p>
-<div id="77d645d1" class="cell" data-execution_count="31">
+<div id="3c7d5133" class="cell" data-execution_count="31">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>x_local_grid <span class="op">=</span> np.linspace(</span>
@@ -1423,7 +1387,7 @@ y_i-\beta_0-\beta_1x_i
 </details>
 </div>
 <p>Representamos el ajuste.</p>
-<div id="6a2a66e7" class="cell" data-execution_count="32">
+<div id="c2d3950c" class="cell" data-execution_count="32">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -1481,13 +1445,9 @@ y_i-\beta_0-\beta_1x_i
 <h3 data-number="6.18.1" class="anchored" data-anchor-id="punto-importante"><span class="header-section-number">6.18.1</span> Punto importante</h3>
 <p>La recta anterior <strong>no es el modelo final para todas las edades</strong>.</p>
 <p>Solamente la utilizamos para obtener</p>
-<p><span class="math display">\[
-\hat f(40).
-\]</span></p>
+<p><span class="math display">\[\hat f(40).\]</span></p>
 <p>Si ahora queremos estimar</p>
-<p><span class="math display">\[
-\hat f(50),
-\]</span></p>
+<p><span class="math display">\[\hat f(50),\]</span></p>
 <p>debemos:</p>
 <ol type="1">
 <li>seleccionar un nuevo vecindario;</li>
@@ -1502,13 +1462,9 @@ y_i-\beta_0-\beta_1x_i
 <section id="de-muchas-rectas-locales-a-una-curva" class="level2" data-number="6.19">
 <h2 data-number="6.19" class="anchored" data-anchor-id="de-muchas-rectas-locales-a-una-curva"><span class="header-section-number">6.19</span> De muchas rectas locales a una curva</h2>
 <p>Podemos repetir conceptualmente el procedimiento anterior para muchos valores:</p>
-<p><span class="math display">\[
-x_0^{(1)},x_0^{(2)},\ldots,x_0^{(m)}.
-\]</span></p>
+<p><span class="math display">\[x_0^{(1)},x_0^{(2)},\ldots,x_0^{(m)}.\]</span></p>
 <p>Para cada uno obtenemos una predicción</p>
-<p><span class="math display">\[
-\hat f(x_0^{(j)}).
-\]</span></p>
+<p><span class="math display">\[\hat f(x_0^{(j)}).\]</span></p>
 <p>Al reunir todas estas predicciones obtenemos una curva.</p>
 <p>Esto explica algo que inicialmente puede parecer extraño:</p>
 <blockquote class="blockquote">
@@ -1516,16 +1472,14 @@ x_0^{(1)},x_0^{(2)},\ldots,x_0^{(m)}.
 </blockquote>
 <p>Porque <strong>no utilizamos la misma recta en todo el dominio</strong>.</p>
 <p>En diferentes regiones tenemos diferentes valores de</p>
-<p><span class="math display">\[
-\hat\beta_0
+<p><span class="math display">\[\hat\beta_0
 \qquad\text{y}\qquad
-\hat\beta_1.
-\]</span></p>
+\hat\beta_1.\]</span></p>
 </section>
 <section id="comparación-con-una-regresión-lineal-global" class="level2" data-number="6.20">
 <h2 data-number="6.20" class="anchored" data-anchor-id="comparación-con-una-regresión-lineal-global"><span class="header-section-number">6.20</span> Comparación con una regresión lineal global</h2>
 <p>Para hacer más clara la diferencia, ajustemos también una regresión lineal ordinaria.</p>
-<div id="aa15e515" class="cell" data-execution_count="33">
+<div id="c7366d48" class="cell" data-execution_count="33">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>X_global <span class="op">=</span> sm.add_constant(age)</span>
@@ -1537,7 +1491,7 @@ x_0^{(1)},x_0^{(2)},\ldots,x_0^{(m)}.
 </details>
 </div>
 <p>Construimos una secuencia de edades.</p>
-<div id="445faa99" class="cell" data-execution_count="34">
+<div id="e881e044" class="cell" data-execution_count="34">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>age_grid <span class="op">=</span> np.linspace(</span>
@@ -1548,7 +1502,7 @@ x_0^{(1)},x_0^{(2)},\ldots,x_0^{(m)}.
 </details>
 </div>
 <p>Calculamos las predicciones de la regresión lineal.</p>
-<div id="95f8203f" class="cell" data-execution_count="35">
+<div id="08d3fd49" class="cell" data-execution_count="35">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>X_grid <span class="op">=</span> sm.add_constant(age_grid)</span>
@@ -1557,7 +1511,7 @@ x_0^{(1)},x_0^{(2)},\ldots,x_0^{(m)}.
 </details>
 </div>
 <p>Y calculamos un ajuste LOWESS.</p>
-<div id="1aadfc84" class="cell" data-execution_count="36">
+<div id="d3299807" class="cell" data-execution_count="36">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>fit_lowess <span class="op">=</span> lowess(</span>
@@ -1568,7 +1522,7 @@ x_0^{(1)},x_0^{(2)},\ldots,x_0^{(m)}.
 </details>
 </div>
 <p>Comparamos ambos modelos.</p>
-<div id="669b5bb2" class="cell" data-execution_count="37">
+<div id="fd5e8ee4" class="cell" data-execution_count="37">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
@@ -1609,9 +1563,7 @@ x_0^{(1)},x_0^{(2)},\ldots,x_0^{(m)}.
 </div>
 </div>
 <p>La regresión lineal obliga a que la relación tenga la forma</p>
-<p><span class="math display">\[
-\hat f(x)=\hat\beta_0+\hat\beta_1x
-\]</span></p>
+<p><span class="math display">\[\hat f(x)=\hat\beta_0+\hat\beta_1x\]</span></p>
 <p>en todo el dominio.</p>
 <p>En cambio, la regresión local permite que la pendiente cambie de una región a otra.</p>
 </section>
@@ -1619,10 +1571,8 @@ x_0^{(1)},x_0^{(2)},\ldots,x_0^{(m)}.
 <h2 data-number="6.21" class="anchored" data-anchor-id="qué-ocurre-con-spans-muy-pequeños"><span class="header-section-number">6.21</span> ¿Qué ocurre con spans muy pequeños?</h2>
 <p>Hasta ahora utilizamos valores moderados del span.</p>
 <p>Probemos ahora</p>
-<p><span class="math display">\[
-s=0.05.
-\]</span></p>
-<div id="852c2787" class="cell" data-execution_count="38">
+<p><span class="math display">\[s=0.05.\]</span></p>
+<div id="4383f222" class="cell" data-execution_count="38">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>small_span <span class="op">=</span> lowess(</span>
@@ -1633,7 +1583,7 @@ s=0.05.
 </details>
 </div>
 <p>Comparamos con un ajuste más suave.</p>
-<div id="c3d24ef7" class="cell" data-execution_count="39">
+<div id="4df7c531" class="cell" data-execution_count="39">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>smooth_span <span class="op">=</span> lowess(</span>
@@ -1643,7 +1593,7 @@ s=0.05.
 <span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="5e8d9e44" class="cell" data-execution_count="40">
+<div id="3ea1d041" class="cell" data-execution_count="40">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
@@ -1697,9 +1647,7 @@ s=0.05.
 <p>Una posibilidad sería elegirlo visualmente, pero esto introduce subjetividad.</p>
 <p>Una estrategia más sistemática consiste en utilizar <strong>validación cruzada</strong>.</p>
 <p>La idea general es comparar varios valores candidatos:</p>
-<p><span class="math display">\[
-s_1,s_2,\ldots,s_m
-\]</span></p>
+<p><span class="math display">\[s_1,s_2,\ldots,s_m\]</span></p>
 <p>y seleccionar aquel que produzca el menor error de predicción sobre observaciones que no fueron utilizadas para construir el ajuste correspondiente.</p>
 </section>
 <section id="una-consideración-importante-predecir-con-lowess" class="level2" data-number="6.23">
@@ -1710,7 +1658,7 @@ s_1,s_2,\ldots,s_m
 <span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>model.predict(X_test)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>La función <code>lowess()</code> construye directamente el suavizado para determinados valores de <span class="math inline">\(x\)</span>.</p>
 <p>Por ejemplo, podemos indicar explícitamente los puntos en los que queremos obtener el ajuste utilizando el argumento <code>xvals</code>.</p>
-<div id="bacc6932" class="cell" data-execution_count="41">
+<div id="dc4199c3" class="cell" data-execution_count="41">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>age_grid <span class="op">=</span> np.linspace(</span>
@@ -1728,7 +1676,7 @@ s_1,s_2,\ldots,s_m
 </details>
 </div>
 <p>Ahora <code>fit_grid</code> contiene directamente las predicciones correspondientes a <code>age_grid</code>.</p>
-<div id="87c94bd6" class="cell" data-execution_count="42">
+<div id="d57a0fdd" class="cell" data-execution_count="42">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -1764,7 +1712,7 @@ s_1,s_2,\ldots,s_m
 <section id="selección-del-span-mediante-validación-cruzada" class="level2" data-number="6.24">
 <h2 data-number="6.24" class="anchored" data-anchor-id="selección-del-span-mediante-validación-cruzada"><span class="header-section-number">6.24</span> Selección del span mediante validación cruzada</h2>
 <p>Podemos explorar varios valores candidatos.</p>
-<div id="33182c88" class="cell" data-execution_count="43">
+<div id="07e6392a" class="cell" data-execution_count="43">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>candidate_spans <span class="op">=</span> [</span>
@@ -1780,7 +1728,7 @@ s_1,s_2,\ldots,s_m
 </details>
 </div>
 <p>Para mantener clara la idea, construiremos una validación cruzada manual.</p>
-<div id="12b42b2d" class="cell" data-execution_count="44">
+<div id="fefc2677" class="cell" data-execution_count="44">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> KFold</span>
@@ -1788,7 +1736,7 @@ s_1,s_2,\ldots,s_m
 </details>
 </div>
 <p>Utilizaremos 5 particiones.</p>
-<div id="3fb2cf76" class="cell" data-execution_count="45">
+<div id="c5d81a25" class="cell" data-execution_count="45">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>kf <span class="op">=</span> KFold(</span>
@@ -1799,7 +1747,7 @@ s_1,s_2,\ldots,s_m
 </details>
 </div>
 <p>Preparamos los datos como arreglos.</p>
-<div id="a26ab636" class="cell" data-execution_count="46">
+<div id="f1d44742" class="cell" data-execution_count="46">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> age.to_numpy()</span>
@@ -1807,7 +1755,7 @@ s_1,s_2,\ldots,s_m
 </details>
 </div>
 <p>Ahora evaluamos cada span.</p>
-<div id="f8e2e388" class="cell" data-execution_count="47">
+<div id="688e0b67" class="cell" data-execution_count="47">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>cv_results <span class="op">=</span> []</span>
@@ -1845,14 +1793,14 @@ s_1,s_2,\ldots,s_m
 </details>
 </div>
 <p>Convertimos los resultados en un <code>DataFrame</code>.</p>
-<div id="6746ef74" class="cell" data-execution_count="48">
+<div id="dab2235e" class="cell" data-execution_count="48">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>cv_results <span class="op">=</span> pd.DataFrame(cv_results)</span>
 <span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>cv_results</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="48">
+<div class="cell-output cell-output-display" data-execution_count="98">
 <div>
 
 
@@ -1914,7 +1862,7 @@ s_1,s_2,\ldots,s_m
 </section>
 <section id="visualizar-el-error-de-validación" class="level2" data-number="6.25">
 <h2 data-number="6.25" class="anchored" data-anchor-id="visualizar-el-error-de-validación"><span class="header-section-number">6.25</span> Visualizar el error de validación</h2>
-<div id="e7237cf7" class="cell" data-execution_count="49">
+<div id="09b05b96" class="cell" data-execution_count="49">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
@@ -1940,7 +1888,7 @@ s_1,s_2,\ldots,s_m
 </div>
 </div>
 <p>Podemos identificar el span con menor error.</p>
-<div id="c06d3085" class="cell" data-execution_count="50">
+<div id="efb99787" class="cell" data-execution_count="50">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>best_row <span class="op">=</span> cv_results.loc[</span>
@@ -1949,7 +1897,7 @@ s_1,s_2,\ldots,s_m
 <span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>best_row</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="50">
+<div class="cell-output cell-output-display" data-execution_count="100">
 <pre><code>span       0.200000
 MSE     1633.581162
 Name: 1, dtype: float64</code></pre>
@@ -1962,17 +1910,13 @@ Name: 1, dtype: float64</code></pre>
 <p>Tanto la regresión local como los smoothing splines permiten construir relaciones no lineales suaves.</p>
 <p>Sin embargo, controlan la flexibilidad de maneras diferentes.</p>
 <p>En regresión local:</p>
-<p><span class="math display">\[
-s\downarrow
+<p><span class="math display">\[s\downarrow
 \quad\Longrightarrow\quad
-\text{mayor flexibilidad}.
-\]</span></p>
+\text{mayor flexibilidad}.\]</span></p>
 <p>En smoothing splines:</p>
-<p><span class="math display">\[
-\lambda\downarrow
+<p><span class="math display">\[\lambda\downarrow
 \quad\Longrightarrow\quad
-\text{menor penalización y mayor flexibilidad}.
-\]</span></p>
+\text{menor penalización y mayor flexibilidad}.\]</span></p>
 <p>La diferencia conceptual es importante:</p>
 <ul>
 <li>el <strong>span</strong> controla cuántas observaciones intervienen localmente;</li>
@@ -1984,8 +1928,7 @@ s\downarrow
 <p>Más adelante estudiaremos los <strong>Generalized Additive Models (GAMs)</strong>.</p>
 <p>Algunas implementaciones de GAMs permiten utilizar suavizadores locales como componentes del modelo.</p>
 <p>Por ejemplo, conceptualmente podríamos tener un modelo de la forma</p>
-<p><span class="math display">\[
-Y
+<p><span class="math display">\[Y
 =
 \beta_0
 +
@@ -1993,8 +1936,7 @@ f_1(X_1)
 +
 f_2(X_2)
 +
-\varepsilon,
-\]</span></p>
+\varepsilon,\]</span></p>
 <p>donde alguna de las funciones <span class="math inline">\(f_j\)</span> puede construirse mediante un método de suavizamiento.</p>
 <p>Por ahora no entraremos en los detalles de los GAMs.</p>
 <p>Lo importante es reconocer que los métodos estudiados hasta ahora —splines, smoothing splines y regresión local— proporcionan distintas formas de construir relaciones flexibles entre predictores y respuesta.</p>
@@ -2004,13 +1946,11 @@ f_2(X_2)
 <section id="ejercicio-1.-efecto-del-span" class="level3" data-number="6.28.1">
 <h3 data-number="6.28.1" class="anchored" data-anchor-id="ejercicio-1.-efecto-del-span"><span class="header-section-number">6.28.1</span> Ejercicio 1. Efecto del span</h3>
 <p>Ajusta modelos LOWESS utilizando</p>
-<p><span class="math display">\[
-s=0.1,\quad
+<p><span class="math display">\[s=0.1,\quad
 s=0.3,\quad
 s=0.5,\quad
 s=0.7,\quad
-s=0.9.
-\]</span></p>
+s=0.9.\]</span></p>
 <p>Representa todos los ajustes sobre la misma gráfica.</p>
 <p>Responde:</p>
 <ol type="1">
@@ -2022,13 +1962,9 @@ s=0.9.
 <section id="ejercicio-2.-un-ajuste-local" class="level3" data-number="6.28.2">
 <h3 data-number="6.28.2" class="anchored" data-anchor-id="ejercicio-2.-un-ajuste-local"><span class="header-section-number">6.28.2</span> Ejercicio 2. Un ajuste local</h3>
 <p>Repite el procedimiento manual para</p>
-<p><span class="math display">\[
-x_0=55
-\]</span></p>
+<p><span class="math display">\[x_0=55\]</span></p>
 <p>utilizando</p>
-<p><span class="math display">\[
-s=0.2.
-\]</span></p>
+<p><span class="math display">\[s=0.2.\]</span></p>
 <p>Calcula:</p>
 <ol type="1">
 <li>el número <span class="math inline">\(k\)</span> de observaciones utilizadas;</li>
@@ -2042,13 +1978,9 @@ s=0.2.
 <section id="ejercicio-3.-cambiar-el-span-localmente" class="level3" data-number="6.28.3">
 <h3 data-number="6.28.3" class="anchored" data-anchor-id="ejercicio-3.-cambiar-el-span-localmente"><span class="header-section-number">6.28.3</span> Ejercicio 3. Cambiar el span localmente</h3>
 <p>Mantén</p>
-<p><span class="math display">\[
-x_0=55
-\]</span></p>
+<p><span class="math display">\[x_0=55\]</span></p>
 <p>y repite el ajuste manual utilizando</p>
-<p><span class="math display">\[
-s=0.1,\quad 0.3,\quad 0.6.
-\]</span></p>
+<p><span class="math display">\[s=0.1,\quad 0.3,\quad 0.6.\]</span></p>
 <p>Compara las tres predicciones.</p>
 <p>¿Qué ocurre con el tamaño del vecindario?</p>
 <p>¿Cómo cambia la recta local?</p>
@@ -2067,10 +1999,8 @@ s=0.1,\quad 0.3,\quad 0.6.
 <section id="ejercicio-5.-selección-del-span" class="level3" data-number="6.28.5">
 <h3 data-number="6.28.5" class="anchored" data-anchor-id="ejercicio-5.-selección-del-span"><span class="header-section-number">6.28.5</span> Ejercicio 5. Selección del span</h3>
 <p>Utiliza validación cruzada para comparar</p>
-<p><span class="math display">\[
-s\in
-\{0.05,0.10,0.15,\ldots,0.90\}.
-\]</span></p>
+<p><span class="math display">\[s\in
+\{0.05,0.10,0.15,\ldots,0.90\}.\]</span></p>
 <p>Determina el span que minimiza el MSE promedio de validación.</p>
 <p>Finalmente, ajusta LOWESS utilizando ese span y representa el resultado.</p>
 </section>

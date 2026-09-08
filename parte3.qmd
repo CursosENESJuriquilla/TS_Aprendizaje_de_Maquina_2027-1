@@ -6,6 +6,16 @@ En esta práctica estudiaremos el uso de **funciones escalonadas** (*step functi
 
 Usaremos el conjunto de datos `Wage` de `ISLP` y analizaremos la relación entre la edad, `age`, y el salario, `wage`.
 
+::::: diapositivas
+::: diapositivas-title
+📝 **Diapositivas**
+:::
+
+::: diapositivas-body
+[Ver diapositivas Funciones Escalonadas](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/2.3_Funciones_Escalonadas.pdf)
+:::
+:::::
+
 ## Antes de comenzar
 
 Hasta ahora hemos estudiado modelos como la regresión lineal

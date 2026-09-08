@@ -1,0 +1,1849 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# Regresión Local\n",
+        "\n",
+        "En las secciones anteriores hemos estudiado diferentes estrategias para modelar relaciones no lineales.\n",
+        "\n",
+        "Por ejemplo:\n",
+        "\n",
+        "- la **regresión polinomial** utiliza transformaciones globales de la variable predictora;\n",
+        "- las **step functions** dividen el dominio en intervalos;\n",
+        "- los **splines de regresión** construyen funciones suaves a partir de funciones base;\n",
+        "- los **smoothing splines** controlan la flexibilidad mediante una penalización.\n",
+        "\n",
+        "En esta práctica estudiaremos una estrategia diferente: la **regresión local**.\n",
+        "\n",
+        "La idea fundamental es sencilla:\n",
+        "\n",
+        "Para estimar la respuesta en un punto $x_0$, utilizamos principalmente las observaciones que se encuentran cerca de $x_0$.\n",
+        "\n",
+        "Esto significa que no construiremos una única ecuación global para todo el conjunto de datos. En su lugar, realizaremos pequeños ajustes locales en diferentes regiones del dominio.\n",
+        "\n",
+        "## Librerías y preparación de datos\n",
+        "\n",
+        "Utilizaremos nuevamente el conjunto de datos `Wage`."
+      ],
+      "id": "150ac0e5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "\n",
+        "import statsmodels.api as sm\n",
+        "\n",
+        "from ISLP import load_data"
+      ],
+      "id": "d61c1711",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Cargamos los datos."
+      ],
+      "id": "8b4393ac"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "Wage = load_data(\"Wage\")"
+      ],
+      "id": "f75a161f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos revisar las primeras observaciones."
+      ],
+      "id": "cfad1cc5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "Wage.head()"
+      ],
+      "id": "d0ce1622",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Nos concentraremos en dos variables:\n",
+        "\n",
+        "- `age`: edad del individuo;\n",
+        "- `wage`: salario."
+      ],
+      "id": "4c89f28a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "age = Wage[\"age\"]\n",
+        "wage = Wage[\"wage\"]"
+      ],
+      "id": "a34213d9",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Exploración inicial\n",
+        "\n",
+        "Antes de ajustar cualquier modelo, observemos la relación entre edad y salario."
+      ],
+      "id": "276e540f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.4\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"Relación entre edad y salario\")\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "33095b21",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿La relación entre `age` y `wage` parece completamente lineal?\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Discusión\n",
+        "\n",
+        "No parece existir una relación completamente lineal.\n",
+        "\n",
+        "En términos generales, el salario parece aumentar durante una parte de la vida laboral, pero este comportamiento cambia conforme aumenta la edad.\n",
+        "\n",
+        "Una única recta podría ser demasiado restrictiva para describir esta estructura.\n",
+        "\n",
+        "Esto motiva el uso de métodos más flexibles.\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "## La idea de regresión local\n",
+        "\n",
+        "Supongamos que queremos estimar el salario esperado para una edad particular $x_0$.\n",
+        "\n",
+        "En lugar de utilizar todas las observaciones con la misma importancia, podemos:\n",
+        "\n",
+        "1.  identificar las observaciones cercanas a $x_0$;\n",
+        "2.  asignar mayor peso a las observaciones más próximas;\n",
+        "3.  ajustar una regresión utilizando esos pesos;\n",
+        "4.  evaluar el modelo obtenido en $x_0$.\n",
+        "\n",
+        "En el caso de una regresión lineal local, buscamos coeficientes $\\beta_0$ y $\\beta_1$ que minimicen\n",
+        "\n",
+        "$$\\sum_{i=1}^{n}\n",
+        "K_{i0}\n",
+        "\\left(\n",
+        "y_i-\\beta_0-\\beta_1x_i\n",
+        "\\right)^2,$$\n",
+        "\n",
+        "donde\n",
+        "\n",
+        "$$K_{i0}=K(x_i,x_0)$$\n",
+        "\n",
+        "representa el peso de la observación $i$ cuando queremos realizar una predicción en $x_0$.\n",
+        "\n",
+        "Las observaciones cercanas reciben pesos grandes y las observaciones alejadas reciben pesos pequeños o incluso cero.\n",
+        "\n",
+        "Una vez estimados los coeficientes, la predicción es\n",
+        "\n",
+        "$$\\hat f(x_0)\n",
+        "=\n",
+        "\\hat\\beta_0+\\hat\\beta_1x_0.$$\n",
+        "\n",
+        "Para construir una curva completa, repetimos este procedimiento para muchos valores de $x_0$.\n",
+        "\n",
+        "## LOWESS en Python\n",
+        "\n",
+        "`statsmodels` proporciona la función `lowess()` dentro del módulo `nonparametric`."
+      ],
+      "id": "78bbf708"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "lowess = sm.nonparametric.lowess"
+      ],
+      "id": "e6000bfe",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "**LOWESS** significa *Locally Weighted Scatterplot Smoothing*.\n",
+        "\n",
+        "El método realiza ajustes locales ponderados a lo largo del dominio.\n",
+        "\n",
+        "En su forma básica utilizaremos:\n",
+        "\n",
+        "``` python\n",
+        "lowess(\n",
+        "    endog,\n",
+        "    exog,\n",
+        "    frac=...\n",
+        ")\n",
+        "```\n",
+        "\n",
+        "donde:\n",
+        "\n",
+        "- `endog` contiene la variable respuesta;\n",
+        "- `exog` contiene la variable predictora;\n",
+        "- `frac` controla la proporción de observaciones utilizadas en cada ajuste local.\n",
+        "\n",
+        "En nuestro caso:\n",
+        "\n",
+        "``` python\n",
+        "lowess(\n",
+        "    wage,\n",
+        "    age,\n",
+        "    frac=0.5\n",
+        ")\n",
+        "```\n",
+        "\n",
+        "## Primer ajuste LOWESS\n",
+        "\n",
+        "Comencemos utilizando\n",
+        "\n",
+        "$$s=0.5.$$\n",
+        "\n",
+        "Esto significa que cada ajuste local utiliza aproximadamente el $50\\%$ de las observaciones."
+      ],
+      "id": "1340fbff"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fit_05 = lowess(\n",
+        "    wage,\n",
+        "    age,\n",
+        "    frac=0.5\n",
+        ")"
+      ],
+      "id": "2219d065",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Veamos qué contiene el resultado."
+      ],
+      "id": "a837d0be"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fit_05[:10]"
+      ],
+      "id": "456e8177",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "También podemos revisar sus dimensiones."
+      ],
+      "id": "8c5e3fa3"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fit_05.shape"
+      ],
+      "id": "f9cecae7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### ¿Qué devuelve `lowess()`?\n",
+        "\n",
+        "Por defecto, `lowess()` devuelve un arreglo con dos columnas."
+      ],
+      "id": "02b358a9"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fit_05[:5]"
+      ],
+      "id": "0683f773",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "La primera columna contiene los valores ordenados de la variable predictora y la segunda contiene los valores ajustados:\n",
+        "\n",
+        "$$\\begin{array}{cc}\n",
+        "x & \\hat f(x)\n",
+        "\\end{array}$$\n",
+        "\n",
+        "Podemos separarlos."
+      ],
+      "id": "0bdffaa7"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "x_lowess = fit_05[:, 0]\n",
+        "y_lowess = fit_05[:, 1]"
+      ],
+      "id": "70bceac9",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Visualización del ajuste\n",
+        "\n",
+        "Ahora podemos representar la curva LOWESS junto con las observaciones originales."
+      ],
+      "id": "ec64a67b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.35,\n",
+        "    label=\"Datos\"\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    x_lowess,\n",
+        "    y_lowess,\n",
+        "    linewidth=3,\n",
+        "    color = \"green\",\n",
+        "    label=\"LOWESS: span = 0.5\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"Regresión local\")\n",
+        "plt.legend()\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "fef7f7ef",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "A diferencia de una regresión lineal global, la curva puede adaptarse a cambios en la relación entre edad y salario en diferentes regiones del dominio.\n",
+        "\n",
+        "## El parámetro `frac`\n",
+        "\n",
+        "En `statsmodels`, el argumento\n",
+        "\n",
+        "``` python\n",
+        "frac\n",
+        "```\n",
+        "\n",
+        "desempeña el papel del **span** $s$ que estudiamos teóricamente.\n",
+        "\n",
+        "Si tenemos $n$ observaciones, aproximadamente\n",
+        "\n",
+        "$$k=sn$$\n",
+        "\n",
+        "observaciones participan en cada ajuste local.\n",
+        "\n",
+        "Por ejemplo, si\n",
+        "\n",
+        "$$s=0.2,$$\n",
+        "\n",
+        "se utiliza aproximadamente el $20\\%$ de las observaciones.\n",
+        "\n",
+        "Mientras que con\n",
+        "\n",
+        "$$s=0.7,$$\n",
+        "\n",
+        "se utiliza aproximadamente el $70\\%$.\n",
+        "\n",
+        "Podemos verificar cuántas observaciones representan estos porcentajes en `Wage`."
+      ],
+      "id": "0ff57676"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "n = len(Wage)\n",
+        "\n",
+        "for span in [0.2, 0.5, 0.7]:\n",
+        "    k = int(np.ceil(span * n))\n",
+        "    print(f\"span = {span}: aproximadamente {k} observaciones\")"
+      ],
+      "id": "1249dfe6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Comparación de diferentes valores del span\n",
+        "\n",
+        "Ajustemos modelos con\n",
+        "\n",
+        "$$s=0.2,\\qquad s=0.5,\\qquad s=0.7.$$"
+      ],
+      "id": "44dbca68"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "spans = [0.2, 0.5, 0.7]\n",
+        "\n",
+        "fits = {}\n",
+        "\n",
+        "for span in spans:\n",
+        "    fits[span] = lowess(\n",
+        "        wage,\n",
+        "        age,\n",
+        "        frac=span\n",
+        "    )"
+      ],
+      "id": "78360545",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora representamos los tres ajustes."
+      ],
+      "id": "1b84889a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(10, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.25,\n",
+        "    label=\"Datos\"\n",
+        ")\n",
+        "\n",
+        "for span in spans:\n",
+        "    fitted = fits[span]\n",
+        "\n",
+        "    plt.plot(\n",
+        "        fitted[:, 0],\n",
+        "        fitted[:, 1],\n",
+        "        linewidth=3,\n",
+        "        label=f\"span = {span}\"\n",
+        "    )\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"Efecto del span en la regresión local\")\n",
+        "plt.legend()\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "e120fb9a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### ¿Qué observamos?\n",
+        "\n",
+        "Cuando el span es pequeño, cada ajuste utiliza pocas observaciones cercanas.\n",
+        "\n",
+        "Por tanto, el modelo es más **local** y puede adaptarse rápidamente a cambios en los datos.\n",
+        "\n",
+        "Cuando el span aumenta, cada ajuste utiliza una fracción mayor de las observaciones.\n",
+        "\n",
+        "La curva resultante tiende a ser más **suave y global**.\n",
+        "\n",
+        "En términos generales:\n",
+        "\n",
+        "$$s\\downarrow\n",
+        "\\quad\\Longrightarrow\\quad\n",
+        "\\text{mayor flexibilidad}$$\n",
+        "\n",
+        "y\n",
+        "\n",
+        "$$s\\uparrow\n",
+        "\\quad\\Longrightarrow\\quad\n",
+        "\\text{mayor suavidad}.$$\n",
+        "\n",
+        "## ¿Qué significa realmente hacer un ajuste local?\n",
+        "\n",
+        "La función `lowess()` realiza automáticamente los cálculos necesarios.\n",
+        "\n",
+        "Sin embargo, podemos estudiar manualmente la idea central del algoritmo.\n",
+        "\n",
+        "Supongamos que queremos estimar el salario para\n",
+        "\n",
+        "$$x_0=40.$$"
+      ],
+      "id": "8cff087a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "x0 = 40"
+      ],
+      "id": "c3fde85f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Utilicemos inicialmente un span de\n",
+        "\n",
+        "$$s=0.2.$$"
+      ],
+      "id": "82afc53a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "span = 0.2\n",
+        "n = len(age)\n",
+        "\n",
+        "k = int(np.ceil(span * n))\n",
+        "\n",
+        "k"
+      ],
+      "id": "87961a8a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Por tanto, seleccionaremos aproximadamente las $k$ observaciones cuya edad se encuentra más cerca de 40.\n",
+        "\n",
+        "## Calcular la distancia respecto a $x_0$\n",
+        "\n",
+        "Para cada observación calculamos\n",
+        "\n",
+        "$$d_i=|x_i-x_0|.$$"
+      ],
+      "id": "adff287c"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "distance = np.abs(age.to_numpy() - x0)"
+      ],
+      "id": "971d1ca6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos ordenar estas distancias."
+      ],
+      "id": "60892871"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "nearest_idx = np.argsort(distance)[:k]"
+      ],
+      "id": "cbe49fd4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "`np.argsort()` devuelve los índices que ordenarían el arreglo de menor a mayor.\n",
+        "\n",
+        "Por tanto,\n",
+        "\n",
+        "``` python\n",
+        "np.argsort(distance)[:k]\n",
+        "```\n",
+        "\n",
+        "selecciona los índices de las $k$ observaciones más cercanas a $x_0$.\n",
+        "\n",
+        "Extraemos esas observaciones."
+      ],
+      "id": "674736b2"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "age_local = age.to_numpy()[nearest_idx]\n",
+        "wage_local = wage.to_numpy()[nearest_idx]\n",
+        "distance_local = distance[nearest_idx]"
+      ],
+      "id": "baffdc01",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Visualizar el vecindario\n",
+        "\n",
+        "Podemos visualizar qué observaciones participan en este ajuste local."
+      ],
+      "id": "6db20370"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.15,\n",
+        "    label=\"Resto de los datos\"\n",
+        ")\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age_local,\n",
+        "    wage_local,\n",
+        "    alpha=0.7,\n",
+        "    label=\"Vecindario local\"\n",
+        ")\n",
+        "\n",
+        "plt.axvline(\n",
+        "    x=x0,\n",
+        "    linestyle=\"--\",\n",
+        "    label=r\"$x_0=40$\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"Observaciones utilizadas alrededor de $x_0$\")\n",
+        "plt.legend()\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "52a8a83a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Esta gráfica permite visualizar la primera parte del algoritmo:\n",
+        "\n",
+        "> Para realizar una predicción en $x_0$, nos concentramos en una región local del conjunto de datos.\n",
+        "\n",
+        "Sin embargo, todavía falta algo importante.\n",
+        "\n",
+        "Dentro de ese vecindario, **no todas las observaciones tendrán la misma importancia**.\n",
+        "\n",
+        "## Construcción de pesos locales\n",
+        "\n",
+        "Necesitamos una función que asigne pesos grandes a las observaciones cercanas a $x_0$ y pesos pequeños a las más alejadas.\n",
+        "\n",
+        "Una posibilidad muy utilizada es la función **tricúbica**.\n",
+        "\n",
+        "Si $d_i$ es la distancia entre $x_i$ y $x_0$, primero normalizamos mediante\n",
+        "\n",
+        "$$u_i=\\frac{d_i}{d_{\\max}},$$\n",
+        "\n",
+        "donde $d_{\\max}$ es la mayor distancia dentro del vecindario.\n",
+        "\n",
+        "Después definimos\n",
+        "\n",
+        "$$w_i=\n",
+        "\\left(1-u_i^3\\right)^3,\n",
+        "\\qquad 0\\leq u_i\\leq 1.$$\n",
+        "\n",
+        "La observación más alejada del vecindario tendrá peso cero.\n",
+        "\n",
+        "Calculemos estos pesos."
+      ],
+      "id": "d3d1c979"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "d_max = distance_local.max()\n",
+        "\n",
+        "u = distance_local / d_max\n",
+        "\n",
+        "weights = (1 - u**3)**3"
+      ],
+      "id": "85410f6b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos revisar algunos de los valores obtenidos."
+      ],
+      "id": "33c02386"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "weights[:10]"
+      ],
+      "id": "c0de2045",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Distancia y peso\n",
+        "\n",
+        "Construyamos una pequeña tabla para entender la relación entre la distancia y el peso."
+      ],
+      "id": "3726968f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "local_info = pd.DataFrame({\n",
+        "    \"age\": age_local,\n",
+        "    \"wage\": wage_local,\n",
+        "    \"distance\": distance_local,\n",
+        "    \"weight\": weights\n",
+        "})\n",
+        "\n",
+        "local_info = local_info.sort_values(\"distance\")\n",
+        "\n",
+        "local_info.head(15)"
+      ],
+      "id": "f0bd243b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Observemos que, en general:\n",
+        "\n",
+        "$$d_i\\downarrow\n",
+        "\\quad\\Longrightarrow\\quad\n",
+        "w_i\\uparrow.$$\n",
+        "\n",
+        "Es decir, cuanto más cerca se encuentra una observación de $x_0$, mayor influencia tendrá sobre el ajuste.\n",
+        "\n",
+        "## Visualizar la función de pesos\n",
+        "\n",
+        "Podemos representar directamente la relación entre distancia y peso."
+      ],
+      "id": "6d019e82"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "order = np.argsort(distance_local)\n",
+        "\n",
+        "plt.figure(figsize=(8, 5))\n",
+        "\n",
+        "plt.plot(\n",
+        "    distance_local[order],\n",
+        "    weights[order],\n",
+        "    marker=\"o\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(r\"Distancia a $x_0$\")\n",
+        "plt.ylabel(\"Peso\")\n",
+        "plt.title(\"Pesos utilizados en el ajuste local\")\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "2259bcb3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "La función de pesos disminuye conforme aumenta la distancia respecto al punto objetivo.\n",
+        "\n",
+        "## Visualizar los pesos sobre los datos\n",
+        "\n",
+        "También podemos representar los pesos mediante el tamaño de los puntos."
+      ],
+      "id": "d2766258"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.1\n",
+        ")\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age_local,\n",
+        "    wage_local,\n",
+        "    s=20 + 180 * weights,\n",
+        "    alpha=0.6,\n",
+        "    label=\"Observaciones ponderadas\"\n",
+        ")\n",
+        "\n",
+        "plt.axvline(\n",
+        "    x=x0,\n",
+        "    linestyle=\"--\",\n",
+        "    label=r\"$x_0=40$\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"Importancia de las observaciones alrededor de $x_0$\")\n",
+        "plt.legend()\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "38d0824d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Los puntos de mayor tamaño corresponden a observaciones con mayor peso.\n",
+        "\n",
+        "Esta gráfica representa visualmente la idea\n",
+        "\n",
+        "$$K_{i0}=K(x_i,x_0).$$\n",
+        "\n",
+        "## Ajustar una regresión lineal ponderada\n",
+        "\n",
+        "Ahora ajustaremos una regresión lineal utilizando únicamente el vecindario seleccionado.\n",
+        "\n",
+        "El modelo local es\n",
+        "\n",
+        "$$y_i=\\beta_0+\\beta_1x_i+\\varepsilon_i.$$\n",
+        "\n",
+        "Pero los parámetros se estiman minimizando\n",
+        "\n",
+        "$$\\sum_i\n",
+        "w_i\n",
+        "\\left(\n",
+        "y_i-\\beta_0-\\beta_1x_i\n",
+        "\\right)^2.$$\n",
+        "\n",
+        "En `statsmodels` podemos utilizar `WLS`, que significa **Weighted Least Squares**.\n",
+        "\n",
+        "Primero construimos la matriz de diseño."
+      ],
+      "id": "9463293e"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_local = sm.add_constant(age_local)"
+      ],
+      "id": "f5db5732",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Después ajustamos el modelo ponderado."
+      ],
+      "id": "bf4b9a4c"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "local_model = sm.WLS(\n",
+        "    wage_local,\n",
+        "    X_local,\n",
+        "    weights=weights\n",
+        ").fit()"
+      ],
+      "id": "b32d8efb",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos examinar los coeficientes."
+      ],
+      "id": "19471965"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "local_model.params"
+      ],
+      "id": "d02a08fa",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Estos corresponden a\n",
+        "\n",
+        "$$\\hat\\beta_0\n",
+        "\\qquad\\text{y}\\qquad\n",
+        "\\hat\\beta_1.$$\n",
+        "\n",
+        "## Predicción en $x_0$\n",
+        "\n",
+        "La predicción local es\n",
+        "\n",
+        "$$\\hat f(x_0)\n",
+        "=\n",
+        "\\hat\\beta_0+\\hat\\beta_1x_0.$$\n",
+        "\n",
+        "Podemos calcularla directamente."
+      ],
+      "id": "4f905c31"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "beta0, beta1 = local_model.params\n",
+        "\n",
+        "prediction_x0 = beta0 + beta1 * x0\n",
+        "\n",
+        "prediction_x0"
+      ],
+      "id": "6ddeeefb",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Esta predicción fue construida utilizando principalmente información de observaciones cercanas a los 40 años.\n",
+        "\n",
+        "## Visualizar la recta local\n",
+        "\n",
+        "La recta que acabamos de estimar solamente pretende describir adecuadamente el comportamiento de los datos **alrededor de** $x_0$.\n",
+        "\n",
+        "Construimos algunos valores dentro del vecindario."
+      ],
+      "id": "0e3ef056"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "x_local_grid = np.linspace(\n",
+        "    age_local.min(),\n",
+        "    age_local.max(),\n",
+        "    100\n",
+        ")\n",
+        "\n",
+        "y_local_grid = beta0 + beta1 * x_local_grid"
+      ],
+      "id": "522b4fa6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Representamos el ajuste."
+      ],
+      "id": "bea475ae"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.1\n",
+        ")\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age_local,\n",
+        "    wage_local,\n",
+        "    s=20 + 180 * weights,\n",
+        "    alpha=0.6,\n",
+        "    label=\"Vecindario\"\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    x_local_grid,\n",
+        "    y_local_grid,\n",
+        "    linewidth=3,\n",
+        "    label=\"Regresión lineal local\"\n",
+        ")\n",
+        "\n",
+        "plt.scatter(\n",
+        "    [x0],\n",
+        "    [prediction_x0],\n",
+        "    s=100,\n",
+        "    zorder=5,\n",
+        "    label=r\"$\\hat{f}(x_0)$\"\n",
+        ")\n",
+        "\n",
+        "plt.axvline(\n",
+        "    x=x0,\n",
+        "    linestyle=\"--\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(r\"Ajuste local alrededor de $x_0=40$\")\n",
+        "plt.legend()\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "c8b184db",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Punto importante\n",
+        "\n",
+        "La recta anterior **no es el modelo final para todas las edades**.\n",
+        "\n",
+        "Solamente la utilizamos para obtener\n",
+        "\n",
+        "$$\\hat f(40).$$\n",
+        "\n",
+        "Si ahora queremos estimar\n",
+        "\n",
+        "$$\\hat f(50),$$\n",
+        "\n",
+        "debemos:\n",
+        "\n",
+        "1.  seleccionar un nuevo vecindario;\n",
+        "2.  calcular nuevas distancias;\n",
+        "3.  calcular nuevos pesos;\n",
+        "4.  ajustar una nueva regresión;\n",
+        "5.  evaluar esa nueva recta en $x_0=50$.\n",
+        "\n",
+        "Esta es la razón por la que la regresión local se considera un método **basado en memoria**.\n",
+        "\n",
+        "## De muchas rectas locales a una curva\n",
+        "\n",
+        "Podemos repetir conceptualmente el procedimiento anterior para muchos valores:\n",
+        "\n",
+        "$$x_0^{(1)},x_0^{(2)},\\ldots,x_0^{(m)}.$$\n",
+        "\n",
+        "Para cada uno obtenemos una predicción\n",
+        "\n",
+        "$$\\hat f(x_0^{(j)}).$$\n",
+        "\n",
+        "Al reunir todas estas predicciones obtenemos una curva.\n",
+        "\n",
+        "Esto explica algo que inicialmente puede parecer extraño:\n",
+        "\n",
+        "> Si estamos ajustando regresiones lineales, ¿por qué el resultado final es una curva?\n",
+        "\n",
+        "Porque **no utilizamos la misma recta en todo el dominio**.\n",
+        "\n",
+        "En diferentes regiones tenemos diferentes valores de\n",
+        "\n",
+        "$$\\hat\\beta_0\n",
+        "\\qquad\\text{y}\\qquad\n",
+        "\\hat\\beta_1.$$\n",
+        "\n",
+        "## Comparación con una regresión lineal global\n",
+        "\n",
+        "Para hacer más clara la diferencia, ajustemos también una regresión lineal ordinaria."
+      ],
+      "id": "5403588c"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_global = sm.add_constant(age)\n",
+        "\n",
+        "global_model = sm.OLS(\n",
+        "    wage,\n",
+        "    X_global\n",
+        ").fit()"
+      ],
+      "id": "484effb2",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Construimos una secuencia de edades."
+      ],
+      "id": "ef1b8c58"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "age_grid = np.linspace(\n",
+        "    age.min(),\n",
+        "    age.max(),\n",
+        "    500\n",
+        ")"
+      ],
+      "id": "7e4b7972",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Calculamos las predicciones de la regresión lineal."
+      ],
+      "id": "08feda67"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_grid = sm.add_constant(age_grid)\n",
+        "\n",
+        "global_pred = global_model.predict(X_grid)"
+      ],
+      "id": "0bd4d554",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Y calculamos un ajuste LOWESS."
+      ],
+      "id": "13f7aa57"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fit_lowess = lowess(\n",
+        "    wage,\n",
+        "    age,\n",
+        "    frac=0.5\n",
+        ")"
+      ],
+      "id": "91dacf03",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Comparamos ambos modelos."
+      ],
+      "id": "7255a044"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(10, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.2\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    age_grid,\n",
+        "    global_pred,\n",
+        "    linewidth=3,\n",
+        "    label=\"Regresión lineal global\"\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    fit_lowess[:, 0],\n",
+        "    fit_lowess[:, 1],\n",
+        "    linewidth=3,\n",
+        "    label=\"Regresión local\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"Modelo global vs. modelo local\")\n",
+        "plt.legend()\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "586d7fe3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "La regresión lineal obliga a que la relación tenga la forma\n",
+        "\n",
+        "$$\\hat f(x)=\\hat\\beta_0+\\hat\\beta_1x$$\n",
+        "\n",
+        "en todo el dominio.\n",
+        "\n",
+        "En cambio, la regresión local permite que la pendiente cambie de una región a otra.\n",
+        "\n",
+        "## ¿Qué ocurre con spans muy pequeños?\n",
+        "\n",
+        "Hasta ahora utilizamos valores moderados del span.\n",
+        "\n",
+        "Probemos ahora\n",
+        "\n",
+        "$$s=0.05.$$"
+      ],
+      "id": "1e63fcef"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "small_span = lowess(\n",
+        "    wage,\n",
+        "    age,\n",
+        "    frac=0.05\n",
+        ")"
+      ],
+      "id": "272340d3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Comparamos con un ajuste más suave."
+      ],
+      "id": "9b001edf"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "smooth_span = lowess(\n",
+        "    wage,\n",
+        "    age,\n",
+        "    frac=0.7\n",
+        ")"
+      ],
+      "id": "e8a831c6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(10, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.2\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    small_span[:, 0],\n",
+        "    small_span[:, 1],\n",
+        "    linewidth=3,\n",
+        "    label=\"span = 0.05\"\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    smooth_span[:, 0],\n",
+        "    smooth_span[:, 1],\n",
+        "    linewidth=3,\n",
+        "    label=\"span = 0.70\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"Spans pequeños y grandes\")\n",
+        "plt.legend()\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "f706cf71",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Un span extremadamente pequeño puede producir un ajuste demasiado sensible a fluctuaciones locales.\n",
+        "\n",
+        "Esto se relaciona con el compromiso entre **sesgo y varianza**:\n",
+        "\n",
+        "- span pequeño $\\rightarrow$ mayor flexibilidad, menor sesgo y potencialmente mayor varianza;\n",
+        "- span grande $\\rightarrow$ menor flexibilidad, mayor sesgo y potencialmente menor varianza.\n",
+        "\n",
+        "## El span como hiperparámetro\n",
+        "\n",
+        "El span no se estima directamente mediante mínimos cuadrados.\n",
+        "\n",
+        "Es un **hiperparámetro** que debemos seleccionar.\n",
+        "\n",
+        "Una posibilidad sería elegirlo visualmente, pero esto introduce subjetividad.\n",
+        "\n",
+        "Una estrategia más sistemática consiste en utilizar **validación cruzada**.\n",
+        "\n",
+        "La idea general es comparar varios valores candidatos:\n",
+        "\n",
+        "$$s_1,s_2,\\ldots,s_m$$\n",
+        "\n",
+        "y seleccionar aquel que produzca el menor error de predicción sobre observaciones que no fueron utilizadas para construir el ajuste correspondiente.\n",
+        "\n",
+        "## Una consideración importante: predecir con LOWESS\n",
+        "\n",
+        "LOWESS no funciona exactamente como los modelos de `scikit-learn` que hemos utilizado anteriormente.\n",
+        "\n",
+        "Normalmente no hacemos:\n",
+        "\n",
+        "``` python\n",
+        "model.fit(X_train, y_train)\n",
+        "model.predict(X_test)\n",
+        "```\n",
+        "\n",
+        "La función `lowess()` construye directamente el suavizado para determinados valores de $x$.\n",
+        "\n",
+        "Por ejemplo, podemos indicar explícitamente los puntos en los que queremos obtener el ajuste utilizando el argumento `xvals`."
+      ],
+      "id": "1bc96cb2"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "age_grid = np.linspace(\n",
+        "    age.min(),\n",
+        "    age.max(),\n",
+        "    500\n",
+        ")\n",
+        "\n",
+        "fit_grid = lowess(\n",
+        "    wage,\n",
+        "    age,\n",
+        "    frac=0.5,\n",
+        "    xvals=age_grid\n",
+        ")"
+      ],
+      "id": "4bbcc779",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora `fit_grid` contiene directamente las predicciones correspondientes a `age_grid`."
+      ],
+      "id": "2678aa30"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.25\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    age_grid,\n",
+        "    fit_grid,\n",
+        "    linewidth=3\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"LOWESS evaluado sobre una malla\")\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "af811241",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Esto será útil cuando queramos evaluar el método sobre observaciones de validación.\n",
+        "\n",
+        "## Selección del span mediante validación cruzada\n",
+        "\n",
+        "Podemos explorar varios valores candidatos."
+      ],
+      "id": "a16adadc"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "candidate_spans = [\n",
+        "    0.1,\n",
+        "    0.2,\n",
+        "    0.3,\n",
+        "    0.4,\n",
+        "    0.5,\n",
+        "    0.6,\n",
+        "    0.7,\n",
+        "    0.8\n",
+        "]"
+      ],
+      "id": "2ea28597",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Para mantener clara la idea, construiremos una validación cruzada manual."
+      ],
+      "id": "43f7527e"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "from sklearn.model_selection import KFold\n",
+        "from sklearn.metrics import mean_squared_error"
+      ],
+      "id": "6bd27931",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Utilizaremos 5 particiones."
+      ],
+      "id": "89f9570d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "kf = KFold(\n",
+        "    n_splits=5,\n",
+        "    shuffle=True,\n",
+        "    random_state=123\n",
+        ")"
+      ],
+      "id": "b26d7500",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Preparamos los datos como arreglos."
+      ],
+      "id": "91c6019d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X = age.to_numpy()\n",
+        "y = wage.to_numpy()"
+      ],
+      "id": "e443faa2",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora evaluamos cada span."
+      ],
+      "id": "37d004a4"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "cv_results = []\n",
+        "\n",
+        "for span in candidate_spans:\n",
+        "\n",
+        "    fold_mse = []\n",
+        "\n",
+        "    for train_idx, test_idx in kf.split(X):\n",
+        "\n",
+        "        X_train = X[train_idx]\n",
+        "        y_train = y[train_idx]\n",
+        "\n",
+        "        X_test = X[test_idx]\n",
+        "        y_test = y[test_idx]\n",
+        "\n",
+        "        y_pred = lowess(\n",
+        "            y_train,\n",
+        "            X_train,\n",
+        "            frac=span,\n",
+        "            xvals=X_test\n",
+        "        )\n",
+        "\n",
+        "        mse = mean_squared_error(\n",
+        "            y_test,\n",
+        "            y_pred\n",
+        "        )\n",
+        "\n",
+        "        fold_mse.append(mse)\n",
+        "\n",
+        "    cv_results.append({\n",
+        "        \"span\": span,\n",
+        "        \"MSE\": np.mean(fold_mse)\n",
+        "    })"
+      ],
+      "id": "64e86dcf",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Convertimos los resultados en un `DataFrame`."
+      ],
+      "id": "3e663d9e"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "cv_results = pd.DataFrame(cv_results)\n",
+        "\n",
+        "cv_results"
+      ],
+      "id": "5f5bf8f0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Visualizar el error de validación"
+      ],
+      "id": "79f1efa2"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(8, 5))\n",
+        "\n",
+        "plt.plot(\n",
+        "    cv_results[\"span\"],\n",
+        "    cv_results[\"MSE\"],\n",
+        "    marker=\"o\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Span\")\n",
+        "plt.ylabel(\"MSE de validación cruzada\")\n",
+        "plt.title(\"Selección del span\")\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "56246571",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos identificar el span con menor error."
+      ],
+      "id": "2b6585ab"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "best_row = cv_results.loc[\n",
+        "    cv_results[\"MSE\"].idxmin()\n",
+        "]\n",
+        "\n",
+        "best_row"
+      ],
+      "id": "cbba7817",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Así, el span puede seleccionarse de manera similar a otros hiperparámetros que hemos estudiado.\n",
+        "\n",
+        "## Comparación con smoothing splines\n",
+        "\n",
+        "Tanto la regresión local como los smoothing splines permiten construir relaciones no lineales suaves.\n",
+        "\n",
+        "Sin embargo, controlan la flexibilidad de maneras diferentes.\n",
+        "\n",
+        "En regresión local:\n",
+        "\n",
+        "$$s\\downarrow\n",
+        "\\quad\\Longrightarrow\\quad\n",
+        "\\text{mayor flexibilidad}.$$\n",
+        "\n",
+        "En smoothing splines:\n",
+        "\n",
+        "$$\\lambda\\downarrow\n",
+        "\\quad\\Longrightarrow\\quad\n",
+        "\\text{menor penalización y mayor flexibilidad}.$$\n",
+        "\n",
+        "La diferencia conceptual es importante:\n",
+        "\n",
+        "- el **span** controla cuántas observaciones intervienen localmente;\n",
+        "- $\\lambda$ controla cuánto penalizamos la curvatura global de la función.\n",
+        "\n",
+        "## Regresión local y GAMs\n",
+        "\n",
+        "Más adelante estudiaremos los **Generalized Additive Models (GAMs)**.\n",
+        "\n",
+        "Algunas implementaciones de GAMs permiten utilizar suavizadores locales como componentes del modelo.\n",
+        "\n",
+        "Por ejemplo, conceptualmente podríamos tener un modelo de la forma\n",
+        "\n",
+        "$$Y\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(X_1)\n",
+        "+\n",
+        "f_2(X_2)\n",
+        "+\n",
+        "\\varepsilon,$$\n",
+        "\n",
+        "donde alguna de las funciones $f_j$ puede construirse mediante un método de suavizamiento.\n",
+        "\n",
+        "Por ahora no entraremos en los detalles de los GAMs.\n",
+        "\n",
+        "Lo importante es reconocer que los métodos estudiados hasta ahora —splines, smoothing splines y regresión local— proporcionan distintas formas de construir relaciones flexibles entre predictores y respuesta.\n",
+        "\n",
+        "## Ejercicios\n",
+        "\n",
+        "### Ejercicio 1. Efecto del span\n",
+        "\n",
+        "Ajusta modelos LOWESS utilizando\n",
+        "\n",
+        "$$s=0.1,\\quad\n",
+        "s=0.3,\\quad\n",
+        "s=0.5,\\quad\n",
+        "s=0.7,\\quad\n",
+        "s=0.9.$$\n",
+        "\n",
+        "Representa todos los ajustes sobre la misma gráfica.\n",
+        "\n",
+        "Responde:\n",
+        "\n",
+        "1.  ¿Cuál produce la curva más flexible?\n",
+        "2.  ¿Cuál produce la curva más suave?\n",
+        "3.  ¿En qué regiones del dominio observas mayores diferencias entre los modelos?\n",
+        "\n",
+        "### Ejercicio 2. Un ajuste local\n",
+        "\n",
+        "Repite el procedimiento manual para\n",
+        "\n",
+        "$$x_0=55$$\n",
+        "\n",
+        "utilizando\n",
+        "\n",
+        "$$s=0.2.$$\n",
+        "\n",
+        "Calcula:\n",
+        "\n",
+        "1.  el número $k$ de observaciones utilizadas;\n",
+        "2.  las distancias respecto a $x_0$;\n",
+        "3.  los pesos tricúbicos;\n",
+        "4.  la regresión lineal ponderada;\n",
+        "5.  la predicción $\\hat f(55)$.\n",
+        "\n",
+        "Construye una gráfica que muestre el vecindario, los pesos y la recta local.\n",
+        "\n",
+        "### Ejercicio 3. Cambiar el span localmente\n",
+        "\n",
+        "Mantén\n",
+        "\n",
+        "$$x_0=55$$\n",
+        "\n",
+        "y repite el ajuste manual utilizando\n",
+        "\n",
+        "$$s=0.1,\\quad 0.3,\\quad 0.6.$$\n",
+        "\n",
+        "Compara las tres predicciones.\n",
+        "\n",
+        "¿Qué ocurre con el tamaño del vecindario?\n",
+        "\n",
+        "¿Cómo cambia la recta local?\n",
+        "\n",
+        "### Ejercicio 4. Modelo global vs. local\n",
+        "\n",
+        "Ajusta:\n",
+        "\n",
+        "1.  una regresión lineal global;\n",
+        "2.  una regresión polinomial de grado 4;\n",
+        "3.  un modelo LOWESS.\n",
+        "\n",
+        "Representa los tres ajustes sobre los mismos datos.\n",
+        "\n",
+        "Discute las principales diferencias entre las tres estrategias.\n",
+        "\n",
+        "### Ejercicio 5. Selección del span\n",
+        "\n",
+        "Utiliza validación cruzada para comparar\n",
+        "\n",
+        "$$s\\in\n",
+        "\\{0.05,0.10,0.15,\\ldots,0.90\\}.$$\n",
+        "\n",
+        "Determina el span que minimiza el MSE promedio de validación.\n",
+        "\n",
+        "Finalmente, ajusta LOWESS utilizando ese span y representa el resultado.\n",
+        "\n",
+        "### Ejercicio 6. Interpretación\n",
+        "\n",
+        "Explica con tus propias palabras por qué una colección de regresiones lineales locales puede producir una función global no lineal.\n",
+        "\n",
+        "Tu explicación debe hacer referencia a:\n",
+        "\n",
+        "- $x_0$;\n",
+        "- el vecindario;\n",
+        "- los pesos;\n",
+        "- $\\hat\\beta_0$;\n",
+        "- $\\hat\\beta_1$."
+      ],
+      "id": "d97ee0fe"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "C:\\Users\\HaydeePeruyero\\AppData\\Local\\Python\\pythoncore-3.14-64\\share\\jupyter\\kernels\\python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

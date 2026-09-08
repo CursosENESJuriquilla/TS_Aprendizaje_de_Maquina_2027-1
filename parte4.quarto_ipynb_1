@@ -1,0 +1,1896 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# Splines de regresión con funciones base\n",
+        "\n",
+        "## Objetivos\n",
+        "\n",
+        "En esta práctica estudiaremos cómo ajustar relaciones no lineales utilizando **splines de regresión**.\n",
+        "\n",
+        "Trabajaremos nuevamente con el conjunto de datos `Wage`.\n",
+        "\n",
+        "::: {.diapositivas}\n",
+        "::: {.diapositivas-title}\n",
+        "📝 **Diapositivas**\n",
+        ":::\n",
+        "\n",
+        "::: {.diapositivas-body}\n",
+        "[Ver diapositivas Funciones Base](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/2.4_Funciones_Base.pdf)\n",
+        "\n",
+        "[Ver diapositivas Splines de Regresión](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/2.5_Splines_de_regresion.pdf)\n",
+        ":::\n",
+        ":::\n",
+        "\n",
+        "## Librerías\n",
+        "\n",
+        "Comenzamos importando las librerías necesarias."
+      ],
+      "id": "8bc2f109"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "import statsmodels.api as sm\n",
+        "\n",
+        "from ISLP import load_data\n",
+        "\n",
+        "from ISLP.models import (\n",
+        "    ModelSpec as MS,\n",
+        "    summarize,\n",
+        "    bs,\n",
+        "    ns,\n",
+        "    poly\n",
+        ")\n",
+        "\n",
+        "from ISLP.transforms import (\n",
+        "    BSpline,\n",
+        "    NaturalSpline\n",
+        ")"
+      ],
+      "id": "84bf85e3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Las funciones principales que utilizaremos son:\n",
+        "\n",
+        "- `BSpline()`: construye directamente una matriz de funciones base B-spline;\n",
+        "- `bs()`: permite incluir un B-spline dentro de `ModelSpec`;\n",
+        "- `NaturalSpline()`: construye una base para un spline cúbico natural;\n",
+        "- `ns()`: permite especificar un spline natural dentro de `ModelSpec`;\n",
+        "- `sm.OLS()`: ajusta el modelo lineal una vez construidas las funciones base.\n",
+        "\n",
+        "Aunque el ajuste final utiliza regresión lineal, la relación entre $X$ y $Y$ puede ser no lineal porque reemplazamos $X$ por funciones transformadas de $X$.\n",
+        "\n",
+        "## Cargar los datos `Wage`"
+      ],
+      "id": "9c45334b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "Wage = load_data(\"Wage\")\n",
+        "\n",
+        "Wage.head()"
+      ],
+      "id": "d7fdeb9a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Recordemos algunas de las variables disponibles."
+      ],
+      "id": "6a402c50"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "Wage.columns"
+      ],
+      "id": "7ac003e9",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Utilizaremos:\n",
+        "\n",
+        "- `age`: edad del trabajador;\n",
+        "- `wage`: salario."
+      ],
+      "id": "d23dbf50"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "age = Wage[\"age\"]\n",
+        "wage = Wage[\"wage\"]"
+      ],
+      "id": "f6d7ba03",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Veamos algunas estadísticas descriptivas."
+      ],
+      "id": "b4799dbf"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "Wage[[\"age\", \"wage\"]].describe()"
+      ],
+      "id": "6eaa6d18",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Visualización inicial\n",
+        "\n",
+        "Antes de ajustar cualquier modelo, observemos los datos."
+      ],
+      "id": "c4a3c741"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(8, 5))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.25\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"Salario en función de la edad\")\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "11646efc",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "La nube de puntos no sugiere una relación estrictamente lineal.\n",
+        "\n",
+        "Parece existir una tendencia general:\n",
+        "\n",
+        "- el salario aumenta durante parte del rango de edades;\n",
+        "- posteriormente el crecimiento se estabiliza;\n",
+        "- hacia edades mayores puede observarse una disminución.\n",
+        "\n",
+        "Esto motiva el uso de modelos capaces de representar relaciones no lineales.\n",
+        "\n",
+        "## ¿Qué es un spline?\n",
+        "\n",
+        "Un spline cúbico es una función construida mediante distintos polinomios cúbicos definidos en diferentes regiones del predictor.\n",
+        "\n",
+        "Si tenemos nodos\n",
+        "\n",
+        "$$\\xi_1,\\xi_2,\\ldots,\\xi_K,$$\n",
+        "\n",
+        "estos dividen el rango de $X$ en $K+1$ regiones.\n",
+        "\n",
+        "Los polinomios se unen imponiendo continuidad de:\n",
+        "\n",
+        "$$f, f', \\text{ y } f''.$$\n",
+        "\n",
+        "Por ello obtenemos una curva suave incluso en los puntos donde cambia el polinomio.\n",
+        "\n",
+        "Una representación posible de un spline cúbico es\n",
+        "\n",
+        "$$f(x)\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\\beta_1x\n",
+        "+\\beta_2x^2\n",
+        "+\\beta_3x^3\n",
+        "+\n",
+        "\\sum_{k=1}^{K}\n",
+        "\\beta_{3+k}(x-\\xi_k)_+^3.$$\n",
+        "\n",
+        "Sin embargo, computacionalmente suele ser más conveniente utilizar bases B-spline.\n",
+        "\n",
+        "## Construir directamente una base B-spline\n",
+        "\n",
+        "Comencemos colocando tres nodos interiores en\n",
+        "\n",
+        "$$25,\\qquad 40,\\qquad 60.$$\n",
+        "\n",
+        "Utilizamos `BSpline()`."
+      ],
+      "id": "e4ceba31"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "bs_transform = BSpline(\n",
+        "    internal_knots=[25, 40, 60],\n",
+        "    intercept=True\n",
+        ")\n",
+        "\n",
+        "bs_transform"
+      ],
+      "id": "3322ba2c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Todavía no hemos construido las funciones base.\n",
+        "\n",
+        "Primero debemos ajustar el transformador al predictor."
+      ],
+      "id": "e5d4690a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "bs_transform = bs_transform.fit(age)"
+      ],
+      "id": "01dd410e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora transformamos las edades."
+      ],
+      "id": "75c97991"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "bs_age = bs_transform.transform(age)\n",
+        "\n",
+        "bs_age"
+      ],
+      "id": "95aa4960",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Veamos sus dimensiones."
+      ],
+      "id": "8608ebf0"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "bs_age.shape"
+      ],
+      "id": "bcbb32c8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "¿Por qué aparecen **7 columnas**?\n",
+        "\n",
+        "Tenemos:\n",
+        "\n",
+        "- un spline cúbico;\n",
+        "- $K=3$ nodos interiores;\n",
+        "- intercepto incluido.\n",
+        "\n",
+        "Para un spline cúbico con $K$ nodos tenemos\n",
+        "\n",
+        "$$K+4$$\n",
+        "\n",
+        "funciones base.\n",
+        "\n",
+        "Por tanto,\n",
+        "\n",
+        "$$3+4=7.$$\n",
+        "\n",
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "Si utilizáramos $K=5$ nodos interiores, ¿cuántas columnas tendría la base cúbica incluyendo el intercepto?\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Solución\n",
+        "\n",
+        "Para un spline cúbico con $K$ nodos:\n",
+        "\n",
+        "$$K+4$$\n",
+        "\n",
+        "grados de libertad.\n",
+        "\n",
+        "Si\n",
+        "\n",
+        "$$K=5,$$\n",
+        "\n",
+        "entonces:\n",
+        "\n",
+        "$$5+4=9.$$\n",
+        "\n",
+        "La matriz tendría **9 columnas**.\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "## ¿Qué representan las columnas de la base?\n",
+        "\n",
+        "Las columnas de `bs_age` no deben interpretarse como variables originales independientes.\n",
+        "\n",
+        "Cada columna corresponde a una **función base** evaluada sobre `age`.\n",
+        "\n",
+        "Podemos visualizar estas funciones. Primero ordenamos las edades, para que las curvas se dibujen de izquierda a derecha:"
+      ],
+      "id": "991ce3ca"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "age_order = np.argsort(age.to_numpy())\n",
+        "\n",
+        "age_sorted = age.to_numpy()[age_order]"
+      ],
+      "id": "86ed188d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Como `bs_age` es un `DataFrame` de pandas, utilizamos `.iloc` para ordenar sus filas:"
+      ],
+      "id": "32c23ff5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "bs_sorted = bs_age.iloc[age_order, :].to_numpy()"
+      ],
+      "id": "59d0abb3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora graficamos cada una de las funciones base:"
+      ],
+      "id": "be88bfd9"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "for j in range(bs_sorted.shape[1]):\n",
+        "    plt.plot(\n",
+        "        age_sorted,\n",
+        "        bs_sorted[:, j],\n",
+        "        label=f\"Base {j + 1}\"\n",
+        "    )\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Valor de la función base\")\n",
+        "plt.title(\"Funciones base B-spline\")\n",
+        "plt.legend()\n",
+        "plt.show()"
+      ],
+      "id": "11681d78",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Cada columna de la matriz representa una función\n",
+        "\n",
+        "$$b_j(x)$$\n",
+        "\n",
+        "evaluada para todos los valores de `age`.\n",
+        "\n",
+        "Por ello, la matriz tiene la forma\n",
+        "\n",
+        "$$\\begin{pmatrix}\n",
+        "b_1(x_1) & b_2(x_1) & \\cdots & b_p(x_1)\\\\\n",
+        "b_1(x_2) & b_2(x_2) & \\cdots & b_p(x_2)\\\\\n",
+        "\\vdots & \\vdots & \\ddots & \\vdots\\\\\n",
+        "b_1(x_n) & b_2(x_n) & \\cdots & b_p(x_n)\n",
+        "\\end{pmatrix}.$$\n",
+        "\n",
+        "Cada función base tiene influencia principalmente sobre una región determinada del dominio.\n",
+        "\n",
+        "Esta característica permite modificar localmente la forma del ajuste sin alterar drásticamente toda la curva.\n",
+        "\n",
+        "## Ajustar el spline como un modelo lineal\n",
+        "\n",
+        "En lugar de construir manualmente la matriz anterior, podemos utilizar `bs()` dentro de `ModelSpec`.\n",
+        "\n",
+        "Definimos un spline para `age` con los mismos nodos."
+      ],
+      "id": "6a5efa85"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "bs_age_spec = MS([\n",
+        "    bs(\n",
+        "        \"age\",\n",
+        "        internal_knots=[25, 40, 60]\n",
+        "    )\n",
+        "])"
+      ],
+      "id": "2d9a837d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora ajustamos la especificación a los datos."
+      ],
+      "id": "a7163ee2"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "bs_age_spec = bs_age_spec.fit(Wage)"
+      ],
+      "id": "2c162af8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Construimos la matriz de diseño."
+      ],
+      "id": "7cc7d50e"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_bs = bs_age_spec.transform(Wage)\n",
+        "\n",
+        "X_bs.head()"
+      ],
+      "id": "cec96016",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Veamos sus dimensiones."
+      ],
+      "id": "04e5c16c"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_bs.shape"
+      ],
+      "id": "da8ff614",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora ajustamos una regresión lineal."
+      ],
+      "id": "a6de84dd"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "model_bs = sm.OLS(\n",
+        "    wage,\n",
+        "    X_bs\n",
+        ").fit()"
+      ],
+      "id": "cdb38958",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos resumir el modelo."
+      ],
+      "id": "8abc6967"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "summarize(model_bs)"
+      ],
+      "id": "cd687444",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## ¿Por qué aparecen menos coeficientes de spline?\n",
+        "\n",
+        "En el ejemplo anterior `BSpline(..., intercept=True)` produjo 7 columnas.\n",
+        "\n",
+        "Sin embargo, cuando utilizamos\n",
+        "\n",
+        "``` python\n",
+        "bs(\"age\", internal_knots=[25, 40, 60])\n",
+        "```\n",
+        "\n",
+        "dentro de `ModelSpec`, normalmente aparece un intercepto general del modelo y seis términos asociados al spline.\n",
+        "\n",
+        "Esto ocurre porque `bs()` utiliza por defecto\n",
+        "\n",
+        "``` python\n",
+        "intercept=False\n",
+        "```\n",
+        "\n",
+        "para evitar introducir redundancia con el intercepto global.\n",
+        "\n",
+        "Conceptualmente tenemos:\n",
+        "\n",
+        "$$\\text{intercepto general}\n",
+        "+\n",
+        "\\text{funciones base del spline}.$$\n",
+        "\n",
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿Por qué sería problemático introducir dos columnas que representaran exactamente el mismo intercepto?\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Solución\n",
+        "\n",
+        "Porque las columnas serían linealmente dependientes.\n",
+        "\n",
+        "Esto produciría una matriz de diseño que no tiene rango completo y los parámetros no podrían identificarse de manera única.\n",
+        "\n",
+        "Por ello, cuando el modelo ya contiene un intercepto general, normalmente la base del spline no incluye otro intercepto independiente.\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "::: callout-note\n",
+        "Podemos simplificar los nombres de la tabla como sigue:\n",
+        "\n",
+        "``` python\n",
+        "bs_age_spec = MS([bs('age', internal_knots=[25,40,60], name='bs(age)')])\n",
+        "\n",
+        "X_bs = bs_age.fit_transform(Wage)\n",
+        "\n",
+        "model_bs = sm.OLS(wage, X_bs).fit()\n",
+        "\n",
+        "summarize(model_bs)\n",
+        "```\n",
+        ":::\n",
+        "\n",
+        "## Predicciones sobre una malla de edades\n",
+        "\n",
+        "Para visualizar el ajuste construiremos una secuencia de edades."
+      ],
+      "id": "f0a4cc09"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "age_grid = np.linspace(\n",
+        "    age.min(),\n",
+        "    age.max(),\n",
+        "    500\n",
+        ")"
+      ],
+      "id": "8b912e2d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Creamos un `DataFrame` con estas nuevas observaciones."
+      ],
+      "id": "d706c5f1"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "age_grid_df = pd.DataFrame({\n",
+        "    \"age\": age_grid\n",
+        "})"
+      ],
+      "id": "977d99ee",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora debemos transformar las nuevas edades utilizando **la misma base aprendida con los datos originales**."
+      ],
+      "id": "6c09a6a1"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_grid_bs = bs_age_spec.transform(age_grid_df)"
+      ],
+      "id": "b7f456a3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Calculamos las predicciones."
+      ],
+      "id": "4dd98ef5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pred_bs = model_bs.get_prediction(X_grid_bs)"
+      ],
+      "id": "f92cd127",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Obtenemos el resumen de predicciones."
+      ],
+      "id": "20b71bac"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pred_bs_summary = pred_bs.summary_frame()\n",
+        "\n",
+        "pred_bs_summary.head()"
+      ],
+      "id": "d297ccfb",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Las columnas incluyen, entre otras:\n",
+        "\n",
+        "- `mean`: predicción media;\n",
+        "- `mean_ci_lower`: límite inferior del intervalo de confianza;\n",
+        "- `mean_ci_upper`: límite superior del intervalo de confianza.\n",
+        "\n",
+        "## Graficar el spline cúbico"
+      ],
+      "id": "c99797fd"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.20\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    age_grid,\n",
+        "    pred_bs_summary[\"mean\"],\n",
+        "    linewidth=2\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    age_grid,\n",
+        "    pred_bs_summary[\"mean_ci_lower\"],\n",
+        "    linestyle=\"--\"\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    age_grid,\n",
+        "    pred_bs_summary[\"mean_ci_upper\"],\n",
+        "    linestyle=\"--\"\n",
+        ")\n",
+        "\n",
+        "plt.axvline(25, linestyle=\":\")\n",
+        "plt.axvline(40, linestyle=\":\")\n",
+        "plt.axvline(60, linestyle=\":\")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"Spline cúbico con nodos en 25, 40 y 60\")\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "decf5d1b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Las líneas verticales indican los nodos.\n",
+        "\n",
+        "Es importante notar que la curva no presenta saltos en ellos.\n",
+        "\n",
+        "## Inspeccionar los nodos\n",
+        "\n",
+        "Podemos recuperar los nodos utilizados por un objeto `BSpline`."
+      ],
+      "id": "6a272899"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "bs_check = BSpline(\n",
+        "    internal_knots=[25, 40, 60]\n",
+        ").fit(age)\n",
+        "\n",
+        "bs_check.internal_knots_"
+      ],
+      "id": "74de9f84",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Elegir la complejidad mediante grados de libertad\n",
+        "\n",
+        "No siempre necesitamos especificar manualmente los nodos.\n",
+        "\n",
+        "Podemos indicar directamente los grados de libertad.\n",
+        "\n",
+        "Por ejemplo:"
+      ],
+      "id": "f242cdf1"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "bs_df6 = BSpline(\n",
+        "    df=6\n",
+        ").fit(age)"
+      ],
+      "id": "77f22f84",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Inspeccionamos los nodos seleccionados automáticamente."
+      ],
+      "id": "0c87449a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "bs_df6.internal_knots_"
+      ],
+      "id": "a9d40ffc",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Estos valores corresponden aproximadamente a los cuantiles:\n",
+        "\n",
+        "$$25\\%,\\qquad 50\\%,\\qquad 75\\%.$$\n",
+        "\n",
+        "Podemos comprobarlos directamente."
+      ],
+      "id": "a4282b6d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "age.quantile([0.25, 0.50, 0.75])"
+      ],
+      "id": "ee0d2657",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Esto ilustra una estrategia común:\n",
+        "\n",
+        "1.  especificar la complejidad deseada;\n",
+        "2.  colocar automáticamente los nodos en cuantiles de los datos.\n",
+        "\n",
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿Por qué puede ser preferible colocar los nodos en cuantiles en lugar de distribuirlos uniformemente sobre el rango de $X$?\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Solución\n",
+        "\n",
+        "Porque los cuantiles tienen en cuenta la distribución de los datos.\n",
+        "\n",
+        "Al colocar los nodos en cuantiles, cada región contiene aproximadamente un número similar de observaciones.\n",
+        "\n",
+        "Si los datos están concentrados en una región pequeña, colocar nodos uniformemente en el rango podría dejar muchos nodos en regiones con muy pocos datos.\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "## Ajustar un spline usando grados de libertad\n",
+        "\n",
+        "Ahora utilizaremos directamente `df=6`."
+      ],
+      "id": "ad425f23"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "bs_df_spec = MS([\n",
+        "    bs(\n",
+        "        \"age\",\n",
+        "        df=6\n",
+        "    )\n",
+        "]).fit(Wage)"
+      ],
+      "id": "fccf6e12",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Construimos la matriz y ajustamos el modelo."
+      ],
+      "id": "efee8b88"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_bs_df = bs_df_spec.transform(Wage)\n",
+        "\n",
+        "model_bs_df = sm.OLS(\n",
+        "    wage,\n",
+        "    X_bs_df\n",
+        ").fit()\n",
+        "\n",
+        "summarize(model_bs_df)"
+      ],
+      "id": "c4da02c6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Visualizar el spline con `df=6`\n",
+        "\n",
+        "Transformamos la malla de edades."
+      ],
+      "id": "d16ac078"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_grid_bs_df = bs_df_spec.transform(age_grid_df)"
+      ],
+      "id": "47607d3a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Calculamos las predicciones."
+      ],
+      "id": "c58521fe"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pred_bs_df = model_bs_df.get_prediction(\n",
+        "    X_grid_bs_df\n",
+        ").summary_frame()"
+      ],
+      "id": "23361935",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.20\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    age_grid,\n",
+        "    pred_bs_df[\"mean\"],\n",
+        "    linewidth=2\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"Spline cúbico con 6 grados de libertad\")\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "f84dc286",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Hasta ahora solo estamos cambiando los grados de libertad.\n",
+        "\n",
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿Cuál de las siguientes afirmaciones es correcta?\n",
+        "\n",
+        "a.  Aumentar los grados de libertad siempre mejora la capacidad de generalización.\n",
+        "\n",
+        "b.  Aumentar los grados de libertad aumenta la flexibilidad del modelo.\n",
+        "\n",
+        "c.  Un spline con más grados de libertad siempre tendrá menor error de prueba.\n",
+        "\n",
+        "d.  Los grados de libertad no afectan la forma del spline.\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Solución\n",
+        "\n",
+        "La respuesta correcta es:\n",
+        "\n",
+        "**b. Aumentar los grados de libertad aumenta la flexibilidad del modelo.**\n",
+        "\n",
+        "Un modelo más flexible puede reducir el error de entrenamiento, pero también puede aumentar el riesgo de sobreajuste.\n",
+        "\n",
+        "Por ello la complejidad debe elegirse utilizando datos de validación o validación cruzada.\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "## Splines de grado cero\n",
+        "\n",
+        "Los splines no tienen que ser cúbicos.\n",
+        "\n",
+        "Podemos modificar el grado mediante el argumento `degree`.\n",
+        "\n",
+        "Por ejemplo,\n",
+        "\n",
+        "``` python\n",
+        "degree=0\n",
+        "```\n",
+        "\n",
+        "produce funciones constantes por regiones."
+      ],
+      "id": "5bb290e5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "bs_degree0_spec = MS([\n",
+        "    bs(\n",
+        "        \"age\",\n",
+        "        df=3,\n",
+        "        degree=0\n",
+        "    )\n",
+        "]).fit(Wage)"
+      ],
+      "id": "d36f9e7f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Construimos la matriz."
+      ],
+      "id": "97053b89"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_degree0 = bs_degree0_spec.transform(Wage)"
+      ],
+      "id": "cd2c2c99",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ajustamos el modelo."
+      ],
+      "id": "dd9a24fe"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "model_degree0 = sm.OLS(\n",
+        "    wage,\n",
+        "    X_degree0\n",
+        ").fit()\n",
+        "\n",
+        "summarize(model_degree0)"
+      ],
+      "id": "c2d223ff",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Visualizar el spline de grado cero"
+      ],
+      "id": "1443e867"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_grid_degree0 = bs_degree0_spec.transform(\n",
+        "    age_grid_df\n",
+        ")\n",
+        "\n",
+        "pred_degree0 = model_degree0.predict(\n",
+        "    X_grid_degree0\n",
+        ")"
+      ],
+      "id": "85f8815e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.20\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    age_grid,\n",
+        "    pred_degree0,\n",
+        "    linewidth=2\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"Spline de grado 0\")\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "bde22921",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "El resultado es una función escalonada.\n",
+        "\n",
+        "Esto muestra que las funciones escalonadas que estudiamos anteriormente también pueden interpretarse dentro del marco general de los splines.\n",
+        "\n",
+        "## Conexión con `qcut()`\n",
+        "\n",
+        "Anteriormente podíamos dividir `age` en grupos utilizando cuantiles.\n",
+        "\n",
+        "Por ejemplo:"
+      ],
+      "id": "492418dd"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "age_bins = pd.qcut(\n",
+        "    age,\n",
+        "    q=4\n",
+        ")\n",
+        "\n",
+        "age_bins.value_counts().sort_index()"
+      ],
+      "id": "fe517b69",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Esto genera cuatro regiones separadas aproximadamente por los percentiles\n",
+        "\n",
+        "$$25\\%,\\qquad 50\\%,\\qquad 75\\%.$$\n",
+        "\n",
+        "Un spline de grado cero con los nodos correspondientes produce esencialmente el mismo tipo de ajuste: una constante diferente en cada región.\n",
+        "\n",
+        "La parametrización de los coeficientes puede ser distinta, pero la función ajustada representa el mismo tipo de estructura segmentada.\n",
+        "\n",
+        "## Splines cúbicos naturales\n",
+        "\n",
+        "Los splines cúbicos convencionales pueden ser relativamente inestables en los extremos del rango del predictor.\n",
+        "\n",
+        "Un **spline cúbico natural** agrega restricciones adicionales para que la función sea lineal en las regiones exteriores.\n",
+        "\n",
+        "Es decir, fuera de los nodos de frontera, el ajuste deja de comportarse como un polinomio cúbico general.\n",
+        "\n",
+        "Esto suele producir mayor estabilidad cerca de los extremos.\n",
+        "\n",
+        "## Ajustar un spline natural\n",
+        "\n",
+        "Utilizaremos cinco grados de libertad."
+      ],
+      "id": "fd27d6fd"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "ns_age_spec = MS([\n",
+        "    ns(\n",
+        "        \"age\",\n",
+        "        df=5\n",
+        "    )\n",
+        "]).fit(Wage)"
+      ],
+      "id": "0573892a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Construimos la matriz de diseño."
+      ],
+      "id": "891f1c78"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_ns = ns_age_spec.transform(Wage)\n",
+        "\n",
+        "X_ns.head()"
+      ],
+      "id": "2bcaeeaa",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ajustamos el modelo."
+      ],
+      "id": "340255c7"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "model_ns = sm.OLS(\n",
+        "    wage,\n",
+        "    X_ns\n",
+        ").fit()\n",
+        "\n",
+        "summarize(model_ns)"
+      ],
+      "id": "da24a8f5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Graficar el spline natural\n",
+        "\n",
+        "Transformamos la malla de edades."
+      ],
+      "id": "33b3a823"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_grid_ns = ns_age_spec.transform(\n",
+        "    age_grid_df\n",
+        ")"
+      ],
+      "id": "02598a74",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Obtenemos predicciones e intervalos."
+      ],
+      "id": "2a7220b7"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pred_ns = model_ns.get_prediction(\n",
+        "    X_grid_ns\n",
+        ").summary_frame()"
+      ],
+      "id": "f2e93ece",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.20\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    age_grid,\n",
+        "    pred_ns[\"mean\"],\n",
+        "    linewidth=2\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    age_grid,\n",
+        "    pred_ns[\"mean_ci_lower\"],\n",
+        "    linestyle=\"--\"\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    age_grid,\n",
+        "    pred_ns[\"mean_ci_upper\"],\n",
+        "    linestyle=\"--\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"Spline cúbico natural\")\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "d9cb66a1",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Comparar spline cúbico y spline natural\n",
+        "\n",
+        "Construiremos dos modelos con complejidad similar."
+      ],
+      "id": "25a56cb5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "cubic_spec = MS([\n",
+        "    bs(\n",
+        "        \"age\",\n",
+        "        df=5\n",
+        "    )\n",
+        "]).fit(Wage)\n",
+        "\n",
+        "natural_spec = MS([\n",
+        "    ns(\n",
+        "        \"age\",\n",
+        "        df=5\n",
+        "    )\n",
+        "]).fit(Wage)"
+      ],
+      "id": "98d8b763",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ajustamos ambos modelos."
+      ],
+      "id": "a15630e5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "model_cubic = sm.OLS(\n",
+        "    wage,\n",
+        "    cubic_spec.transform(Wage)\n",
+        ").fit()\n",
+        "\n",
+        "model_natural = sm.OLS(\n",
+        "    wage,\n",
+        "    natural_spec.transform(Wage)\n",
+        ").fit()"
+      ],
+      "id": "253584f8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Calculamos las predicciones."
+      ],
+      "id": "1f3bf9bc"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pred_cubic = model_cubic.predict(\n",
+        "    cubic_spec.transform(age_grid_df)\n",
+        ")\n",
+        "\n",
+        "pred_natural = model_natural.predict(\n",
+        "    natural_spec.transform(age_grid_df)\n",
+        ")"
+      ],
+      "id": "fad17269",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.15\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    age_grid,\n",
+        "    pred_cubic,\n",
+        "    linewidth=2,\n",
+        "    label=\"Spline cúbico\"\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    age_grid,\n",
+        "    pred_natural,\n",
+        "    linewidth=2,\n",
+        "    label=\"Spline cúbico natural\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"Spline cúbico vs. spline natural\")\n",
+        "plt.legend()\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "00568a83",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Observen especialmente el comportamiento en los extremos del rango de `age`.\n",
+        "\n",
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿Cuál es la principal diferencia entre un spline cúbico ordinario y un spline cúbico natural?\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Solución\n",
+        "\n",
+        "El spline cúbico natural impone restricciones adicionales en los extremos.\n",
+        "\n",
+        "En particular, el ajuste es lineal fuera de los nodos de frontera.\n",
+        "\n",
+        "Esto reduce la flexibilidad en regiones donde normalmente hay menos información y puede producir estimaciones más estables.\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "## Comparación con regresión polinómica\n",
+        "\n",
+        "Ahora compararemos un spline con una regresión polinómica.\n",
+        "\n",
+        "Construimos primero un polinomio de grado 15."
+      ],
+      "id": "2e149c3b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "poly15_spec = MS([\n",
+        "    poly(\n",
+        "        \"age\",\n",
+        "        degree=15\n",
+        "    )\n",
+        "]).fit(Wage)"
+      ],
+      "id": "fc140873",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ajustamos el modelo."
+      ],
+      "id": "41e8656d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "model_poly15 = sm.OLS(\n",
+        "    wage,\n",
+        "    poly15_spec.transform(Wage)\n",
+        ").fit()"
+      ],
+      "id": "6754b5d4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora ajustamos un spline natural con 15 grados de libertad."
+      ],
+      "id": "70fb5cdb"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "ns15_spec = MS([\n",
+        "    ns(\n",
+        "        \"age\",\n",
+        "        df=15\n",
+        "    )\n",
+        "]).fit(Wage)\n",
+        "\n",
+        "model_ns15 = sm.OLS(\n",
+        "    wage,\n",
+        "    ns15_spec.transform(Wage)\n",
+        ").fit()"
+      ],
+      "id": "d205e267",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Calculamos predicciones."
+      ],
+      "id": "b61395cc"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pred_poly15 = model_poly15.predict(\n",
+        "    poly15_spec.transform(age_grid_df)\n",
+        ")\n",
+        "\n",
+        "pred_ns15 = model_ns15.predict(\n",
+        "    ns15_spec.transform(age_grid_df)\n",
+        ")"
+      ],
+      "id": "33c74707",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Visualizar la comparación"
+      ],
+      "id": "e6ae2287"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    age,\n",
+        "    wage,\n",
+        "    alpha=0.15\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    age_grid,\n",
+        "    pred_poly15,\n",
+        "    linewidth=2,\n",
+        "    label=\"Polinomio grado 15\"\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    age_grid,\n",
+        "    pred_ns15,\n",
+        "    linewidth=2,\n",
+        "    label=\"Spline natural, df = 15\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Salario\")\n",
+        "plt.title(\"Regresión polinómica vs. spline natural\")\n",
+        "plt.legend()\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "68f44f80",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ambos modelos son muy flexibles.\n",
+        "\n",
+        "Sin embargo, utilizan esa flexibilidad de forma diferente.\n",
+        "\n",
+        "En la regresión polinómica aumentamos el grado:\n",
+        "\n",
+        "$$1,x,x^2,\\ldots,x^{15}.$$\n",
+        "\n",
+        "En un spline mantenemos polinomios de grado bajo y aumentamos el número de funciones base o nodos.\n",
+        "\n",
+        "Por ello los splines suelen producir un comportamiento más estable, especialmente cerca de las fronteras.\n",
+        "\n",
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿Por qué un polinomio de grado 15 puede presentar un comportamiento extremo cerca de los límites aunque ajuste razonablemente bien la región central?\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Solución\n",
+        "\n",
+        "Porque la regresión polinómica es global.\n",
+        "\n",
+        "Cada término del polinomio afecta todo el dominio de $X$.\n",
+        "\n",
+        "Los términos de grado alto, como\n",
+        "\n",
+        "$$x^{15},$$\n",
+        "\n",
+        "pueden cambiar rápidamente cuando $x$ se encuentra cerca de los extremos.\n",
+        "\n",
+        "Por ello pequeñas modificaciones en los coeficientes pueden producir grandes cambios en la curva en esas regiones.\n",
+        "\n",
+        "Los splines permiten introducir flexibilidad de forma más localizada.\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "## Error de entrenamiento y complejidad\n",
+        "\n",
+        "Podemos comparar diferentes grados de libertad utilizando el error cuadrático medio sobre los datos de entrenamiento.\n",
+        "\n",
+        "Definimos\n",
+        "\n",
+        "$$\\operatorname{MSE}\n",
+        "=\n",
+        "\\frac{1}{n}\n",
+        "\\sum_{i=1}^{n}\n",
+        "\\left(y_i-\\hat y_i\\right)^2.$$"
+      ],
+      "id": "3d32a0f2"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "dfs = range(3, 16)\n",
+        "\n",
+        "results = []\n",
+        "\n",
+        "for df in dfs:\n",
+        "\n",
+        "    spec = MS([\n",
+        "        bs(\n",
+        "            \"age\",\n",
+        "            df=df\n",
+        "        )\n",
+        "    ]).fit(Wage)\n",
+        "\n",
+        "    X = spec.transform(Wage)\n",
+        "\n",
+        "    model = sm.OLS(\n",
+        "        wage,\n",
+        "        X\n",
+        "    ).fit()\n",
+        "\n",
+        "    predictions = model.predict(X)\n",
+        "\n",
+        "    mse = np.mean(\n",
+        "        (wage - predictions) ** 2\n",
+        "    )\n",
+        "\n",
+        "    results.append({\n",
+        "        \"df\": df,\n",
+        "        \"MSE_train\": mse\n",
+        "    })"
+      ],
+      "id": "08a8027a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Convertimos los resultados en un `DataFrame`."
+      ],
+      "id": "72d5a76a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "results_df = pd.DataFrame(results)\n",
+        "\n",
+        "results_df"
+      ],
+      "id": "c7dd10ea",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Graficar el error de entrenamiento"
+      ],
+      "id": "ee51dae3"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(8, 5))\n",
+        "\n",
+        "plt.plot(\n",
+        "    results_df[\"df\"],\n",
+        "    results_df[\"MSE_train\"],\n",
+        "    marker=\"o\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Grados de libertad\")\n",
+        "plt.ylabel(\"MSE de entrenamiento\")\n",
+        "plt.title(\"Complejidad del spline y error de entrenamiento\")\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "4d3f08a5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "¿Qué ocurre con el error de entrenamiento conforme aumenta la flexibilidad?\n",
+        "\n",
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿Debemos elegir automáticamente el modelo con menor MSE de entrenamiento?\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Solución\n",
+        "\n",
+        "No.\n",
+        "\n",
+        "Aumentar la flexibilidad suele disminuir el error de entrenamiento, pero esto no garantiza mejor capacidad predictiva sobre datos nuevos.\n",
+        "\n",
+        "Un modelo demasiado flexible puede sobreajustar.\n",
+        "\n",
+        "Para seleccionar la complejidad del spline es preferible utilizar validación cruzada.\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "## Ejercicios\n",
+        "\n",
+        "### Ejercicio 1\n",
+        "\n",
+        "Construye un spline cúbico para `age` utilizando nodos interiores en\n",
+        "\n",
+        "$$30,\\qquad 45,\\qquad 55.$$\n",
+        "\n",
+        "Realiza lo siguiente:\n",
+        "\n",
+        "1.  ajusta el modelo;\n",
+        "2.  obtén sus predicciones sobre `age_grid`;\n",
+        "3.  grafica los datos y la curva ajustada;\n",
+        "4.  marca los nodos con líneas verticales;\n",
+        "5.  compara visualmente el resultado con el spline que utilizó nodos en $25$, $40$ y $60$.\n",
+        "\n",
+        "### Ejercicio 2\n",
+        "\n",
+        "Compara splines cúbicos con\n",
+        "\n",
+        "$$df=4,\\qquad df=8,\\qquad df=14.$$\n",
+        "\n",
+        "Grafica las tres curvas sobre la misma nube de puntos.\n",
+        "\n",
+        "Después responde:\n",
+        "\n",
+        "- ¿cuál es el modelo menos flexible?\n",
+        "- ¿cuál es el más flexible?\n",
+        "- ¿en qué regiones son más visibles las diferencias?\n",
+        "\n",
+        "### Ejercicio 3\n",
+        "\n",
+        "Ajusta:\n",
+        "\n",
+        "1.  un spline cúbico con `df=8`;\n",
+        "2.  un spline cúbico natural con `df=8`.\n",
+        "\n",
+        "Grafica ambos modelos.\n",
+        "\n",
+        "Después observa especialmente:\n",
+        "\n",
+        "- las edades más pequeñas;\n",
+        "- las edades más grandes.\n",
+        "\n",
+        "¿Qué diferencia encuentras?\n",
+        "\n",
+        "### Ejercicio 4\n",
+        "\n",
+        "Explica con tus propias palabras la diferencia entre:\n",
+        "\n",
+        "1.  regresión polinómica;\n",
+        "2.  funciones escalonadas;\n",
+        "3.  spline cúbico;\n",
+        "4.  spline cúbico natural.\n",
+        "\n",
+        "### Ejercicio 5\n",
+        "\n",
+        "Supón que queremos estudiar la relación entre `age` y `wage`, pero no sabemos cuántos grados de libertad utilizar.\n",
+        "\n",
+        "Describe un procedimiento apropiado para seleccionar la complejidad del spline.\n",
+        "\n",
+        "No es necesario implementarlo todavía."
+      ],
+      "id": "4a7133fd"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "C:\\Users\\HaydeePeruyero\\AppData\\Local\\Python\\pythoncore-3.14-64\\share\\jupyter\\kernels\\python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

@@ -23,10 +23,45 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -73,7 +108,42 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Buscar"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
+
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -291,8 +361,59 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#preparación" id="toc-preparación" class="nav-link active" data-scroll-target="#preparación"><span class="header-section-number">7.1</span> Preparación</a></li>
+  <li><a href="#preparar-las-variables" id="toc-preparar-las-variables" class="nav-link" data-scroll-target="#preparar-las-variables"><span class="header-section-number">7.2</span> Preparar las variables</a></li>
+  <li><a href="#nuestro-primer-gam" id="toc-nuestro-primer-gam" class="nav-link" data-scroll-target="#nuestro-primer-gam"><span class="header-section-number">7.3</span> Nuestro primer GAM</a></li>
+  <li><a href="#qué-significa-cada-término" id="toc-qué-significa-cada-término" class="nav-link" data-scroll-target="#qué-significa-cada-término"><span class="header-section-number">7.4</span> ¿Qué significa cada término?</a></li>
+  <li><a href="#efecto-parcial-de-age" id="toc-efecto-parcial-de-age" class="nav-link" data-scroll-target="#efecto-parcial-de-age"><span class="header-section-number">7.5</span> Efecto parcial de <code>age</code></a>
+  <ul>
+  <li><a href="#cómo-interpretar-esta-gráfica" id="toc-cómo-interpretar-esta-gráfica" class="nav-link" data-scroll-target="#cómo-interpretar-esta-gráfica"><span class="header-section-number">7.5.1</span> ¿Cómo interpretar esta gráfica?</a></li>
+  </ul></li>
+  <li><a href="#efecto-parcial-de-year" id="toc-efecto-parcial-de-year" class="nav-link" data-scroll-target="#efecto-parcial-de-year"><span class="header-section-number">7.6</span> Efecto parcial de <code>year</code></a></li>
+  <li><a href="#efecto-de-una-variable-categórica" id="toc-efecto-de-una-variable-categórica" class="nav-link" data-scroll-target="#efecto-de-una-variable-categórica"><span class="header-section-number">7.7</span> Efecto de una variable categórica</a></li>
+  <li><a href="#cómo-interpretar-esta-gráfica-1" id="toc-cómo-interpretar-esta-gráfica-1" class="nav-link" data-scroll-target="#cómo-interpretar-esta-gráfica-1"><span class="header-section-number">7.8</span> ¿Cómo interpretar esta gráfica?</a></li>
+  <li><a href="#interpretar-el-modelo-de-manera-conjunta" id="toc-interpretar-el-modelo-de-manera-conjunta" class="nav-link" data-scroll-target="#interpretar-el-modelo-de-manera-conjunta"><span class="header-section-number">7.9</span> Interpretar el modelo de manera conjunta</a></li>
+  <li><a href="#predicciones-con-el-gam" id="toc-predicciones-con-el-gam" class="nav-link" data-scroll-target="#predicciones-con-el-gam"><span class="header-section-number">7.10</span> Predicciones con el GAM</a></li>
+  <li><a href="#necesitamos-que-todos-los-términos-sean-no-lineales" id="toc-necesitamos-que-todos-los-términos-sean-no-lineales" class="nav-link" data-scroll-target="#necesitamos-que-todos-los-términos-sean-no-lineales"><span class="header-section-number">7.11</span> ¿Necesitamos que todos los términos sean no lineales?</a></li>
+  <li><a href="#tres-modelos-para-estudiar-year" id="toc-tres-modelos-para-estudiar-year" class="nav-link" data-scroll-target="#tres-modelos-para-estudiar-year"><span class="header-section-number">7.12</span> Tres modelos para estudiar <code>year</code></a>
+  <ul>
+  <li><a href="#modelo-1-sin-year" id="toc-modelo-1-sin-year" class="nav-link" data-scroll-target="#modelo-1-sin-year"><span class="header-section-number">7.12.1</span> Modelo 1: sin <code>year</code></a></li>
+  <li><a href="#modelo-2-year-lineal" id="toc-modelo-2-year-lineal" class="nav-link" data-scroll-target="#modelo-2-year-lineal"><span class="header-section-number">7.12.2</span> Modelo 2: <code>year</code> lineal</a></li>
+  <li><a href="#modelo-3-year-suavizado" id="toc-modelo-3-year-suavizado" class="nav-link" data-scroll-target="#modelo-3-year-suavizado"><span class="header-section-number">7.12.3</span> Modelo 3: <code>year</code> suavizado</a></li>
+  </ul></li>
+  <li><a href="#comparación-de-modelos" id="toc-comparación-de-modelos" class="nav-link" data-scroll-target="#comparación-de-modelos"><span class="header-section-number">7.13</span> Comparación de modelos</a></li>
+  <li><a href="#una-observación-sobre-anova-en-gams" id="toc-una-observación-sobre-anova-en-gams" class="nav-link" data-scroll-target="#una-observación-sobre-anova-en-gams"><span class="header-section-number">7.14</span> Una observación sobre ANOVA en GAMs</a>
+  <ul>
+  <li><a href="#qué-ocurre-con-age" id="toc-qué-ocurre-con-age" class="nav-link" data-scroll-target="#qué-ocurre-con-age"><span class="header-section-number">7.14.1</span> ¿Qué ocurre con <code>age</code>?</a></li>
+  </ul></li>
+  <li><a href="#gams-para-clasificación" id="toc-gams-para-clasificación" class="nav-link" data-scroll-target="#gams-para-clasificación"><span class="header-section-number">7.15</span> GAMs para clasificación</a></li>
+  <li><a href="#gam-logístico" id="toc-gam-logístico" class="nav-link" data-scroll-target="#gam-logístico"><span class="header-section-number">7.16</span> GAM logístico</a></li>
+  <li><a href="#un-problema-con-categorías-poco-representadas" id="toc-un-problema-con-categorías-poco-representadas" class="nav-link" data-scroll-target="#un-problema-con-categorías-poco-representadas"><span class="header-section-number">7.17</span> Un problema con categorías poco representadas</a></li>
+  <li><a href="#ajuste-restringido" id="toc-ajuste-restringido" class="nav-link" data-scroll-target="#ajuste-restringido"><span class="header-section-number">7.18</span> Ajuste restringido</a></li>
+  <li><a href="#efecto-parcial-de-age-en-clasificación" id="toc-efecto-parcial-de-age-en-clasificación" class="nav-link" data-scroll-target="#efecto-parcial-de-age-en-clasificación"><span class="header-section-number">7.19</span> Efecto parcial de <code>age</code> en clasificación</a>
+  <ul>
+  <li><a href="#importante" id="toc-importante" class="nav-link" data-scroll-target="#importante"><span class="header-section-number">7.19.1</span> Importante</a></li>
+  </ul></li>
+  <li><a href="#probabilidades-predichas" id="toc-probabilidades-predichas" class="nav-link" data-scroll-target="#probabilidades-predichas"><span class="header-section-number">7.20</span> Probabilidades predichas</a></li>
+  <li><a href="#clasificación" id="toc-clasificación" class="nav-link" data-scroll-target="#clasificación"><span class="header-section-number">7.21</span> Clasificación</a></li>
+  <li><a href="#qué-hemos-ganado-con-un-gam" id="toc-qué-hemos-ganado-con-un-gam" class="nav-link" data-scroll-target="#qué-hemos-ganado-con-un-gam"><span class="header-section-number">7.22</span> ¿Qué hemos ganado con un GAM?</a></li>
+  <li><a href="#limitación-aditividad" id="toc-limitación-aditividad" class="nav-link" data-scroll-target="#limitación-aditividad"><span class="header-section-number">7.23</span> Limitación: aditividad</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">7.24</span> Ejercicios</a>
+  <ul>
+  <li><a href="#ejercicio-1.-interpretación-de-efectos-parciales" id="toc-ejercicio-1.-interpretación-de-efectos-parciales" class="nav-link" data-scroll-target="#ejercicio-1.-interpretación-de-efectos-parciales"><span class="header-section-number">7.24.1</span> Ejercicio 1. Interpretación de efectos parciales</a></li>
+  <li><a href="#ejercicio-2.-age-lineal-vs.-no-lineal" id="toc-ejercicio-2.-age-lineal-vs.-no-lineal" class="nav-link" data-scroll-target="#ejercicio-2.-age-lineal-vs.-no-lineal"><span class="header-section-number">7.24.2</span> Ejercicio 2. <code>age</code> lineal vs.&nbsp;no lineal</a></li>
+  <li><a href="#ejercicio-3.-year-lineal-vs.-no-lineal" id="toc-ejercicio-3.-year-lineal-vs.-no-lineal" class="nav-link" data-scroll-target="#ejercicio-3.-year-lineal-vs.-no-lineal"><span class="header-section-number">7.24.3</span> Ejercicio 3. <code>year</code> lineal vs.&nbsp;no lineal</a></li>
+  <li><a href="#ejercicio-4.-comparación-con-regresión-lineal" id="toc-ejercicio-4.-comparación-con-regresión-lineal" class="nav-link" data-scroll-target="#ejercicio-4.-comparación-con-regresión-lineal"><span class="header-section-number">7.24.4</span> Ejercicio 4. Comparación con regresión lineal</a></li>
+  <li><a href="#ejercicio-5.-clasificación" id="toc-ejercicio-5.-clasificación" class="nav-link" data-scroll-target="#ejercicio-5.-clasificación"><span class="header-section-number">7.24.5</span> Ejercicio 5. Clasificación</a></li>
+  <li><a href="#ejercicio-6.-interpretación" id="toc-ejercicio-6.-interpretación" class="nav-link" data-scroll-target="#ejercicio-6.-interpretación"><span class="header-section-number">7.24.6</span> Ejercicio 6. Interpretación</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -316,8 +437,1678 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>Hasta ahora hemos estudiado diferentes maneras de introducir no linealidad cuando tenemos una variable predictora.</p>
+<p>Entre ellas:</p>
+<ul>
+<li>regresión polinomial;</li>
+<li>splines;</li>
+<li>smoothing splines;</li>
+<li>regresión local.</li>
+</ul>
+<p>Los <strong>Modelos Aditivos Generalizados</strong>, o GAMs, permiten extender estas ideas al caso en el que tenemos varias variables predictoras.</p>
+<p>La idea fundamental es reemplazar los términos lineales de una regresión múltiple por funciones flexibles.</p>
+<p>En una regresión lineal múltiple tenemos</p>
+<p><span class="math display">\[Y_i
+=
+\beta_0
++
+\beta_1X_{i1}
++
+\beta_2X_{i2}
++\cdots+
+\beta_pX_{ip}
++
+\varepsilon_i.\]</span></p>
+<p>En un GAM escribimos</p>
+<p><span class="math display">\[Y_i
+=
+\beta_0
++
+f_1(X_{i1})
++
+f_2(X_{i2})
++\cdots+
+f_p(X_{ip})
++
+\varepsilon_i.\]</span></p>
+<p>Cada función <span class="math inline">\(f_j\)</span> puede tener una forma diferente.</p>
+<div class="diapositivas">
+<div class="diapositivas-title">
+<p>📝 <strong>Diapositivas</strong></p>
+</div>
+<div class="diapositivas-body">
+<p><a href="https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/2.8_GAMs.pdf">Ver diapositivas GAMs</a></p>
+</div>
+</div>
+<section id="preparación" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="preparación"><span class="header-section-number">7.1</span> Preparación</h2>
+<p>Utilizaremos nuevamente el conjunto de datos <code>Wage</code>.</p>
+<div id="6786975f" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ISLP <span class="im">import</span> load_data</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pygam <span class="im">import</span> LinearGAM, LogisticGAM, s, l, f</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Cargamos los datos.</p>
+<div id="688ffe1f" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Wage <span class="op">=</span> load_data(<span class="st">"Wage"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Revisamos las primeras observaciones.</p>
+<div id="b5eb6908" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Wage.head()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="51">
+<div>
 
 
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">year</th>
+<th data-quarto-table-cell-role="th">age</th>
+<th data-quarto-table-cell-role="th">maritl</th>
+<th data-quarto-table-cell-role="th">race</th>
+<th data-quarto-table-cell-role="th">education</th>
+<th data-quarto-table-cell-role="th">region</th>
+<th data-quarto-table-cell-role="th">jobclass</th>
+<th data-quarto-table-cell-role="th">health</th>
+<th data-quarto-table-cell-role="th">health_ins</th>
+<th data-quarto-table-cell-role="th">logwage</th>
+<th data-quarto-table-cell-role="th">wage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>2006</td>
+<td>18</td>
+<td>1. Never Married</td>
+<td>1. White</td>
+<td>1. &lt; HS Grad</td>
+<td>2. Middle Atlantic</td>
+<td>1. Industrial</td>
+<td>1. &lt;=Good</td>
+<td>2. No</td>
+<td>4.318063</td>
+<td>75.043154</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>2004</td>
+<td>24</td>
+<td>1. Never Married</td>
+<td>1. White</td>
+<td>4. College Grad</td>
+<td>2. Middle Atlantic</td>
+<td>2. Information</td>
+<td>2. &gt;=Very Good</td>
+<td>2. No</td>
+<td>4.255273</td>
+<td>70.476020</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>2003</td>
+<td>45</td>
+<td>2. Married</td>
+<td>1. White</td>
+<td>3. Some College</td>
+<td>2. Middle Atlantic</td>
+<td>1. Industrial</td>
+<td>1. &lt;=Good</td>
+<td>1. Yes</td>
+<td>4.875061</td>
+<td>130.982177</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>2003</td>
+<td>43</td>
+<td>2. Married</td>
+<td>3. Asian</td>
+<td>4. College Grad</td>
+<td>2. Middle Atlantic</td>
+<td>2. Information</td>
+<td>2. &gt;=Very Good</td>
+<td>1. Yes</td>
+<td>5.041393</td>
+<td>154.685293</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>2005</td>
+<td>50</td>
+<td>4. Divorced</td>
+<td>1. White</td>
+<td>2. HS Grad</td>
+<td>2. Middle Atlantic</td>
+<td>2. Information</td>
+<td>1. &lt;=Good</td>
+<td>1. Yes</td>
+<td>4.318063</td>
+<td>75.043154</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Nos interesarán principalmente:</p>
+<ul>
+<li><code>age</code>: edad;</li>
+<li><code>year</code>: año;</li>
+<li><code>education</code>: nivel educativo;</li>
+<li><code>wage</code>: salario.</li>
+</ul>
+</section>
+<section id="preparar-las-variables" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="preparar-las-variables"><span class="header-section-number">7.2</span> Preparar las variables</h2>
+<p><code>pygam</code> espera que la matriz de predictores sea bidimensional.</p>
+<p>Además, para una variable categórica como <code>education</code>, necesitamos una representación numérica.</p>
+<p>Primero revisamos sus categorías.</p>
+<div id="ef4df8ca" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Wage[<span class="st">"education"</span>].cat.categories</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="52">
+<pre><code>Index(['1. &lt; HS Grad', '2. HS Grad', '3. Some College', '4. College Grad',
+       '5. Advanced Degree'],
+      dtype='object')</code></pre>
+</div>
+</div>
+<p>Podemos obtener códigos enteros con:</p>
+<div id="0c8fc1a5" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>education_code <span class="op">=</span> Wage[<span class="st">"education"</span>].cat.codes</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Construimos la matriz de predictores.</p>
+<div id="6d4ed9d9" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.column_stack([</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    Wage[<span class="st">"age"</span>],</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    Wage[<span class="st">"year"</span>],</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    education_code</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> Wage[<span class="st">"wage"</span>].to_numpy()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Revisamos las dimensiones.</p>
+<div id="73374d08" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>X.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="55">
+<pre><code>(3000, 3)</code></pre>
+</div>
+</div>
+<p>La matriz tiene tres columnas:</p>
+<p><span class="math display">\[X_1=\text{age},
+\qquad
+X_2=\text{year},
+\qquad
+X_3=\text{education}.\]</span></p>
+</section>
+<section id="nuestro-primer-gam" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="nuestro-primer-gam"><span class="header-section-number">7.3</span> Nuestro primer GAM</h2>
+<p>Consideremos el modelo</p>
+<p><span class="math display">\[\text{wage}
+=
+\beta_0
++
+f_1(\text{age})
++
+f_2(\text{year})
++
+f_3(\text{education})
++
+\varepsilon.\]</span></p>
+<p>Utilizaremos:</p>
+<ul>
+<li>un término suavizado para <code>age</code>;</li>
+<li>un término suavizado para <code>year</code>;</li>
+<li>un término categórico para <code>education</code>.</li>
+</ul>
+<p>En <code>pygam</code> podemos escribir:</p>
+<div id="dc6af53c" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>gam <span class="op">=</span> LinearGAM(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">0</span>) <span class="op">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    f(<span class="dv">2</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Aquí:</p>
+<ul>
+<li><code>s(0)</code> aplica un suavizador a la primera columna;</li>
+<li><code>s(1)</code> aplica un suavizador a la segunda columna;</li>
+<li><code>f(2)</code> trata la tercera columna como una variable categórica.</li>
+</ul>
+<p>Ajustamos el modelo.</p>
+<div id="f0badee0" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>gam.fit(X, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="57">
+<pre><code>LinearGAM(callbacks=[Deviance(), Diffs()], fit_intercept=True, 
+   max_iter=100, scale=None, terms=s(0) + s(1) + f(2) + intercept, 
+   tol=0.0001, verbose=False)</code></pre>
+</div>
+</div>
+</section>
+<section id="qué-significa-cada-término" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="qué-significa-cada-término"><span class="header-section-number">7.4</span> ¿Qué significa cada término?</h2>
+<p>Nuestro modelo tiene la forma</p>
+<p><span class="math display">\[\hat y
+=
+\hat\beta_0
++
+\hat f_1(\text{age})
++
+\hat f_2(\text{year})
++
+\hat f_3(\text{education}).\]</span></p>
+<p>Esto significa que la predicción se construye sumando contribuciones separadas.</p>
+<p>Por ejemplo:</p>
+<p><span class="math display">\[\hat y
+=
+\text{intercepto}
++
+\text{efecto de age}
++
+\text{efecto de year}
++
+\text{efecto de education}.\]</span></p>
+<p>La palabra <strong>aditivo</strong> proviene precisamente de esta estructura.</p>
+</section>
+<section id="efecto-parcial-de-age" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="efecto-parcial-de-age"><span class="header-section-number">7.5</span> Efecto parcial de <code>age</code></h2>
+<p>Una de las principales ventajas de los GAMs es que podemos examinar el efecto de cada predictor por separado.</p>
+<p>Construimos una malla para el término correspondiente a <code>age</code>.</p>
+<div id="b72c6c3d" class="cell" data-execution_count="10">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>XX <span class="op">=</span> gam.generate_X_grid(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    term<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Calculamos el efecto parcial.</p>
+<div id="e31e7b71" class="cell" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>partial_age <span class="op">=</span> gam.partial_dependence(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    term<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    X<span class="op">=</span>XX</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>También podemos obtener intervalos de confianza.</p>
+<div id="90c6c8fb" class="cell" data-execution_count="12">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pdep_age, confi_age <span class="op">=</span> gam.partial_dependence(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    term<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    X<span class="op">=</span>XX,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="fl">0.95</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Visualizamos el efecto.</p>
+<div id="6bd6f57c" class="cell" data-execution_count="13">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    XX[:, <span class="dv">0</span>],</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    pdep_age,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    XX[:, <span class="dv">0</span>],</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    confi_age[:, <span class="dv">0</span>],</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=</span><span class="st">"--"</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    XX[:, <span class="dv">0</span>],</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    confi_age[:, <span class="dv">1</span>],</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=</span><span class="st">"--"</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Edad"</span>)</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Efecto parcial sobre wage"</span>)</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Efecto parcial de age"</span>)</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte7_files/figure-html/cell-14-output-1.png" width="746" height="525" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="cómo-interpretar-esta-gráfica" class="level3" data-number="7.5.1">
+<h3 data-number="7.5.1" class="anchored" data-anchor-id="cómo-interpretar-esta-gráfica"><span class="header-section-number">7.5.1</span> ¿Cómo interpretar esta gráfica?</h3>
+<p>La curva representa la contribución estimada de <code>age</code> al salario.</p>
+<p>No representa directamente el salario esperado.</p>
+<p>Representa</p>
+<p><span class="math display">\[\hat f_1(\text{age}),\]</span></p>
+<p>es decir, la contribución de la edad después de considerar simultáneamente los demás términos del modelo.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un valor positivo de <span class="math inline">\(\hat f_1(\text{age})\)</span> indica que esa edad contribuye a aumentar la predicción respecto al nivel promedio del modelo.</p>
+<p>Un valor negativo indica una contribución en sentido contrario.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="efecto-parcial-de-year" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="efecto-parcial-de-year"><span class="header-section-number">7.6</span> Efecto parcial de <code>year</code></h2>
+<p>Repetimos el procedimiento para <code>year</code>.</p>
+<div id="64d2bda6" class="cell" data-execution_count="14">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>XX_year <span class="op">=</span> gam.generate_X_grid(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    term<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="14d7e1f7" class="cell" data-execution_count="15">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pdep_year, confi_year <span class="op">=</span> gam.partial_dependence(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    term<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    X<span class="op">=</span>XX_year,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="fl">0.95</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="f694c314" class="cell" data-execution_count="16">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    XX_year[:, <span class="dv">1</span>],</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    pdep_year,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    XX_year[:, <span class="dv">1</span>],</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    confi_year[:, <span class="dv">0</span>],</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=</span><span class="st">"--"</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    XX_year[:, <span class="dv">1</span>],</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    confi_year[:, <span class="dv">1</span>],</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=</span><span class="st">"--"</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Año"</span>)</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Efecto parcial sobre wage"</span>)</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Efecto parcial de year"</span>)</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte7_files/figure-html/cell-17-output-1.png" width="737" height="525" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>🧠 Pregunta
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿El efecto de <code>year</code> parece claramente no lineal?</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Discusión
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Es posible que el efecto de <code>year</code> tenga una forma bastante cercana a una recta.</p>
+<p>Esto plantea una pregunta importante:</p>
+<blockquote class="blockquote">
+<p>¿Realmente necesitamos un término no lineal para <code>year</code>?</p>
+</blockquote>
+<p>Más adelante compararemos modelos para responderlo.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="efecto-de-una-variable-categórica" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="efecto-de-una-variable-categórica"><span class="header-section-number">7.7</span> Efecto de una variable categórica</h2>
+<p>El término</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>f(<span class="dv">2</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>corresponde a <code>education</code>.</p>
+<p>A diferencia de <code>age</code> y <code>year</code>, <code>education</code> no es una variable continua. Por tanto, no queremos construir una curva sobre una malla de muchos valores.</p>
+<p>Queremos estimar una contribución para <strong>cada nivel educativo</strong>.</p>
+<p>Primero revisamos las categorías.</p>
+<div id="5d3b94f3" class="cell" data-execution_count="17">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>education_levels <span class="op">=</span> Wage[<span class="st">"education"</span>].cat.categories</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>education_levels</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="65">
+<pre><code>Index(['1. &lt; HS Grad', '2. HS Grad', '3. Some College', '4. College Grad',
+       '5. Advanced Degree'],
+      dtype='object')</code></pre>
+</div>
+</div>
+<p>Recordemos que <code>pygam</code> trabaja con los códigos numéricos de estas categorías:</p>
+<div id="8492eefc" class="cell" data-execution_count="18">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>education_codes <span class="op">=</span> np.arange(<span class="bu">len</span>(education_levels))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>education_codes</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="66">
+<pre><code>array([0, 1, 2, 3, 4])</code></pre>
+</div>
+</div>
+<p>Ahora construiremos una matriz con una fila para cada nivel educativo.</p>
+<p>Mantendremos <code>age</code> y <code>year</code> en valores representativos y cambiaremos únicamente <code>education</code>.</p>
+<div id="da8aa9c8" class="cell" data-execution_count="19">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>X_education <span class="op">=</span> np.column_stack([</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    np.repeat(Wage[<span class="st">"age"</span>].mean(), <span class="bu">len</span>(education_levels)),</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    np.repeat(Wage[<span class="st">"year"</span>].mean(), <span class="bu">len</span>(education_levels)),</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    education_codes</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Podemos revisar la matriz.</p>
+<div id="ad511926" class="cell" data-execution_count="20">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>X_education</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="68">
+<pre><code>array([[4.24146667e+01, 2.00579100e+03, 0.00000000e+00],
+       [4.24146667e+01, 2.00579100e+03, 1.00000000e+00],
+       [4.24146667e+01, 2.00579100e+03, 2.00000000e+00],
+       [4.24146667e+01, 2.00579100e+03, 3.00000000e+00],
+       [4.24146667e+01, 2.00579100e+03, 4.00000000e+00]])</code></pre>
+</div>
+</div>
+<p>Cada fila corresponde a un nivel educativo distinto, mientras que <code>age</code> y <code>year</code> permanecen constantes.</p>
+<p>Calculamos ahora el efecto parcial del término categórico.</p>
+<div id="94265e89" class="cell" data-execution_count="21">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>pdep_education, confi_education <span class="op">=</span> gam.partial_dependence(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    term<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    X<span class="op">=</span>X_education,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="fl">0.95</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Podemos revisar los resultados.</p>
+<div id="6c61763d" class="cell" data-execution_count="22">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>pdep_education</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="70">
+<pre><code>array([-26.92229485, -16.06307378,  -3.59223096,  11.15276953,
+        35.42483245])</code></pre>
+</div>
+</div>
+<p>Ahora tenemos exactamente un valor por cada nivel educativo.</p>
+<div id="94f15ff2" class="cell" data-execution_count="23">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(education_levels), <span class="bu">len</span>(pdep_education)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="71">
+<pre><code>(5, 5)</code></pre>
+</div>
+</div>
+<p>Representamos las contribuciones.</p>
+<div id="e6bfde8b" class="cell" data-execution_count="24">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>x_pos <span class="op">=</span> np.arange(<span class="bu">len</span>(education_levels))</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>plt.errorbar(</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    x_pos,</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    pdep_education,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    yerr<span class="op">=</span>[</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>        pdep_education <span class="op">-</span> confi_education[:, <span class="dv">0</span>],</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>        confi_education[:, <span class="dv">1</span>] <span class="op">-</span> pdep_education</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>    fmt<span class="op">=</span><span class="st">"o"</span>,</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>    capsize<span class="op">=</span><span class="dv">4</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>plt.axhline(</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=</span><span class="st">"--"</span>,</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.5</span></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>plt.xticks(</span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>    x_pos,</span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>    education_levels,</span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>    rotation<span class="op">=</span><span class="dv">45</span>,</span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>    ha<span class="op">=</span><span class="st">"right"</span></span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Nivel educativo"</span>)</span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Efecto parcial sobre wage"</span>)</span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Efecto parcial de education"</span>)</span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte7_files/figure-html/cell-25-output-1.png" width="951" height="571" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="cómo-interpretar-esta-gráfica-1" class="level2" data-number="7.8">
+<h2 data-number="7.8" class="anchored" data-anchor-id="cómo-interpretar-esta-gráfica-1"><span class="header-section-number">7.8</span> ¿Cómo interpretar esta gráfica?</h2>
+<p>Cada punto representa la contribución estimada de un nivel educativo al modelo.</p>
+<p>Es decir, estamos visualizando</p>
+<p><span class="math display">\[\hat f_3(\text{education}).\]</span></p>
+<p>Un valor mayor indica una contribución más positiva a la predicción de <code>wage</code>, una vez considerados simultáneamente los efectos de <code>age</code> y <code>year</code>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El eje vertical representa el <strong>efecto parcial</strong>, no el salario predicho directamente.</p>
+<p>El salario estimado completo se obtiene sumando</p>
+<p><span class="math display">\[\hat y
+=
+\hat\beta_0
++
+\hat f_1(\text{age})
++
+\hat f_2(\text{year})
++
+\hat f_3(\text{education}).\]</span></p>
+</div>
+</div>
+</section>
+<section id="interpretar-el-modelo-de-manera-conjunta" class="level2" data-number="7.9">
+<h2 data-number="7.9" class="anchored" data-anchor-id="interpretar-el-modelo-de-manera-conjunta"><span class="header-section-number">7.9</span> Interpretar el modelo de manera conjunta</h2>
+<p>Recordemos que el modelo es</p>
+<p><span class="math display">\[\hat y
+=
+\hat\beta_0
++
+\hat f_1(\text{age})
++
+\hat f_2(\text{year})
++
+\hat f_3(\text{education}).\]</span></p>
+<p>Supongamos conceptualmente que para una persona obtenemos</p>
+<p><span class="math display">\[\hat\beta_0=100,\]</span></p>
+<p><span class="math display">\[\hat f_1(\text{age})=15,\]</span></p>
+<p><span class="math display">\[\hat f_2(\text{year})=5,\]</span></p>
+<p><span class="math display">\[\hat f_3(\text{education})=20.\]</span></p>
+<p>Entonces</p>
+<p><span class="math display">\[\hat y
+=
+100+15+5+20
+=
+140.\]</span></p>
+<p>Cada término aporta una contribución separada.</p>
+</section>
+<section id="predicciones-con-el-gam" class="level2" data-number="7.10">
+<h2 data-number="7.10" class="anchored" data-anchor-id="predicciones-con-el-gam"><span class="header-section-number">7.10</span> Predicciones con el GAM</h2>
+<p>Una vez ajustado el modelo podemos hacer predicciones.</p>
+<div id="6a54ef4e" class="cell" data-execution_count="25">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>y_hat <span class="op">=</span> gam.predict(X)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Podemos comparar valores observados y predichos.</p>
+<div id="82c93cf2" class="cell" data-execution_count="26">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    y_hat,</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.4</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>min_val <span class="op">=</span> <span class="bu">min</span>(y.<span class="bu">min</span>(), y_hat.<span class="bu">min</span>())</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>max_val <span class="op">=</span> <span class="bu">max</span>(y.<span class="bu">max</span>(), y_hat.<span class="bu">max</span>())</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    [min_val, max_val],</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>    [min_val, max_val],</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=</span><span class="st">"--"</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Wage observado"</span>)</span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Wage predicho"</span>)</span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Valores observados vs. predichos"</span>)</span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte7_files/figure-html/cell-27-output-1.png" width="594" height="598" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Si las predicciones fueran perfectas, todos los puntos caerían sobre la diagonal.</p>
+</section>
+<section id="necesitamos-que-todos-los-términos-sean-no-lineales" class="level2" data-number="7.11">
+<h2 data-number="7.11" class="anchored" data-anchor-id="necesitamos-que-todos-los-términos-sean-no-lineales"><span class="header-section-number">7.11</span> ¿Necesitamos que todos los términos sean no lineales?</h2>
+<p>Un GAM no obliga a que todos los predictores sean suavizados.</p>
+<p>Podemos combinar términos lineales y no lineales.</p>
+<p>Por ejemplo,</p>
+<p><span class="math display">\[\text{wage}
+=
+\beta_0
++
+f_1(\text{age})
++
+\beta_2\text{year}
++
+f_3(\text{education})
++
+\varepsilon.\]</span></p>
+<p>En <code>pygam</code>:</p>
+<div id="4de93d71" class="cell" data-execution_count="27">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>gam_year_linear <span class="op">=</span> LinearGAM(</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">0</span>) <span class="op">+</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    l(<span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    f(<span class="dv">2</span>)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Ajustamos el modelo.</p>
+<div id="2ddfd7a3" class="cell" data-execution_count="28">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>gam_year_linear.fit(X, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="76">
+<pre><code>LinearGAM(callbacks=[Deviance(), Diffs()], fit_intercept=True, 
+   max_iter=100, scale=None, terms=s(0) + l(1) + f(2) + intercept, 
+   tol=0.0001, verbose=False)</code></pre>
+</div>
+</div>
+<p>Ahora <code>age</code> sigue teniendo una relación flexible, pero <code>year</code> entra linealmente.</p>
+</section>
+<section id="tres-modelos-para-estudiar-year" class="level2" data-number="7.12">
+<h2 data-number="7.12" class="anchored" data-anchor-id="tres-modelos-para-estudiar-year"><span class="header-section-number">7.12</span> Tres modelos para estudiar <code>year</code></h2>
+<p>Podemos comparar tres posibilidades.</p>
+<section id="modelo-1-sin-year" class="level3" data-number="7.12.1">
+<h3 data-number="7.12.1" class="anchored" data-anchor-id="modelo-1-sin-year"><span class="header-section-number">7.12.1</span> Modelo 1: sin <code>year</code></h3>
+<p><span class="math display">\[\text{wage}
+=
+\beta_0
++
+f_1(\text{age})
++
+f_3(\text{education})
++
+\varepsilon.\]</span></p>
+<div id="88a3fd95" class="cell" data-execution_count="29">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>gam_no_year <span class="op">=</span> LinearGAM(</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">0</span>) <span class="op">+</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    f(<span class="dv">2</span>)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>gam_no_year.fit(X, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="77">
+<pre><code>LinearGAM(callbacks=[Deviance(), Diffs()], fit_intercept=True, 
+   max_iter=100, scale=None, terms=s(0) + f(2) + intercept, 
+   tol=0.0001, verbose=False)</code></pre>
+</div>
+</div>
+</section>
+<section id="modelo-2-year-lineal" class="level3" data-number="7.12.2">
+<h3 data-number="7.12.2" class="anchored" data-anchor-id="modelo-2-year-lineal"><span class="header-section-number">7.12.2</span> Modelo 2: <code>year</code> lineal</h3>
+<p><span class="math display">\[\text{wage}
+=
+\beta_0
++
+f_1(\text{age})
++
+\beta_2\text{year}
++
+f_3(\text{education})
++
+\varepsilon.\]</span></p>
+<div id="f85fdce3" class="cell" data-execution_count="30">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>gam_year_linear <span class="op">=</span> LinearGAM(</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">0</span>) <span class="op">+</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    l(<span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    f(<span class="dv">2</span>)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>gam_year_linear.fit(X, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="78">
+<pre><code>LinearGAM(callbacks=[Deviance(), Diffs()], fit_intercept=True, 
+   max_iter=100, scale=None, terms=s(0) + l(1) + f(2) + intercept, 
+   tol=0.0001, verbose=False)</code></pre>
+</div>
+</div>
+</section>
+<section id="modelo-3-year-suavizado" class="level3" data-number="7.12.3">
+<h3 data-number="7.12.3" class="anchored" data-anchor-id="modelo-3-year-suavizado"><span class="header-section-number">7.12.3</span> Modelo 3: <code>year</code> suavizado</h3>
+<p><span class="math display">\[\text{wage}
+=
+\beta_0
++
+f_1(\text{age})
++
+f_2(\text{year})
++
+f_3(\text{education})
++
+\varepsilon.\]</span></p>
+<div id="d445364d" class="cell" data-execution_count="31">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>gam_year_smooth <span class="op">=</span> LinearGAM(</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">0</span>) <span class="op">+</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    f(<span class="dv">2</span>)</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>gam_year_smooth.fit(X, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="79">
+<pre><code>LinearGAM(callbacks=[Deviance(), Diffs()], fit_intercept=True, 
+   max_iter=100, scale=None, terms=s(0) + s(1) + f(2) + intercept, 
+   tol=0.0001, verbose=False)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="comparación-de-modelos" class="level2" data-number="7.13">
+<h2 data-number="7.13" class="anchored" data-anchor-id="comparación-de-modelos"><span class="header-section-number">7.13</span> Comparación de modelos</h2>
+<p>Podemos comparar la calidad de ajuste utilizando criterios como AIC.</p>
+<div id="3af24165" class="cell" data-execution_count="32">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>comparison <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Modelo"</span>: [</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Sin year"</span>,</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Year lineal"</span>,</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Year suavizado"</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AIC"</span>: [</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>        gam_no_year.statistics_[<span class="st">"AIC"</span>],</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>        gam_year_linear.statistics_[<span class="st">"AIC"</span>],</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>        gam_year_smooth.statistics_[<span class="st">"AIC"</span>]</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>comparison</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="80">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th data-quarto-table-cell-role="th">AIC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Sin year</td>
+<td>29909.314049</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Year lineal</td>
+<td>29896.527082</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Year suavizado</td>
+<td>29901.488680</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Recordemos que, en términos generales, un AIC más pequeño indica un mejor compromiso entre ajuste y complejidad.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>🧠 Preguntas
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>¿Mejora el modelo al incluir <code>year</code>?</li>
+<li>¿Vale la pena modelar <code>year</code> de manera no lineal?</li>
+<li>¿El aumento en flexibilidad produce una mejora importante?</li>
+</ol>
+<div class="callout callout-style-default callout-tip no-icon callout-empty-content callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solución
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="una-observación-sobre-anova-en-gams" class="level2" data-number="7.14">
+<h2 data-number="7.14" class="anchored" data-anchor-id="una-observación-sobre-anova-en-gams"><span class="header-section-number">7.14</span> Una observación sobre ANOVA en GAMs</h2>
+<p>En el libro se comparan modelos mediante pruebas tipo ANOVA.</p>
+<p>La idea conceptual es muy importante:</p>
+<p>podemos comparar modelos anidados para evaluar si un predictor</p>
+<ul>
+<li>debe excluirse;</li>
+<li>debe aparecer linealmente;</li>
+<li>necesita un efecto no lineal.</li>
+</ul>
+<p>Conceptualmente podemos comparar</p>
+<p><span class="math display">\[M_1:
+\quad
+Y
+=
+\beta_0
++
+f_1(X_1)
++
+f_3(X_3)
++
+\varepsilon,\]</span></p>
+<p>contra</p>
+<p><span class="math display">\[M_2:
+\quad
+Y
+=
+\beta_0
++
+f_1(X_1)
++
+\beta_2X_2
++
+f_3(X_3)
++
+\varepsilon,\]</span></p>
+<p>y posteriormente contra</p>
+<p><span class="math display">\[M_3:
+\quad
+Y
+=
+\beta_0
++
+f_1(X_1)
++
+f_2(X_2)
++
+f_3(X_3)
++
+\varepsilon.\]</span></p>
+<p>La primera pregunta:</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>🧠 Pregunta
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿Aporta información <span class="math inline">\(X_2\)</span>?</p>
+</div>
+</div>
+<p>La segunda pregunta:</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>🧠 Pregunta
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿Necesitamos que el efecto de <span class="math inline">\(X_2\)</span> sea no lineal?</p>
+</div>
+</div>
+<p>Nosotros utilizaremos principalmente criterios de ajuste y visualización, pero la lógica de comparación de modelos es la misma.</p>
+<section id="qué-ocurre-con-age" class="level3" data-number="7.14.1">
+<h3 data-number="7.14.1" class="anchored" data-anchor-id="qué-ocurre-con-age"><span class="header-section-number">7.14.1</span> ¿Qué ocurre con <code>age</code>?</h3>
+<p>Podemos hacer exactamente el mismo razonamiento para <code>age</code>.</p>
+<p>Consideremos:</p>
+<p><span class="math display">\[M_1:
+\quad
+\text{sin age},\]</span></p>
+<p><span class="math display">\[M_2:
+\quad
+\text{age lineal},\]</span></p>
+<p><span class="math display">\[M_3:
+\quad
+\text{age suavizado}.\]</span></p>
+<div id="4805cd20" class="cell" data-execution_count="33">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>gam_no_age <span class="op">=</span> LinearGAM(</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    f(<span class="dv">2</span>)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>).fit(X, y)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>gam_age_linear <span class="op">=</span> LinearGAM(</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    l(<span class="dv">0</span>) <span class="op">+</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>    f(<span class="dv">2</span>)</span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>).fit(X, y)</span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>gam_age_smooth <span class="op">=</span> LinearGAM(</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">0</span>) <span class="op">+</span></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>    f(<span class="dv">2</span>)</span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>).fit(X, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Comparamos.</p>
+<div id="311d1fef" class="cell" data-execution_count="34">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>comparison_age <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Modelo"</span>: [</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Sin age"</span>,</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Age lineal"</span>,</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Age suavizado"</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AIC"</span>: [</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>        gam_no_age.statistics_[<span class="st">"AIC"</span>],</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>        gam_age_linear.statistics_[<span class="st">"AIC"</span>],</span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>        gam_age_smooth.statistics_[<span class="st">"AIC"</span>]</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>comparison_age</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="82">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th data-quarto-table-cell-role="th">AIC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Sin age</td>
+<td>30102.851940</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Age lineal</td>
+<td>30008.942864</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Age suavizado</td>
+<td>29901.488680</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>🧠 Pregunta
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿La evidencia a favor de un efecto no lineal de <code>age</code> parece más fuerte que para <code>year</code>?</p>
+</div>
+</div>
+</section>
+</section>
+<section id="gams-para-clasificación" class="level2" data-number="7.15">
+<h2 data-number="7.15" class="anchored" data-anchor-id="gams-para-clasificación"><span class="header-section-number">7.15</span> GAMs para clasificación</h2>
+<p>Los GAMs también pueden utilizarse cuando la respuesta es binaria.</p>
+<p>Construiremos una variable que indique si el salario es superior a 250.</p>
+<div id="b93a1978" class="cell" data-execution_count="35">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>high_earn <span class="op">=</span> (</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    Wage[<span class="st">"wage"</span>] <span class="op">&gt;</span> <span class="dv">250</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>).astype(<span class="bu">int</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Podemos revisar la frecuencia de ambas clases.</p>
+<div id="26acfff4" class="cell" data-execution_count="36">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>high_earn.value_counts()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="84">
+<pre><code>wage
+0    2921
+1      79
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<p>Nuestro objetivo es modelar</p>
+<p><span class="math display">\[P(
+\text{wage}&gt;250
+\mid
+\text{age},
+\text{year},
+\text{education}
+).\]</span></p>
+</section>
+<section id="gam-logístico" class="level2" data-number="7.16">
+<h2 data-number="7.16" class="anchored" data-anchor-id="gam-logístico"><span class="header-section-number">7.16</span> GAM logístico</h2>
+<p>En regresión logística tradicional tenemos</p>
+<p><span class="math display">\[\log
+\left(
+\frac{p(X)}{1-p(X)}
+\right)
+=
+\beta_0
++
+\beta_1X_1
++\cdots+
+\beta_pX_p.\]</span></p>
+<p>En un GAM logístico reemplazamos algunos términos lineales por funciones flexibles:</p>
+<p><span class="math display">\[\log
+\left(
+\frac{p(X)}{1-p(X)}
+\right)
+=
+\beta_0
++
+f_1(X_1)
++
+f_2(X_2)
++\cdots+
+f_p(X_p).\]</span></p>
+<p>Ajustamos:</p>
+<div id="317467ac" class="cell" data-execution_count="37">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>gam_logit <span class="op">=</span> LogisticGAM(</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">0</span>) <span class="op">+</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    f(<span class="dv">2</span>)</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="9af8a7f0" class="cell" data-execution_count="38">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>gam_logit.fit(</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    X,</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    high_earn</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="86">
+<pre><code>LogisticGAM(callbacks=[Deviance(), Diffs(), Accuracy()], 
+   fit_intercept=True, max_iter=100, 
+   terms=s(0) + s(1) + f(2) + intercept, tol=0.0001, verbose=False)</code></pre>
+</div>
+</div>
+</section>
+<section id="un-problema-con-categorías-poco-representadas" class="level2" data-number="7.17">
+<h2 data-number="7.17" class="anchored" data-anchor-id="un-problema-con-categorías-poco-representadas"><span class="header-section-number">7.17</span> Un problema con categorías poco representadas</h2>
+<p>Antes de interpretar el modelo, conviene revisar la relación entre <code>education</code> y la respuesta.</p>
+<div id="dc1b0919" class="cell" data-execution_count="39">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>pd.crosstab(</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>    Wage[<span class="st">"education"</span>],</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    high_earn</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="87">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">wage</th>
+<th data-quarto-table-cell-role="th">0</th>
+<th data-quarto-table-cell-role="th">1</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">education</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">1. &lt; HS Grad</th>
+<td>268</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2. HS Grad</th>
+<td>966</td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">3. Some College</th>
+<td>643</td>
+<td>7</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">4. College Grad</th>
+<td>663</td>
+<td>22</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">5. Advanced Degree</th>
+<td>381</td>
+<td>45</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Puede ocurrir que alguna categoría no contenga observaciones de una de las clases.</p>
+<p>Por ejemplo, si en un determinado nivel educativo no existen individuos con</p>
+<p><span class="math display">\[\text{wage}&gt;250,\]</span></p>
+<p>el modelo puede tener dificultades para estimar adecuadamente el efecto de esa categoría.</p>
+<p>Este fenómeno está relacionado con problemas de <strong>separación</strong> en modelos logísticos.</p>
+</section>
+<section id="ajuste-restringido" class="level2" data-number="7.18">
+<h2 data-number="7.18" class="anchored" data-anchor-id="ajuste-restringido"><span class="header-section-number">7.18</span> Ajuste restringido</h2>
+<p>Para evitar ese problema podemos excluir una categoría sin observaciones positivas.</p>
+<div id="43f6f96d" class="cell" data-execution_count="40">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> (</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>    Wage[<span class="st">"education"</span>] <span class="op">!=</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    Wage[<span class="st">"education"</span>].cat.categories[<span class="dv">0</span>]</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>Wage_sub <span class="op">=</span> Wage.loc[mask].copy()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Reconstruimos las variables.</p>
+<div id="94370bdd" class="cell" data-execution_count="41">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>education_sub <span class="op">=</span> (</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>    Wage_sub[<span class="st">"education"</span>]</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>    .cat.remove_unused_categories()</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>    .cat.codes</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>X_sub <span class="op">=</span> np.column_stack([</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>    Wage_sub[<span class="st">"age"</span>],</span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>    Wage_sub[<span class="st">"year"</span>],</span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>    education_sub</span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>high_earn_sub <span class="op">=</span> (</span>
+<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a>    Wage_sub[<span class="st">"wage"</span>] <span class="op">&gt;</span> <span class="dv">250</span></span>
+<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a>).astype(<span class="bu">int</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Ajustamos nuevamente.</p>
+<div id="ed6ed4ec" class="cell" data-execution_count="42">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>gam_logit_sub <span class="op">=</span> LogisticGAM(</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">0</span>) <span class="op">+</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>    s(<span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>    f(<span class="dv">2</span>)</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>gam_logit_sub.fit(</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>    X_sub,</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>    high_earn_sub</span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="90">
+<pre><code>LogisticGAM(callbacks=[Deviance(), Diffs(), Accuracy()], 
+   fit_intercept=True, max_iter=100, 
+   terms=s(0) + s(1) + f(2) + intercept, tol=0.0001, verbose=False)</code></pre>
+</div>
+</div>
+</section>
+<section id="efecto-parcial-de-age-en-clasificación" class="level2" data-number="7.19">
+<h2 data-number="7.19" class="anchored" data-anchor-id="efecto-parcial-de-age-en-clasificación"><span class="header-section-number">7.19</span> Efecto parcial de <code>age</code> en clasificación</h2>
+<div id="1aa76b6a" class="cell" data-execution_count="43">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>XX_age_logit <span class="op">=</span> gam_logit_sub.generate_X_grid(</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>    term<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>pdep_age_logit, confi_age_logit <span class="op">=</span> gam_logit_sub.partial_dependence(</span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>    term<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>    X<span class="op">=</span>XX_age_logit,</span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="fl">0.95</span></span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="33100b80" class="cell" data-execution_count="44">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>    XX_age_logit[:, <span class="dv">0</span>],</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>    pdep_age_logit,</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>    XX_age_logit[:, <span class="dv">0</span>],</span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>    confi_age_logit[:, <span class="dv">0</span>],</span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=</span><span class="st">"--"</span></span>
+<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a>    XX_age_logit[:, <span class="dv">0</span>],</span>
+<span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a>    confi_age_logit[:, <span class="dv">1</span>],</span>
+<span id="cb60-18"><a href="#cb60-18" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=</span><span class="st">"--"</span></span>
+<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb60-20"><a href="#cb60-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-21"><a href="#cb60-21" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Edad"</span>)</span>
+<span id="cb60-22"><a href="#cb60-22" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Efecto parcial"</span>)</span>
+<span id="cb60-23"><a href="#cb60-23" aria-hidden="true" tabindex="-1"></a>plt.title(</span>
+<span id="cb60-24"><a href="#cb60-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Efecto parcial de age sobre la clasificación"</span></span>
+<span id="cb60-25"><a href="#cb60-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb60-26"><a href="#cb60-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-27"><a href="#cb60-27" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte7_files/figure-html/cell-45-output-1.png" width="737" height="525" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="importante" class="level3" data-number="7.19.1">
+<h3 data-number="7.19.1" class="anchored" data-anchor-id="importante"><span class="header-section-number">7.19.1</span> Importante</h3>
+<p>En un GAM logístico, el eje vertical no representa directamente una probabilidad.</p>
+<p>La función contribuye a</p>
+<p><span class="math display">\[\log
+\left(
+\frac{p}{1-p}
+\right).\]</span></p>
+<p>Por tanto, debemos interpretar principalmente la forma de la curva:</p>
+<ul>
+<li>regiones donde la contribución aumenta;</li>
+<li>regiones donde disminuye;</li>
+<li>cambios no lineales;</li>
+<li>regiones con mayor incertidumbre.</li>
+</ul>
+</section>
+</section>
+<section id="probabilidades-predichas" class="level2" data-number="7.20">
+<h2 data-number="7.20" class="anchored" data-anchor-id="probabilidades-predichas"><span class="header-section-number">7.20</span> Probabilidades predichas</h2>
+<p>Podemos obtener probabilidades directamente con:</p>
+<div id="065a3dd0" class="cell" data-execution_count="45">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>probabilities <span class="op">=</span> gam_logit_sub.predict_proba(</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>    X_sub</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Revisamos algunas.</p>
+<div id="dcf64c3c" class="cell" data-execution_count="46">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>probabilities[:<span class="dv">10</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="94">
+<pre><code>array([0.00272505, 0.01373062, 0.0388806 , 0.00466125, 0.0404958 ,
+       0.01666138, 0.00361536, 0.02211939, 0.00703292, 0.01439082])</code></pre>
+</div>
+</div>
+<p>Estas sí corresponden a valores entre 0 y 1.</p>
+</section>
+<section id="clasificación" class="level2" data-number="7.21">
+<h2 data-number="7.21" class="anchored" data-anchor-id="clasificación"><span class="header-section-number">7.21</span> Clasificación</h2>
+<p>También podemos producir clases predichas.</p>
+<div id="d8c777de" class="cell" data-execution_count="47">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>predicted_class <span class="op">=</span> gam_logit_sub.predict(</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>    X_sub</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Podemos construir una tabla de contingencia.</p>
+<div id="fc3b141c" class="cell" data-execution_count="48">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>pd.crosstab(</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>    high_earn_sub,</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>    predicted_class,</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>    rownames<span class="op">=</span>[<span class="st">"Real"</span>],</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>    colnames<span class="op">=</span>[<span class="st">"Predicho"</span>]</span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="96">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Predicho</th>
+<th data-quarto-table-cell-role="th">False</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Real</th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>2653</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>79</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="qué-hemos-ganado-con-un-gam" class="level2" data-number="7.22">
+<h2 data-number="7.22" class="anchored" data-anchor-id="qué-hemos-ganado-con-un-gam"><span class="header-section-number">7.22</span> ¿Qué hemos ganado con un GAM?</h2>
+<p>Consideremos nuevamente el modelo</p>
+<p><span class="math display">\[Y
+=
+\beta_0
++
+f_1(X_1)
++
+f_2(X_2)
++
+f_3(X_3)
++
+\varepsilon.\]</span></p>
+<p>Un GAM nos permite:</p>
+<ul>
+<li>conservar una estructura parecida a una regresión;</li>
+<li>permitir relaciones no lineales;</li>
+<li>mezclar predictores lineales y no lineales;</li>
+<li>incorporar variables categóricas;</li>
+<li>interpretar el efecto individual de cada predictor;</li>
+<li>extender el modelo a clasificación.</li>
+</ul>
+<p>Esta combinación de <strong>flexibilidad e interpretabilidad</strong> es una de sus principales ventajas.</p>
+</section>
+<section id="limitación-aditividad" class="level2" data-number="7.23">
+<h2 data-number="7.23" class="anchored" data-anchor-id="limitación-aditividad"><span class="header-section-number">7.23</span> Limitación: aditividad</h2>
+<p>El GAM que hemos utilizado supone que</p>
+<p><span class="math display">\[\hat Y
+=
+\hat\beta_0
++
+\hat f_1(X_1)
++
+\hat f_2(X_2)
++
+\hat f_3(X_3).\]</span></p>
+<p>Esto implica que el efecto de una variable se suma al de las demás.</p>
+<p>Por ejemplo, el efecto de <code>age</code> no cambia dependiendo de <code>year</code>.</p>
+<p>Sin embargo, puede existir una interacción:</p>
+<p><span class="math display">\[f_{12}(X_1,X_2).\]</span></p>
+<p>En ese caso podríamos utilizar modelos más complejos.</p>
+<p>Por ahora nos concentraremos en modelos aditivos.</p>
+</section>
+<section id="ejercicios" class="level2" data-number="7.24">
+<h2 data-number="7.24" class="anchored" data-anchor-id="ejercicios"><span class="header-section-number">7.24</span> Ejercicios</h2>
+<section id="ejercicio-1.-interpretación-de-efectos-parciales" class="level3" data-number="7.24.1">
+<h3 data-number="7.24.1" class="anchored" data-anchor-id="ejercicio-1.-interpretación-de-efectos-parciales"><span class="header-section-number">7.24.1</span> Ejercicio 1. Interpretación de efectos parciales</h3>
+<p>Ajusta el modelo</p>
+<p><span class="math display">\[\text{wage}
+=
+\beta_0
++
+f_1(\text{age})
++
+f_2(\text{year})
++
+f_3(\text{education})
++
+\varepsilon.\]</span></p>
+<p>Construye las tres gráficas de efectos parciales.</p>
+<p>Describe la forma de cada efecto.</p>
+<p>Responde:</p>
+<ol type="1">
+<li>¿Qué edades parecen asociarse con mayores salarios?</li>
+<li>¿El efecto de <code>year</code> parece lineal?</li>
+<li>¿Qué niveles educativos producen las mayores contribuciones?</li>
+</ol>
+</section>
+<section id="ejercicio-2.-age-lineal-vs.-no-lineal" class="level3" data-number="7.24.2">
+<h3 data-number="7.24.2" class="anchored" data-anchor-id="ejercicio-2.-age-lineal-vs.-no-lineal"><span class="header-section-number">7.24.2</span> Ejercicio 2. <code>age</code> lineal vs.&nbsp;no lineal</h3>
+<p>Ajusta dos modelos:</p>
+<p><span class="math display">\[M_1:
+\quad
+\text{wage}
+=
+\beta_0
++
+\beta_1\text{age}
++
+f_2(\text{year})
++
+f_3(\text{education})
++
+\varepsilon,\]</span></p>
+<p>y</p>
+<p><span class="math display">\[M_2:
+\quad
+\text{wage}
+=
+\beta_0
++
+f_1(\text{age})
++
+f_2(\text{year})
++
+f_3(\text{education})
++
+\varepsilon.\]</span></p>
+<p>Compara los modelos utilizando AIC.</p>
+<p>¿Cuál prefieres?</p>
+</section>
+<section id="ejercicio-3.-year-lineal-vs.-no-lineal" class="level3" data-number="7.24.3">
+<h3 data-number="7.24.3" class="anchored" data-anchor-id="ejercicio-3.-year-lineal-vs.-no-lineal"><span class="header-section-number">7.24.3</span> Ejercicio 3. <code>year</code> lineal vs.&nbsp;no lineal</h3>
+<p>Repite el ejercicio anterior para <code>year</code>.</p>
+<p>Compara:</p>
+<p><span class="math display">\[\beta_2\text{year}\]</span></p>
+<p>contra</p>
+<p><span class="math display">\[f_2(\text{year}).\]</span></p>
+<p>¿Hay evidencia práctica de que necesitemos un efecto no lineal?</p>
+</section>
+<section id="ejercicio-4.-comparación-con-regresión-lineal" class="level3" data-number="7.24.4">
+<h3 data-number="7.24.4" class="anchored" data-anchor-id="ejercicio-4.-comparación-con-regresión-lineal"><span class="header-section-number">7.24.4</span> Ejercicio 4. Comparación con regresión lineal</h3>
+<p>Ajusta una regresión lineal múltiple utilizando:</p>
+<ul>
+<li><code>age</code>;</li>
+<li><code>year</code>;</li>
+<li><code>education</code>.</li>
+</ul>
+<p>Después ajusta el GAM correspondiente.</p>
+<p>Compara:</p>
+<ul>
+<li>valores predichos;</li>
+<li>error cuadrático medio;</li>
+<li>AIC;</li>
+<li>interpretabilidad.</li>
+</ul>
+</section>
+<section id="ejercicio-5.-clasificación" class="level3" data-number="7.24.5">
+<h3 data-number="7.24.5" class="anchored" data-anchor-id="ejercicio-5.-clasificación"><span class="header-section-number">7.24.5</span> Ejercicio 5. Clasificación</h3>
+<p>Construye la variable</p>
+<p><span class="math display">\[Y=
+I(\text{wage}&gt;200).\]</span></p>
+<p>Ajusta un GAM logístico utilizando:</p>
+<ul>
+<li><code>age</code>;</li>
+<li><code>year</code>;</li>
+<li><code>education</code>.</li>
+</ul>
+<p>Construye las gráficas de efectos parciales.</p>
+<p>¿Cambian las conclusiones respecto al modelo que utiliza el umbral 250?</p>
+</section>
+<section id="ejercicio-6.-interpretación" class="level3" data-number="7.24.6">
+<h3 data-number="7.24.6" class="anchored" data-anchor-id="ejercicio-6.-interpretación"><span class="header-section-number">7.24.6</span> Ejercicio 6. Interpretación</h3>
+<p>Explica con tus propias palabras la diferencia entre</p>
+<p><span class="math display">\[Y
+=
+\beta_0
++
+\beta_1X_1
++
+\beta_2X_2
++
+\varepsilon\]</span></p>
+<p>y</p>
+<p><span class="math display">\[Y
+=
+\beta_0
++
+f_1(X_1)
++
+f_2(X_2)
++
+\varepsilon.\]</span></p>
+<p>Tu explicación debe mencionar:</p>
+<ul>
+<li>linealidad;</li>
+<li>flexibilidad;</li>
+<li>aditividad;</li>
+<li>interpretación de <span class="math inline">\(f_1\)</span> y <span class="math inline">\(f_2\)</span>.</li>
+</ul>
+
+
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

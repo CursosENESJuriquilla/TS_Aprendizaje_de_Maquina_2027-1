@@ -1,1 +1,1286 @@
 # GAMs: Modelos Aditivos Generalizados
+
+Hasta ahora hemos estudiado diferentes maneras de introducir no linealidad cuando tenemos una variable predictora.
+
+Entre ellas:
+
+- regresión polinomial;
+- splines;
+- smoothing splines;
+- regresión local.
+
+Los **Modelos Aditivos Generalizados**, o GAMs, permiten extender estas ideas al caso en el que tenemos varias variables predictoras.
+
+La idea fundamental es reemplazar los términos lineales de una regresión múltiple por funciones flexibles.
+
+En una regresión lineal múltiple tenemos
+
+$$Y_i
+=
+\beta_0
++
+\beta_1X_{i1}
++
+\beta_2X_{i2}
++\cdots+
+\beta_pX_{ip}
++
+\varepsilon_i.$$
+
+En un GAM escribimos
+
+$$Y_i
+=
+\beta_0
++
+f_1(X_{i1})
++
+f_2(X_{i2})
++\cdots+
+f_p(X_{ip})
++
+\varepsilon_i.$$
+
+Cada función $f_j$ puede tener una forma diferente.
+
+
+::::: diapositivas
+::: diapositivas-title
+📝 **Diapositivas**
+:::
+
+::: diapositivas-body
+[Ver diapositivas GAMs](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/2.8_GAMs.pdf)
+:::
+:::::
+
+## Preparación
+
+Utilizaremos nuevamente el conjunto de datos `Wage`.
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from ISLP import load_data
+
+from pygam import LinearGAM, LogisticGAM, s, l, f
+```
+
+Cargamos los datos.
+
+```{python}
+Wage = load_data("Wage")
+```
+
+Revisamos las primeras observaciones.
+
+```{python}
+Wage.head()
+```
+
+Nos interesarán principalmente:
+
+- `age`: edad;
+- `year`: año;
+- `education`: nivel educativo;
+- `wage`: salario.
+
+## Preparar las variables
+
+`pygam` espera que la matriz de predictores sea bidimensional.
+
+Además, para una variable categórica como `education`, necesitamos una representación numérica.
+
+Primero revisamos sus categorías.
+
+```{python}
+Wage["education"].cat.categories
+```
+
+Podemos obtener códigos enteros con:
+
+```{python}
+education_code = Wage["education"].cat.codes
+```
+
+Construimos la matriz de predictores.
+
+```{python}
+X = np.column_stack([
+    Wage["age"],
+    Wage["year"],
+    education_code
+])
+
+y = Wage["wage"].to_numpy()
+```
+
+Revisamos las dimensiones.
+
+```{python}
+X.shape
+```
+
+La matriz tiene tres columnas:
+
+$$X_1=\text{age},
+\qquad
+X_2=\text{year},
+\qquad
+X_3=\text{education}.$$
+
+## Nuestro primer GAM
+
+Consideremos el modelo
+
+$$\text{wage}
+=
+\beta_0
++
+f_1(\text{age})
++
+f_2(\text{year})
++
+f_3(\text{education})
++
+\varepsilon.$$
+
+Utilizaremos:
+
+- un término suavizado para `age`;
+- un término suavizado para `year`;
+- un término categórico para `education`.
+
+En `pygam` podemos escribir:
+
+```{python}
+gam = LinearGAM(
+    s(0) +
+    s(1) +
+    f(2)
+)
+```
+
+Aquí:
+
+- `s(0)` aplica un suavizador a la primera columna;
+- `s(1)` aplica un suavizador a la segunda columna;
+- `f(2)` trata la tercera columna como una variable categórica.
+
+Ajustamos el modelo.
+
+```{python}
+gam.fit(X, y)
+```
+
+## ¿Qué significa cada término?
+
+Nuestro modelo tiene la forma
+
+$$\hat y
+=
+\hat\beta_0
++
+\hat f_1(\text{age})
++
+\hat f_2(\text{year})
++
+\hat f_3(\text{education}).$$
+
+Esto significa que la predicción se construye sumando contribuciones separadas.
+
+Por ejemplo:
+
+$$\hat y
+=
+\text{intercepto}
++
+\text{efecto de age}
++
+\text{efecto de year}
++
+\text{efecto de education}.$$
+
+La palabra **aditivo** proviene precisamente de esta estructura.
+
+## Efecto parcial de `age`
+
+Una de las principales ventajas de los GAMs es que podemos examinar el efecto de cada predictor por separado.
+
+Construimos una malla para el término correspondiente a `age`.
+
+```{python}
+XX = gam.generate_X_grid(
+    term=0
+)
+```
+
+Calculamos el efecto parcial.
+
+```{python}
+partial_age = gam.partial_dependence(
+    term=0,
+    X=XX
+)
+```
+
+También podemos obtener intervalos de confianza.
+
+```{python}
+pdep_age, confi_age = gam.partial_dependence(
+    term=0,
+    X=XX,
+    width=0.95
+)
+```
+
+Visualizamos el efecto.
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.plot(
+    XX[:, 0],
+    pdep_age,
+    linewidth=3
+)
+
+plt.plot(
+    XX[:, 0],
+    confi_age[:, 0],
+    linestyle="--"
+)
+
+plt.plot(
+    XX[:, 0],
+    confi_age[:, 1],
+    linestyle="--"
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Efecto parcial sobre wage")
+plt.title("Efecto parcial de age")
+
+plt.show()
+```
+
+### ¿Cómo interpretar esta gráfica?
+
+La curva representa la contribución estimada de `age` al salario.
+
+No representa directamente el salario esperado.
+
+Representa
+
+$$\hat f_1(\text{age}),$$
+
+es decir, la contribución de la edad después de considerar simultáneamente los demás términos del modelo.
+
+::: callout-note
+Un valor positivo de $\hat f_1(\text{age})$ indica que esa edad contribuye a aumentar la predicción respecto al nivel promedio del modelo.
+
+Un valor negativo indica una contribución en sentido contrario.
+:::
+
+## Efecto parcial de `year`
+
+Repetimos el procedimiento para `year`.
+
+```{python}
+XX_year = gam.generate_X_grid(
+    term=1
+)
+```
+
+```{python}
+pdep_year, confi_year = gam.partial_dependence(
+    term=1,
+    X=XX_year,
+    width=0.95
+)
+```
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.plot(
+    XX_year[:, 1],
+    pdep_year,
+    linewidth=3
+)
+
+plt.plot(
+    XX_year[:, 1],
+    confi_year[:, 0],
+    linestyle="--"
+)
+
+plt.plot(
+    XX_year[:, 1],
+    confi_year[:, 1],
+    linestyle="--"
+)
+
+plt.xlabel("Año")
+plt.ylabel("Efecto parcial sobre wage")
+plt.title("Efecto parcial de year")
+
+plt.show()
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿El efecto de `year` parece claramente no lineal?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Discusión
+
+Es posible que el efecto de `year` tenga una forma bastante cercana a una recta.
+
+Esto plantea una pregunta importante:
+
+> ¿Realmente necesitamos un término no lineal para `year`?
+
+Más adelante compararemos modelos para responderlo.
+:::
+::::
+
+## Efecto de una variable categórica
+
+El término
+
+``` python
+f(2)
+```
+
+corresponde a `education`.
+
+A diferencia de `age` y `year`, `education` no es una variable continua. Por tanto, no queremos construir una curva sobre una malla de muchos valores.
+
+Queremos estimar una contribución para **cada nivel educativo**.
+
+Primero revisamos las categorías.
+
+```{python}
+education_levels = Wage["education"].cat.categories
+
+education_levels
+```
+
+Recordemos que `pygam` trabaja con los códigos numéricos de estas categorías:
+
+```{python}
+education_codes = np.arange(len(education_levels))
+
+education_codes
+```
+
+Ahora construiremos una matriz con una fila para cada nivel educativo.
+
+Mantendremos `age` y `year` en valores representativos y cambiaremos únicamente `education`.
+
+```{python}
+X_education = np.column_stack([
+    np.repeat(Wage["age"].mean(), len(education_levels)),
+    np.repeat(Wage["year"].mean(), len(education_levels)),
+    education_codes
+])
+```
+
+Podemos revisar la matriz.
+
+```{python}
+X_education
+```
+
+Cada fila corresponde a un nivel educativo distinto, mientras que `age` y `year` permanecen constantes.
+
+Calculamos ahora el efecto parcial del término categórico.
+
+```{python}
+pdep_education, confi_education = gam.partial_dependence(
+    term=2,
+    X=X_education,
+    width=0.95
+)
+```
+
+Podemos revisar los resultados.
+
+```{python}
+pdep_education
+```
+
+Ahora tenemos exactamente un valor por cada nivel educativo.
+
+```{python}
+len(education_levels), len(pdep_education)
+```
+
+Representamos las contribuciones.
+
+```{python}
+plt.figure(figsize=(10, 6))
+
+x_pos = np.arange(len(education_levels))
+
+plt.errorbar(
+    x_pos,
+    pdep_education,
+    yerr=[
+        pdep_education - confi_education[:, 0],
+        confi_education[:, 1] - pdep_education
+    ],
+    fmt="o",
+    capsize=4
+)
+
+plt.axhline(
+    y=0,
+    linestyle="--",
+    alpha=0.5
+)
+
+plt.xticks(
+    x_pos,
+    education_levels,
+    rotation=45,
+    ha="right"
+)
+
+plt.xlabel("Nivel educativo")
+plt.ylabel("Efecto parcial sobre wage")
+plt.title("Efecto parcial de education")
+
+plt.tight_layout()
+plt.show()
+```
+
+## ¿Cómo interpretar esta gráfica?
+
+Cada punto representa la contribución estimada de un nivel educativo al modelo.
+
+Es decir, estamos visualizando
+
+$$\hat f_3(\text{education}).$$
+
+Un valor mayor indica una contribución más positiva a la predicción de `wage`, una vez considerados simultáneamente los efectos de `age` y `year`.
+
+::: callout-note
+El eje vertical representa el **efecto parcial**, no el salario predicho directamente.
+
+El salario estimado completo se obtiene sumando
+
+$$\hat y
+=
+\hat\beta_0
++
+\hat f_1(\text{age})
++
+\hat f_2(\text{year})
++
+\hat f_3(\text{education}).$$
+:::
+
+## Interpretar el modelo de manera conjunta
+
+Recordemos que el modelo es
+
+$$\hat y
+=
+\hat\beta_0
++
+\hat f_1(\text{age})
++
+\hat f_2(\text{year})
++
+\hat f_3(\text{education}).$$
+
+Supongamos conceptualmente que para una persona obtenemos
+
+$$\hat\beta_0=100,$$
+
+$$\hat f_1(\text{age})=15,$$
+
+$$\hat f_2(\text{year})=5,$$
+
+$$\hat f_3(\text{education})=20.$$
+
+Entonces
+
+$$\hat y
+=
+100+15+5+20
+=
+140.$$
+
+Cada término aporta una contribución separada.
+
+## Predicciones con el GAM
+
+Una vez ajustado el modelo podemos hacer predicciones.
+
+```{python}
+y_hat = gam.predict(X)
+```
+
+Podemos comparar valores observados y predichos.
+
+```{python}
+plt.figure(figsize=(7, 7))
+
+plt.scatter(
+    y,
+    y_hat,
+    alpha=0.4
+)
+
+min_val = min(y.min(), y_hat.min())
+max_val = max(y.max(), y_hat.max())
+
+plt.plot(
+    [min_val, max_val],
+    [min_val, max_val],
+    linestyle="--"
+)
+
+plt.xlabel("Wage observado")
+plt.ylabel("Wage predicho")
+plt.title("Valores observados vs. predichos")
+
+plt.show()
+```
+
+Si las predicciones fueran perfectas, todos los puntos caerían sobre la diagonal.
+
+## ¿Necesitamos que todos los términos sean no lineales?
+
+Un GAM no obliga a que todos los predictores sean suavizados.
+
+Podemos combinar términos lineales y no lineales.
+
+Por ejemplo,
+
+$$\text{wage}
+=
+\beta_0
++
+f_1(\text{age})
++
+\beta_2\text{year}
++
+f_3(\text{education})
++
+\varepsilon.$$
+
+En `pygam`:
+
+```{python}
+gam_year_linear = LinearGAM(
+    s(0) +
+    l(1) +
+    f(2)
+)
+```
+
+Ajustamos el modelo.
+
+```{python}
+gam_year_linear.fit(X, y)
+```
+
+Ahora `age` sigue teniendo una relación flexible, pero `year` entra linealmente.
+
+## Tres modelos para estudiar `year`
+
+Podemos comparar tres posibilidades.
+
+### Modelo 1: sin `year`
+
+$$\text{wage}
+=
+\beta_0
++
+f_1(\text{age})
++
+f_3(\text{education})
++
+\varepsilon.$$
+
+```{python}
+gam_no_year = LinearGAM(
+    s(0) +
+    f(2)
+)
+
+gam_no_year.fit(X, y)
+```
+
+### Modelo 2: `year` lineal
+
+$$\text{wage}
+=
+\beta_0
++
+f_1(\text{age})
++
+\beta_2\text{year}
++
+f_3(\text{education})
++
+\varepsilon.$$
+
+```{python}
+gam_year_linear = LinearGAM(
+    s(0) +
+    l(1) +
+    f(2)
+)
+
+gam_year_linear.fit(X, y)
+```
+
+### Modelo 3: `year` suavizado
+
+$$\text{wage}
+=
+\beta_0
++
+f_1(\text{age})
++
+f_2(\text{year})
++
+f_3(\text{education})
++
+\varepsilon.$$
+
+```{python}
+gam_year_smooth = LinearGAM(
+    s(0) +
+    s(1) +
+    f(2)
+)
+
+gam_year_smooth.fit(X, y)
+```
+
+## Comparación de modelos
+
+Podemos comparar la calidad de ajuste utilizando criterios como AIC.
+
+```{python}
+comparison = pd.DataFrame({
+    "Modelo": [
+        "Sin year",
+        "Year lineal",
+        "Year suavizado"
+    ],
+    "AIC": [
+        gam_no_year.statistics_["AIC"],
+        gam_year_linear.statistics_["AIC"],
+        gam_year_smooth.statistics_["AIC"]
+    ]
+})
+
+comparison
+```
+
+Recordemos que, en términos generales, un AIC más pequeño indica un mejor compromiso entre ajuste y complejidad.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Preguntas
+
+1.  ¿Mejora el modelo al incluir `year`?
+2.  ¿Vale la pena modelar `year` de manera no lineal?
+3.  ¿El aumento en flexibilidad produce una mejora importante?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+:::
+::::
+
+## Una observación sobre ANOVA en GAMs
+
+En el libro se comparan modelos mediante pruebas tipo ANOVA.
+
+La idea conceptual es muy importante:
+
+podemos comparar modelos anidados para evaluar si un predictor
+
+- debe excluirse;
+- debe aparecer linealmente;
+- necesita un efecto no lineal.
+
+Conceptualmente podemos comparar
+
+$$M_1:
+\quad
+Y
+=
+\beta_0
++
+f_1(X_1)
++
+f_3(X_3)
++
+\varepsilon,$$
+
+contra
+
+$$M_2:
+\quad
+Y
+=
+\beta_0
++
+f_1(X_1)
++
+\beta_2X_2
++
+f_3(X_3)
++
+\varepsilon,$$
+
+y posteriormente contra
+
+$$M_3:
+\quad
+Y
+=
+\beta_0
++
+f_1(X_1)
++
+f_2(X_2)
++
+f_3(X_3)
++
+\varepsilon.$$
+
+La primera pregunta:
+
+::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Aporta información $X_2$?
+:::
+
+La segunda pregunta:
+
+::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Necesitamos que el efecto de $X_2$ sea no lineal?
+:::
+
+Nosotros utilizaremos principalmente criterios de ajuste y visualización, pero la lógica de comparación de modelos es la misma.
+
+### ¿Qué ocurre con `age`?
+
+Podemos hacer exactamente el mismo razonamiento para `age`.
+
+Consideremos:
+
+$$M_1:
+\quad
+\text{sin age},$$
+
+$$M_2:
+\quad
+\text{age lineal},$$
+
+$$M_3:
+\quad
+\text{age suavizado}.$$
+
+```{python}
+gam_no_age = LinearGAM(
+    s(1) +
+    f(2)
+).fit(X, y)
+
+gam_age_linear = LinearGAM(
+    l(0) +
+    s(1) +
+    f(2)
+).fit(X, y)
+
+gam_age_smooth = LinearGAM(
+    s(0) +
+    s(1) +
+    f(2)
+).fit(X, y)
+```
+
+Comparamos.
+
+```{python}
+comparison_age = pd.DataFrame({
+    "Modelo": [
+        "Sin age",
+        "Age lineal",
+        "Age suavizado"
+    ],
+    "AIC": [
+        gam_no_age.statistics_["AIC"],
+        gam_age_linear.statistics_["AIC"],
+        gam_age_smooth.statistics_["AIC"]
+    ]
+})
+
+comparison_age
+```
+
+::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿La evidencia a favor de un efecto no lineal de `age` parece más fuerte que para `year`?
+:::
+
+## GAMs para clasificación
+
+Los GAMs también pueden utilizarse cuando la respuesta es binaria.
+
+Construiremos una variable que indique si el salario es superior a 250.
+
+```{python}
+high_earn = (
+    Wage["wage"] > 250
+).astype(int)
+```
+
+Podemos revisar la frecuencia de ambas clases.
+
+```{python}
+high_earn.value_counts()
+```
+
+Nuestro objetivo es modelar
+
+$$P(
+\text{wage}>250
+\mid
+\text{age},
+\text{year},
+\text{education}
+).$$
+
+## GAM logístico
+
+En regresión logística tradicional tenemos
+
+$$\log
+\left(
+\frac{p(X)}{1-p(X)}
+\right)
+=
+\beta_0
++
+\beta_1X_1
++\cdots+
+\beta_pX_p.$$
+
+En un GAM logístico reemplazamos algunos términos lineales por funciones flexibles:
+
+$$\log
+\left(
+\frac{p(X)}{1-p(X)}
+\right)
+=
+\beta_0
++
+f_1(X_1)
++
+f_2(X_2)
++\cdots+
+f_p(X_p).$$
+
+Ajustamos:
+
+```{python}
+gam_logit = LogisticGAM(
+    s(0) +
+    s(1) +
+    f(2)
+)
+```
+
+```{python}
+gam_logit.fit(
+    X,
+    high_earn
+)
+```
+
+## Un problema con categorías poco representadas
+
+Antes de interpretar el modelo, conviene revisar la relación entre `education` y la respuesta.
+
+```{python}
+pd.crosstab(
+    Wage["education"],
+    high_earn
+)
+```
+
+Puede ocurrir que alguna categoría no contenga observaciones de una de las clases.
+
+Por ejemplo, si en un determinado nivel educativo no existen individuos con
+
+$$\text{wage}>250,$$
+
+el modelo puede tener dificultades para estimar adecuadamente el efecto de esa categoría.
+
+Este fenómeno está relacionado con problemas de **separación** en modelos logísticos.
+
+## Ajuste restringido
+
+Para evitar ese problema podemos excluir una categoría sin observaciones positivas.
+
+```{python}
+mask = (
+    Wage["education"] !=
+    Wage["education"].cat.categories[0]
+)
+
+Wage_sub = Wage.loc[mask].copy()
+```
+
+Reconstruimos las variables.
+
+```{python}
+education_sub = (
+    Wage_sub["education"]
+    .cat.remove_unused_categories()
+    .cat.codes
+)
+
+X_sub = np.column_stack([
+    Wage_sub["age"],
+    Wage_sub["year"],
+    education_sub
+])
+
+high_earn_sub = (
+    Wage_sub["wage"] > 250
+).astype(int)
+```
+
+Ajustamos nuevamente.
+
+```{python}
+gam_logit_sub = LogisticGAM(
+    s(0) +
+    s(1) +
+    f(2)
+)
+
+gam_logit_sub.fit(
+    X_sub,
+    high_earn_sub
+)
+```
+
+## Efecto parcial de `age` en clasificación
+
+```{python}
+XX_age_logit = gam_logit_sub.generate_X_grid(
+    term=0
+)
+
+pdep_age_logit, confi_age_logit = gam_logit_sub.partial_dependence(
+    term=0,
+    X=XX_age_logit,
+    width=0.95
+)
+```
+
+```{python}
+plt.figure(figsize=(9, 6))
+
+plt.plot(
+    XX_age_logit[:, 0],
+    pdep_age_logit,
+    linewidth=3
+)
+
+plt.plot(
+    XX_age_logit[:, 0],
+    confi_age_logit[:, 0],
+    linestyle="--"
+)
+
+plt.plot(
+    XX_age_logit[:, 0],
+    confi_age_logit[:, 1],
+    linestyle="--"
+)
+
+plt.xlabel("Edad")
+plt.ylabel("Efecto parcial")
+plt.title(
+    "Efecto parcial de age sobre la clasificación"
+)
+
+plt.show()
+```
+
+### Importante
+
+En un GAM logístico, el eje vertical no representa directamente una probabilidad.
+
+La función contribuye a
+
+$$\log
+\left(
+\frac{p}{1-p}
+\right).$$
+
+Por tanto, debemos interpretar principalmente la forma de la curva:
+
+- regiones donde la contribución aumenta;
+- regiones donde disminuye;
+- cambios no lineales;
+- regiones con mayor incertidumbre.
+
+## Probabilidades predichas
+
+Podemos obtener probabilidades directamente con:
+
+```{python}
+probabilities = gam_logit_sub.predict_proba(
+    X_sub
+)
+```
+
+Revisamos algunas.
+
+```{python}
+probabilities[:10]
+```
+
+Estas sí corresponden a valores entre 0 y 1.
+
+## Clasificación
+
+También podemos producir clases predichas.
+
+```{python}
+predicted_class = gam_logit_sub.predict(
+    X_sub
+)
+```
+
+Podemos construir una tabla de contingencia.
+
+```{python}
+pd.crosstab(
+    high_earn_sub,
+    predicted_class,
+    rownames=["Real"],
+    colnames=["Predicho"]
+)
+```
+
+## ¿Qué hemos ganado con un GAM?
+
+Consideremos nuevamente el modelo
+
+$$Y
+=
+\beta_0
++
+f_1(X_1)
++
+f_2(X_2)
++
+f_3(X_3)
++
+\varepsilon.$$
+
+Un GAM nos permite:
+
+- conservar una estructura parecida a una regresión;
+- permitir relaciones no lineales;
+- mezclar predictores lineales y no lineales;
+- incorporar variables categóricas;
+- interpretar el efecto individual de cada predictor;
+- extender el modelo a clasificación.
+
+Esta combinación de **flexibilidad e interpretabilidad** es una de sus principales ventajas.
+
+## Limitación: aditividad
+
+El GAM que hemos utilizado supone que
+
+$$\hat Y
+=
+\hat\beta_0
++
+\hat f_1(X_1)
++
+\hat f_2(X_2)
++
+\hat f_3(X_3).$$
+
+Esto implica que el efecto de una variable se suma al de las demás.
+
+Por ejemplo, el efecto de `age` no cambia dependiendo de `year`.
+
+Sin embargo, puede existir una interacción:
+
+$$f_{12}(X_1,X_2).$$
+
+En ese caso podríamos utilizar modelos más complejos.
+
+Por ahora nos concentraremos en modelos aditivos.
+
+## Ejercicios
+
+### Ejercicio 1. Interpretación de efectos parciales
+
+Ajusta el modelo
+
+$$\text{wage}
+=
+\beta_0
++
+f_1(\text{age})
++
+f_2(\text{year})
++
+f_3(\text{education})
++
+\varepsilon.$$
+
+Construye las tres gráficas de efectos parciales.
+
+Describe la forma de cada efecto.
+
+Responde:
+
+1.  ¿Qué edades parecen asociarse con mayores salarios?
+2.  ¿El efecto de `year` parece lineal?
+3.  ¿Qué niveles educativos producen las mayores contribuciones?
+
+### Ejercicio 2. `age` lineal vs. no lineal
+
+Ajusta dos modelos:
+
+$$M_1:
+\quad
+\text{wage}
+=
+\beta_0
++
+\beta_1\text{age}
++
+f_2(\text{year})
++
+f_3(\text{education})
++
+\varepsilon,$$
+
+y
+
+$$M_2:
+\quad
+\text{wage}
+=
+\beta_0
++
+f_1(\text{age})
++
+f_2(\text{year})
++
+f_3(\text{education})
++
+\varepsilon.$$
+
+Compara los modelos utilizando AIC.
+
+¿Cuál prefieres?
+
+### Ejercicio 3. `year` lineal vs. no lineal
+
+Repite el ejercicio anterior para `year`.
+
+Compara:
+
+$$\beta_2\text{year}$$
+
+contra
+
+$$f_2(\text{year}).$$
+
+¿Hay evidencia práctica de que necesitemos un efecto no lineal?
+
+### Ejercicio 4. Comparación con regresión lineal
+
+Ajusta una regresión lineal múltiple utilizando:
+
+- `age`;
+- `year`;
+- `education`.
+
+Después ajusta el GAM correspondiente.
+
+Compara:
+
+- valores predichos;
+- error cuadrático medio;
+- AIC;
+- interpretabilidad.
+
+### Ejercicio 5. Clasificación
+
+Construye la variable
+
+$$Y=
+I(\text{wage}>200).$$
+
+Ajusta un GAM logístico utilizando:
+
+- `age`;
+- `year`;
+- `education`.
+
+Construye las gráficas de efectos parciales.
+
+¿Cambian las conclusiones respecto al modelo que utiliza el umbral 250?
+
+### Ejercicio 6. Interpretación
+
+Explica con tus propias palabras la diferencia entre
+
+$$Y
+=
+\beta_0
++
+\beta_1X_1
++
+\beta_2X_2
++
+\varepsilon$$
+
+y
+
+$$Y
+=
+\beta_0
++
+f_1(X_1)
++
+f_2(X_2)
++
+\varepsilon.$$
+
+Tu explicación debe mencionar:
+
+- linealidad;
+- flexibilidad;
+- aditividad;
+- interpretación de $f_1$ y $f_2$.

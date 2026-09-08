@@ -1,6 +1,5 @@
 # Splines de suavizamiento
 
-
 Recapitulando: en las secciones anteriores construimos modelos flexibles utilizando regresión polinómica, funciones escalonadas, funciones base y splines de regresión.
 
 En un **spline de regresión**, una decisión importante consiste en determinar el número y la posición de los nodos (*knots*).
@@ -12,14 +11,12 @@ Los **splines de suavizamiento** (*smoothing splines*) utilizan una estrategia d
 
 Matemáticamente, buscamos una función que minimice
 
-$$
-\sum_{i=1}^{n}
+$$\sum_{i=1}^{n}
 \left(y_i-g(x_i)\right)^2
 +
 \lambda
 \int
-\left[g''(t)\right]^2dt.
-$$
+\left[g''(t)\right]^2dt.$$
 
 El primer término mide el error de ajuste, mientras que el segundo penaliza funciones demasiado irregulares.
 
@@ -28,7 +25,15 @@ El parámetro $\lambda$ controla el compromiso entre ambos objetivos:
 - valores pequeños de $\lambda$ permiten ajustes más flexibles;
 - valores grandes de $\lambda$ producen curvas más suaves.
 
+::: {.diapositivas}
+::: {.diapositivas-title}
+📝 **Diapositivas**
+:::
 
+::: {.diapositivas-body}
+[Ver diapositivas Splines de Suavizamiento](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/2.6_Splines_de_Suavizamiento.pdf)
+:::
+:::
 
 ## Librerías
 
@@ -48,7 +53,6 @@ La biblioteca `pygam` permite ajustar modelos aditivos generalizados o **GAMs** 
 Un spline de suavizamiento con un único predictor puede verse como un caso particular de un GAM. Por ahora utilizaremos `pygam` únicamente para estudiar splines de suavizamiento.
 
 Los GAMs con varios predictores y diferentes tipos de términos los estudiaremos más adelante.
-
 
 ## Cargar los datos
 
@@ -118,7 +122,7 @@ X_age.shape
 
 La instrucción
 
-```python
+``` python
 reshape(-1, 1)
 ```
 
@@ -129,23 +133,18 @@ indica que queremos construir una matriz con:
 
 Por ejemplo, un vector
 
-$$
-(20,30,40,50)
-$$
+$$(20,30,40,50)$$
 
 se transforma conceptualmente en
 
-$$
-\begin{pmatrix}
+$$\begin{pmatrix}
 20\\
 30\\
 40\\
 50
-\end{pmatrix}.
-$$
+\end{pmatrix}.$$
 
 Esto no cambia los datos; solamente cambia la forma en la que están organizados.
-
 
 ## Nuestro primer spline de suavizamiento
 
@@ -167,15 +166,13 @@ Veamos las partes de esta instrucción.
 
 En nuestro caso:
 
-$$
-Y=\text{wage}.
-$$
+$$Y=\text{wage}.$$
 
 ### `s(0)`
 
 La función
 
-```python
+``` python
 s(0)
 ```
 
@@ -183,7 +180,7 @@ indica que queremos modelar la primera columna de la matriz $X$ mediante un tér
 
 Como `X_age` solamente contiene una columna,
 
-```python
+``` python
 s(0)
 ```
 
@@ -193,7 +190,7 @@ corresponde a `age`.
 
 El argumento
 
-```python
+``` python
 lam=0.6
 ```
 
@@ -227,8 +224,6 @@ Ahora calculamos las predicciones.
 pred = gam.predict(age_grid_matrix)
 ```
 
-
-
 ## Visualizar el spline
 
 Podemos representar simultáneamente los datos y la curva estimada.
@@ -261,59 +256,46 @@ Sin embargo, esta curva depende del valor elegido para $\lambda$.
 
 La pregunta ahora es:
 
-
 :::: {.callout-warning icon="false"}
 ## 🧠 Pregunta
+
 ¿qué ocurre si cambiamos $\lambda$?
 
 ::: {.callout-tip collapse="true" icon="false"}
 ## Solución
-
-
 :::
 ::::
-
 
 ## Efecto del parámetro $\lambda$
 
 Recordemos que el modelo minimiza una expresión de la forma
 
-$$
-\text{Error de ajuste}
+$$\text{Error de ajuste}
 +
 \lambda
-\left(\text{penalización por rugosidad}\right).
-$$
+\left(\text{penalización por rugosidad}\right).$$
 
 Por tanto, esperamos que:
 
-$$
-\lambda\downarrow
+$$\lambda\downarrow
 \quad\Longrightarrow\quad
-\text{mayor flexibilidad},
-$$
+\text{mayor flexibilidad},$$
 
 mientras que
 
-$$
-\lambda\uparrow
+$$\lambda\uparrow
 \quad\Longrightarrow\quad
-\text{mayor suavidad}.
-$$
+\text{mayor suavidad}.$$
 
 Vamos a comprobarlo empíricamente.
 
 Consideraremos valores de $\lambda$ desde
 
-$$
-10^{-2}
-$$
+$$10^{-2}$$
 
 hasta
 
-$$
-10^6.
-$$
+$$10^6.$$
 
 ```{python}
 lambdas = np.logspace(-2, 6, 5)
@@ -324,7 +306,6 @@ lambdas
 La función `np.logspace()` construye valores igualmente espaciados en una escala logarítmica.
 
 Esto resulta útil porque queremos comparar valores de $\lambda$ que difieren por varios órdenes de magnitud.
-
 
 ## Comparar diferentes valores de $\lambda$
 
@@ -372,7 +353,6 @@ Cuando $\lambda$ aumenta, la penalización adquiere mayor peso y la curva se vue
 
 Para valores suficientemente grandes de $\lambda$, el ajuste comienza a aproximarse a una relación lineal.
 
-
 ## $\lambda$ y complejidad del modelo
 
 El número de parámetros de un spline de suavizamiento no describe directamente su complejidad.
@@ -381,11 +361,9 @@ Por ello utilizamos los **grados de libertad efectivos**.
 
 La relación general es
 
-$$
-\lambda\uparrow
+$$\lambda\uparrow
 \quad\Longrightarrow\quad
-df_\lambda\downarrow.
-$$
+df_\lambda\downarrow.$$
 
 Es decir:
 
@@ -394,21 +372,17 @@ Es decir:
 
 Esto conecta directamente con el compromiso sesgo-varianza:
 
-$$
-\text{mayor flexibilidad}
+$$\text{mayor flexibilidad}
 \quad\Longrightarrow\quad
-\text{menor sesgo y mayor varianza},
-$$
+\text{menor sesgo y mayor varianza},$$
 
 mientras que
 
-$$
-\text{menor flexibilidad}
+$$\text{menor flexibilidad}
 \quad\Longrightarrow\quad
-\text{mayor sesgo y menor varianza}.
-$$
+\text{mayor sesgo y menor varianza}.$$
 
----
+------------------------------------------------------------------------
 
 ## ¿Cómo elegimos $\lambda$?
 
@@ -416,7 +390,7 @@ Hasta ahora hemos elegido $\lambda$ manualmente.
 
 Por ejemplo:
 
-```python
+``` python
 lam=0.6
 ```
 
@@ -426,14 +400,13 @@ Una estrategia más adecuada consiste en seleccionar $\lambda$ utilizando los pr
 
 `pygam` proporciona el método
 
-```python
+``` python
 gridsearch()
 ```
 
 para realizar esta búsqueda.
 
-
-##  Búsqueda de $\lambda$
+## Búsqueda de $\lambda$
 
 Primero definimos una colección de posibles valores.
 
@@ -466,17 +439,14 @@ gam_opt.lam
 
 Es importante distinguir entre dos ideas:
 
-1. **explorar manualmente $\lambda$**, para comprender su efecto sobre la curva;
-2. **seleccionar $\lambda$ mediante un criterio basado en los datos**, para construir el modelo final.
-
+1.  **explorar manualmente** $\lambda$, para comprender su efecto sobre la curva;
+2.  **seleccionar** $\lambda$ mediante un criterio basado en los datos, para construir el modelo final.
 
 ## Comparar un valor arbitrario con el valor seleccionado
 
 Comparemos el modelo inicial, que utilizaba
 
-$$
-\lambda=0.6,
-$$
+$$\lambda=0.6,$$
 
 con el modelo obtenido mediante la búsqueda.
 
@@ -518,17 +488,15 @@ Dos valores diferentes de $\lambda$ no necesariamente producen curvas visualment
 
 Esto es importante: aumentar la complejidad del modelo solamente tiene sentido si los datos proporcionan evidencia de que esa complejidad adicional es útil.
 
----
+------------------------------------------------------------------------
 
 ## Grados de libertad efectivos del modelo
 
 Recordemos que teóricamente los grados de libertad efectivos pueden escribirse como
 
-$$
-df_\lambda
+$$df_\lambda
 =
-\operatorname{tr}(S_\lambda).
-$$
+\operatorname{tr}(S_\lambda).$$
 
 No corresponden simplemente al número de coeficientes almacenados en el modelo.
 
@@ -585,26 +553,21 @@ plt.show()
 
 Esta gráfica permite observar directamente la relación
 
-$$
-\boxed{
+$$\boxed{
 \lambda\uparrow
 \quad\Longrightarrow\quad
 df_\lambda\downarrow
-}
-$$
+}$$
 
 que habíamos estudiado teóricamente.
-
 
 ## ¿Podemos controlar la complejidad usando grados de libertad?
 
 Conceptualmente podemos pensar en dos maneras equivalentes de describir la complejidad:
 
-$$
-\lambda
+$$\lambda
 \qquad\text{o}\qquad
-df_\lambda.
-$$
+df_\lambda.$$
 
 Un valor pequeño de $\lambda$ corresponde a un número mayor de grados de libertad efectivos.
 
@@ -614,20 +577,15 @@ En algunas implementaciones es posible buscar el valor de $\lambda$ que produzca
 
 Sin embargo, para esta práctica nos concentraremos en la idea más importante:
 
-:::{.callout-important}
-
+::: callout-important
 $\lambda$ controla la penalización y los grados de libertad efectivos describen la flexibilidad resultante.
-
 :::
-
 
 ## Comparación con una regresión lineal
 
 La teoría de los splines de suavizamiento nos dice que cuando la penalización es muy grande,
 
-$$
-\lambda\rightarrow\infty,
-$$
+$$\lambda\rightarrow\infty,$$
 
 la curva tiende hacia una función lineal.
 
@@ -700,18 +658,13 @@ Las dos curvas deberían ser muy similares.
 
 La razón es que una penalización muy grande fuerza a que
 
-$$
-g''(x)\approx0.
-$$
+$$g''(x)\approx0.$$
 
 Si la segunda derivada es cero, entonces la función es lineal:
 
-$$
-g(x)=\beta_0+\beta_1x.
-$$
+$$g(x)=\beta_0+\beta_1x.$$
 
 Con esto conectamos directamente la implementación computacional con el resultado teórico.
-
 
 ## Smoothing splines y GAMs
 
@@ -719,8 +672,7 @@ La biblioteca `pygam` se diseñó para trabajar con **modelos aditivos generaliz
 
 Un GAM permite construir modelos de la forma
 
-$$
-Y
+$$Y
 =
 \beta_0+
 f_1(X_1)+
@@ -728,38 +680,32 @@ f_2(X_2)+
 \cdots+
 f_p(X_p)
 +
-\varepsilon,
-$$
+\varepsilon,$$
 
 donde algunas de las funciones $f_j$ pueden ser relaciones suaves estimadas a partir de los datos.
 
 Por ejemplo, podríamos considerar un modelo conceptual como
 
-$$
-\text{Wage}
+$$\text{Wage}
 =
 \beta_0+
 f_1(\text{Age})+
 f_2(\text{Year})+
 \text{Education}
 +
-\varepsilon.
-$$
+\varepsilon.$$
 
 En esta práctica solamente hemos considerado
 
-$$
-\text{Wage}
+$$\text{Wage}
 =
 \beta_0+
 f(\text{Age})+
-\varepsilon.
-$$
+\varepsilon.$$
 
 Por tanto, estamos utilizando únicamente **un término suave y un predictor**.
 
 Los GAMs permiten combinar simultáneamente varios términos suaves, lineales y categóricos. Estudiaremos esa extensión más adelante.
-
 
 ## Ejercicios
 
@@ -767,53 +713,46 @@ Los GAMs permiten combinar simultáneamente varios términos suaves, lineales y 
 
 Ajusta splines de suavizamiento utilizando los siguientes valores:
 
-$$
-\lambda=
+$$\lambda=
 10^{-4},\;
 10^{-2},\;
 1,\;
 10^2,\;
 10^4,\;
-10^8.
-$$
+10^8.$$
 
 Representa todos los ajustes en una misma gráfica.
 
 **Preguntas:**
 
-1. ¿Qué ocurre con la curva conforme aumenta $\lambda$?
-2. ¿Cuál de los modelos parece más flexible?
-3. ¿Cuál parece presentar mayor sesgo?
-4. ¿Cuál podría presentar mayor varianza?
-
-
+1.  ¿Qué ocurre con la curva conforme aumenta $\lambda$?
+2.  ¿Cuál de los modelos parece más flexible?
+3.  ¿Cuál parece presentar mayor sesgo?
+4.  ¿Cuál podría presentar mayor varianza?
 
 ### Ejercicio 2. Grados de libertad efectivos
 
 Para cada uno de los valores de $\lambda$ del ejercicio anterior, obtén los grados de libertad efectivos mediante
 
-```python
+``` python
 modelo.statistics_["edof"]
 ```
 
 Construye una tabla con las columnas:
 
 | $\lambda$ | Grados de libertad efectivos |
-|---|---|
-| | |
+|-----------|------------------------------|
+|           |                              |
 
 Después representa gráficamente
 
-$$
-df_\lambda
+$$df_\lambda
 \quad\text{contra}\quad
-\lambda.
-$$
+\lambda.$$
 
 Utiliza escala logarítmica para el eje correspondiente a $\lambda$.
 
 **Pregunta:** ¿los resultados coinciden con la relación teórica esperada?
-
 
 ### Ejercicio 3. Selección de $\lambda$
 
@@ -821,16 +760,14 @@ Utiliza `gridsearch()` para seleccionar automáticamente un valor de $\lambda$.
 
 Considera como candidatos
 
-$$
-10^{-4}\leq\lambda\leq10^6.
-$$
+$$10^{-4}\leq\lambda\leq10^6.$$
 
 Después:
 
-1. reporta el valor seleccionado;
-2. reporta sus grados de libertad efectivos;
-3. grafica el spline resultante;
-4. compáralo con los ajustes obtenidos manualmente.
+1.  reporta el valor seleccionado;
+2.  reporta sus grados de libertad efectivos;
+3.  grafica el spline resultante;
+4.  compáralo con los ajustes obtenidos manualmente.
 
 **Pregunta:** ¿el procedimiento seleccionó un modelo relativamente flexible o relativamente suave?
 
@@ -842,13 +779,11 @@ Ajusta splines utilizando valores cada vez mayores de $\lambda$.
 
 Por ejemplo:
 
-$$
-10^2,\quad
+$$10^2,\quad
 10^4,\quad
 10^6,\quad
 10^8,\quad
-10^{10}.
-$$
+10^{10}.$$
 
 Ajusta también una regresión lineal de `wage` sobre `age`.
 
@@ -856,31 +791,27 @@ Representa todos los modelos.
 
 **Pregunta:** ¿qué observas conforme $\lambda$ aumenta? Explica el resultado utilizando la penalización
 
-$$
-\lambda\int[g''(t)]^2dt.
-$$
-
+$$\lambda\int[g''(t)]^2dt.$$
 
 ### Ejercicio 5. Interpretación
 
 Sin ejecutar código, responde:
 
-1. Si un spline tiene muchos grados de libertad efectivos, ¿esperas que $\lambda$ sea grande o pequeño?
-2. Si $\lambda\rightarrow\infty$, ¿qué tipo de función esperamos obtener?
-3. ¿Por qué no es conveniente seleccionar $\lambda$ únicamente observando qué modelo tiene el menor error de entrenamiento?
-4. ¿Cuál es la diferencia conceptual entre el número de parámetros del spline y sus grados de libertad efectivos?
-5. ¿Qué relación existe entre $\lambda$, flexibilidad, sesgo y varianza?
-
+1.  Si un spline tiene muchos grados de libertad efectivos, ¿esperas que $\lambda$ sea grande o pequeño?
+2.  Si $\lambda\rightarrow\infty$, ¿qué tipo de función esperamos obtener?
+3.  ¿Por qué no es conveniente seleccionar $\lambda$ únicamente observando qué modelo tiene el menor error de entrenamiento?
+4.  ¿Cuál es la diferencia conceptual entre el número de parámetros del spline y sus grados de libertad efectivos?
+5.  ¿Qué relación existe entre $\lambda$, flexibilidad, sesgo y varianza?
 
 ### Ejercicio 6. Otro predictor
 
 Repite el análisis utilizando `year` como predictor y `wage` como variable respuesta.
 
-1. Construye un spline de suavizamiento.
-2. Explora distintos valores de $\lambda$.
-3. Obtén el valor seleccionado mediante `gridsearch()`.
-4. Obtén los grados de libertad efectivos.
-5. Compara la relación `year`--`wage` con la relación `age`--`wage`.
+1.  Construye un spline de suavizamiento.
+2.  Explora distintos valores de $\lambda$.
+3.  Obtén el valor seleccionado mediante `gridsearch()`.
+4.  Obtén los grados de libertad efectivos.
+5.  Compara la relación `year`--`wage` con la relación `age`--`wage`.
 
 **Pregunta:** ¿parece necesaria la misma cantidad de flexibilidad para modelar ambas relaciones? Justifica tu respuesta.
 

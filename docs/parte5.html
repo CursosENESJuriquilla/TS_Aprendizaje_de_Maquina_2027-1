@@ -430,24 +430,30 @@ window.Quarto = {
 <li>mantenerse suficientemente suave.</li>
 </ul>
 <p>Matemáticamente, buscamos una función que minimice</p>
-<p><span class="math display">\[
-\sum_{i=1}^{n}
+<p><span class="math display">\[\sum_{i=1}^{n}
 \left(y_i-g(x_i)\right)^2
 +
 \lambda
 \int
-\left[g''(t)\right]^2dt.
-\]</span></p>
+\left[g''(t)\right]^2dt.\]</span></p>
 <p>El primer término mide el error de ajuste, mientras que el segundo penaliza funciones demasiado irregulares.</p>
 <p>El parámetro <span class="math inline">\(\lambda\)</span> controla el compromiso entre ambos objetivos:</p>
 <ul>
 <li>valores pequeños de <span class="math inline">\(\lambda\)</span> permiten ajustes más flexibles;</li>
 <li>valores grandes de <span class="math inline">\(\lambda\)</span> producen curvas más suaves.</li>
 </ul>
+<div class="diapositivas">
+<div class="diapositivas-title">
+<p>📝 <strong>Diapositivas</strong></p>
+</div>
+<div class="diapositivas-body">
+<p><a href="https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/2.6_Splines_de_Suavizamiento.pdf">Ver diapositivas Splines de Suavizamiento</a></p>
+</div>
+</div>
 <section id="librerías" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="librerías"><span class="header-section-number">5.1</span> Librerías</h2>
 <p>Comenzamos importando las bibliotecas necesarias.</p>
-<div id="fadaf76a" class="cell" data-execution_count="1">
+<div id="536619f9" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -465,7 +471,7 @@ window.Quarto = {
 <section id="cargar-los-datos" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="cargar-los-datos"><span class="header-section-number">5.2</span> Cargar los datos</h2>
 <p>Utilizaremos nuevamente el conjunto de datos <code>Wage</code>.</p>
-<div id="5905a304" class="cell" data-execution_count="2">
+<div id="4ed29dfd" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Wage <span class="op">=</span> load_data(<span class="st">"Wage"</span>)</span>
@@ -576,7 +582,7 @@ window.Quarto = {
 <li><code>wage</code>: salario.</li>
 </ul>
 <p>Extraemos estas dos variables.</p>
-<div id="e9ae4f41" class="cell" data-execution_count="3">
+<div id="93f52e71" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>age <span class="op">=</span> Wage[<span class="st">"age"</span>]</span>
@@ -584,7 +590,7 @@ window.Quarto = {
 </details>
 </div>
 <p>Podemos visualizar los datos originales.</p>
-<div id="a8d88d3d" class="cell" data-execution_count="4">
+<div id="41923c0f" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -616,7 +622,7 @@ window.Quarto = {
 <h2 data-number="5.3" class="anchored" data-anchor-id="preparar-el-predictor-para-pygam"><span class="header-section-number">5.3</span> Preparar el predictor para <code>pygam</code></h2>
 <p><code>pygam</code> espera que los predictores se proporcionen en forma de una <strong>matriz</strong>.</p>
 <p>Actualmente <code>age</code> es un vector:</p>
-<div id="c26b38c1" class="cell" data-execution_count="5">
+<div id="66dfd1c9" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>np.asarray(age).shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -626,14 +632,14 @@ window.Quarto = {
 </div>
 </div>
 <p>Lo transformamos en una matriz con una sola columna.</p>
-<div id="fa06d4d6" class="cell" data-execution_count="6">
+<div id="f9dd107d" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>X_age <span class="op">=</span> np.asarray(age).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Ahora podemos revisar sus dimensiones.</p>
-<div id="11ebf0c9" class="cell" data-execution_count="7">
+<div id="8e6ca2da" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>X_age.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -650,24 +656,20 @@ window.Quarto = {
 <li>tantas filas como sean necesarias.</li>
 </ul>
 <p>Por ejemplo, un vector</p>
-<p><span class="math display">\[
-(20,30,40,50)
-\]</span></p>
+<p><span class="math display">\[(20,30,40,50)\]</span></p>
 <p>se transforma conceptualmente en</p>
-<p><span class="math display">\[
-\begin{pmatrix}
+<p><span class="math display">\[\begin{pmatrix}
 20\\
 30\\
 40\\
 50
-\end{pmatrix}.
-\]</span></p>
+\end{pmatrix}.\]</span></p>
 <p>Esto no cambia los datos; solamente cambia la forma en la que están organizados.</p>
 </section>
 <section id="nuestro-primer-spline-de-suavizamiento" class="level2" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="nuestro-primer-spline-de-suavizamiento"><span class="header-section-number">5.4</span> Nuestro primer spline de suavizamiento</h2>
 <p>Construiremos un primer modelo.</p>
-<div id="7fd74117" class="cell" data-execution_count="8">
+<div id="984377cd" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>gam <span class="op">=</span> LinearGAM(</span>
@@ -687,9 +689,7 @@ window.Quarto = {
 <h3 data-number="5.4.1" class="anchored" data-anchor-id="lineargam"><span class="header-section-number">5.4.1</span> <code>LinearGAM()</code></h3>
 <p><code>LinearGAM()</code> utiliza una función de pérdida basada en errores cuadrados, por lo que es apropiado cuando la variable respuesta es cuantitativa.</p>
 <p>En nuestro caso:</p>
-<p><span class="math display">\[
-Y=\text{wage}.
-\]</span></p>
+<p><span class="math display">\[Y=\text{wage}.\]</span></p>
 </section>
 <section id="s0" class="level3" data-number="5.4.2">
 <h3 data-number="5.4.2" class="anchored" data-anchor-id="s0"><span class="header-section-number">5.4.2</span> <code>s(0)</code></h3>
@@ -712,7 +712,7 @@ Y=\text{wage}.
 <h2 data-number="5.5" class="anchored" data-anchor-id="construir-valores-para-realizar-predicciones"><span class="header-section-number">5.5</span> Construir valores para realizar predicciones</h2>
 <p>Para visualizar el modelo no queremos obtener predicciones únicamente en las edades observadas.</p>
 <p>Construiremos una secuencia de edades desde la edad mínima hasta la máxima.</p>
-<div id="a8b10b02" class="cell" data-execution_count="9">
+<div id="6e9fba5c" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>age_grid <span class="op">=</span> np.linspace(</span>
@@ -723,14 +723,14 @@ Y=\text{wage}.
 </details>
 </div>
 <p>Para utilizar estos valores con <code>pygam</code>, también debemos convertirlos en una matriz.</p>
-<div id="26520f43" class="cell" data-execution_count="10">
+<div id="e076c945" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>age_grid_matrix <span class="op">=</span> age_grid.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Ahora calculamos las predicciones.</p>
-<div id="691e21ff" class="cell" data-execution_count="11">
+<div id="ac176624" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> gam.predict(age_grid_matrix)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -740,7 +740,7 @@ Y=\text{wage}.
 <section id="visualizar-el-spline" class="level2" data-number="5.6">
 <h2 data-number="5.6" class="anchored" data-anchor-id="visualizar-el-spline"><span class="header-section-number">5.6</span> Visualizar el spline</h2>
 <p>Podemos representar simultáneamente los datos y la curva estimada.</p>
-<div id="0f559a53" class="cell" data-execution_count="12">
+<div id="9d1f82c0" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -807,34 +807,24 @@ Y=\text{wage}.
 <section id="efecto-del-parámetro-lambda" class="level2" data-number="5.7">
 <h2 data-number="5.7" class="anchored" data-anchor-id="efecto-del-parámetro-lambda"><span class="header-section-number">5.7</span> Efecto del parámetro <span class="math inline">\(\lambda\)</span></h2>
 <p>Recordemos que el modelo minimiza una expresión de la forma</p>
-<p><span class="math display">\[
-\text{Error de ajuste}
+<p><span class="math display">\[\text{Error de ajuste}
 +
 \lambda
-\left(\text{penalización por rugosidad}\right).
-\]</span></p>
+\left(\text{penalización por rugosidad}\right).\]</span></p>
 <p>Por tanto, esperamos que:</p>
-<p><span class="math display">\[
-\lambda\downarrow
+<p><span class="math display">\[\lambda\downarrow
 \quad\Longrightarrow\quad
-\text{mayor flexibilidad},
-\]</span></p>
+\text{mayor flexibilidad},\]</span></p>
 <p>mientras que</p>
-<p><span class="math display">\[
-\lambda\uparrow
+<p><span class="math display">\[\lambda\uparrow
 \quad\Longrightarrow\quad
-\text{mayor suavidad}.
-\]</span></p>
+\text{mayor suavidad}.\]</span></p>
 <p>Vamos a comprobarlo empíricamente.</p>
 <p>Consideraremos valores de <span class="math inline">\(\lambda\)</span> desde</p>
-<p><span class="math display">\[
-10^{-2}
-\]</span></p>
+<p><span class="math display">\[10^{-2}\]</span></p>
 <p>hasta</p>
-<p><span class="math display">\[
-10^6.
-\]</span></p>
-<div id="458a26ce" class="cell" data-execution_count="13">
+<p><span class="math display">\[10^6.\]</span></p>
+<div id="6c90a69d" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>lambdas <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">2</span>, <span class="dv">6</span>, <span class="dv">5</span>)</span>
@@ -851,7 +841,7 @@ Y=\text{wage}.
 <section id="comparar-diferentes-valores-de-lambda" class="level2" data-number="5.8">
 <h2 data-number="5.8" class="anchored" data-anchor-id="comparar-diferentes-valores-de-lambda"><span class="header-section-number">5.8</span> Comparar diferentes valores de <span class="math inline">\(\lambda\)</span></h2>
 <p>Ajustaremos un spline diferente para cada valor de <span class="math inline">\(\lambda\)</span>.</p>
-<div id="95acb727" class="cell" data-execution_count="14">
+<div id="ef0698c6" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">7</span>))</span>
@@ -904,28 +894,22 @@ Y=\text{wage}.
 <p>El número de parámetros de un spline de suavizamiento no describe directamente su complejidad.</p>
 <p>Por ello utilizamos los <strong>grados de libertad efectivos</strong>.</p>
 <p>La relación general es</p>
-<p><span class="math display">\[
-\lambda\uparrow
+<p><span class="math display">\[\lambda\uparrow
 \quad\Longrightarrow\quad
-df_\lambda\downarrow.
-\]</span></p>
+df_\lambda\downarrow.\]</span></p>
 <p>Es decir:</p>
 <ul>
 <li><span class="math inline">\(\lambda\)</span> pequeño <span class="math inline">\(\rightarrow\)</span> más grados de libertad efectivos;</li>
 <li><span class="math inline">\(\lambda\)</span> grande <span class="math inline">\(\rightarrow\)</span> menos grados de libertad efectivos.</li>
 </ul>
 <p>Esto conecta directamente con el compromiso sesgo-varianza:</p>
-<p><span class="math display">\[
-\text{mayor flexibilidad}
+<p><span class="math display">\[\text{mayor flexibilidad}
 \quad\Longrightarrow\quad
-\text{menor sesgo y mayor varianza},
-\]</span></p>
+\text{menor sesgo y mayor varianza},\]</span></p>
 <p>mientras que</p>
-<p><span class="math display">\[
-\text{menor flexibilidad}
+<p><span class="math display">\[\text{menor flexibilidad}
 \quad\Longrightarrow\quad
-\text{mayor sesgo y menor varianza}.
-\]</span></p>
+\text{mayor sesgo y menor varianza}.\]</span></p>
 <hr>
 </section>
 <section id="cómo-elegimos-lambda" class="level2" data-number="5.10">
@@ -942,14 +926,14 @@ df_\lambda\downarrow.
 <section id="búsqueda-de-lambda" class="level2" data-number="5.11">
 <h2 data-number="5.11" class="anchored" data-anchor-id="búsqueda-de-lambda"><span class="header-section-number">5.11</span> Búsqueda de <span class="math inline">\(\lambda\)</span></h2>
 <p>Primero definimos una colección de posibles valores.</p>
-<div id="347f1e30" class="cell" data-execution_count="15">
+<div id="7aa1852d" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>lam_grid <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">30</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Ahora realizamos la búsqueda.</p>
-<div id="dc991147" class="cell" data-execution_count="16">
+<div id="f3a80294" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>gam_opt <span class="op">=</span> LinearGAM(</span>
@@ -971,7 +955,7 @@ df_\lambda\downarrow.
 </div>
 <p><code>gridsearch()</code> ajusta modelos utilizando diferentes valores del parámetro de suavizamiento y selecciona una opción de acuerdo con el criterio utilizado internamente por <code>pygam</code>.</p>
 <p>Podemos consultar el valor seleccionado.</p>
-<div id="2f16a20c" class="cell" data-execution_count="17">
+<div id="f1508aa3" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>gam_opt.lam</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -982,18 +966,16 @@ df_\lambda\downarrow.
 </div>
 <p>Es importante distinguir entre dos ideas:</p>
 <ol type="1">
-<li><strong>explorar manualmente <span class="math inline">\(\lambda\)</span></strong>, para comprender su efecto sobre la curva;</li>
-<li><strong>seleccionar <span class="math inline">\(\lambda\)</span> mediante un criterio basado en los datos</strong>, para construir el modelo final.</li>
+<li><strong>explorar manualmente</strong> <span class="math inline">\(\lambda\)</span>, para comprender su efecto sobre la curva;</li>
+<li><strong>seleccionar</strong> <span class="math inline">\(\lambda\)</span> mediante un criterio basado en los datos, para construir el modelo final.</li>
 </ol>
 </section>
 <section id="comparar-un-valor-arbitrario-con-el-valor-seleccionado" class="level2" data-number="5.12">
 <h2 data-number="5.12" class="anchored" data-anchor-id="comparar-un-valor-arbitrario-con-el-valor-seleccionado"><span class="header-section-number">5.12</span> Comparar un valor arbitrario con el valor seleccionado</h2>
 <p>Comparemos el modelo inicial, que utilizaba</p>
-<p><span class="math display">\[
-\lambda=0.6,
-\]</span></p>
+<p><span class="math display">\[\lambda=0.6,\]</span></p>
 <p>con el modelo obtenido mediante la búsqueda.</p>
-<div id="a5408954" class="cell" data-execution_count="18">
+<div id="6db2021e" class="cell" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>pred_default <span class="op">=</span> gam.predict(age_grid_matrix)</span>
@@ -1043,16 +1025,14 @@ df_\lambda\downarrow.
 <section id="grados-de-libertad-efectivos-del-modelo" class="level2" data-number="5.13">
 <h2 data-number="5.13" class="anchored" data-anchor-id="grados-de-libertad-efectivos-del-modelo"><span class="header-section-number">5.13</span> Grados de libertad efectivos del modelo</h2>
 <p>Recordemos que teóricamente los grados de libertad efectivos pueden escribirse como</p>
-<p><span class="math display">\[
-df_\lambda
+<p><span class="math display">\[df_\lambda
 =
-\operatorname{tr}(S_\lambda).
-\]</span></p>
+\operatorname{tr}(S_\lambda).\]</span></p>
 <p>No corresponden simplemente al número de coeficientes almacenados en el modelo.</p>
 <p>Representan la <strong>flexibilidad efectiva</strong> que queda después de aplicar la penalización.</p>
 <p><code>pygam</code> calcula esta cantidad durante el ajuste.</p>
 <p>Podemos inspeccionarla mediante:</p>
-<div id="9ac5f563" class="cell" data-execution_count="19">
+<div id="e82ae475" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>gam_opt.statistics_[<span class="st">"edof"</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1062,7 +1042,7 @@ df_\lambda
 </div>
 </div>
 <p>Comparemos ahora varios valores de <span class="math inline">\(\lambda\)</span>.</p>
-<div id="136ed234" class="cell" data-execution_count="20">
+<div id="2858cdf1" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>resultados <span class="op">=</span> []</span>
@@ -1147,7 +1127,7 @@ df_\lambda
 </div>
 </div>
 <p>Ahora podemos visualizar la relación.</p>
-<div id="e93b70a7" class="cell" data-execution_count="21">
+<div id="77c04b7f" class="cell" data-execution_count="21">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -1175,23 +1155,19 @@ df_\lambda
 </div>
 </div>
 <p>Esta gráfica permite observar directamente la relación</p>
-<p><span class="math display">\[
-\boxed{
+<p><span class="math display">\[\boxed{
 \lambda\uparrow
 \quad\Longrightarrow\quad
 df_\lambda\downarrow
-}
-\]</span></p>
+}\]</span></p>
 <p>que habíamos estudiado teóricamente.</p>
 </section>
 <section id="podemos-controlar-la-complejidad-usando-grados-de-libertad" class="level2" data-number="5.14">
 <h2 data-number="5.14" class="anchored" data-anchor-id="podemos-controlar-la-complejidad-usando-grados-de-libertad"><span class="header-section-number">5.14</span> ¿Podemos controlar la complejidad usando grados de libertad?</h2>
 <p>Conceptualmente podemos pensar en dos maneras equivalentes de describir la complejidad:</p>
-<p><span class="math display">\[
-\lambda
+<p><span class="math display">\[\lambda
 \qquad\text{o}\qquad
-df_\lambda.
-\]</span></p>
+df_\lambda.\]</span></p>
 <p>Un valor pequeño de <span class="math inline">\(\lambda\)</span> corresponde a un número mayor de grados de libertad efectivos.</p>
 <p>Un valor grande de <span class="math inline">\(\lambda\)</span> corresponde a un número menor de grados de libertad efectivos.</p>
 <p>En algunas implementaciones es posible buscar el valor de <span class="math inline">\(\lambda\)</span> que produzca aproximadamente un número deseado de grados de libertad.</p>
@@ -1213,13 +1189,11 @@ Importante
 <section id="comparación-con-una-regresión-lineal" class="level2" data-number="5.15">
 <h2 data-number="5.15" class="anchored" data-anchor-id="comparación-con-una-regresión-lineal"><span class="header-section-number">5.15</span> Comparación con una regresión lineal</h2>
 <p>La teoría de los splines de suavizamiento nos dice que cuando la penalización es muy grande,</p>
-<p><span class="math display">\[
-\lambda\rightarrow\infty,
-\]</span></p>
+<p><span class="math display">\[\lambda\rightarrow\infty,\]</span></p>
 <p>la curva tiende hacia una función lineal.</p>
 <p>Podemos comprobar esta idea comparando un spline fuertemente penalizado con una regresión lineal.</p>
 <p>Primero ajustamos la regresión lineal.</p>
-<div id="04c4b447" class="cell" data-execution_count="22">
+<div id="25383b34" class="cell" data-execution_count="22">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>coef_lineal <span class="op">=</span> np.polyfit(</span>
@@ -1235,7 +1209,7 @@ Importante
 </details>
 </div>
 <p>Ahora ajustamos un spline con una penalización muy grande.</p>
-<div id="003f420e" class="cell" data-execution_count="23">
+<div id="4bbdec25" class="cell" data-execution_count="23">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>gam_suave <span class="op">=</span> LinearGAM(</span>
@@ -1250,7 +1224,7 @@ Importante
 </details>
 </div>
 <p>Comparamos ambos ajustes.</p>
-<div id="58d51ab2" class="cell" data-execution_count="24">
+<div id="7743e6a0" class="cell" data-execution_count="24">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">7</span>))</span>
@@ -1293,21 +1267,16 @@ Importante
 </div>
 <p>Las dos curvas deberían ser muy similares.</p>
 <p>La razón es que una penalización muy grande fuerza a que</p>
-<p><span class="math display">\[
-g''(x)\approx0.
-\]</span></p>
+<p><span class="math display">\[g''(x)\approx0.\]</span></p>
 <p>Si la segunda derivada es cero, entonces la función es lineal:</p>
-<p><span class="math display">\[
-g(x)=\beta_0+\beta_1x.
-\]</span></p>
+<p><span class="math display">\[g(x)=\beta_0+\beta_1x.\]</span></p>
 <p>Con esto conectamos directamente la implementación computacional con el resultado teórico.</p>
 </section>
 <section id="smoothing-splines-y-gams" class="level2" data-number="5.16">
 <h2 data-number="5.16" class="anchored" data-anchor-id="smoothing-splines-y-gams"><span class="header-section-number">5.16</span> Smoothing splines y GAMs</h2>
 <p>La biblioteca <code>pygam</code> se diseñó para trabajar con <strong>modelos aditivos generalizados</strong> (<em>Generalized Additive Models</em>, GAMs).</p>
 <p>Un GAM permite construir modelos de la forma</p>
-<p><span class="math display">\[
-Y
+<p><span class="math display">\[Y
 =
 \beta_0+
 f_1(X_1)+
@@ -1315,28 +1284,23 @@ f_2(X_2)+
 \cdots+
 f_p(X_p)
 +
-\varepsilon,
-\]</span></p>
+\varepsilon,\]</span></p>
 <p>donde algunas de las funciones <span class="math inline">\(f_j\)</span> pueden ser relaciones suaves estimadas a partir de los datos.</p>
 <p>Por ejemplo, podríamos considerar un modelo conceptual como</p>
-<p><span class="math display">\[
-\text{Wage}
+<p><span class="math display">\[\text{Wage}
 =
 \beta_0+
 f_1(\text{Age})+
 f_2(\text{Year})+
 \text{Education}
 +
-\varepsilon.
-\]</span></p>
+\varepsilon.\]</span></p>
 <p>En esta práctica solamente hemos considerado</p>
-<p><span class="math display">\[
-\text{Wage}
+<p><span class="math display">\[\text{Wage}
 =
 \beta_0+
 f(\text{Age})+
-\varepsilon.
-\]</span></p>
+\varepsilon.\]</span></p>
 <p>Por tanto, estamos utilizando únicamente <strong>un término suave y un predictor</strong>.</p>
 <p>Los GAMs permiten combinar simultáneamente varios términos suaves, lineales y categóricos. Estudiaremos esa extensión más adelante.</p>
 </section>
@@ -1345,15 +1309,13 @@ f(\text{Age})+
 <section id="ejercicio-1.-efecto-de-lambda" class="level3" data-number="5.17.1">
 <h3 data-number="5.17.1" class="anchored" data-anchor-id="ejercicio-1.-efecto-de-lambda"><span class="header-section-number">5.17.1</span> Ejercicio 1. Efecto de <span class="math inline">\(\lambda\)</span></h3>
 <p>Ajusta splines de suavizamiento utilizando los siguientes valores:</p>
-<p><span class="math display">\[
-\lambda=
+<p><span class="math display">\[\lambda=
 10^{-4},\;
 10^{-2},\;
 1,\;
 10^2,\;
 10^4,\;
-10^8.
-\]</span></p>
+10^8.\]</span></p>
 <p>Representa todos los ajustes en una misma gráfica.</p>
 <p><strong>Preguntas:</strong></p>
 <ol type="1">
@@ -1383,11 +1345,9 @@ f(\text{Age})+
 </tbody>
 </table>
 <p>Después representa gráficamente</p>
-<p><span class="math display">\[
-df_\lambda
+<p><span class="math display">\[df_\lambda
 \quad\text{contra}\quad
-\lambda.
-\]</span></p>
+\lambda.\]</span></p>
 <p>Utiliza escala logarítmica para el eje correspondiente a <span class="math inline">\(\lambda\)</span>.</p>
 <p><strong>Pregunta:</strong> ¿los resultados coinciden con la relación teórica esperada?</p>
 </section>
@@ -1395,9 +1355,7 @@ df_\lambda
 <h3 data-number="5.17.3" class="anchored" data-anchor-id="ejercicio-3.-selección-de-lambda"><span class="header-section-number">5.17.3</span> Ejercicio 3. Selección de <span class="math inline">\(\lambda\)</span></h3>
 <p>Utiliza <code>gridsearch()</code> para seleccionar automáticamente un valor de <span class="math inline">\(\lambda\)</span>.</p>
 <p>Considera como candidatos</p>
-<p><span class="math display">\[
-10^{-4}\leq\lambda\leq10^6.
-\]</span></p>
+<p><span class="math display">\[10^{-4}\leq\lambda\leq10^6.\]</span></p>
 <p>Después:</p>
 <ol type="1">
 <li>reporta el valor seleccionado;</li>
@@ -1412,19 +1370,15 @@ df_\lambda
 <h3 data-number="5.17.4" class="anchored" data-anchor-id="ejercicio-4.-el-límite-lineal"><span class="header-section-number">5.17.4</span> Ejercicio 4. El límite lineal</h3>
 <p>Ajusta splines utilizando valores cada vez mayores de <span class="math inline">\(\lambda\)</span>.</p>
 <p>Por ejemplo:</p>
-<p><span class="math display">\[
-10^2,\quad
+<p><span class="math display">\[10^2,\quad
 10^4,\quad
 10^6,\quad
 10^8,\quad
-10^{10}.
-\]</span></p>
+10^{10}.\]</span></p>
 <p>Ajusta también una regresión lineal de <code>wage</code> sobre <code>age</code>.</p>
 <p>Representa todos los modelos.</p>
 <p><strong>Pregunta:</strong> ¿qué observas conforme <span class="math inline">\(\lambda\)</span> aumenta? Explica el resultado utilizando la penalización</p>
-<p><span class="math display">\[
-\lambda\int[g''(t)]^2dt.
-\]</span></p>
+<p><span class="math display">\[\lambda\int[g''(t)]^2dt.\]</span></p>
 </section>
 <section id="ejercicio-5.-interpretación" class="level3" data-number="5.17.5">
 <h3 data-number="5.17.5" class="anchored" data-anchor-id="ejercicio-5.-interpretación"><span class="header-section-number">5.17.5</span> Ejercicio 5. Interpretación</h3>

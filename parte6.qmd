@@ -1,6 +1,5 @@
 # Regresión Local
 
-
 En las secciones anteriores hemos estudiado diferentes estrategias para modelar relaciones no lineales.
 
 Por ejemplo:
@@ -17,6 +16,16 @@ La idea fundamental es sencilla:
 Para estimar la respuesta en un punto $x_0$, utilizamos principalmente las observaciones que se encuentran cerca de $x_0$.
 
 Esto significa que no construiremos una única ecuación global para todo el conjunto de datos. En su lugar, realizaremos pequeños ajustes locales en diferentes regiones del dominio.
+
+::: {.diapositivas}
+::: {.diapositivas-title}
+📝 **Diapositivas**
+:::
+
+::: {.diapositivas-body}
+[Ver diapositivas Regresión Local](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/2.7_Regresión_Local.pdf)
+:::
+:::
 
 ## Librerías y preparación de datos
 
@@ -54,8 +63,6 @@ age = Wage["age"]
 wage = Wage["wage"]
 ```
 
-
-
 ## Exploración inicial
 
 Antes de ajustar cualquier modelo, observemos la relación entre edad y salario.
@@ -91,10 +98,8 @@ En términos generales, el salario parece aumentar durante una parte de la vida 
 Una única recta podría ser demasiado restrictiva para describir esta estructura.
 
 Esto motiva el uso de métodos más flexibles.
-
 :::
 ::::
-
 
 ## La idea de regresión local
 
@@ -102,26 +107,22 @@ Supongamos que queremos estimar el salario esperado para una edad particular $x_
 
 En lugar de utilizar todas las observaciones con la misma importancia, podemos:
 
-1. identificar las observaciones cercanas a $x_0$;
-2. asignar mayor peso a las observaciones más próximas;
-3. ajustar una regresión utilizando esos pesos;
-4. evaluar el modelo obtenido en $x_0$.
+1.  identificar las observaciones cercanas a $x_0$;
+2.  asignar mayor peso a las observaciones más próximas;
+3.  ajustar una regresión utilizando esos pesos;
+4.  evaluar el modelo obtenido en $x_0$.
 
 En el caso de una regresión lineal local, buscamos coeficientes $\beta_0$ y $\beta_1$ que minimicen
 
-$$
-\sum_{i=1}^{n}
+$$\sum_{i=1}^{n}
 K_{i0}
 \left(
 y_i-\beta_0-\beta_1x_i
-\right)^2,
-$$
+\right)^2,$$
 
 donde
 
-$$
-K_{i0}=K(x_i,x_0)
-$$
+$$K_{i0}=K(x_i,x_0)$$
 
 representa el peso de la observación $i$ cuando queremos realizar una predicción en $x_0$.
 
@@ -129,14 +130,11 @@ Las observaciones cercanas reciben pesos grandes y las observaciones alejadas re
 
 Una vez estimados los coeficientes, la predicción es
 
-$$
-\hat f(x_0)
+$$\hat f(x_0)
 =
-\hat\beta_0+\hat\beta_1x_0.
-$$
+\hat\beta_0+\hat\beta_1x_0.$$
 
 Para construir una curva completa, repetimos este procedimiento para muchos valores de $x_0$.
-
 
 ## LOWESS en Python
 
@@ -152,7 +150,7 @@ El método realiza ajustes locales ponderados a lo largo del dominio.
 
 En su forma básica utilizaremos:
 
-```python
+``` python
 lowess(
     endog,
     exog,
@@ -168,7 +166,7 @@ donde:
 
 En nuestro caso:
 
-```python
+``` python
 lowess(
     wage,
     age,
@@ -180,9 +178,7 @@ lowess(
 
 Comencemos utilizando
 
-$$
-s=0.5.
-$$
+$$s=0.5.$$
 
 Esto significa que cada ajuste local utiliza aproximadamente el $50\%$ de las observaciones.
 
@@ -216,11 +212,9 @@ fit_05[:5]
 
 La primera columna contiene los valores ordenados de la variable predictora y la segunda contiene los valores ajustados:
 
-$$
-\begin{array}{cc}
+$$\begin{array}{cc}
 x & \hat f(x)
-\end{array}
-$$
+\end{array}$$
 
 Podemos separarlos.
 
@@ -265,7 +259,7 @@ A diferencia de una regresión lineal global, la curva puede adaptarse a cambios
 
 En `statsmodels`, el argumento
 
-```python
+``` python
 frac
 ```
 
@@ -273,25 +267,19 @@ desempeña el papel del **span** $s$ que estudiamos teóricamente.
 
 Si tenemos $n$ observaciones, aproximadamente
 
-$$
-k=sn
-$$
+$$k=sn$$
 
 observaciones participan en cada ajuste local.
 
 Por ejemplo, si
 
-$$
-s=0.2,
-$$
+$$s=0.2,$$
 
 se utiliza aproximadamente el $20\%$ de las observaciones.
 
 Mientras que con
 
-$$
-s=0.7,
-$$
+$$s=0.7,$$
 
 se utiliza aproximadamente el $70\%$.
 
@@ -305,15 +293,11 @@ for span in [0.2, 0.5, 0.7]:
     print(f"span = {span}: aproximadamente {k} observaciones")
 ```
 
-
-
 ## Comparación de diferentes valores del span
 
 Ajustemos modelos con
 
-$$
-s=0.2,\qquad s=0.5,\qquad s=0.7.
-$$
+$$s=0.2,\qquad s=0.5,\qquad s=0.7.$$
 
 ```{python}
 spans = [0.2, 0.5, 0.7]
@@ -370,20 +354,15 @@ La curva resultante tiende a ser más **suave y global**.
 
 En términos generales:
 
-$$
-s\downarrow
+$$s\downarrow
 \quad\Longrightarrow\quad
-\text{mayor flexibilidad}
-$$
+\text{mayor flexibilidad}$$
 
 y
 
-$$
-s\uparrow
+$$s\uparrow
 \quad\Longrightarrow\quad
-\text{mayor suavidad}.
-$$
-
+\text{mayor suavidad}.$$
 
 ## ¿Qué significa realmente hacer un ajuste local?
 
@@ -393,9 +372,7 @@ Sin embargo, podemos estudiar manualmente la idea central del algoritmo.
 
 Supongamos que queremos estimar el salario para
 
-$$
-x_0=40.
-$$
+$$x_0=40.$$
 
 ```{python}
 x0 = 40
@@ -403,9 +380,7 @@ x0 = 40
 
 Utilicemos inicialmente un span de
 
-$$
-s=0.2.
-$$
+$$s=0.2.$$
 
 ```{python}
 span = 0.2
@@ -418,14 +393,11 @@ k
 
 Por tanto, seleccionaremos aproximadamente las $k$ observaciones cuya edad se encuentra más cerca de 40.
 
-
 ## Calcular la distancia respecto a $x_0$
 
 Para cada observación calculamos
 
-$$
-d_i=|x_i-x_0|.
-$$
+$$d_i=|x_i-x_0|.$$
 
 ```{python}
 distance = np.abs(age.to_numpy() - x0)
@@ -441,7 +413,7 @@ nearest_idx = np.argsort(distance)[:k]
 
 Por tanto,
 
-```python
+``` python
 np.argsort(distance)[:k]
 ```
 
@@ -454,8 +426,6 @@ age_local = age.to_numpy()[nearest_idx]
 wage_local = wage.to_numpy()[nearest_idx]
 distance_local = distance[nearest_idx]
 ```
-
-
 
 ## Visualizar el vecindario
 
@@ -500,7 +470,6 @@ Sin embargo, todavía falta algo importante.
 
 Dentro de ese vecindario, **no todas las observaciones tendrán la misma importancia**.
 
-
 ## Construcción de pesos locales
 
 Necesitamos una función que asigne pesos grandes a las observaciones cercanas a $x_0$ y pesos pequeños a las más alejadas.
@@ -509,19 +478,15 @@ Una posibilidad muy utilizada es la función **tricúbica**.
 
 Si $d_i$ es la distancia entre $x_i$ y $x_0$, primero normalizamos mediante
 
-$$
-u_i=\frac{d_i}{d_{\max}},
-$$
+$$u_i=\frac{d_i}{d_{\max}},$$
 
 donde $d_{\max}$ es la mayor distancia dentro del vecindario.
 
 Después definimos
 
-$$
-w_i=
+$$w_i=
 \left(1-u_i^3\right)^3,
-\qquad 0\leq u_i\leq 1.
-$$
+\qquad 0\leq u_i\leq 1.$$
 
 La observación más alejada del vecindario tendrá peso cero.
 
@@ -540,7 +505,6 @@ Podemos revisar algunos de los valores obtenidos.
 ```{python}
 weights[:10]
 ```
-
 
 ## Distancia y peso
 
@@ -561,15 +525,11 @@ local_info.head(15)
 
 Observemos que, en general:
 
-$$
-d_i\downarrow
+$$d_i\downarrow
 \quad\Longrightarrow\quad
-w_i\uparrow.
-$$
+w_i\uparrow.$$
 
 Es decir, cuanto más cerca se encuentra una observación de $x_0$, mayor influencia tendrá sobre el ajuste.
-
-
 
 ## Visualizar la función de pesos
 
@@ -594,7 +554,6 @@ plt.show()
 ```
 
 La función de pesos disminuye conforme aumenta la distancia respecto al punto objetivo.
-
 
 ## Visualizar los pesos sobre los datos
 
@@ -635,9 +594,7 @@ Los puntos de mayor tamaño corresponden a observaciones con mayor peso.
 
 Esta gráfica representa visualmente la idea
 
-$$
-K_{i0}=K(x_i,x_0).
-$$
+$$K_{i0}=K(x_i,x_0).$$
 
 ## Ajustar una regresión lineal ponderada
 
@@ -645,19 +602,15 @@ Ahora ajustaremos una regresión lineal utilizando únicamente el vecindario sel
 
 El modelo local es
 
-$$
-y_i=\beta_0+\beta_1x_i+\varepsilon_i.
-$$
+$$y_i=\beta_0+\beta_1x_i+\varepsilon_i.$$
 
 Pero los parámetros se estiman minimizando
 
-$$
-\sum_i
+$$\sum_i
 w_i
 \left(
 y_i-\beta_0-\beta_1x_i
-\right)^2.
-$$
+\right)^2.$$
 
 En `statsmodels` podemos utilizar `WLS`, que significa **Weighted Least Squares**.
 
@@ -685,22 +638,17 @@ local_model.params
 
 Estos corresponden a
 
-$$
-\hat\beta_0
+$$\hat\beta_0
 \qquad\text{y}\qquad
-\hat\beta_1.
-$$
-
+\hat\beta_1.$$
 
 ## Predicción en $x_0$
 
 La predicción local es
 
-$$
-\hat f(x_0)
+$$\hat f(x_0)
 =
-\hat\beta_0+\hat\beta_1x_0.
-$$
+\hat\beta_0+\hat\beta_1x_0.$$
 
 Podemos calcularla directamente.
 
@@ -714,10 +662,9 @@ prediction_x0
 
 Esta predicción fue construida utilizando principalmente información de observaciones cercanas a los 40 años.
 
-
 ## Visualizar la recta local
 
-La recta que acabamos de estimar solamente pretende describir adecuadamente el comportamiento de los datos **alrededor de $x_0$**.
+La recta que acabamos de estimar solamente pretende describir adecuadamente el comportamiento de los datos **alrededor de** $x_0$.
 
 Construimos algunos valores dentro del vecindario.
 
@@ -784,40 +731,31 @@ La recta anterior **no es el modelo final para todas las edades**.
 
 Solamente la utilizamos para obtener
 
-$$
-\hat f(40).
-$$
+$$\hat f(40).$$
 
 Si ahora queremos estimar
 
-$$
-\hat f(50),
-$$
+$$\hat f(50),$$
 
 debemos:
 
-1. seleccionar un nuevo vecindario;
-2. calcular nuevas distancias;
-3. calcular nuevos pesos;
-4. ajustar una nueva regresión;
-5. evaluar esa nueva recta en $x_0=50$.
+1.  seleccionar un nuevo vecindario;
+2.  calcular nuevas distancias;
+3.  calcular nuevos pesos;
+4.  ajustar una nueva regresión;
+5.  evaluar esa nueva recta en $x_0=50$.
 
 Esta es la razón por la que la regresión local se considera un método **basado en memoria**.
-
 
 ## De muchas rectas locales a una curva
 
 Podemos repetir conceptualmente el procedimiento anterior para muchos valores:
 
-$$
-x_0^{(1)},x_0^{(2)},\ldots,x_0^{(m)}.
-$$
+$$x_0^{(1)},x_0^{(2)},\ldots,x_0^{(m)}.$$
 
 Para cada uno obtenemos una predicción
 
-$$
-\hat f(x_0^{(j)}).
-$$
+$$\hat f(x_0^{(j)}).$$
 
 Al reunir todas estas predicciones obtenemos una curva.
 
@@ -829,12 +767,9 @@ Porque **no utilizamos la misma recta en todo el dominio**.
 
 En diferentes regiones tenemos diferentes valores de
 
-$$
-\hat\beta_0
+$$\hat\beta_0
 \qquad\text{y}\qquad
-\hat\beta_1.
-$$
-
+\hat\beta_1.$$
 
 ## Comparación con una regresión lineal global
 
@@ -912,14 +847,11 @@ plt.show()
 
 La regresión lineal obliga a que la relación tenga la forma
 
-$$
-\hat f(x)=\hat\beta_0+\hat\beta_1x
-$$
+$$\hat f(x)=\hat\beta_0+\hat\beta_1x$$
 
 en todo el dominio.
 
 En cambio, la regresión local permite que la pendiente cambie de una región a otra.
-
 
 ## ¿Qué ocurre con spans muy pequeños?
 
@@ -927,9 +859,7 @@ Hasta ahora utilizamos valores moderados del span.
 
 Probemos ahora
 
-$$
-s=0.05.
-$$
+$$s=0.05.$$
 
 ```{python}
 small_span = lowess(
@@ -987,7 +917,6 @@ Esto se relaciona con el compromiso entre **sesgo y varianza**:
 - span pequeño $\rightarrow$ mayor flexibilidad, menor sesgo y potencialmente mayor varianza;
 - span grande $\rightarrow$ menor flexibilidad, mayor sesgo y potencialmente menor varianza.
 
-
 ## El span como hiperparámetro
 
 El span no se estima directamente mediante mínimos cuadrados.
@@ -1000,13 +929,9 @@ Una estrategia más sistemática consiste en utilizar **validación cruzada**.
 
 La idea general es comparar varios valores candidatos:
 
-$$
-s_1,s_2,\ldots,s_m
-$$
+$$s_1,s_2,\ldots,s_m$$
 
 y seleccionar aquel que produzca el menor error de predicción sobre observaciones que no fueron utilizadas para construir el ajuste correspondiente.
-
-
 
 ## Una consideración importante: predecir con LOWESS
 
@@ -1014,7 +939,7 @@ LOWESS no funciona exactamente como los modelos de `scikit-learn` que hemos util
 
 Normalmente no hacemos:
 
-```python
+``` python
 model.fit(X_train, y_train)
 model.predict(X_test)
 ```
@@ -1063,7 +988,6 @@ plt.show()
 ```
 
 Esto será útil cuando queramos evaluar el método sobre observaciones de validación.
-
 
 ## Selección del span mediante validación cruzada
 
@@ -1151,7 +1075,6 @@ cv_results = pd.DataFrame(cv_results)
 cv_results
 ```
 
-
 ## Visualizar el error de validación
 
 ```{python}
@@ -1182,8 +1105,6 @@ best_row
 
 Así, el span puede seleccionarse de manera similar a otros hiperparámetros que hemos estudiado.
 
-
-
 ## Comparación con smoothing splines
 
 Tanto la regresión local como los smoothing splines permiten construir relaciones no lineales suaves.
@@ -1192,26 +1113,20 @@ Sin embargo, controlan la flexibilidad de maneras diferentes.
 
 En regresión local:
 
-$$
-s\downarrow
+$$s\downarrow
 \quad\Longrightarrow\quad
-\text{mayor flexibilidad}.
-$$
+\text{mayor flexibilidad}.$$
 
 En smoothing splines:
 
-$$
-\lambda\downarrow
+$$\lambda\downarrow
 \quad\Longrightarrow\quad
-\text{menor penalización y mayor flexibilidad}.
-$$
+\text{menor penalización y mayor flexibilidad}.$$
 
 La diferencia conceptual es importante:
 
 - el **span** controla cuántas observaciones intervienen localmente;
 - $\lambda$ controla cuánto penalizamos la curvatura global de la función.
-
-
 
 ## Regresión local y GAMs
 
@@ -1221,8 +1136,7 @@ Algunas implementaciones de GAMs permiten utilizar suavizadores locales como com
 
 Por ejemplo, conceptualmente podríamos tener un modelo de la forma
 
-$$
-Y
+$$Y
 =
 \beta_0
 +
@@ -1230,8 +1144,7 @@ f_1(X_1)
 +
 f_2(X_2)
 +
-\varepsilon,
-$$
+\varepsilon,$$
 
 donde alguna de las funciones $f_j$ puede construirse mediante un método de suavizamiento.
 
@@ -1239,70 +1152,55 @@ Por ahora no entraremos en los detalles de los GAMs.
 
 Lo importante es reconocer que los métodos estudiados hasta ahora —splines, smoothing splines y regresión local— proporcionan distintas formas de construir relaciones flexibles entre predictores y respuesta.
 
-
 ## Ejercicios
 
 ### Ejercicio 1. Efecto del span
 
 Ajusta modelos LOWESS utilizando
 
-$$
-s=0.1,\quad
+$$s=0.1,\quad
 s=0.3,\quad
 s=0.5,\quad
 s=0.7,\quad
-s=0.9.
-$$
+s=0.9.$$
 
 Representa todos los ajustes sobre la misma gráfica.
 
 Responde:
 
-1. ¿Cuál produce la curva más flexible?
-2. ¿Cuál produce la curva más suave?
-3. ¿En qué regiones del dominio observas mayores diferencias entre los modelos?
-
-
+1.  ¿Cuál produce la curva más flexible?
+2.  ¿Cuál produce la curva más suave?
+3.  ¿En qué regiones del dominio observas mayores diferencias entre los modelos?
 
 ### Ejercicio 2. Un ajuste local
 
 Repite el procedimiento manual para
 
-$$
-x_0=55
-$$
+$$x_0=55$$
 
 utilizando
 
-$$
-s=0.2.
-$$
+$$s=0.2.$$
 
 Calcula:
 
-1. el número $k$ de observaciones utilizadas;
-2. las distancias respecto a $x_0$;
-3. los pesos tricúbicos;
-4. la regresión lineal ponderada;
-5. la predicción $\hat f(55)$.
+1.  el número $k$ de observaciones utilizadas;
+2.  las distancias respecto a $x_0$;
+3.  los pesos tricúbicos;
+4.  la regresión lineal ponderada;
+5.  la predicción $\hat f(55)$.
 
 Construye una gráfica que muestre el vecindario, los pesos y la recta local.
-
-
 
 ### Ejercicio 3. Cambiar el span localmente
 
 Mantén
 
-$$
-x_0=55
-$$
+$$x_0=55$$
 
 y repite el ajuste manual utilizando
 
-$$
-s=0.1,\quad 0.3,\quad 0.6.
-$$
+$$s=0.1,\quad 0.3,\quad 0.6.$$
 
 Compara las tres predicciones.
 
@@ -1310,35 +1208,28 @@ Compara las tres predicciones.
 
 ¿Cómo cambia la recta local?
 
-
-
 ### Ejercicio 4. Modelo global vs. local
 
 Ajusta:
 
-1. una regresión lineal global;
-2. una regresión polinomial de grado 4;
-3. un modelo LOWESS.
+1.  una regresión lineal global;
+2.  una regresión polinomial de grado 4;
+3.  un modelo LOWESS.
 
 Representa los tres ajustes sobre los mismos datos.
 
 Discute las principales diferencias entre las tres estrategias.
 
-
 ### Ejercicio 5. Selección del span
 
 Utiliza validación cruzada para comparar
 
-$$
-s\in
-\{0.05,0.10,0.15,\ldots,0.90\}.
-$$
+$$s\in
+\{0.05,0.10,0.15,\ldots,0.90\}.$$
 
 Determina el span que minimiza el MSE promedio de validación.
 
 Finalmente, ajusta LOWESS utilizando ese span y representa el resultado.
-
-
 
 ### Ejercicio 6. Interpretación
 
