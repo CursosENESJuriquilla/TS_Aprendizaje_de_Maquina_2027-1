@@ -6,18 +6,6 @@
       "source": [
         "# GAMs: Modelos Aditivos Generalizados\n",
         "\n",
-        "\n",
-        "::: {.diapositivas}\n",
-        "::: {.diapositivas-title}\n",
-        "📝 **Diapositivas**\n",
-        ":::\n",
-        "\n",
-        "::: {.diapositivas-body}\n",
-        "[Ver diapositivas GAMs](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/2.8_GAMs.pdf)\n",
-        ":::\n",
-        ":::\n",
-        "\n",
-        "\n",
         "Hasta ahora hemos estudiado diferentes maneras de introducir no linealidad cuando tenemos una variable predictora.\n",
         "\n",
         "Entre ellas:\n",
@@ -33,8 +21,7 @@
         "\n",
         "En una regresión lineal múltiple tenemos\n",
         "\n",
-        "$$\n",
-        "Y_i\n",
+        "$$Y_i\n",
         "=\n",
         "\\beta_0\n",
         "+\n",
@@ -44,13 +31,11 @@
         "+\\cdots+\n",
         "\\beta_pX_{ip}\n",
         "+\n",
-        "\\varepsilon_i.\n",
-        "$$\n",
+        "\\varepsilon_i.$$\n",
         "\n",
         "En un GAM escribimos\n",
         "\n",
-        "$$\n",
-        "Y_i\n",
+        "$$Y_i\n",
         "=\n",
         "\\beta_0\n",
         "+\n",
@@ -60,16 +45,25 @@
         "+\\cdots+\n",
         "f_p(X_{ip})\n",
         "+\n",
-        "\\varepsilon_i.\n",
-        "$$\n",
+        "\\varepsilon_i.$$\n",
         "\n",
         "Cada función $f_j$ puede tener una forma diferente.\n",
+        "\n",
+        "::::: diapositivas\n",
+        "::: diapositivas-title\n",
+        "📝 **Diapositivas**\n",
+        ":::\n",
+        "\n",
+        "::: diapositivas-body\n",
+        "[Ver diapositivas GAMs](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/2.8_GAMs.pdf)\n",
+        ":::\n",
+        ":::::\n",
         "\n",
         "## Preparación\n",
         "\n",
         "Utilizaremos nuevamente el conjunto de datos `Wage`."
       ],
-      "id": "86e76d37"
+      "id": "cb47304e"
     },
     {
       "cell_type": "code",
@@ -83,7 +77,7 @@
         "\n",
         "from pygam import LinearGAM, LogisticGAM, s, l, f"
       ],
-      "id": "a116d903",
+      "id": "f880266e",
       "execution_count": null,
       "outputs": []
     },
@@ -93,7 +87,7 @@
       "source": [
         "Cargamos los datos."
       ],
-      "id": "071a1067"
+      "id": "d0be74c6"
     },
     {
       "cell_type": "code",
@@ -101,7 +95,7 @@
       "source": [
         "Wage = load_data(\"Wage\")"
       ],
-      "id": "177765e6",
+      "id": "3af3030f",
       "execution_count": null,
       "outputs": []
     },
@@ -111,7 +105,7 @@
       "source": [
         "Revisamos las primeras observaciones."
       ],
-      "id": "37e5c5ef"
+      "id": "dff89fbb"
     },
     {
       "cell_type": "code",
@@ -119,7 +113,7 @@
       "source": [
         "Wage.head()"
       ],
-      "id": "97145a30",
+      "id": "f664c356",
       "execution_count": null,
       "outputs": []
     },
@@ -134,8 +128,6 @@
         "- `education`: nivel educativo;\n",
         "- `wage`: salario.\n",
         "\n",
-        "\n",
-        "\n",
         "## Preparar las variables\n",
         "\n",
         "`pygam` espera que la matriz de predictores sea bidimensional.\n",
@@ -144,7 +136,7 @@
         "\n",
         "Primero revisamos sus categorías."
       ],
-      "id": "7d01595b"
+      "id": "0a10cf50"
     },
     {
       "cell_type": "code",
@@ -152,7 +144,7 @@
       "source": [
         "Wage[\"education\"].cat.categories"
       ],
-      "id": "0a81863b",
+      "id": "a0a0be3c",
       "execution_count": null,
       "outputs": []
     },
@@ -162,7 +154,7 @@
       "source": [
         "Podemos obtener códigos enteros con:"
       ],
-      "id": "06ac22c3"
+      "id": "9ad3e01e"
     },
     {
       "cell_type": "code",
@@ -170,7 +162,7 @@
       "source": [
         "education_code = Wage[\"education\"].cat.codes"
       ],
-      "id": "cbe6928a",
+      "id": "aeb4e428",
       "execution_count": null,
       "outputs": []
     },
@@ -180,7 +172,7 @@
       "source": [
         "Construimos la matriz de predictores."
       ],
-      "id": "b0b45a10"
+      "id": "40d125ab"
     },
     {
       "cell_type": "code",
@@ -194,7 +186,7 @@
         "\n",
         "y = Wage[\"wage\"].to_numpy()"
       ],
-      "id": "12e20838",
+      "id": "82248ed8",
       "execution_count": null,
       "outputs": []
     },
@@ -204,7 +196,7 @@
       "source": [
         "Revisamos las dimensiones."
       ],
-      "id": "d883ee94"
+      "id": "eb0a60c6"
     },
     {
       "cell_type": "code",
@@ -212,7 +204,7 @@
       "source": [
         "X.shape"
       ],
-      "id": "6b9927da",
+      "id": "460051ab",
       "execution_count": null,
       "outputs": []
     },
@@ -222,22 +214,17 @@
       "source": [
         "La matriz tiene tres columnas:\n",
         "\n",
-        "$$\n",
-        "X_1=\\text{age},\n",
+        "$$X_1=\\text{age},\n",
         "\\qquad\n",
         "X_2=\\text{year},\n",
         "\\qquad\n",
-        "X_3=\\text{education}.\n",
-        "$$\n",
-        "\n",
-        "\n",
+        "X_3=\\text{education}.$$\n",
         "\n",
         "## Nuestro primer GAM\n",
         "\n",
         "Consideremos el modelo\n",
         "\n",
-        "$$\n",
-        "\\text{wage}\n",
+        "$$\\text{wage}\n",
         "=\n",
         "\\beta_0\n",
         "+\n",
@@ -247,8 +234,7 @@
         "+\n",
         "f_3(\\text{education})\n",
         "+\n",
-        "\\varepsilon.\n",
-        "$$\n",
+        "\\varepsilon.$$\n",
         "\n",
         "Utilizaremos:\n",
         "\n",
@@ -258,7 +244,7 @@
         "\n",
         "En `pygam` podemos escribir:"
       ],
-      "id": "ca5e504d"
+      "id": "d18ce3c7"
     },
     {
       "cell_type": "code",
@@ -270,7 +256,7 @@
         "    f(2)\n",
         ")"
       ],
-      "id": "b3874e30",
+      "id": "7fc9044b",
       "execution_count": null,
       "outputs": []
     },
@@ -286,7 +272,7 @@
         "\n",
         "Ajustamos el modelo."
       ],
-      "id": "aa9bb015"
+      "id": "500a596b"
     },
     {
       "cell_type": "code",
@@ -294,7 +280,7 @@
       "source": [
         "gam.fit(X, y)"
       ],
-      "id": "77f34527",
+      "id": "276ba8cd",
       "execution_count": null,
       "outputs": []
     },
@@ -306,8 +292,7 @@
         "\n",
         "Nuestro modelo tiene la forma\n",
         "\n",
-        "$$\n",
-        "\\hat y\n",
+        "$$\\hat y\n",
         "=\n",
         "\\hat\\beta_0\n",
         "+\n",
@@ -315,15 +300,13 @@
         "+\n",
         "\\hat f_2(\\text{year})\n",
         "+\n",
-        "\\hat f_3(\\text{education}).\n",
-        "$$\n",
+        "\\hat f_3(\\text{education}).$$\n",
         "\n",
         "Esto significa que la predicción se construye sumando contribuciones separadas.\n",
         "\n",
         "Por ejemplo:\n",
         "\n",
-        "$$\n",
-        "\\hat y\n",
+        "$$\\hat y\n",
         "=\n",
         "\\text{intercepto}\n",
         "+\n",
@@ -331,8 +314,7 @@
         "+\n",
         "\\text{efecto de year}\n",
         "+\n",
-        "\\text{efecto de education}.\n",
-        "$$\n",
+        "\\text{efecto de education}.$$\n",
         "\n",
         "La palabra **aditivo** proviene precisamente de esta estructura.\n",
         "\n",
@@ -342,7 +324,7 @@
         "\n",
         "Construimos una malla para el término correspondiente a `age`."
       ],
-      "id": "ce443125"
+      "id": "7391e30e"
     },
     {
       "cell_type": "code",
@@ -352,7 +334,7 @@
         "    term=0\n",
         ")"
       ],
-      "id": "27fb23ed",
+      "id": "1fc4ca40",
       "execution_count": null,
       "outputs": []
     },
@@ -362,7 +344,7 @@
       "source": [
         "Calculamos el efecto parcial."
       ],
-      "id": "b81ad532"
+      "id": "7a1492e7"
     },
     {
       "cell_type": "code",
@@ -373,7 +355,7 @@
         "    X=XX\n",
         ")"
       ],
-      "id": "204c4697",
+      "id": "cd6c21f1",
       "execution_count": null,
       "outputs": []
     },
@@ -383,7 +365,7 @@
       "source": [
         "También podemos obtener intervalos de confianza."
       ],
-      "id": "5894b761"
+      "id": "1a3f5581"
     },
     {
       "cell_type": "code",
@@ -395,7 +377,7 @@
         "    width=0.95\n",
         ")"
       ],
-      "id": "fb327a09",
+      "id": "47f45f2f",
       "execution_count": null,
       "outputs": []
     },
@@ -405,7 +387,7 @@
       "source": [
         "Visualizamos el efecto."
       ],
-      "id": "8cb23337"
+      "id": "514b5cc2"
     },
     {
       "cell_type": "code",
@@ -437,7 +419,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "58c2a66c",
+      "id": "3f543262",
       "execution_count": null,
       "outputs": []
     },
@@ -453,24 +435,21 @@
         "\n",
         "Representa\n",
         "\n",
-        "$$\n",
-        "\\hat f_1(\\text{age}),\n",
-        "$$\n",
+        "$$\\hat f_1(\\text{age}),$$\n",
         "\n",
         "es decir, la contribución de la edad después de considerar simultáneamente los demás términos del modelo.\n",
         "\n",
-        "::: {.callout-note}\n",
+        "::: callout-note\n",
         "Un valor positivo de $\\hat f_1(\\text{age})$ indica que esa edad contribuye a aumentar la predicción respecto al nivel promedio del modelo.\n",
         "\n",
         "Un valor negativo indica una contribución en sentido contrario.\n",
         ":::\n",
         "\n",
-        "\n",
         "## Efecto parcial de `year`\n",
         "\n",
         "Repetimos el procedimiento para `year`."
       ],
-      "id": "a1b55cd9"
+      "id": "42c971fe"
     },
     {
       "cell_type": "code",
@@ -480,7 +459,7 @@
         "    term=1\n",
         ")"
       ],
-      "id": "9c34092d",
+      "id": "5f763bf2",
       "execution_count": null,
       "outputs": []
     },
@@ -494,7 +473,7 @@
         "    width=0.95\n",
         ")"
       ],
-      "id": "e32c4216",
+      "id": "acfd7569",
       "execution_count": null,
       "outputs": []
     },
@@ -528,7 +507,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "7ef28882",
+      "id": "fb8f50bc",
       "execution_count": null,
       "outputs": []
     },
@@ -541,7 +520,6 @@
         "\n",
         "¿El efecto de `year` parece claramente no lineal?\n",
         "\n",
-        "\n",
         "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
         "## Discusión\n",
         "\n",
@@ -552,16 +530,14 @@
         "> ¿Realmente necesitamos un término no lineal para `year`?\n",
         "\n",
         "Más adelante compararemos modelos para responderlo.\n",
-        "\n",
         ":::\n",
         "::::\n",
-        "\n",
         "\n",
         "## Efecto de una variable categórica\n",
         "\n",
         "El término\n",
         "\n",
-        "```python\n",
+        "``` python\n",
         "f(2)\n",
         "```\n",
         "\n",
@@ -573,7 +549,7 @@
         "\n",
         "Primero revisamos las categorías."
       ],
-      "id": "56eab21c"
+      "id": "eb0de638"
     },
     {
       "cell_type": "code",
@@ -583,7 +559,7 @@
         "\n",
         "education_levels"
       ],
-      "id": "72ec6dee",
+      "id": "71f0dcc3",
       "execution_count": null,
       "outputs": []
     },
@@ -593,7 +569,7 @@
       "source": [
         "Recordemos que `pygam` trabaja con los códigos numéricos de estas categorías:"
       ],
-      "id": "10b95b08"
+      "id": "920da3ff"
     },
     {
       "cell_type": "code",
@@ -603,7 +579,7 @@
         "\n",
         "education_codes"
       ],
-      "id": "c0293770",
+      "id": "a8f5b7f9",
       "execution_count": null,
       "outputs": []
     },
@@ -615,7 +591,7 @@
         "\n",
         "Mantendremos `age` y `year` en valores representativos y cambiaremos únicamente `education`."
       ],
-      "id": "0cdb131a"
+      "id": "33967c7f"
     },
     {
       "cell_type": "code",
@@ -627,7 +603,7 @@
         "    education_codes\n",
         "])"
       ],
-      "id": "3696e98c",
+      "id": "4ac0ff79",
       "execution_count": null,
       "outputs": []
     },
@@ -637,7 +613,7 @@
       "source": [
         "Podemos revisar la matriz."
       ],
-      "id": "b0a608b6"
+      "id": "927df71f"
     },
     {
       "cell_type": "code",
@@ -645,7 +621,7 @@
       "source": [
         "X_education"
       ],
-      "id": "60d91043",
+      "id": "3e761332",
       "execution_count": null,
       "outputs": []
     },
@@ -657,7 +633,7 @@
         "\n",
         "Calculamos ahora el efecto parcial del término categórico."
       ],
-      "id": "77c73053"
+      "id": "8144f25e"
     },
     {
       "cell_type": "code",
@@ -669,7 +645,7 @@
         "    width=0.95\n",
         ")"
       ],
-      "id": "619308b5",
+      "id": "e8f2cf00",
       "execution_count": null,
       "outputs": []
     },
@@ -679,7 +655,7 @@
       "source": [
         "Podemos revisar los resultados."
       ],
-      "id": "8b257d1e"
+      "id": "5e976f47"
     },
     {
       "cell_type": "code",
@@ -687,7 +663,7 @@
       "source": [
         "pdep_education"
       ],
-      "id": "edbd6df5",
+      "id": "84ee19bc",
       "execution_count": null,
       "outputs": []
     },
@@ -697,7 +673,7 @@
       "source": [
         "Ahora tenemos exactamente un valor por cada nivel educativo."
       ],
-      "id": "b95c3f4c"
+      "id": "e26de504"
     },
     {
       "cell_type": "code",
@@ -705,7 +681,7 @@
       "source": [
         "len(education_levels), len(pdep_education)"
       ],
-      "id": "b65e6cb7",
+      "id": "187566e0",
       "execution_count": null,
       "outputs": []
     },
@@ -715,7 +691,7 @@
       "source": [
         "Representamos las contribuciones."
       ],
-      "id": "12e5b705"
+      "id": "9c1e37a4"
     },
     {
       "cell_type": "code",
@@ -756,7 +732,7 @@
         "plt.tight_layout()\n",
         "plt.show()"
       ],
-      "id": "f8499005",
+      "id": "9e5ae2ea",
       "execution_count": null,
       "outputs": []
     },
@@ -770,19 +746,16 @@
         "\n",
         "Es decir, estamos visualizando\n",
         "\n",
-        "$$\n",
-        "\\hat f_3(\\text{education}).\n",
-        "$$\n",
+        "$$\\hat f_3(\\text{education}).$$\n",
         "\n",
         "Un valor mayor indica una contribución más positiva a la predicción de `wage`, una vez considerados simultáneamente los efectos de `age` y `year`.\n",
         "\n",
-        "::: {.callout-note}\n",
+        "::: callout-note\n",
         "El eje vertical representa el **efecto parcial**, no el salario predicho directamente.\n",
         "\n",
         "El salario estimado completo se obtiene sumando\n",
         "\n",
-        "$$\n",
-        "\\hat y\n",
+        "$$\\hat y\n",
         "=\n",
         "\\hat\\beta_0\n",
         "+\n",
@@ -790,18 +763,14 @@
         "+\n",
         "\\hat f_2(\\text{year})\n",
         "+\n",
-        "\\hat f_3(\\text{education}).\n",
-        "$$\n",
+        "\\hat f_3(\\text{education}).$$\n",
         ":::\n",
-        "\n",
-        "\n",
         "\n",
         "## Interpretar el modelo de manera conjunta\n",
         "\n",
         "Recordemos que el modelo es\n",
         "\n",
-        "$$\n",
-        "\\hat y\n",
+        "$$\\hat y\n",
         "=\n",
         "\\hat\\beta_0\n",
         "+\n",
@@ -809,46 +778,33 @@
         "+\n",
         "\\hat f_2(\\text{year})\n",
         "+\n",
-        "\\hat f_3(\\text{education}).\n",
-        "$$\n",
+        "\\hat f_3(\\text{education}).$$\n",
         "\n",
         "Supongamos conceptualmente que para una persona obtenemos\n",
         "\n",
-        "$$\n",
-        "\\hat\\beta_0=100,\n",
-        "$$\n",
+        "$$\\hat\\beta_0=100,$$\n",
         "\n",
-        "$$\n",
-        "\\hat f_1(\\text{age})=15,\n",
-        "$$\n",
+        "$$\\hat f_1(\\text{age})=15,$$\n",
         "\n",
-        "$$\n",
-        "\\hat f_2(\\text{year})=5,\n",
-        "$$\n",
+        "$$\\hat f_2(\\text{year})=5,$$\n",
         "\n",
-        "$$\n",
-        "\\hat f_3(\\text{education})=20.\n",
-        "$$\n",
+        "$$\\hat f_3(\\text{education})=20.$$\n",
         "\n",
         "Entonces\n",
         "\n",
-        "$$\n",
-        "\\hat y\n",
+        "$$\\hat y\n",
         "=\n",
         "100+15+5+20\n",
         "=\n",
-        "140.\n",
-        "$$\n",
+        "140.$$\n",
         "\n",
         "Cada término aporta una contribución separada.\n",
-        "\n",
-        "\n",
         "\n",
         "## Predicciones con el GAM\n",
         "\n",
         "Una vez ajustado el modelo podemos hacer predicciones."
       ],
-      "id": "2bb764b6"
+      "id": "35a40999"
     },
     {
       "cell_type": "code",
@@ -856,7 +812,7 @@
       "source": [
         "y_hat = gam.predict(X)"
       ],
-      "id": "07cc67b7",
+      "id": "3980b35a",
       "execution_count": null,
       "outputs": []
     },
@@ -866,7 +822,7 @@
       "source": [
         "Podemos comparar valores observados y predichos."
       ],
-      "id": "c09bdcbc"
+      "id": "5e501384"
     },
     {
       "cell_type": "code",
@@ -895,7 +851,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "6350d8ef",
+      "id": "0606b006",
       "execution_count": null,
       "outputs": []
     },
@@ -905,7 +861,6 @@
       "source": [
         "Si las predicciones fueran perfectas, todos los puntos caerían sobre la diagonal.\n",
         "\n",
-        "\n",
         "## ¿Necesitamos que todos los términos sean no lineales?\n",
         "\n",
         "Un GAM no obliga a que todos los predictores sean suavizados.\n",
@@ -914,8 +869,7 @@
         "\n",
         "Por ejemplo,\n",
         "\n",
-        "$$\n",
-        "\\text{wage}\n",
+        "$$\\text{wage}\n",
         "=\n",
         "\\beta_0\n",
         "+\n",
@@ -925,12 +879,11 @@
         "+\n",
         "f_3(\\text{education})\n",
         "+\n",
-        "\\varepsilon.\n",
-        "$$\n",
+        "\\varepsilon.$$\n",
         "\n",
         "En `pygam`:"
       ],
-      "id": "3bc6e723"
+      "id": "1dd0cc99"
     },
     {
       "cell_type": "code",
@@ -942,7 +895,7 @@
         "    f(2)\n",
         ")"
       ],
-      "id": "87342235",
+      "id": "b346e52c",
       "execution_count": null,
       "outputs": []
     },
@@ -952,7 +905,7 @@
       "source": [
         "Ajustamos el modelo."
       ],
-      "id": "f8b416c5"
+      "id": "8a585352"
     },
     {
       "cell_type": "code",
@@ -960,7 +913,7 @@
       "source": [
         "gam_year_linear.fit(X, y)"
       ],
-      "id": "47d5a8f3",
+      "id": "fa353fc2",
       "execution_count": null,
       "outputs": []
     },
@@ -970,15 +923,13 @@
       "source": [
         "Ahora `age` sigue teniendo una relación flexible, pero `year` entra linealmente.\n",
         "\n",
-        "\n",
         "## Tres modelos para estudiar `year`\n",
         "\n",
         "Podemos comparar tres posibilidades.\n",
         "\n",
         "### Modelo 1: sin `year`\n",
         "\n",
-        "$$\n",
-        "\\text{wage}\n",
+        "$$\\text{wage}\n",
         "=\n",
         "\\beta_0\n",
         "+\n",
@@ -986,10 +937,9 @@
         "+\n",
         "f_3(\\text{education})\n",
         "+\n",
-        "\\varepsilon.\n",
-        "$$"
+        "\\varepsilon.$$"
       ],
-      "id": "ba57381c"
+      "id": "00238835"
     },
     {
       "cell_type": "code",
@@ -1002,7 +952,7 @@
         "\n",
         "gam_no_year.fit(X, y)"
       ],
-      "id": "f9da880a",
+      "id": "57633adc",
       "execution_count": null,
       "outputs": []
     },
@@ -1012,8 +962,7 @@
       "source": [
         "### Modelo 2: `year` lineal\n",
         "\n",
-        "$$\n",
-        "\\text{wage}\n",
+        "$$\\text{wage}\n",
         "=\n",
         "\\beta_0\n",
         "+\n",
@@ -1023,10 +972,9 @@
         "+\n",
         "f_3(\\text{education})\n",
         "+\n",
-        "\\varepsilon.\n",
-        "$$"
+        "\\varepsilon.$$"
       ],
-      "id": "52d8d19f"
+      "id": "256fe656"
     },
     {
       "cell_type": "code",
@@ -1040,7 +988,7 @@
         "\n",
         "gam_year_linear.fit(X, y)"
       ],
-      "id": "84c2bdc3",
+      "id": "911deb69",
       "execution_count": null,
       "outputs": []
     },
@@ -1050,8 +998,7 @@
       "source": [
         "### Modelo 3: `year` suavizado\n",
         "\n",
-        "$$\n",
-        "\\text{wage}\n",
+        "$$\\text{wage}\n",
         "=\n",
         "\\beta_0\n",
         "+\n",
@@ -1061,10 +1008,9 @@
         "+\n",
         "f_3(\\text{education})\n",
         "+\n",
-        "\\varepsilon.\n",
-        "$$"
+        "\\varepsilon.$$"
       ],
-      "id": "23de39f6"
+      "id": "2250d9a9"
     },
     {
       "cell_type": "code",
@@ -1078,7 +1024,7 @@
         "\n",
         "gam_year_smooth.fit(X, y)"
       ],
-      "id": "c230ffa6",
+      "id": "8e681062",
       "execution_count": null,
       "outputs": []
     },
@@ -1090,7 +1036,7 @@
         "\n",
         "Podemos comparar la calidad de ajuste utilizando criterios como AIC."
       ],
-      "id": "ed0975d7"
+      "id": "a0d9be4e"
     },
     {
       "cell_type": "code",
@@ -1111,7 +1057,7 @@
         "\n",
         "comparison"
       ],
-      "id": "deb732ef",
+      "id": "8ffd90ad",
       "execution_count": null,
       "outputs": []
     },
@@ -1121,18 +1067,15 @@
       "source": [
         "Recordemos que, en términos generales, un AIC más pequeño indica un mejor compromiso entre ajuste y complejidad.\n",
         "\n",
-        "\n",
         ":::: {.callout-warning icon=\"false\"}\n",
         "## 🧠 Preguntas\n",
         "\n",
-        "1. ¿Mejora el modelo al incluir `year`?\n",
-        "2. ¿Vale la pena modelar `year` de manera no lineal?\n",
-        "3. ¿El aumento en flexibilidad produce una mejora importante?\n",
+        "1.  ¿Mejora el modelo al incluir `year`?\n",
+        "2.  ¿Vale la pena modelar `year` de manera no lineal?\n",
+        "3.  ¿El aumento en flexibilidad produce una mejora importante?\n",
         "\n",
         "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
         "## Solución\n",
-        "\n",
-        "\n",
         ":::\n",
         "::::\n",
         "\n",
@@ -1150,8 +1093,7 @@
         "\n",
         "Conceptualmente podemos comparar\n",
         "\n",
-        "$$\n",
-        "M_1:\n",
+        "$$M_1:\n",
         "\\quad\n",
         "Y\n",
         "=\n",
@@ -1161,13 +1103,11 @@
         "+\n",
         "f_3(X_3)\n",
         "+\n",
-        "\\varepsilon,\n",
-        "$$\n",
+        "\\varepsilon,$$\n",
         "\n",
         "contra\n",
         "\n",
-        "$$\n",
-        "M_2:\n",
+        "$$M_2:\n",
         "\\quad\n",
         "Y\n",
         "=\n",
@@ -1179,13 +1119,11 @@
         "+\n",
         "f_3(X_3)\n",
         "+\n",
-        "\\varepsilon,\n",
-        "$$\n",
+        "\\varepsilon,$$\n",
         "\n",
         "y posteriormente contra\n",
         "\n",
-        "$$\n",
-        "M_3:\n",
+        "$$M_3:\n",
         "\\quad\n",
         "Y\n",
         "=\n",
@@ -1197,34 +1135,25 @@
         "+\n",
         "f_3(X_3)\n",
         "+\n",
-        "\\varepsilon.\n",
-        "$$\n",
+        "\\varepsilon.$$\n",
         "\n",
         "La primera pregunta:\n",
         "\n",
-        "\n",
-        ":::: {.callout-warning icon=\"false\"}\n",
+        "::: {.callout-warning icon=\"false\"}\n",
         "## 🧠 Pregunta\n",
         "\n",
         "¿Aporta información $X_2$?\n",
-        "\n",
-        "::::\n",
+        ":::\n",
         "\n",
         "La segunda pregunta:\n",
         "\n",
-        " \n",
-        "\n",
-        ":::: {.callout-warning icon=\"false\"}\n",
+        "::: {.callout-warning icon=\"false\"}\n",
         "## 🧠 Pregunta\n",
         "\n",
         "¿Necesitamos que el efecto de $X_2$ sea no lineal?\n",
-        "\n",
-        "\n",
-        "::::\n",
+        ":::\n",
         "\n",
         "Nosotros utilizaremos principalmente criterios de ajuste y visualización, pero la lógica de comparación de modelos es la misma.\n",
-        "\n",
-        "\n",
         "\n",
         "### ¿Qué ocurre con `age`?\n",
         "\n",
@@ -1232,25 +1161,19 @@
         "\n",
         "Consideremos:\n",
         "\n",
-        "$$\n",
-        "M_1:\n",
+        "$$M_1:\n",
         "\\quad\n",
-        "\\text{sin age},\n",
-        "$$\n",
+        "\\text{sin age},$$\n",
         "\n",
-        "$$\n",
-        "M_2:\n",
+        "$$M_2:\n",
         "\\quad\n",
-        "\\text{age lineal},\n",
-        "$$\n",
+        "\\text{age lineal},$$\n",
         "\n",
-        "$$\n",
-        "M_3:\n",
+        "$$M_3:\n",
         "\\quad\n",
-        "\\text{age suavizado}.\n",
-        "$$"
+        "\\text{age suavizado}.$$"
       ],
-      "id": "6ec4733d"
+      "id": "df88bf14"
     },
     {
       "cell_type": "code",
@@ -1273,7 +1196,7 @@
         "    f(2)\n",
         ").fit(X, y)"
       ],
-      "id": "559f640f",
+      "id": "79497ef0",
       "execution_count": null,
       "outputs": []
     },
@@ -1283,7 +1206,7 @@
       "source": [
         "Comparamos."
       ],
-      "id": "a9efeaba"
+      "id": "7fd14f6b"
     },
     {
       "cell_type": "code",
@@ -1304,7 +1227,7 @@
         "\n",
         "comparison_age"
       ],
-      "id": "7b5a5939",
+      "id": "0b4c762b",
       "execution_count": null,
       "outputs": []
     },
@@ -1312,13 +1235,11 @@
       "cell_type": "markdown",
       "metadata": {},
       "source": [
-        ":::: {.callout-warning icon=\"false\"}\n",
+        "::: {.callout-warning icon=\"false\"}\n",
         "## 🧠 Pregunta\n",
         "\n",
         "¿La evidencia a favor de un efecto no lineal de `age` parece más fuerte que para `year`?\n",
-        "\n",
-        "::::\n",
-        "\n",
+        ":::\n",
         "\n",
         "## GAMs para clasificación\n",
         "\n",
@@ -1326,7 +1247,7 @@
         "\n",
         "Construiremos una variable que indique si el salario es superior a 250."
       ],
-      "id": "95852db5"
+      "id": "1bc644f4"
     },
     {
       "cell_type": "code",
@@ -1336,7 +1257,7 @@
         "    Wage[\"wage\"] > 250\n",
         ").astype(int)"
       ],
-      "id": "fa9a4b0c",
+      "id": "9885fc9a",
       "execution_count": null,
       "outputs": []
     },
@@ -1346,7 +1267,7 @@
       "source": [
         "Podemos revisar la frecuencia de ambas clases."
       ],
-      "id": "4124d4c1"
+      "id": "7720f81c"
     },
     {
       "cell_type": "code",
@@ -1354,7 +1275,7 @@
       "source": [
         "high_earn.value_counts()"
       ],
-      "id": "f2aa327a",
+      "id": "01e5e274",
       "execution_count": null,
       "outputs": []
     },
@@ -1364,23 +1285,19 @@
       "source": [
         "Nuestro objetivo es modelar\n",
         "\n",
-        "$$\n",
-        "P(\n",
+        "$$P(\n",
         "\\text{wage}>250\n",
         "\\mid\n",
         "\\text{age},\n",
         "\\text{year},\n",
         "\\text{education}\n",
-        ").\n",
-        "$$\n",
-        "\n",
+        ").$$\n",
         "\n",
         "## GAM logístico\n",
         "\n",
         "En regresión logística tradicional tenemos\n",
         "\n",
-        "$$\n",
-        "\\log\n",
+        "$$\\log\n",
         "\\left(\n",
         "\\frac{p(X)}{1-p(X)}\n",
         "\\right)\n",
@@ -1389,13 +1306,11 @@
         "+\n",
         "\\beta_1X_1\n",
         "+\\cdots+\n",
-        "\\beta_pX_p.\n",
-        "$$\n",
+        "\\beta_pX_p.$$\n",
         "\n",
         "En un GAM logístico reemplazamos algunos términos lineales por funciones flexibles:\n",
         "\n",
-        "$$\n",
-        "\\log\n",
+        "$$\\log\n",
         "\\left(\n",
         "\\frac{p(X)}{1-p(X)}\n",
         "\\right)\n",
@@ -1406,12 +1321,11 @@
         "+\n",
         "f_2(X_2)\n",
         "+\\cdots+\n",
-        "f_p(X_p).\n",
-        "$$\n",
+        "f_p(X_p).$$\n",
         "\n",
         "Ajustamos:"
       ],
-      "id": "275bd745"
+      "id": "9c4d1477"
     },
     {
       "cell_type": "code",
@@ -1423,7 +1337,7 @@
         "    f(2)\n",
         ")"
       ],
-      "id": "8b2f6206",
+      "id": "972790ba",
       "execution_count": null,
       "outputs": []
     },
@@ -1436,7 +1350,7 @@
         "    high_earn\n",
         ")"
       ],
-      "id": "d19a092d",
+      "id": "163a44f2",
       "execution_count": null,
       "outputs": []
     },
@@ -1448,7 +1362,7 @@
         "\n",
         "Antes de interpretar el modelo, conviene revisar la relación entre `education` y la respuesta."
       ],
-      "id": "36229934"
+      "id": "bbb52344"
     },
     {
       "cell_type": "code",
@@ -1459,7 +1373,7 @@
         "    high_earn\n",
         ")"
       ],
-      "id": "22a3369d",
+      "id": "0d2277d3",
       "execution_count": null,
       "outputs": []
     },
@@ -1471,21 +1385,17 @@
         "\n",
         "Por ejemplo, si en un determinado nivel educativo no existen individuos con\n",
         "\n",
-        "$$\n",
-        "\\text{wage}>250,\n",
-        "$$\n",
+        "$$\\text{wage}>250,$$\n",
         "\n",
         "el modelo puede tener dificultades para estimar adecuadamente el efecto de esa categoría.\n",
         "\n",
         "Este fenómeno está relacionado con problemas de **separación** en modelos logísticos.\n",
         "\n",
-        "\n",
-        "\n",
         "## Ajuste restringido\n",
         "\n",
         "Para evitar ese problema podemos excluir una categoría sin observaciones positivas."
       ],
-      "id": "2438fe72"
+      "id": "20ffbd90"
     },
     {
       "cell_type": "code",
@@ -1498,7 +1408,7 @@
         "\n",
         "Wage_sub = Wage.loc[mask].copy()"
       ],
-      "id": "f72e2be9",
+      "id": "60843205",
       "execution_count": null,
       "outputs": []
     },
@@ -1508,7 +1418,7 @@
       "source": [
         "Reconstruimos las variables."
       ],
-      "id": "7bdd2dd8"
+      "id": "0b8cca48"
     },
     {
       "cell_type": "code",
@@ -1530,7 +1440,7 @@
         "    Wage_sub[\"wage\"] > 250\n",
         ").astype(int)"
       ],
-      "id": "50ebd57a",
+      "id": "7f37c445",
       "execution_count": null,
       "outputs": []
     },
@@ -1540,7 +1450,7 @@
       "source": [
         "Ajustamos nuevamente."
       ],
-      "id": "e5ccd171"
+      "id": "8d91717b"
     },
     {
       "cell_type": "code",
@@ -1557,7 +1467,7 @@
         "    high_earn_sub\n",
         ")"
       ],
-      "id": "cc0383d2",
+      "id": "73738cdc",
       "execution_count": null,
       "outputs": []
     },
@@ -1567,7 +1477,7 @@
       "source": [
         "## Efecto parcial de `age` en clasificación"
       ],
-      "id": "f3ede0f0"
+      "id": "6671d89f"
     },
     {
       "cell_type": "code",
@@ -1583,7 +1493,7 @@
         "    width=0.95\n",
         ")"
       ],
-      "id": "fd1742b9",
+      "id": "cb582060",
       "execution_count": null,
       "outputs": []
     },
@@ -1619,7 +1529,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "846230f8",
+      "id": "a28c0bb3",
       "execution_count": null,
       "outputs": []
     },
@@ -1633,12 +1543,10 @@
         "\n",
         "La función contribuye a\n",
         "\n",
-        "$$\n",
-        "\\log\n",
+        "$$\\log\n",
         "\\left(\n",
         "\\frac{p}{1-p}\n",
-        "\\right).\n",
-        "$$\n",
+        "\\right).$$\n",
         "\n",
         "Por tanto, debemos interpretar principalmente la forma de la curva:\n",
         "\n",
@@ -1647,13 +1555,11 @@
         "- cambios no lineales;\n",
         "- regiones con mayor incertidumbre.\n",
         "\n",
-        "\n",
-        "\n",
         "## Probabilidades predichas\n",
         "\n",
         "Podemos obtener probabilidades directamente con:"
       ],
-      "id": "268aee73"
+      "id": "9ed600b1"
     },
     {
       "cell_type": "code",
@@ -1663,7 +1569,7 @@
         "    X_sub\n",
         ")"
       ],
-      "id": "328a5526",
+      "id": "4af7de3d",
       "execution_count": null,
       "outputs": []
     },
@@ -1673,7 +1579,7 @@
       "source": [
         "Revisamos algunas."
       ],
-      "id": "c50c2e5c"
+      "id": "9498a464"
     },
     {
       "cell_type": "code",
@@ -1681,7 +1587,7 @@
       "source": [
         "probabilities[:10]"
       ],
-      "id": "0d4ed929",
+      "id": "80167069",
       "execution_count": null,
       "outputs": []
     },
@@ -1691,13 +1597,11 @@
       "source": [
         "Estas sí corresponden a valores entre 0 y 1.\n",
         "\n",
-        "\n",
-        "\n",
         "## Clasificación\n",
         "\n",
         "También podemos producir clases predichas."
       ],
-      "id": "1d7ef8b2"
+      "id": "d73a3056"
     },
     {
       "cell_type": "code",
@@ -1707,7 +1611,7 @@
         "    X_sub\n",
         ")"
       ],
-      "id": "75f2a9f7",
+      "id": "25b8f63d",
       "execution_count": null,
       "outputs": []
     },
@@ -1717,7 +1621,7 @@
       "source": [
         "Podemos construir una tabla de contingencia."
       ],
-      "id": "9846c55d"
+      "id": "f12c53f0"
     },
     {
       "cell_type": "code",
@@ -1730,7 +1634,7 @@
         "    colnames=[\"Predicho\"]\n",
         ")"
       ],
-      "id": "b7234c87",
+      "id": "8c08a677",
       "execution_count": null,
       "outputs": []
     },
@@ -1742,8 +1646,7 @@
         "\n",
         "Consideremos nuevamente el modelo\n",
         "\n",
-        "$$\n",
-        "Y\n",
+        "$$Y\n",
         "=\n",
         "\\beta_0\n",
         "+\n",
@@ -1753,8 +1656,7 @@
         "+\n",
         "f_3(X_3)\n",
         "+\n",
-        "\\varepsilon.\n",
-        "$$\n",
+        "\\varepsilon.$$\n",
         "\n",
         "Un GAM nos permite:\n",
         "\n",
@@ -1767,14 +1669,11 @@
         "\n",
         "Esta combinación de **flexibilidad e interpretabilidad** es una de sus principales ventajas.\n",
         "\n",
-        "\n",
-        "\n",
         "## Limitación: aditividad\n",
         "\n",
         "El GAM que hemos utilizado supone que\n",
         "\n",
-        "$$\n",
-        "\\hat Y\n",
+        "$$\\hat Y\n",
         "=\n",
         "\\hat\\beta_0\n",
         "+\n",
@@ -1782,8 +1681,7 @@
         "+\n",
         "\\hat f_2(X_2)\n",
         "+\n",
-        "\\hat f_3(X_3).\n",
-        "$$\n",
+        "\\hat f_3(X_3).$$\n",
         "\n",
         "Esto implica que el efecto de una variable se suma al de las demás.\n",
         "\n",
@@ -1791,14 +1689,11 @@
         "\n",
         "Sin embargo, puede existir una interacción:\n",
         "\n",
-        "$$\n",
-        "f_{12}(X_1,X_2).\n",
-        "$$\n",
+        "$$f_{12}(X_1,X_2).$$\n",
         "\n",
         "En ese caso podríamos utilizar modelos más complejos.\n",
         "\n",
         "Por ahora nos concentraremos en modelos aditivos.\n",
-        "\n",
         "\n",
         "## Ejercicios\n",
         "\n",
@@ -1806,8 +1701,7 @@
         "\n",
         "Ajusta el modelo\n",
         "\n",
-        "$$\n",
-        "\\text{wage}\n",
+        "$$\\text{wage}\n",
         "=\n",
         "\\beta_0\n",
         "+\n",
@@ -1817,8 +1711,7 @@
         "+\n",
         "f_3(\\text{education})\n",
         "+\n",
-        "\\varepsilon.\n",
-        "$$\n",
+        "\\varepsilon.$$\n",
         "\n",
         "Construye las tres gráficas de efectos parciales.\n",
         "\n",
@@ -1826,18 +1719,15 @@
         "\n",
         "Responde:\n",
         "\n",
-        "1. ¿Qué edades parecen asociarse con mayores salarios?\n",
-        "2. ¿El efecto de `year` parece lineal?\n",
-        "3. ¿Qué niveles educativos producen las mayores contribuciones?\n",
-        "\n",
-        "\n",
+        "1.  ¿Qué edades parecen asociarse con mayores salarios?\n",
+        "2.  ¿El efecto de `year` parece lineal?\n",
+        "3.  ¿Qué niveles educativos producen las mayores contribuciones?\n",
         "\n",
         "### Ejercicio 2. `age` lineal vs. no lineal\n",
         "\n",
         "Ajusta dos modelos:\n",
         "\n",
-        "$$\n",
-        "M_1:\n",
+        "$$M_1:\n",
         "\\quad\n",
         "\\text{wage}\n",
         "=\n",
@@ -1849,13 +1739,11 @@
         "+\n",
         "f_3(\\text{education})\n",
         "+\n",
-        "\\varepsilon,\n",
-        "$$\n",
+        "\\varepsilon,$$\n",
         "\n",
         "y\n",
         "\n",
-        "$$\n",
-        "M_2:\n",
+        "$$M_2:\n",
         "\\quad\n",
         "\\text{wage}\n",
         "=\n",
@@ -1867,14 +1755,11 @@
         "+\n",
         "f_3(\\text{education})\n",
         "+\n",
-        "\\varepsilon.\n",
-        "$$\n",
+        "\\varepsilon.$$\n",
         "\n",
         "Compara los modelos utilizando AIC.\n",
         "\n",
         "¿Cuál prefieres?\n",
-        "\n",
-        "\n",
         "\n",
         "### Ejercicio 3. `year` lineal vs. no lineal\n",
         "\n",
@@ -1882,19 +1767,13 @@
         "\n",
         "Compara:\n",
         "\n",
-        "$$\n",
-        "\\beta_2\\text{year}\n",
-        "$$\n",
+        "$$\\beta_2\\text{year}$$\n",
         "\n",
         "contra\n",
         "\n",
-        "$$\n",
-        "f_2(\\text{year}).\n",
-        "$$\n",
+        "$$f_2(\\text{year}).$$\n",
         "\n",
         "¿Hay evidencia práctica de que necesitemos un efecto no lineal?\n",
-        "\n",
-        "\n",
         "\n",
         "### Ejercicio 4. Comparación con regresión lineal\n",
         "\n",
@@ -1913,16 +1792,12 @@
         "- AIC;\n",
         "- interpretabilidad.\n",
         "\n",
-        "\n",
-        "\n",
         "### Ejercicio 5. Clasificación\n",
         "\n",
         "Construye la variable\n",
         "\n",
-        "$$\n",
-        "Y=\n",
-        "I(\\text{wage}>200).\n",
-        "$$\n",
+        "$$Y=\n",
+        "I(\\text{wage}>200).$$\n",
         "\n",
         "Ajusta un GAM logístico utilizando:\n",
         "\n",
@@ -1934,14 +1809,11 @@
         "\n",
         "¿Cambian las conclusiones respecto al modelo que utiliza el umbral 250?\n",
         "\n",
-        "\n",
-        "\n",
         "### Ejercicio 6. Interpretación\n",
         "\n",
         "Explica con tus propias palabras la diferencia entre\n",
         "\n",
-        "$$\n",
-        "Y\n",
+        "$$Y\n",
         "=\n",
         "\\beta_0\n",
         "+\n",
@@ -1949,13 +1821,11 @@
         "+\n",
         "\\beta_2X_2\n",
         "+\n",
-        "\\varepsilon\n",
-        "$$\n",
+        "\\varepsilon$$\n",
         "\n",
         "y\n",
         "\n",
-        "$$\n",
-        "Y\n",
+        "$$Y\n",
         "=\n",
         "\\beta_0\n",
         "+\n",
@@ -1963,17 +1833,16 @@
         "+\n",
         "f_2(X_2)\n",
         "+\n",
-        "\\varepsilon.\n",
-        "$$\n",
+        "\\varepsilon.$$\n",
         "\n",
         "Tu explicación debe mencionar:\n",
         "\n",
         "- linealidad;\n",
         "- flexibilidad;\n",
         "- aditividad;\n",
-        "- interpretación de $f_1$ y $f_2$.\n"
+        "- interpretación de $f_1$ y $f_2$."
       ],
-      "id": "5f786273"
+      "id": "1a0742f2"
     }
   ],
   "metadata": {

@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./parte9.html" rel="next">
+<link href="./parte8.html" rel="next">
 <link href="./parte6.html" rel="prev">
 <link href="./figures/favicon.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
@@ -286,6 +286,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">GAMs: Modelos Aditivos Generalizados</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">EXTRA: Regresión simbólica con PySR</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -300,7 +306,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte9.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -317,7 +323,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte9.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -334,7 +340,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte9.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -351,7 +357,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte9.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -483,7 +489,7 @@ f_p(X_{ip})
 <section id="preparación" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="preparación"><span class="header-section-number">7.1</span> Preparación</h2>
 <p>Utilizaremos nuevamente el conjunto de datos <code>Wage</code>.</p>
-<div id="6786975f" class="cell" data-execution_count="1">
+<div id="2bb7e0d0" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -496,19 +502,19 @@ f_p(X_{ip})
 </details>
 </div>
 <p>Cargamos los datos.</p>
-<div id="688ffe1f" class="cell" data-execution_count="2">
+<div id="acca8f71" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Wage <span class="op">=</span> load_data(<span class="st">"Wage"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Revisamos las primeras observaciones.</p>
-<div id="b5eb6908" class="cell" data-execution_count="3">
+<div id="80a08e76" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Wage.head()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="51">
+<div class="cell-output cell-output-display" data-execution_count="3">
 <div>
 
 
@@ -619,26 +625,26 @@ f_p(X_{ip})
 <p><code>pygam</code> espera que la matriz de predictores sea bidimensional.</p>
 <p>Además, para una variable categórica como <code>education</code>, necesitamos una representación numérica.</p>
 <p>Primero revisamos sus categorías.</p>
-<div id="ef4df8ca" class="cell" data-execution_count="4">
+<div id="2592d3de" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Wage[<span class="st">"education"</span>].cat.categories</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="52">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>Index(['1. &lt; HS Grad', '2. HS Grad', '3. Some College', '4. College Grad',
        '5. Advanced Degree'],
       dtype='object')</code></pre>
 </div>
 </div>
 <p>Podemos obtener códigos enteros con:</p>
-<div id="0c8fc1a5" class="cell" data-execution_count="5">
+<div id="96061e65" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>education_code <span class="op">=</span> Wage[<span class="st">"education"</span>].cat.codes</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Construimos la matriz de predictores.</p>
-<div id="6d4ed9d9" class="cell" data-execution_count="6">
+<div id="293dded5" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.column_stack([</span>
@@ -651,12 +657,12 @@ f_p(X_{ip})
 </details>
 </div>
 <p>Revisamos las dimensiones.</p>
-<div id="73374d08" class="cell" data-execution_count="7">
+<div id="891eb303" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>X.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="55">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>(3000, 3)</code></pre>
 </div>
 </div>
@@ -688,7 +694,7 @@ f_3(\text{education})
 <li>un término categórico para <code>education</code>.</li>
 </ul>
 <p>En <code>pygam</code> podemos escribir:</p>
-<div id="dc6af53c" class="cell" data-execution_count="8">
+<div id="36ee11a2" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>gam <span class="op">=</span> LinearGAM(</span>
@@ -705,12 +711,12 @@ f_3(\text{education})
 <li><code>f(2)</code> trata la tercera columna como una variable categórica.</li>
 </ul>
 <p>Ajustamos el modelo.</p>
-<div id="f0badee0" class="cell" data-execution_count="9">
+<div id="985985ba" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>gam.fit(X, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="57">
+<div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>LinearGAM(callbacks=[Deviance(), Diffs()], fit_intercept=True, 
    max_iter=100, scale=None, terms=s(0) + s(1) + f(2) + intercept, 
    tol=0.0001, verbose=False)</code></pre>
@@ -746,7 +752,7 @@ f_3(\text{education})
 <h2 data-number="7.5" class="anchored" data-anchor-id="efecto-parcial-de-age"><span class="header-section-number">7.5</span> Efecto parcial de <code>age</code></h2>
 <p>Una de las principales ventajas de los GAMs es que podemos examinar el efecto de cada predictor por separado.</p>
 <p>Construimos una malla para el término correspondiente a <code>age</code>.</p>
-<div id="b72c6c3d" class="cell" data-execution_count="10">
+<div id="7446cee4" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>XX <span class="op">=</span> gam.generate_X_grid(</span>
@@ -755,7 +761,7 @@ f_3(\text{education})
 </details>
 </div>
 <p>Calculamos el efecto parcial.</p>
-<div id="e31e7b71" class="cell" data-execution_count="11">
+<div id="7c05e975" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>partial_age <span class="op">=</span> gam.partial_dependence(</span>
@@ -765,7 +771,7 @@ f_3(\text{education})
 </details>
 </div>
 <p>También podemos obtener intervalos de confianza.</p>
-<div id="90c6c8fb" class="cell" data-execution_count="12">
+<div id="3811f61b" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pdep_age, confi_age <span class="op">=</span> gam.partial_dependence(</span>
@@ -776,7 +782,7 @@ f_3(\text{education})
 </details>
 </div>
 <p>Visualizamos el efecto.</p>
-<div id="6bd6f57c" class="cell" data-execution_count="13">
+<div id="96e28d63" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -839,7 +845,7 @@ Nota
 <section id="efecto-parcial-de-year" class="level2" data-number="7.6">
 <h2 data-number="7.6" class="anchored" data-anchor-id="efecto-parcial-de-year"><span class="header-section-number">7.6</span> Efecto parcial de <code>year</code></h2>
 <p>Repetimos el procedimiento para <code>year</code>.</p>
-<div id="64d2bda6" class="cell" data-execution_count="14">
+<div id="b2489ac1" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>XX_year <span class="op">=</span> gam.generate_X_grid(</span>
@@ -847,7 +853,7 @@ Nota
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="14d7e1f7" class="cell" data-execution_count="15">
+<div id="8521de1e" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pdep_year, confi_year <span class="op">=</span> gam.partial_dependence(</span>
@@ -857,7 +863,7 @@ Nota
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="f694c314" class="cell" data-execution_count="16">
+<div id="566f078d" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -937,34 +943,34 @@ Nota
 <p>A diferencia de <code>age</code> y <code>year</code>, <code>education</code> no es una variable continua. Por tanto, no queremos construir una curva sobre una malla de muchos valores.</p>
 <p>Queremos estimar una contribución para <strong>cada nivel educativo</strong>.</p>
 <p>Primero revisamos las categorías.</p>
-<div id="5d3b94f3" class="cell" data-execution_count="17">
+<div id="7734d217" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>education_levels <span class="op">=</span> Wage[<span class="st">"education"</span>].cat.categories</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>education_levels</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="65">
+<div class="cell-output cell-output-display" data-execution_count="17">
 <pre><code>Index(['1. &lt; HS Grad', '2. HS Grad', '3. Some College', '4. College Grad',
        '5. Advanced Degree'],
       dtype='object')</code></pre>
 </div>
 </div>
 <p>Recordemos que <code>pygam</code> trabaja con los códigos numéricos de estas categorías:</p>
-<div id="8492eefc" class="cell" data-execution_count="18">
+<div id="5166da2f" class="cell" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>education_codes <span class="op">=</span> np.arange(<span class="bu">len</span>(education_levels))</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>education_codes</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="66">
+<div class="cell-output cell-output-display" data-execution_count="18">
 <pre><code>array([0, 1, 2, 3, 4])</code></pre>
 </div>
 </div>
 <p>Ahora construiremos una matriz con una fila para cada nivel educativo.</p>
 <p>Mantendremos <code>age</code> y <code>year</code> en valores representativos y cambiaremos únicamente <code>education</code>.</p>
-<div id="da8aa9c8" class="cell" data-execution_count="19">
+<div id="4a015bdc" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>X_education <span class="op">=</span> np.column_stack([</span>
@@ -975,12 +981,12 @@ Nota
 </details>
 </div>
 <p>Podemos revisar la matriz.</p>
-<div id="ad511926" class="cell" data-execution_count="20">
+<div id="638b07e9" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>X_education</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="68">
+<div class="cell-output cell-output-display" data-execution_count="20">
 <pre><code>array([[4.24146667e+01, 2.00579100e+03, 0.00000000e+00],
        [4.24146667e+01, 2.00579100e+03, 1.00000000e+00],
        [4.24146667e+01, 2.00579100e+03, 2.00000000e+00],
@@ -990,7 +996,7 @@ Nota
 </div>
 <p>Cada fila corresponde a un nivel educativo distinto, mientras que <code>age</code> y <code>year</code> permanecen constantes.</p>
 <p>Calculamos ahora el efecto parcial del término categórico.</p>
-<div id="94265e89" class="cell" data-execution_count="21">
+<div id="f2e700f7" class="cell" data-execution_count="21">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>pdep_education, confi_education <span class="op">=</span> gam.partial_dependence(</span>
@@ -1001,28 +1007,28 @@ Nota
 </details>
 </div>
 <p>Podemos revisar los resultados.</p>
-<div id="6c61763d" class="cell" data-execution_count="22">
+<div id="d42c9f99" class="cell" data-execution_count="22">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>pdep_education</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="70">
+<div class="cell-output cell-output-display" data-execution_count="22">
 <pre><code>array([-26.92229485, -16.06307378,  -3.59223096,  11.15276953,
         35.42483245])</code></pre>
 </div>
 </div>
 <p>Ahora tenemos exactamente un valor por cada nivel educativo.</p>
-<div id="94f15ff2" class="cell" data-execution_count="23">
+<div id="fa16156a" class="cell" data-execution_count="23">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(education_levels), <span class="bu">len</span>(pdep_education)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="71">
+<div class="cell-output cell-output-display" data-execution_count="23">
 <pre><code>(5, 5)</code></pre>
 </div>
 </div>
 <p>Representamos las contribuciones.</p>
-<div id="e6bfde8b" class="cell" data-execution_count="24">
+<div id="faccfb8c" class="cell" data-execution_count="24">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
@@ -1127,14 +1133,14 @@ Nota
 <section id="predicciones-con-el-gam" class="level2" data-number="7.10">
 <h2 data-number="7.10" class="anchored" data-anchor-id="predicciones-con-el-gam"><span class="header-section-number">7.10</span> Predicciones con el GAM</h2>
 <p>Una vez ajustado el modelo podemos hacer predicciones.</p>
-<div id="6a54ef4e" class="cell" data-execution_count="25">
+<div id="b8bd98f7" class="cell" data-execution_count="25">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>y_hat <span class="op">=</span> gam.predict(X)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Podemos comparar valores observados y predichos.</p>
-<div id="82c93cf2" class="cell" data-execution_count="26">
+<div id="87486f5f" class="cell" data-execution_count="26">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
@@ -1187,7 +1193,7 @@ f_3(\text{education})
 +
 \varepsilon.\]</span></p>
 <p>En <code>pygam</code>:</p>
-<div id="4de93d71" class="cell" data-execution_count="27">
+<div id="017c8341" class="cell" data-execution_count="27">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>gam_year_linear <span class="op">=</span> LinearGAM(</span>
@@ -1198,12 +1204,12 @@ f_3(\text{education})
 </details>
 </div>
 <p>Ajustamos el modelo.</p>
-<div id="2ddfd7a3" class="cell" data-execution_count="28">
+<div id="14e912a4" class="cell" data-execution_count="28">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>gam_year_linear.fit(X, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="76">
+<div class="cell-output cell-output-display" data-execution_count="28">
 <pre><code>LinearGAM(callbacks=[Deviance(), Diffs()], fit_intercept=True, 
    max_iter=100, scale=None, terms=s(0) + l(1) + f(2) + intercept, 
    tol=0.0001, verbose=False)</code></pre>
@@ -1225,7 +1231,7 @@ f_1(\text{age})
 f_3(\text{education})
 +
 \varepsilon.\]</span></p>
-<div id="88a3fd95" class="cell" data-execution_count="29">
+<div id="2f152cb7" class="cell" data-execution_count="29">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>gam_no_year <span class="op">=</span> LinearGAM(</span>
@@ -1235,7 +1241,7 @@ f_3(\text{education})
 <span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>gam_no_year.fit(X, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="77">
+<div class="cell-output cell-output-display" data-execution_count="29">
 <pre><code>LinearGAM(callbacks=[Deviance(), Diffs()], fit_intercept=True, 
    max_iter=100, scale=None, terms=s(0) + f(2) + intercept, 
    tol=0.0001, verbose=False)</code></pre>
@@ -1255,7 +1261,7 @@ f_1(\text{age})
 f_3(\text{education})
 +
 \varepsilon.\]</span></p>
-<div id="f85fdce3" class="cell" data-execution_count="30">
+<div id="0887504b" class="cell" data-execution_count="30">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>gam_year_linear <span class="op">=</span> LinearGAM(</span>
@@ -1266,7 +1272,7 @@ f_3(\text{education})
 <span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>gam_year_linear.fit(X, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="78">
+<div class="cell-output cell-output-display" data-execution_count="30">
 <pre><code>LinearGAM(callbacks=[Deviance(), Diffs()], fit_intercept=True, 
    max_iter=100, scale=None, terms=s(0) + l(1) + f(2) + intercept, 
    tol=0.0001, verbose=False)</code></pre>
@@ -1286,7 +1292,7 @@ f_2(\text{year})
 f_3(\text{education})
 +
 \varepsilon.\]</span></p>
-<div id="d445364d" class="cell" data-execution_count="31">
+<div id="071f6d14" class="cell" data-execution_count="31">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>gam_year_smooth <span class="op">=</span> LinearGAM(</span>
@@ -1297,7 +1303,7 @@ f_3(\text{education})
 <span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>gam_year_smooth.fit(X, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="79">
+<div class="cell-output cell-output-display" data-execution_count="31">
 <pre><code>LinearGAM(callbacks=[Deviance(), Diffs()], fit_intercept=True, 
    max_iter=100, scale=None, terms=s(0) + s(1) + f(2) + intercept, 
    tol=0.0001, verbose=False)</code></pre>
@@ -1308,7 +1314,7 @@ f_3(\text{education})
 <section id="comparación-de-modelos" class="level2" data-number="7.13">
 <h2 data-number="7.13" class="anchored" data-anchor-id="comparación-de-modelos"><span class="header-section-number">7.13</span> Comparación de modelos</h2>
 <p>Podemos comparar la calidad de ajuste utilizando criterios como AIC.</p>
-<div id="3af24165" class="cell" data-execution_count="32">
+<div id="ab3a7083" class="cell" data-execution_count="32">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>comparison <span class="op">=</span> pd.DataFrame({</span>
@@ -1326,7 +1332,7 @@ f_3(\text{education})
 <span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>comparison</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="80">
+<div class="cell-output cell-output-display" data-execution_count="32">
 <div>
 
 
@@ -1487,7 +1493,7 @@ f_3(X_3)
 <p><span class="math display">\[M_3:
 \quad
 \text{age suavizado}.\]</span></p>
-<div id="4805cd20" class="cell" data-execution_count="33">
+<div id="061ae619" class="cell" data-execution_count="33">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>gam_no_age <span class="op">=</span> LinearGAM(</span>
@@ -1509,7 +1515,7 @@ f_3(X_3)
 </details>
 </div>
 <p>Comparamos.</p>
-<div id="311d1fef" class="cell" data-execution_count="34">
+<div id="d4e96240" class="cell" data-execution_count="34">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>comparison_age <span class="op">=</span> pd.DataFrame({</span>
@@ -1527,7 +1533,7 @@ f_3(X_3)
 <span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>comparison_age</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="82">
+<div class="cell-output cell-output-display" data-execution_count="34">
 <div>
 
 
@@ -1580,7 +1586,7 @@ f_3(X_3)
 <h2 data-number="7.15" class="anchored" data-anchor-id="gams-para-clasificación"><span class="header-section-number">7.15</span> GAMs para clasificación</h2>
 <p>Los GAMs también pueden utilizarse cuando la respuesta es binaria.</p>
 <p>Construiremos una variable que indique si el salario es superior a 250.</p>
-<div id="b93a1978" class="cell" data-execution_count="35">
+<div id="c905bfe0" class="cell" data-execution_count="35">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>high_earn <span class="op">=</span> (</span>
@@ -1589,12 +1595,12 @@ f_3(X_3)
 </details>
 </div>
 <p>Podemos revisar la frecuencia de ambas clases.</p>
-<div id="26acfff4" class="cell" data-execution_count="36">
+<div id="72ce88b4" class="cell" data-execution_count="36">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>high_earn.value_counts()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="84">
+<div class="cell-output cell-output-display" data-execution_count="36">
 <pre><code>wage
 0    2921
 1      79
@@ -1637,7 +1643,7 @@ f_2(X_2)
 +\cdots+
 f_p(X_p).\]</span></p>
 <p>Ajustamos:</p>
-<div id="317467ac" class="cell" data-execution_count="37">
+<div id="8af33ba8" class="cell" data-execution_count="37">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>gam_logit <span class="op">=</span> LogisticGAM(</span>
@@ -1647,7 +1653,7 @@ f_p(X_p).\]</span></p>
 <span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="9af8a7f0" class="cell" data-execution_count="38">
+<div id="5ae3e04b" class="cell" data-execution_count="38">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>gam_logit.fit(</span>
@@ -1655,7 +1661,7 @@ f_p(X_p).\]</span></p>
 <span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    high_earn</span>
 <span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="86">
+<div class="cell-output cell-output-display" data-execution_count="38">
 <pre><code>LogisticGAM(callbacks=[Deviance(), Diffs(), Accuracy()], 
    fit_intercept=True, max_iter=100, 
    terms=s(0) + s(1) + f(2) + intercept, tol=0.0001, verbose=False)</code></pre>
@@ -1665,7 +1671,7 @@ f_p(X_p).\]</span></p>
 <section id="un-problema-con-categorías-poco-representadas" class="level2" data-number="7.17">
 <h2 data-number="7.17" class="anchored" data-anchor-id="un-problema-con-categorías-poco-representadas"><span class="header-section-number">7.17</span> Un problema con categorías poco representadas</h2>
 <p>Antes de interpretar el modelo, conviene revisar la relación entre <code>education</code> y la respuesta.</p>
-<div id="dc1b0919" class="cell" data-execution_count="39">
+<div id="7c7b354a" class="cell" data-execution_count="39">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>pd.crosstab(</span>
@@ -1673,7 +1679,7 @@ f_p(X_p).\]</span></p>
 <span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    high_earn</span>
 <span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="87">
+<div class="cell-output cell-output-display" data-execution_count="39">
 <div>
 
 
@@ -1731,7 +1737,7 @@ f_p(X_p).\]</span></p>
 <section id="ajuste-restringido" class="level2" data-number="7.18">
 <h2 data-number="7.18" class="anchored" data-anchor-id="ajuste-restringido"><span class="header-section-number">7.18</span> Ajuste restringido</h2>
 <p>Para evitar ese problema podemos excluir una categoría sin observaciones positivas.</p>
-<div id="43f6f96d" class="cell" data-execution_count="40">
+<div id="8c3572ac" class="cell" data-execution_count="40">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> (</span>
@@ -1743,7 +1749,7 @@ f_p(X_p).\]</span></p>
 </details>
 </div>
 <p>Reconstruimos las variables.</p>
-<div id="94370bdd" class="cell" data-execution_count="41">
+<div id="7f6b5b9a" class="cell" data-execution_count="41">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>education_sub <span class="op">=</span> (</span>
@@ -1764,7 +1770,7 @@ f_p(X_p).\]</span></p>
 </details>
 </div>
 <p>Ajustamos nuevamente.</p>
-<div id="ed6ed4ec" class="cell" data-execution_count="42">
+<div id="4e1daa2a" class="cell" data-execution_count="42">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>gam_logit_sub <span class="op">=</span> LogisticGAM(</span>
@@ -1778,7 +1784,7 @@ f_p(X_p).\]</span></p>
 <span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>    high_earn_sub</span>
 <span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="90">
+<div class="cell-output cell-output-display" data-execution_count="42">
 <pre><code>LogisticGAM(callbacks=[Deviance(), Diffs(), Accuracy()], 
    fit_intercept=True, max_iter=100, 
    terms=s(0) + s(1) + f(2) + intercept, tol=0.0001, verbose=False)</code></pre>
@@ -1787,7 +1793,7 @@ f_p(X_p).\]</span></p>
 </section>
 <section id="efecto-parcial-de-age-en-clasificación" class="level2" data-number="7.19">
 <h2 data-number="7.19" class="anchored" data-anchor-id="efecto-parcial-de-age-en-clasificación"><span class="header-section-number">7.19</span> Efecto parcial de <code>age</code> en clasificación</h2>
-<div id="1aa76b6a" class="cell" data-execution_count="43">
+<div id="7b41e1b4" class="cell" data-execution_count="43">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>XX_age_logit <span class="op">=</span> gam_logit_sub.generate_X_grid(</span>
@@ -1801,7 +1807,7 @@ f_p(X_p).\]</span></p>
 <span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="33100b80" class="cell" data-execution_count="44">
+<div id="b44ba44f" class="cell" data-execution_count="44">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
@@ -1860,7 +1866,7 @@ f_p(X_p).\]</span></p>
 <section id="probabilidades-predichas" class="level2" data-number="7.20">
 <h2 data-number="7.20" class="anchored" data-anchor-id="probabilidades-predichas"><span class="header-section-number">7.20</span> Probabilidades predichas</h2>
 <p>Podemos obtener probabilidades directamente con:</p>
-<div id="065a3dd0" class="cell" data-execution_count="45">
+<div id="f0e519fa" class="cell" data-execution_count="45">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>probabilities <span class="op">=</span> gam_logit_sub.predict_proba(</span>
@@ -1869,12 +1875,12 @@ f_p(X_p).\]</span></p>
 </details>
 </div>
 <p>Revisamos algunas.</p>
-<div id="dcf64c3c" class="cell" data-execution_count="46">
+<div id="6a115146" class="cell" data-execution_count="46">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>probabilities[:<span class="dv">10</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="94">
+<div class="cell-output cell-output-display" data-execution_count="46">
 <pre><code>array([0.00272505, 0.01373062, 0.0388806 , 0.00466125, 0.0404958 ,
        0.01666138, 0.00361536, 0.02211939, 0.00703292, 0.01439082])</code></pre>
 </div>
@@ -1884,7 +1890,7 @@ f_p(X_p).\]</span></p>
 <section id="clasificación" class="level2" data-number="7.21">
 <h2 data-number="7.21" class="anchored" data-anchor-id="clasificación"><span class="header-section-number">7.21</span> Clasificación</h2>
 <p>También podemos producir clases predichas.</p>
-<div id="d8c777de" class="cell" data-execution_count="47">
+<div id="f1af604c" class="cell" data-execution_count="47">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>predicted_class <span class="op">=</span> gam_logit_sub.predict(</span>
@@ -1893,7 +1899,7 @@ f_p(X_p).\]</span></p>
 </details>
 </div>
 <p>Podemos construir una tabla de contingencia.</p>
-<div id="fc3b141c" class="cell" data-execution_count="48">
+<div id="0979e38b" class="cell" data-execution_count="48">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>pd.crosstab(</span>
@@ -1903,7 +1909,7 @@ f_p(X_p).\]</span></p>
 <span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>    colnames<span class="op">=</span>[<span class="st">"Predicho"</span>]</span>
 <span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="96">
+<div class="cell-output cell-output-display" data-execution_count="48">
 <div>
 
 
@@ -2557,8 +2563,8 @@ f_2(X_2)
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./parte9.html" class="pagination-link" aria-label="Pendiente">
-        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pendiente</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./parte8.html" class="pagination-link" aria-label="EXTRA: Regresión simbólica con PySR">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">EXTRA: Regresión simbólica con PySR</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

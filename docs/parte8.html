@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>8&nbsp; EXTRA: Regresión simbólica con PySR – Temas Selectos de Aprendizaje de Máquina</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./parte9.html" rel="next">
+<link href="./parte7.html" rel="prev">
+<link href="./figures/favicon.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-256100c28b4d1a71ce469740e6db3c8e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./parte2.html"><strong>Modelos no lineales</strong></a></li><li class="breadcrumb-item"><a href="./parte8.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">EXTRA: Regresión simbólica con PySR</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./figures/LogoENES.png" alt="" class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="./figures/LogoENES.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Temas Selectos de Aprendizaje de Máquina</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1" title="Ejecutar el código" class="quarto-navigation-tool px-1" aria-label="Ejecutar el código"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Compartir" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Compartir"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
+              <i class="bi bi-facebook pe-1"></i>
+            Facebook
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Información general</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./temario.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Temario</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>Introducción al Aprendizaje Automático</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introducción al Aprendizaje Automático”</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>Modelos no lineales</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Regresión Polinomial</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Funciones escalonadas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Splines de regresión con funciones base</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Splines de suavizamiento</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Regresión Local</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">GAMs: Modelos Aditivos Generalizados</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte8.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">EXTRA: Regresión simbólica con PySR</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>Métodos de ensamble y optimización de modelos</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>Máquinas de Soporte Vectorial</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>Aprendizaje no supervisado</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>Interpretabilidad y explicabilidad de modelos</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#instalación-de-pysr" id="toc-instalación-de-pysr" class="nav-link active" data-scroll-target="#instalación-de-pysr"><span class="header-section-number">8.1</span> Instalación de PySR</a></li>
+  <li><a href="#generación-de-los-datos" id="toc-generación-de-los-datos" class="nav-link" data-scroll-target="#generación-de-los-datos"><span class="header-section-number">8.2</span> Generación de los datos</a></li>
+  <li><a href="#visualización" id="toc-visualización" class="nav-link" data-scroll-target="#visualización"><span class="header-section-number">8.3</span> Visualización</a></li>
+  <li><a href="#preparación-de-los-datos" id="toc-preparación-de-los-datos" class="nav-link" data-scroll-target="#preparación-de-los-datos"><span class="header-section-number">8.4</span> Preparación de los datos</a></li>
+  <li><a href="#modelo-de-regresión-simbólica" id="toc-modelo-de-regresión-simbólica" class="nav-link" data-scroll-target="#modelo-de-regresión-simbólica"><span class="header-section-number">8.5</span> Modelo de regresión simbólica</a></li>
+  <li><a href="#ajuste-del-modelo" id="toc-ajuste-del-modelo" class="nav-link" data-scroll-target="#ajuste-del-modelo"><span class="header-section-number">8.6</span> Ajuste del modelo</a></li>
+  <li><a href="#ecuaciones-encontradas" id="toc-ecuaciones-encontradas" class="nav-link" data-scroll-target="#ecuaciones-encontradas"><span class="header-section-number">8.7</span> Ecuaciones encontradas</a></li>
+  <li><a href="#expresión-seleccionada" id="toc-expresión-seleccionada" class="nav-link" data-scroll-target="#expresión-seleccionada"><span class="header-section-number">8.8</span> Expresión seleccionada</a>
+  <ul>
+  <li><a href="#para-discutir" id="toc-para-discutir" class="nav-link" data-scroll-target="#para-discutir"><span class="header-section-number">8.8.1</span> Para discutir</a></li>
+  </ul></li>
+  <li><a href="#visualización-del-ajuste" id="toc-visualización-del-ajuste" class="nav-link" data-scroll-target="#visualización-del-ajuste"><span class="header-section-number">8.9</span> Visualización del ajuste</a></li>
+  <li><a href="#encontramos-la-función-verdadera" id="toc-encontramos-la-función-verdadera" class="nav-link" data-scroll-target="#encontramos-la-función-verdadera"><span class="header-section-number">8.10</span> ¿Encontramos la función verdadera?</a></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios"><span class="header-section-number">8.11</span> Ejercicios</a>
+  <ul>
+  <li><a href="#ejercicio-1-datos-simulados" id="toc-ejercicio-1-datos-simulados" class="nav-link" data-scroll-target="#ejercicio-1-datos-simulados"><span class="header-section-number">8.11.1</span> Ejercicio 1: Datos simulados</a></li>
+  <li><a href="#ejercicio-2-regresión-simbólica-con-los-datos-de-wage" id="toc-ejercicio-2-regresión-simbólica-con-los-datos-de-wage" class="nav-link" data-scroll-target="#ejercicio-2-regresión-simbólica-con-los-datos-de-wage"><span class="header-section-number">8.11.2</span> Ejercicio 2: Regresión simbólica con los datos de “Wage”</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./parte2.html"><strong>Modelos no lineales</strong></a></li><li class="breadcrumb-item"><a href="./parte8.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">EXTRA: Regresión simbólica con PySR</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">EXTRA: Regresión simbólica con PySR</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Utilizaremos <strong>regresión simbólica</strong> para encontrar una expresión matemática que describa la relación entre una variable predictora <span class="math inline">\(x\)</span> y una variable respuesta <span class="math inline">\(y\)</span>.</p>
+<p>A diferencia de otros métodos de regresión, no especificaremos de antemano una forma funcional como</p>
+<p><span class="math display">\[
+y = \beta_0+\beta_1x+\beta_2x^2.
+\]</span></p>
+<p>En su lugar, indicaremos qué operaciones matemáticas puede utilizar el algoritmo y dejaremos que busque expresiones que expliquen los datos.</p>
+<p>Trabajaremos con datos simulados para conocer la función que generó los datos y poder compararla con la expresión encontrada por el algoritmo.</p>
+<div class="diapositivas">
+<div class="diapositivas-title">
+<p>📝 <strong>Diapositivas</strong></p>
+</div>
+<div class="diapositivas-body">
+<p><a href="https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/2.9_Extra_Regresion_Simbolica.pdf">Ver diapositivas Regresión Simbólica</a></p>
+</div>
+</div>
+<section id="instalación-de-pysr" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="instalación-de-pysr"><span class="header-section-number">8.1</span> Instalación de PySR</h2>
+<p>Utilizaremos la biblioteca <code>PySR</code>.</p>
+<p>En un notebook de Jupyter se recomienda instalarla mediante:</p>
+<div id="9092a3ba" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>pip install pysr</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>La primera instalación puede tardar
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Aunque utilizaremos PySR desde Python, el motor que realiza la búsqueda simbólica utiliza <strong>Julia</strong>.</p>
+<p>Por esta razón, la primera vez que ejecutamos</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pysr <span class="im">import</span> PySRRegressor</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>pueden aparecer mensajes relacionados con la descarga, instalación o configuración de Julia y sus dependencias.</p>
+<p>Esto es normal y puede tardar algunos minutos.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Si PySR se instala pero Python no lo reconoce
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Después de instalar PySR puede ser necesario <strong>reiniciar el kernel de Jupyter</strong>.</p>
+<p>Por ejemplo, si aparece un error indicando que <code>pysr</code> no existe después de haberlo instalado:</p>
+<ol type="1">
+<li>esperar a que termine completamente la instalación;</li>
+<li>reiniciar el kernel;</li>
+<li>volver a ejecutar las celdas desde el inicio.</li>
+</ol>
+<p>En Jupyter, <code>%pip install pysr</code> suele ser preferible a <code>!pip install pysr</code>, ya que instala el paquete en el entorno asociado al kernel actual.</p>
+</div>
+</div>
+<p>Ahora importamos las bibliotecas necesarias.</p>
+<div id="98a9e6eb" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pysr <span class="im">import</span> PySRRegressor</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="generación-de-los-datos" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="generación-de-los-datos"><span class="header-section-number">8.2</span> Generación de los datos</h2>
+<p>Vamos a generar datos utilizando la función</p>
+<p><span class="math display">\[
+y=x^2+2\sin(x)+\varepsilon,
+\]</span></p>
+<p>donde</p>
+<p><span class="math display">\[
+\varepsilon\sim N(0,0.3^2)
+\]</span></p>
+<p>representa ruido aleatorio.</p>
+<div id="e6ee091d" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">123</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">200</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.random.uniform(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, n)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> np.random.normal(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    loc<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    scale<span class="op">=</span><span class="fl">0.3</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span>n</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> x<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">2</span><span class="op">*</span>np.sin(x) <span class="op">+</span> epsilon</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>En una situación real, <strong>no conoceríamos esta ecuación</strong>. Solamente observaríamos los valores de <span class="math inline">\(x\)</span> y <span class="math inline">\(y\)</span>.</p>
+</section>
+<section id="visualización" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="visualización"><span class="header-section-number">8.3</span> Visualización</h2>
+<p>Antes de construir un modelo, observemos los datos.</p>
+<div id="0c6052b7" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    x,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.6</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"x"</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"y"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Datos simulados"</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte8_files/figure-html/cell-5-output-1.png" width="651" height="450" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>A simple vista podemos observar una relación no lineal.</p>
+<p>Sin embargo, a partir de la gráfica no necesariamente es evidente que los datos fueron generados mediante</p>
+<p><span class="math display">\[
+x^2+2\sin(x).
+\]</span></p>
+<p>Ese será precisamente el objetivo de la regresión simbólica.</p>
+</section>
+<section id="preparación-de-los-datos" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="preparación-de-los-datos"><span class="header-section-number">8.4</span> Preparación de los datos</h2>
+<p>PySR espera que las variables predictoras se proporcionen mediante una matriz.</p>
+<p>Actualmente <code>x</code> es un vector:</p>
+<div id="cd254e79" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>(200,)</code></pre>
+</div>
+</div>
+<p>Lo convertimos en una matriz con una columna:</p>
+<div id="5746c37c" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> x.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>X.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>(200, 1)</code></pre>
+</div>
+</div>
+<p>Por tanto,</p>
+<p><span class="math display">\[
+X\in\mathbb{R}^{200\times1}.
+\]</span></p>
+<p>En un problema con <span class="math inline">\(p\)</span> variables predictoras tendríamos, en general,</p>
+<p><span class="math display">\[
+X\in\mathbb{R}^{n\times p}.
+\]</span></p>
+</section>
+<section id="modelo-de-regresión-simbólica" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="modelo-de-regresión-simbólica"><span class="header-section-number">8.5</span> Modelo de regresión simbólica</h2>
+<p>Ahora construiremos el modelo.</p>
+<p>No le indicaremos que la función contiene <span class="math inline">\(x^2\)</span> ni que el coeficiente de <span class="math inline">\(\sin(x)\)</span> es 2.</p>
+<p>Únicamente permitiremos las operaciones</p>
+<p><span class="math display">\[
++,\qquad -,\qquad \times
+\]</span></p>
+<p>y la función</p>
+<p><span class="math display">\[
+\sin(x).
+\]</span></p>
+<div id="a8d39952" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> PySRRegressor(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    niterations<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    binary_operators<span class="op">=</span>[</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"+"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"-"</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"*"</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    unary_operators<span class="op">=</span>[</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"sin"</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    verbosity<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>¿Qué estamos especificando?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>binary_operators</code> contiene operaciones que necesitan <strong>dos argumentos</strong>, por ejemplo</p>
+<p><span class="math display">\[
+x_1+x_2
+\qquad\text{o}\qquad
+x_1x_2.
+\]</span></p>
+<p><code>unary_operators</code> contiene operaciones que necesitan <strong>un argumento</strong>, como</p>
+<p><span class="math display">\[
+\sin(x).
+\]</span></p>
+<p>Estas elecciones determinan el conjunto de expresiones que PySR puede explorar.</p>
+</div>
+</div>
+</section>
+<section id="ajuste-del-modelo" class="level2" data-number="8.6">
+<h2 data-number="8.6" class="anchored" data-anchor-id="ajuste-del-modelo"><span class="header-section-number">8.6</span> Ajuste del modelo</h2>
+<p>Ajustamos el modelo utilizando los datos.</p>
+<div id="afa020f1" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>model.fit(X, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Compiling Julia backend...</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>PySRRegressor.equations_ = [
+        pick     score                                           equation  \
+    0         0.000000                                           2.561706   
+    1         0.679629                                            x0 * x0   
+    2         0.579735                             x0 * (x0 + 0.76096517)   
+    3         0.126188                                (x0 * x0) + sin(x0)   
+    4   &gt;&gt;&gt;&gt;  0.983947                  (x0 * x0) - (sin(x0) * -1.989588)   
+    5         0.007986  ((x0 * x0) - (sin(x0) * -1.9915231)) + -0.0362...   
+    6         0.002095  ((x0 * x0) - (sin(x0 + -0.013783997) * -1.9923...   
+    7         0.000500  (((x0 * x0) * 1.015002) + -0.078925006) - (sin...   
+    8         0.002786  sin(x0) + (sin((sin(x0 * x0) * -0.15038097) + ...   
+    9         0.002977  sin(x0) + (sin((sin(x0 * (x0 + 0.22649544)) * ...   
+    10        0.000069  sin((sin(sin(x0 * (0.33803654 + x0))) * -0.150...   
+    11        0.032679  sin((sin(x0 * (x0 + (x0 - -0.5411373))) * -0.1...   
+    12        0.003621  sin((sin((x0 * 0.41036305) + ((x0 * x0) * 2.03...   
+    
+            loss  complexity  
+    0   8.351337           1  
+    1   2.145050           3  
+    2   0.672800           5  
+    3   0.593039           6  
+    4   0.082878           8  
+    5   0.081564          10  
+    6   0.081223          12  
+    7   0.081142          14  
+    8   0.080691          16  
+    9   0.080212          18  
+    10  0.080207          19  
+    11  0.077628          20  
+    12  0.077068          22  
+]</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Nota para la primera ejecución
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La primera vez que se ejecuta <code>fit()</code> puede tardar más de lo habitual debido a la inicialización y compilación de componentes de Julia.</p>
+<p>Es importante esperar a que la celda termine completamente antes de continuar.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Si <code>model.equations_</code> aparece como <code>None</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Después del ajuste utilizaremos <code>model.equations_</code>.</p>
+<p>Si obtenemos</p>
+<pre class="text"><code>PySRRegressor.equations_ = None</code></pre>
+<p>significa que todavía no tenemos disponible la tabla de ecuaciones del ajuste.</p>
+<p>Durante la primera instalación, una solución puede ser:</p>
+<ol type="1">
+<li>comprobar que <code>model.fit(X, y)</code> terminó;</li>
+<li>reiniciar el kernel;</li>
+<li>ejecutar nuevamente todas las celdas desde el inicio;</li>
+<li>volver a realizar el ajuste.</li>
+</ol>
+<p>Esto puede ocurrir especialmente durante la primera configuración de PySR y Julia.</p>
+</div>
+</div>
+</section>
+<section id="ecuaciones-encontradas" class="level2" data-number="8.7">
+<h2 data-number="8.7" class="anchored" data-anchor-id="ecuaciones-encontradas"><span class="header-section-number">8.7</span> Ecuaciones encontradas</h2>
+<p>PySR no necesariamente encuentra una única ecuación.</p>
+<p>Durante la búsqueda genera diferentes expresiones con distintos niveles de complejidad y error.</p>
+<div id="baa842d1" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model.equations_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">complexity</th>
+<th data-quarto-table-cell-role="th">loss</th>
+<th data-quarto-table-cell-role="th">equation</th>
+<th data-quarto-table-cell-role="th">score</th>
+<th data-quarto-table-cell-role="th">sympy_format</th>
+<th data-quarto-table-cell-role="th">lambda_format</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>1</td>
+<td>8.351337</td>
+<td>2.561706</td>
+<td>0.000000</td>
+<td>2.56170600000000</td>
+<td>PySRFunction(X=&gt;2.56170600000000)</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>3</td>
+<td>2.145050</td>
+<td>x0 * x0</td>
+<td>0.679629</td>
+<td>x0*x0</td>
+<td>PySRFunction(X=&gt;x0*x0)</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>5</td>
+<td>0.672800</td>
+<td>x0 * (x0 + 0.76096517)</td>
+<td>0.579735</td>
+<td>x0*(x0 + 0.76096517)</td>
+<td>PySRFunction(X=&gt;x0*(x0 + 0.76096517))</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>6</td>
+<td>0.593039</td>
+<td>(x0 * x0) + sin(x0)</td>
+<td>0.126188</td>
+<td>x0*x0 + sin(x0)</td>
+<td>PySRFunction(X=&gt;x0*x0 + sin(x0))</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>8</td>
+<td>0.082878</td>
+<td>(x0 * x0) - (sin(x0) * -1.989588)</td>
+<td>0.983947</td>
+<td>x0*x0 - (-1.989588)*sin(x0)</td>
+<td>PySRFunction(X=&gt;x0*x0 - (-1.989588)*sin(x0))</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>10</td>
+<td>0.081564</td>
+<td>((x0 * x0) - (sin(x0) * -1.9915231)) + -0.0362...</td>
+<td>0.007986</td>
+<td>x0*x0 - (-1.9915231)*sin(x0) - 0.03627173</td>
+<td>PySRFunction(X=&gt;x0*x0 - (-1.9915231)*sin(x0) -...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>12</td>
+<td>0.081223</td>
+<td>((x0 * x0) - (sin(x0 + -0.013783997) * -1.9923...</td>
+<td>0.002095</td>
+<td>x0*x0 - (-1.992308)*sin(x0 - 0.013783997) - 0....</td>
+<td>PySRFunction(X=&gt;x0*x0 - (-1.992308)*sin(x0 - 0...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>14</td>
+<td>0.081142</td>
+<td>(((x0 * x0) * 1.015002) + -0.078925006) - (sin...</td>
+<td>0.000500</td>
+<td>x0*x0*1.015002 - 1.9928889*sin(x0 - 3.127969) ...</td>
+<td>PySRFunction(X=&gt;x0*x0*1.015002 - 1.9928889*sin...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>16</td>
+<td>0.080691</td>
+<td>sin(x0) + (sin((sin(x0 * x0) * -0.15038097) + ...</td>
+<td>0.002786</td>
+<td>x0*x0 + sin(x0) + sin(x0 + sin(x0*x0)*(-0.1503...</td>
+<td>PySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>18</td>
+<td>0.080212</td>
+<td>sin(x0) + (sin((sin(x0 * (x0 + 0.22649544)) * ...</td>
+<td>0.002977</td>
+<td>x0*x0 + sin(x0) + sin(x0 + sin(x0*(x0 + 0.2264...</td>
+<td>PySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10</th>
+<td>19</td>
+<td>0.080207</td>
+<td>sin((sin(sin(x0 * (0.33803654 + x0))) * -0.150...</td>
+<td>0.000069</td>
+<td>x0*x0 + sin(x0) + sin(x0 + sin(sin(x0*(x0 + 0....</td>
+<td>PySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">11</th>
+<td>20</td>
+<td>0.077628</td>
+<td>sin((sin(x0 * (x0 + (x0 - -0.5411373))) * -0.1...</td>
+<td>0.032679</td>
+<td>x0*x0 + sin(x0) + sin(x0 + sin(x0*(x0 + x0 - 1...</td>
+<td>PySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">12</th>
+<td>22</td>
+<td>0.077068</td>
+<td>sin((sin((x0 * 0.41036305) + ((x0 * x0) * 2.03...</td>
+<td>0.003621</td>
+<td>x0*x0 + sin(x0) + sin(x0 + sin(x0*0.41036305 +...</td>
+<td>PySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Podemos observar algunas de las columnas principales:</p>
+<div id="d0d7f6ba" class="cell" data-execution_count="10">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>model.equations_[</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"complexity"</span>, <span class="st">"loss"</span>, <span class="st">"equation"</span>, <span class="st">"score"</span>]</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">complexity</th>
+<th data-quarto-table-cell-role="th">loss</th>
+<th data-quarto-table-cell-role="th">equation</th>
+<th data-quarto-table-cell-role="th">score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>1</td>
+<td>8.351337</td>
+<td>2.561706</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>3</td>
+<td>2.145050</td>
+<td>x0 * x0</td>
+<td>0.679629</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>5</td>
+<td>0.672800</td>
+<td>x0 * (x0 + 0.76096517)</td>
+<td>0.579735</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>6</td>
+<td>0.593039</td>
+<td>(x0 * x0) + sin(x0)</td>
+<td>0.126188</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>8</td>
+<td>0.082878</td>
+<td>(x0 * x0) - (sin(x0) * -1.989588)</td>
+<td>0.983947</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>10</td>
+<td>0.081564</td>
+<td>((x0 * x0) - (sin(x0) * -1.9915231)) + -0.0362...</td>
+<td>0.007986</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>12</td>
+<td>0.081223</td>
+<td>((x0 * x0) - (sin(x0 + -0.013783997) * -1.9923...</td>
+<td>0.002095</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>14</td>
+<td>0.081142</td>
+<td>(((x0 * x0) * 1.015002) + -0.078925006) - (sin...</td>
+<td>0.000500</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>16</td>
+<td>0.080691</td>
+<td>sin(x0) + (sin((sin(x0 * x0) * -0.15038097) + ...</td>
+<td>0.002786</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>18</td>
+<td>0.080212</td>
+<td>sin(x0) + (sin((sin(x0 * (x0 + 0.22649544)) * ...</td>
+<td>0.002977</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10</th>
+<td>19</td>
+<td>0.080207</td>
+<td>sin((sin(sin(x0 * (0.33803654 + x0))) * -0.150...</td>
+<td>0.000069</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">11</th>
+<td>20</td>
+<td>0.077628</td>
+<td>sin((sin(x0 * (x0 + (x0 - -0.5411373))) * -0.1...</td>
+<td>0.032679</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">12</th>
+<td>22</td>
+<td>0.077068</td>
+<td>sin((sin((x0 * 0.41036305) + ((x0 * x0) * 2.03...</td>
+<td>0.003621</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Aquí aparecen dos ideas importantes:</p>
+<ul>
+<li><code>loss</code>: qué tan grande es el error del modelo;</li>
+<li><code>complexity</code>: qué tan complicada es la expresión.</li>
+</ul>
+<p>Por tanto, no necesariamente buscamos únicamente la expresión con menor error.</p>
+<p>Queremos un equilibrio entre</p>
+<p><span class="math display">\[
+\boxed{\text{buen ajuste}}
+\qquad\text{y}\qquad
+\boxed{\text{expresión sencilla}}.
+\]</span></p>
+</section>
+<section id="expresión-seleccionada" class="level2" data-number="8.8">
+<h2 data-number="8.8" class="anchored" data-anchor-id="expresión-seleccionada"><span class="header-section-number">8.8</span> Expresión seleccionada</h2>
+<p>Podemos obtener la expresión seleccionada por PySR en formato simbólico:</p>
+<div id="98d70566" class="cell" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model.sympy()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="10">
+<p><span class="math inline">\(\displaystyle x_{0} x_{0} - \sin{\left(x_{0} \right)} \left(-1.989588\right)\)</span></p>
+</div>
+</div>
+<p>Recordemos que la función utilizada para generar nuestros datos fue</p>
+<p><span class="math display">\[
+f(x)=x^2+2\sin(x).
+\]</span></p>
+<p>Comparemos la expresión encontrada con esta función.</p>
+<section id="para-discutir" class="level3 callout-question" data-number="8.8.1">
+<h3 data-number="8.8.1" class="anchored" data-anchor-id="para-discutir"><span class="header-section-number">8.8.1</span> Para discutir</h3>
+<ul>
+<li>¿Aparece un término equivalente a <span class="math inline">\(x^2\)</span>?</li>
+<li>¿Aparece <span class="math inline">\(\sin(x)\)</span>?</li>
+<li>¿El coeficiente asociado a <span class="math inline">\(\sin(x)\)</span> es cercano a 2?</li>
+<li>¿Aparecen términos adicionales?</li>
+<li>¿La expresión encontrada es sencilla de interpretar?</li>
+</ul>
+</section>
+</section>
+<section id="visualización-del-ajuste" class="level2" data-number="8.9">
+<h2 data-number="8.9" class="anchored" data-anchor-id="visualización-del-ajuste"><span class="header-section-number">8.9</span> Visualización del ajuste</h2>
+<p>Generamos valores de <span class="math inline">\(x\)</span> en todo el intervalo observado.</p>
+<div id="10b96c1f" class="cell" data-execution_count="12">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>x_grid <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">500</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>X_grid <span class="op">=</span> x_grid.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> model.predict(X_grid)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Y comparamos los datos con la predicción.</p>
+<div id="2553ab41" class="cell" data-execution_count="13">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    x,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.4</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Datos"</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    x_grid,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    y_pred,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Regresión simbólica"</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"x"</span>)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"y"</span>)</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Ajuste mediante regresión simbólica"</span>)</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte8_files/figure-html/cell-14-output-1.png" width="651" height="451" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="encontramos-la-función-verdadera" class="level2" data-number="8.10">
+<h2 data-number="8.10" class="anchored" data-anchor-id="encontramos-la-función-verdadera"><span class="header-section-number">8.10</span> ¿Encontramos la función verdadera?</h2>
+<p>Como nuestros datos son simulados, conocemos la función verdadera:</p>
+<div id="2fe71cff" class="cell" data-execution_count="14">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>y_true <span class="op">=</span> x_grid<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">2</span><span class="op">*</span>np.sin(x_grid)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Podemos compararla directamente con la función encontrada.</p>
+<div id="aeae4599" class="cell" data-execution_count="15">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    x,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.25</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Datos"</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    x_grid,</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    y_true,</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Función verdadera"</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    x_grid,</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    y_pred,</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=</span><span class="st">"--"</span>,</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Regresión simbólica"</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"x"</span>)</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"y"</span>)</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Función verdadera vs. regresión simbólica"</span>)</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte8_files/figure-html/cell-16-output-1.png" width="651" height="451" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La regresión simbólica no tiene que recuperar exactamente la expresión original para producir un buen modelo.</p>
+<p>Además, encontrar una expresión matemática interpretable <strong>no implica que hayamos descubierto una relación causal o una ley científica</strong>.</p>
+</section>
+<section id="ejercicios" class="level2" data-number="8.11">
+<h2 data-number="8.11" class="anchored" data-anchor-id="ejercicios"><span class="header-section-number">8.11</span> Ejercicios</h2>
+<section id="ejercicio-1-datos-simulados" class="level3" data-number="8.11.1">
+<h3 data-number="8.11.1" class="anchored" data-anchor-id="ejercicio-1-datos-simulados"><span class="header-section-number">8.11.1</span> Ejercicio 1: Datos simulados</h3>
+<p>Genera ahora un nuevo conjunto de datos utilizando</p>
+<p><span class="math display">\[
+y=3x^2-2x+5+\varepsilon,
+\qquad
+\varepsilon\sim N(0,0.5^2).
+\]</span></p>
+<ol type="1">
+<li>Genera <span class="math inline">\(200\)</span> observaciones con <span class="math inline">\(x\in[-3,3]\)</span>.</li>
+<li>Ajusta un modelo de regresión simbólica utilizando solamente</li>
+</ol>
+<p><span class="math display">\[
++,\qquad -,\qquad \times.
+\]</span></p>
+<ol start="3" type="1">
+<li>Observa las ecuaciones encontradas.</li>
+<li>Compara la expresión seleccionada con</li>
+</ol>
+<p><span class="math display">\[
+3x^2-2x+5.
+\]</span></p>
+<ol start="5" type="1">
+<li>Grafica los datos y la función encontrada.</li>
+</ol>
+<div class="callout-question">
+<p>¿Logra PySR recuperar aproximadamente la estructura de la función original?</p>
+<p>¿Qué ocurre con los coeficientes debido a la presencia de ruido?</p>
+</div>
+</section>
+<section id="ejercicio-2-regresión-simbólica-con-los-datos-de-wage" class="level3" data-number="8.11.2">
+<h3 data-number="8.11.2" class="anchored" data-anchor-id="ejercicio-2-regresión-simbólica-con-los-datos-de-wage"><span class="header-section-number">8.11.2</span> Ejercicio 2: Regresión simbólica con los datos de “Wage”</h3>
+<p>En los ejemplos anteriores trabajamos con el conjunto de datos <code>Wage</code> para estudiar la relación entre la <strong>edad</strong> (<code>age</code>) y el <strong>salario</strong> (<code>wage</code>) utilizando diferentes técnicas de regresión no lineal.</p>
+<p>Ahora utilizaremos <strong>regresión simbólica</strong> sobre los mismos datos.</p>
+<p>A diferencia del ejemplo anterior, en este caso <strong>no conocemos la función que generó los datos</strong>.</p>
+<p><strong>1. Preparación de los datos</strong></p>
+<p>Utiliza <code>age</code> como variable predictora y <code>wage</code> como variable respuesta:</p>
+<p><span class="math display">\[
+\text{wage}=f(\text{age}).
+\]</span></p>
+<p>Prepara los datos en el formato requerido por PySR.</p>
+<p><strong>2. Regresión simbólica</strong></p>
+<p>Construye un modelo <code>PySRRegressor</code> utilizando inicialmente las operaciones</p>
+<p><span class="math display">\[
++,\qquad -,\qquad \times,\qquad /.
+\]</span></p>
+<p>No utilizar <code>sin</code> en este primer modelo.</p>
+<p>Ajustar el modelo y examinar las expresiones encontradas.</p>
+<div class="callout-question">
+<p>Observen las diferentes expresiones encontradas.</p>
+<ul>
+<li>¿Cuál tiene el menor error?</li>
+<li>¿Cuál es la más sencilla?</li>
+<li>¿Qué ocurre con la complejidad conforme disminuye el error?</li>
+<li>¿Qué expresión elegirías considerando conjuntamente error e interpretabilidad?</li>
+</ul>
+</div>
+<p><strong>3. Visualización</strong></p>
+<p>Graficar los datos originales y superponer la curva correspondiente a la regresión simbólica.</p>
+<p><strong>4. Comparación con modelos anteriores</strong></p>
+<p>En prácticas anteriores modelamos estos mismos datos utilizando métodos como regresión polinomial y splines.</p>
+<div class="callout-question">
+<p>Compara cualitativamente la regresión simbólica con alguno de esos modelos.</p>
+<ul>
+<li>¿La regresión simbólica captura adecuadamente la relación entre edad y salario?</li>
+<li>¿La expresión obtenida es fácil de interpretar?</li>
+<li>¿Qué ventaja tiene disponer de una expresión matemática explícita?</li>
+<li>¿Qué ventajas tenían los splines frente a la expresión encontrada?</li>
+</ul>
+</div>
+<p><strong>5. Modificando el espacio de búsqueda</strong></p>
+<p>Hasta ahora decidimos qué operaciones podía utilizar el algoritmo.</p>
+<p>Prueba una segunda configuración modificando las operaciones o funciones disponibles y vuelve a ajustar el modelo.</p>
+<p>Comparen las ecuaciones obtenidas con las del primer modelo.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Para reflexionar
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La regresión simbólica busca automáticamente una expresión matemática, pero la búsqueda <strong>no es completamente libre</strong>.</p>
+<p>Nosotros determinamos qué operaciones y funciones puede utilizar el algoritmo.</p>
+<p>Por tanto:</p>
+<blockquote class="blockquote">
+<p>¿Hasta qué punto podemos decir que el algoritmo ``descubrió’’ la ecuación y hasta qué punto el resultado depende del espacio de búsqueda que nosotros definimos?</p>
+</blockquote>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/github\.com\/CursosENESJuriquilla\/TS_Aprendizaje_de_Maquina_2027-1");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+        for (let i=0; i<annoteTargets.length; i++) {
+          const annoteTarget = annoteTargets[i];
+          const targetCell = annoteTarget.getAttribute("data-target-cell");
+          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+          const contentFn = () => {
+            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+            if (content) {
+              const tipContent = content.cloneNode(true);
+              tipContent.classList.add("code-annotation-tip-content");
+              return tipContent.outerHTML;
+            }
+          }
+          const config = {
+            allowHTML: true,
+            content: contentFn,
+            onShow: (instance) => {
+              selectCodeLines(instance.reference);
+              instance.reference.classList.add('code-annotation-active');
+              window.tippy.hideAll();
+            },
+            onHide: (instance) => {
+              unselectCodeLines();
+              instance.reference.classList.remove('code-annotation-active');
+            },
+            maxWidth: 300,
+            delay: [50, 0],
+            duration: [200, 0],
+            offset: [5, 10],
+            arrow: true,
+            appendTo: function(el) {
+              return el.parentElement.parentElement.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'quarto',
+            placement: 'right',
+            popperOptions: {
+              modifiers: [
+              {
+                name: 'flip',
+                options: {
+                  flipVariations: false, // true by default
+                  allowedAutoPlacements: ['right'],
+                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                },
+              },
+              {
+                name: 'preventOverflow',
+                options: {
+                  mainAxis: false,
+                  altAxis: false
+                }
+              }
+              ]        
+            }      
+          };
+          window.tippy(annoteTarget, config); 
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./parte7.html" class="pagination-link" aria-label="GAMs: Modelos Aditivos Generalizados">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">GAMs: Modelos Aditivos Generalizados</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./parte9.html" class="pagination-link" aria-label="Pendiente">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pendiente</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Temas Selectos de ML, 7mo semestre: Haydeé Peruyero</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

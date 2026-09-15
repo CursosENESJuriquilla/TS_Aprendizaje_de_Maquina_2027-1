@@ -37,6 +37,7 @@ book:
           - parte5.qmd # Splines de suavizamiento
           - parte6.qmd # Regresión local
           - parte7.qmd # GAMs
+          - parte8.qmd # EXTRA: Regresión Simbólica
     - part: "**Métodos de ensamble y optimización de modelos**"
       chapters:
           - parte9.qmd

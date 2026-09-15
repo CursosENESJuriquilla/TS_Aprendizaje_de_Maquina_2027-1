@@ -43,7 +43,6 @@ f_p(X_{ip})
 
 Cada función $f_j$ puede tener una forma diferente.
 
-
 ::::: diapositivas
 ::: diapositivas-title
 📝 **Diapositivas**

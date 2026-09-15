@@ -2625,5 +2625,148 @@
       "**Modelos no lineales**",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Splines de regresión con funciones base</span>"
     ]
+  },
+  {
+    "objectID": "parte8.html",
+    "href": "parte8.html",
+    "title": "8  EXTRA: Regresión simbólica con PySR",
+    "section": "",
+    "text": "8.1 Instalación de PySR\nUtilizaremos regresión simbólica para encontrar una expresión matemática que describa la relación entre una variable predictora \\(x\\) y una variable respuesta \\(y\\).\nA diferencia de otros métodos de regresión, no especificaremos de antemano una forma funcional como\n\\[\ny = \\beta_0+\\beta_1x+\\beta_2x^2.\n\\]\nEn su lugar, indicaremos qué operaciones matemáticas puede utilizar el algoritmo y dejaremos que busque expresiones que expliquen los datos.\nTrabajaremos con datos simulados para conocer la función que generó los datos y poder compararla con la expresión encontrada por el algoritmo.\nUtilizaremos la biblioteca PySR.\nEn un notebook de Jupyter se recomienda instalarla mediante:\nCódigo\n%pip install pysr\nAhora importamos las bibliotecas necesarias.\nCódigo\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nfrom pysr import PySRRegressor",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>EXTRA: Regresión simbólica con PySR</span>"
+    ]
+  },
+  {
+    "objectID": "parte8.html#instalación-de-pysr",
+    "href": "parte8.html#instalación-de-pysr",
+    "title": "8  EXTRA: Regresión simbólica con PySR",
+    "section": "",
+    "text": "NotaLa primera instalación puede tardar\n\n\n\nAunque utilizaremos PySR desde Python, el motor que realiza la búsqueda simbólica utiliza Julia.\nPor esta razón, la primera vez que ejecutamos\nfrom pysr import PySRRegressor\npueden aparecer mensajes relacionados con la descarga, instalación o configuración de Julia y sus dependencias.\nEsto es normal y puede tardar algunos minutos.\n\n\n\n\n\n\n\n\nImportanteSi PySR se instala pero Python no lo reconoce\n\n\n\nDespués de instalar PySR puede ser necesario reiniciar el kernel de Jupyter.\nPor ejemplo, si aparece un error indicando que pysr no existe después de haberlo instalado:\n\nesperar a que termine completamente la instalación;\nreiniciar el kernel;\nvolver a ejecutar las celdas desde el inicio.\n\nEn Jupyter, %pip install pysr suele ser preferible a !pip install pysr, ya que instala el paquete en el entorno asociado al kernel actual.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>EXTRA: Regresión simbólica con PySR</span>"
+    ]
+  },
+  {
+    "objectID": "parte8.html#generación-de-los-datos",
+    "href": "parte8.html#generación-de-los-datos",
+    "title": "8  EXTRA: Regresión simbólica con PySR",
+    "section": "8.2 Generación de los datos",
+    "text": "8.2 Generación de los datos\nVamos a generar datos utilizando la función\n\\[\ny=x^2+2\\sin(x)+\\varepsilon,\n\\]\ndonde\n\\[\n\\varepsilon\\sim N(0,0.3^2)\n\\]\nrepresenta ruido aleatorio.\n\n\nCódigo\nnp.random.seed(123)\n\nn = 200\n\nx = np.random.uniform(-3, 3, n)\n\nepsilon = np.random.normal(\n    loc=0,\n    scale=0.3,\n    size=n\n)\n\ny = x**2 + 2*np.sin(x) + epsilon\n\n\nEn una situación real, no conoceríamos esta ecuación. Solamente observaríamos los valores de \\(x\\) y \\(y\\).",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>EXTRA: Regresión simbólica con PySR</span>"
+    ]
+  },
+  {
+    "objectID": "parte8.html#visualización",
+    "href": "parte8.html#visualización",
+    "title": "8  EXTRA: Regresión simbólica con PySR",
+    "section": "8.3 Visualización",
+    "text": "8.3 Visualización\nAntes de construir un modelo, observemos los datos.\n\n\nCódigo\nplt.figure(figsize=(8, 5))\n\nplt.scatter(\n    x,\n    y,\n    alpha=0.6\n)\n\nplt.xlabel(\"x\")\nplt.ylabel(\"y\")\nplt.title(\"Datos simulados\")\n\nplt.show()\n\n\n\n\n\n\n\n\n\nA simple vista podemos observar una relación no lineal.\nSin embargo, a partir de la gráfica no necesariamente es evidente que los datos fueron generados mediante\n\\[\nx^2+2\\sin(x).\n\\]\nEse será precisamente el objetivo de la regresión simbólica.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>EXTRA: Regresión simbólica con PySR</span>"
+    ]
+  },
+  {
+    "objectID": "parte8.html#preparación-de-los-datos",
+    "href": "parte8.html#preparación-de-los-datos",
+    "title": "8  EXTRA: Regresión simbólica con PySR",
+    "section": "8.4 Preparación de los datos",
+    "text": "8.4 Preparación de los datos\nPySR espera que las variables predictoras se proporcionen mediante una matriz.\nActualmente x es un vector:\n\n\nCódigo\nx.shape\n\n\n(200,)\n\n\nLo convertimos en una matriz con una columna:\n\n\nCódigo\nX = x.reshape(-1, 1)\n\nX.shape\n\n\n(200, 1)\n\n\nPor tanto,\n\\[\nX\\in\\mathbb{R}^{200\\times1}.\n\\]\nEn un problema con \\(p\\) variables predictoras tendríamos, en general,\n\\[\nX\\in\\mathbb{R}^{n\\times p}.\n\\]",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>EXTRA: Regresión simbólica con PySR</span>"
+    ]
+  },
+  {
+    "objectID": "parte8.html#modelo-de-regresión-simbólica",
+    "href": "parte8.html#modelo-de-regresión-simbólica",
+    "title": "8  EXTRA: Regresión simbólica con PySR",
+    "section": "8.5 Modelo de regresión simbólica",
+    "text": "8.5 Modelo de regresión simbólica\nAhora construiremos el modelo.\nNo le indicaremos que la función contiene \\(x^2\\) ni que el coeficiente de \\(\\sin(x)\\) es 2.\nÚnicamente permitiremos las operaciones\n\\[\n+,\\qquad -,\\qquad \\times\n\\]\ny la función\n\\[\n\\sin(x).\n\\]\n\n\nCódigo\nmodel = PySRRegressor(\n    niterations=20,\n    binary_operators=[\n        \"+\",\n        \"-\",\n        \"*\"\n    ],\n    unary_operators=[\n        \"sin\"\n    ],\n    verbosity=1\n)\n\n\n\n\n\n\n\n\nTip¿Qué estamos especificando?\n\n\n\nbinary_operators contiene operaciones que necesitan dos argumentos, por ejemplo\n\\[\nx_1+x_2\n\\qquad\\text{o}\\qquad\nx_1x_2.\n\\]\nunary_operators contiene operaciones que necesitan un argumento, como\n\\[\n\\sin(x).\n\\]\nEstas elecciones determinan el conjunto de expresiones que PySR puede explorar.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>EXTRA: Regresión simbólica con PySR</span>"
+    ]
+  },
+  {
+    "objectID": "parte8.html#ajuste-del-modelo",
+    "href": "parte8.html#ajuste-del-modelo",
+    "title": "8  EXTRA: Regresión simbólica con PySR",
+    "section": "8.6 Ajuste del modelo",
+    "text": "8.6 Ajuste del modelo\nAjustamos el modelo utilizando los datos.\n\n\nCódigo\nmodel.fit(X, y)\n\n\nCompiling Julia backend...\n\n\nPySRRegressor.equations_ = [\n        pick     score                                           equation  \\\n    0         0.000000                                           2.561706   \n    1         0.679629                                            x0 * x0   \n    2         0.579735                             x0 * (x0 + 0.76096517)   \n    3         0.126188                                (x0 * x0) + sin(x0)   \n    4   &gt;&gt;&gt;&gt;  0.983947                  (x0 * x0) - (sin(x0) * -1.989588)   \n    5         0.007986  ((x0 * x0) - (sin(x0) * -1.9915231)) + -0.0362...   \n    6         0.002095  ((x0 * x0) - (sin(x0 + -0.013783997) * -1.9923...   \n    7         0.000500  (((x0 * x0) * 1.015002) + -0.078925006) - (sin...   \n    8         0.002786  sin(x0) + (sin((sin(x0 * x0) * -0.15038097) + ...   \n    9         0.002977  sin(x0) + (sin((sin(x0 * (x0 + 0.22649544)) * ...   \n    10        0.000069  sin((sin(sin(x0 * (0.33803654 + x0))) * -0.150...   \n    11        0.032679  sin((sin(x0 * (x0 + (x0 - -0.5411373))) * -0.1...   \n    12        0.003621  sin((sin((x0 * 0.41036305) + ((x0 * x0) * 2.03...   \n    \n            loss  complexity  \n    0   8.351337           1  \n    1   2.145050           3  \n    2   0.672800           5  \n    3   0.593039           6  \n    4   0.082878           8  \n    5   0.081564          10  \n    6   0.081223          12  \n    7   0.081142          14  \n    8   0.080691          16  \n    9   0.080212          18  \n    10  0.080207          19  \n    11  0.077628          20  \n    12  0.077068          22  \n]\n\n\n\n\n\n\n\n\nNotaNota para la primera ejecución\n\n\n\nLa primera vez que se ejecuta fit() puede tardar más de lo habitual debido a la inicialización y compilación de componentes de Julia.\nEs importante esperar a que la celda termine completamente antes de continuar.\n\n\n\n\n\n\n\n\nAdvertenciaSi model.equations_ aparece como None\n\n\n\nDespués del ajuste utilizaremos model.equations_.\nSi obtenemos\nPySRRegressor.equations_ = None\nsignifica que todavía no tenemos disponible la tabla de ecuaciones del ajuste.\nDurante la primera instalación, una solución puede ser:\n\ncomprobar que model.fit(X, y) terminó;\nreiniciar el kernel;\nejecutar nuevamente todas las celdas desde el inicio;\nvolver a realizar el ajuste.\n\nEsto puede ocurrir especialmente durante la primera configuración de PySR y Julia.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>EXTRA: Regresión simbólica con PySR</span>"
+    ]
+  },
+  {
+    "objectID": "parte8.html#ecuaciones-encontradas",
+    "href": "parte8.html#ecuaciones-encontradas",
+    "title": "8  EXTRA: Regresión simbólica con PySR",
+    "section": "8.7 Ecuaciones encontradas",
+    "text": "8.7 Ecuaciones encontradas\nPySR no necesariamente encuentra una única ecuación.\nDurante la búsqueda genera diferentes expresiones con distintos niveles de complejidad y error.\n\n\nCódigo\nmodel.equations_\n\n\n\n\n\n\n\n\n\ncomplexity\nloss\nequation\nscore\nsympy_format\nlambda_format\n\n\n\n\n0\n1\n8.351337\n2.561706\n0.000000\n2.56170600000000\nPySRFunction(X=&gt;2.56170600000000)\n\n\n1\n3\n2.145050\nx0 * x0\n0.679629\nx0*x0\nPySRFunction(X=&gt;x0*x0)\n\n\n2\n5\n0.672800\nx0 * (x0 + 0.76096517)\n0.579735\nx0*(x0 + 0.76096517)\nPySRFunction(X=&gt;x0*(x0 + 0.76096517))\n\n\n3\n6\n0.593039\n(x0 * x0) + sin(x0)\n0.126188\nx0*x0 + sin(x0)\nPySRFunction(X=&gt;x0*x0 + sin(x0))\n\n\n4\n8\n0.082878\n(x0 * x0) - (sin(x0) * -1.989588)\n0.983947\nx0*x0 - (-1.989588)*sin(x0)\nPySRFunction(X=&gt;x0*x0 - (-1.989588)*sin(x0))\n\n\n5\n10\n0.081564\n((x0 * x0) - (sin(x0) * -1.9915231)) + -0.0362...\n0.007986\nx0*x0 - (-1.9915231)*sin(x0) - 0.03627173\nPySRFunction(X=&gt;x0*x0 - (-1.9915231)*sin(x0) -...\n\n\n6\n12\n0.081223\n((x0 * x0) - (sin(x0 + -0.013783997) * -1.9923...\n0.002095\nx0*x0 - (-1.992308)*sin(x0 - 0.013783997) - 0....\nPySRFunction(X=&gt;x0*x0 - (-1.992308)*sin(x0 - 0...\n\n\n7\n14\n0.081142\n(((x0 * x0) * 1.015002) + -0.078925006) - (sin...\n0.000500\nx0*x0*1.015002 - 1.9928889*sin(x0 - 3.127969) ...\nPySRFunction(X=&gt;x0*x0*1.015002 - 1.9928889*sin...\n\n\n8\n16\n0.080691\nsin(x0) + (sin((sin(x0 * x0) * -0.15038097) + ...\n0.002786\nx0*x0 + sin(x0) + sin(x0 + sin(x0*x0)*(-0.1503...\nPySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...\n\n\n9\n18\n0.080212\nsin(x0) + (sin((sin(x0 * (x0 + 0.22649544)) * ...\n0.002977\nx0*x0 + sin(x0) + sin(x0 + sin(x0*(x0 + 0.2264...\nPySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...\n\n\n10\n19\n0.080207\nsin((sin(sin(x0 * (0.33803654 + x0))) * -0.150...\n0.000069\nx0*x0 + sin(x0) + sin(x0 + sin(sin(x0*(x0 + 0....\nPySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...\n\n\n11\n20\n0.077628\nsin((sin(x0 * (x0 + (x0 - -0.5411373))) * -0.1...\n0.032679\nx0*x0 + sin(x0) + sin(x0 + sin(x0*(x0 + x0 - 1...\nPySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...\n\n\n12\n22\n0.077068\nsin((sin((x0 * 0.41036305) + ((x0 * x0) * 2.03...\n0.003621\nx0*x0 + sin(x0) + sin(x0 + sin(x0*0.41036305 +...\nPySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...\n\n\n\n\n\n\n\nPodemos observar algunas de las columnas principales:\n\n\nCódigo\nmodel.equations_[\n    [\"complexity\", \"loss\", \"equation\", \"score\"]\n]\n\n\n\n\n\n\n\n\n\ncomplexity\nloss\nequation\nscore\n\n\n\n\n0\n1\n8.351337\n2.561706\n0.000000\n\n\n1\n3\n2.145050\nx0 * x0\n0.679629\n\n\n2\n5\n0.672800\nx0 * (x0 + 0.76096517)\n0.579735\n\n\n3\n6\n0.593039\n(x0 * x0) + sin(x0)\n0.126188\n\n\n4\n8\n0.082878\n(x0 * x0) - (sin(x0) * -1.989588)\n0.983947\n\n\n5\n10\n0.081564\n((x0 * x0) - (sin(x0) * -1.9915231)) + -0.0362...\n0.007986\n\n\n6\n12\n0.081223\n((x0 * x0) - (sin(x0 + -0.013783997) * -1.9923...\n0.002095\n\n\n7\n14\n0.081142\n(((x0 * x0) * 1.015002) + -0.078925006) - (sin...\n0.000500\n\n\n8\n16\n0.080691\nsin(x0) + (sin((sin(x0 * x0) * -0.15038097) + ...\n0.002786\n\n\n9\n18\n0.080212\nsin(x0) + (sin((sin(x0 * (x0 + 0.22649544)) * ...\n0.002977\n\n\n10\n19\n0.080207\nsin((sin(sin(x0 * (0.33803654 + x0))) * -0.150...\n0.000069\n\n\n11\n20\n0.077628\nsin((sin(x0 * (x0 + (x0 - -0.5411373))) * -0.1...\n0.032679\n\n\n12\n22\n0.077068\nsin((sin((x0 * 0.41036305) + ((x0 * x0) * 2.03...\n0.003621\n\n\n\n\n\n\n\nAquí aparecen dos ideas importantes:\n\nloss: qué tan grande es el error del modelo;\ncomplexity: qué tan complicada es la expresión.\n\nPor tanto, no necesariamente buscamos únicamente la expresión con menor error.\nQueremos un equilibrio entre\n\\[\n\\boxed{\\text{buen ajuste}}\n\\qquad\\text{y}\\qquad\n\\boxed{\\text{expresión sencilla}}.\n\\]",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>EXTRA: Regresión simbólica con PySR</span>"
+    ]
+  },
+  {
+    "objectID": "parte8.html#expresión-seleccionada",
+    "href": "parte8.html#expresión-seleccionada",
+    "title": "8  EXTRA: Regresión simbólica con PySR",
+    "section": "8.8 Expresión seleccionada",
+    "text": "8.8 Expresión seleccionada\nPodemos obtener la expresión seleccionada por PySR en formato simbólico:\n\n\nCódigo\nmodel.sympy()\n\n\n\\(\\displaystyle x_{0} x_{0} - \\sin{\\left(x_{0} \\right)} \\left(-1.989588\\right)\\)\n\n\nRecordemos que la función utilizada para generar nuestros datos fue\n\\[\nf(x)=x^2+2\\sin(x).\n\\]\nComparemos la expresión encontrada con esta función.\n\n8.8.1 Para discutir\n\n¿Aparece un término equivalente a \\(x^2\\)?\n¿Aparece \\(\\sin(x)\\)?\n¿El coeficiente asociado a \\(\\sin(x)\\) es cercano a 2?\n¿Aparecen términos adicionales?\n¿La expresión encontrada es sencilla de interpretar?",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>EXTRA: Regresión simbólica con PySR</span>"
+    ]
+  },
+  {
+    "objectID": "parte8.html#visualización-del-ajuste",
+    "href": "parte8.html#visualización-del-ajuste",
+    "title": "8  EXTRA: Regresión simbólica con PySR",
+    "section": "8.9 Visualización del ajuste",
+    "text": "8.9 Visualización del ajuste\nGeneramos valores de \\(x\\) en todo el intervalo observado.\n\n\nCódigo\nx_grid = np.linspace(-3, 3, 500)\n\nX_grid = x_grid.reshape(-1, 1)\n\ny_pred = model.predict(X_grid)\n\n\nY comparamos los datos con la predicción.\n\n\nCódigo\nplt.figure(figsize=(8, 5))\n\nplt.scatter(\n    x,\n    y,\n    alpha=0.4,\n    label=\"Datos\"\n)\n\nplt.plot(\n    x_grid,\n    y_pred,\n    linewidth=2,\n    label=\"Regresión simbólica\"\n)\n\nplt.xlabel(\"x\")\nplt.ylabel(\"y\")\nplt.title(\"Ajuste mediante regresión simbólica\")\n\nplt.legend()\n\nplt.show()",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>EXTRA: Regresión simbólica con PySR</span>"
+    ]
+  },
+  {
+    "objectID": "parte8.html#encontramos-la-función-verdadera",
+    "href": "parte8.html#encontramos-la-función-verdadera",
+    "title": "8  EXTRA: Regresión simbólica con PySR",
+    "section": "8.10 ¿Encontramos la función verdadera?",
+    "text": "8.10 ¿Encontramos la función verdadera?\nComo nuestros datos son simulados, conocemos la función verdadera:\n\n\nCódigo\ny_true = x_grid**2 + 2*np.sin(x_grid)\n\n\nPodemos compararla directamente con la función encontrada.\n\n\nCódigo\nplt.figure(figsize=(8, 5))\n\nplt.scatter(\n    x,\n    y,\n    alpha=0.25,\n    label=\"Datos\"\n)\n\nplt.plot(\n    x_grid,\n    y_true,\n    linewidth=2,\n    label=\"Función verdadera\"\n)\n\nplt.plot(\n    x_grid,\n    y_pred,\n    linestyle=\"--\",\n    linewidth=2,\n    label=\"Regresión simbólica\"\n)\n\nplt.xlabel(\"x\")\nplt.ylabel(\"y\")\nplt.title(\"Función verdadera vs. regresión simbólica\")\n\nplt.legend()\n\nplt.show()\n\n\n\n\n\n\n\n\n\nLa regresión simbólica no tiene que recuperar exactamente la expresión original para producir un buen modelo.\nAdemás, encontrar una expresión matemática interpretable no implica que hayamos descubierto una relación causal o una ley científica.",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>EXTRA: Regresión simbólica con PySR</span>"
+    ]
+  },
+  {
+    "objectID": "parte8.html#ejercicio",
+    "href": "parte8.html#ejercicio",
+    "title": "8  EXTRA: Regresión simbólica con PySR",
+    "section": "8.11 Ejercicio",
+    "text": "8.11 Ejercicio\nGenera ahora un nuevo conjunto de datos utilizando\n\\[\ny=3x^2-2x+5+\\varepsilon,\n\\qquad\n\\varepsilon\\sim N(0,0.5^2).\n\\]\n\nGenera \\(200\\) observaciones con \\(x\\in[-3,3]\\).\nAjusta un modelo de regresión simbólica utilizando solamente\n\n\\[\n+,\\qquad -,\\qquad \\times.\n\\]\n\nObserva las ecuaciones encontradas.\nCompara la expresión seleccionada con\n\n\\[\n3x^2-2x+5.\n\\]\n\nGrafica los datos y la función encontrada.\n\n\n¿Logra PySR recuperar aproximadamente la estructura de la función original?\n¿Qué ocurre con los coeficientes debido a la presencia de ruido?",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>EXTRA: Regresión simbólica con PySR</span>"
+    ]
+  },
+  {
+    "objectID": "parte8.html#ejercicios",
+    "href": "parte8.html#ejercicios",
+    "title": "8  EXTRA: Regresión simbólica con PySR",
+    "section": "8.11 Ejercicios",
+    "text": "8.11 Ejercicios\n\n8.11.1 Ejercicio 1: Datos simulados\nGenera ahora un nuevo conjunto de datos utilizando\n\\[\ny=3x^2-2x+5+\\varepsilon,\n\\qquad\n\\varepsilon\\sim N(0,0.5^2).\n\\]\n\nGenera \\(200\\) observaciones con \\(x\\in[-3,3]\\).\nAjusta un modelo de regresión simbólica utilizando solamente\n\n\\[\n+,\\qquad -,\\qquad \\times.\n\\]\n\nObserva las ecuaciones encontradas.\nCompara la expresión seleccionada con\n\n\\[\n3x^2-2x+5.\n\\]\n\nGrafica los datos y la función encontrada.\n\n\n¿Logra PySR recuperar aproximadamente la estructura de la función original?\n¿Qué ocurre con los coeficientes debido a la presencia de ruido?\n\n\n\n8.11.2 Ejercicio 2: Regresión simbólica con los datos de “Wage”\nEn los ejemplos anteriores trabajamos con el conjunto de datos Wage para estudiar la relación entre la edad (age) y el salario (wage) utilizando diferentes técnicas de regresión no lineal.\nAhora utilizaremos regresión simbólica sobre los mismos datos.\nA diferencia del ejemplo anterior, en este caso no conocemos la función que generó los datos.\n1. Preparación de los datos\nUtiliza age como variable predictora y wage como variable respuesta:\n\\[\n\\text{wage}=f(\\text{age}).\n\\]\nPrepara los datos en el formato requerido por PySR.\n2. Regresión simbólica\nConstruye un modelo PySRRegressor utilizando inicialmente las operaciones\n\\[\n+,\\qquad -,\\qquad \\times,\\qquad /.\n\\]\nNo utilizar sin en este primer modelo.\nAjustar el modelo y examinar las expresiones encontradas.\n\nObserven las diferentes expresiones encontradas.\n\n¿Cuál tiene el menor error?\n¿Cuál es la más sencilla?\n¿Qué ocurre con la complejidad conforme disminuye el error?\n¿Qué expresión elegirías considerando conjuntamente error e interpretabilidad?\n\n\n3. Visualización\nGraficar los datos originales y superponer la curva correspondiente a la regresión simbólica.\n4. Comparación con modelos anteriores\nEn prácticas anteriores modelamos estos mismos datos utilizando métodos como regresión polinomial y splines.\n\nCompara cualitativamente la regresión simbólica con alguno de esos modelos.\n\n¿La regresión simbólica captura adecuadamente la relación entre edad y salario?\n¿La expresión obtenida es fácil de interpretar?\n¿Qué ventaja tiene disponer de una expresión matemática explícita?\n¿Qué ventajas tenían los splines frente a la expresión encontrada?\n\n\n5. Modificando el espacio de búsqueda\nHasta ahora decidimos qué operaciones podía utilizar el algoritmo.\nPrueba una segunda configuración modificando las operaciones o funciones disponibles y vuelve a ajustar el modelo.\nComparen las ecuaciones obtenidas con las del primer modelo.\n\n\n\n\n\n\nImportantePara reflexionar\n\n\n\nLa regresión simbólica busca automáticamente una expresión matemática, pero la búsqueda no es completamente libre.\nNosotros determinamos qué operaciones y funciones puede utilizar el algoritmo.\nPor tanto:\n\n¿Hasta qué punto podemos decir que el algoritmo ``descubrió’’ la ecuación y hasta qué punto el resultado depende del espacio de búsqueda que nosotros definimos?",
+    "crumbs": [
+      "**Modelos no lineales**",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>EXTRA: Regresión simbólica con PySR</span>"
+    ]
   }
 ]
