@@ -4,14 +4,11 @@ Utilizaremos **regresión simbólica** para encontrar una expresión matemática
 
 A diferencia de otros métodos de regresión, no especificaremos de antemano una forma funcional como
 
-$$
-y = \beta_0+\beta_1x+\beta_2x^2.
-$$
+$$y = \beta_0+\beta_1x+\beta_2x^2.$$
 
 En su lugar, indicaremos qué operaciones matemáticas puede utilizar el algoritmo y dejaremos que busque expresiones que expliquen los datos.
 
 Trabajaremos con datos simulados para conocer la función que generó los datos y poder compararla con la expresión encontrada por el algoritmo.
-
 
 ::::: diapositivas
 ::: diapositivas-title
@@ -35,14 +32,14 @@ En un notebook de Jupyter se recomienda instalarla mediante:
 %pip install pysr
 ```
 
-::: {.callout-note}
+::: callout-note
 ### La primera instalación puede tardar
 
 Aunque utilizaremos PySR desde Python, el motor que realiza la búsqueda simbólica utiliza **Julia**.
 
 Por esta razón, la primera vez que ejecutamos
 
-```python
+``` python
 from pysr import PySRRegressor
 ```
 
@@ -51,16 +48,16 @@ pueden aparecer mensajes relacionados con la descarga, instalación o configurac
 Esto es normal y puede tardar algunos minutos.
 :::
 
-::: {.callout-important}
+::: callout-important
 ### Si PySR se instala pero Python no lo reconoce
 
 Después de instalar PySR puede ser necesario **reiniciar el kernel de Jupyter**.
 
 Por ejemplo, si aparece un error indicando que `pysr` no existe después de haberlo instalado:
 
-1. esperar a que termine completamente la instalación;
-2. reiniciar el kernel;
-3. volver a ejecutar las celdas desde el inicio.
+1.  esperar a que termine completamente la instalación;
+2.  reiniciar el kernel;
+3.  volver a ejecutar las celdas desde el inicio.
 
 En Jupyter, `%pip install pysr` suele ser preferible a `!pip install pysr`, ya que instala el paquete en el entorno asociado al kernel actual.
 :::
@@ -74,20 +71,15 @@ import matplotlib.pyplot as plt
 from pysr import PySRRegressor
 ```
 
-
 ## Generación de los datos
 
 Vamos a generar datos utilizando la función
 
-$$
-y=x^2+2\sin(x)+\varepsilon,
-$$
+$$y=x^2+2\sin(x)+\varepsilon,$$
 
 donde
 
-$$
-\varepsilon\sim N(0,0.3^2)
-$$
+$$\varepsilon\sim N(0,0.3^2)$$
 
 representa ruido aleatorio.
 
@@ -108,8 +100,6 @@ y = x**2 + 2*np.sin(x) + epsilon
 ```
 
 En una situación real, **no conoceríamos esta ecuación**. Solamente observaríamos los valores de $x$ y $y$.
-
-
 
 ## Visualización
 
@@ -135,13 +125,9 @@ A simple vista podemos observar una relación no lineal.
 
 Sin embargo, a partir de la gráfica no necesariamente es evidente que los datos fueron generados mediante
 
-$$
-x^2+2\sin(x).
-$$
+$$x^2+2\sin(x).$$
 
 Ese será precisamente el objetivo de la regresión simbólica.
-
-
 
 ## Preparación de los datos
 
@@ -163,17 +149,11 @@ X.shape
 
 Por tanto,
 
-$$
-X\in\mathbb{R}^{200\times1}.
-$$
+$$X\in\mathbb{R}^{200\times1}.$$
 
 En un problema con $p$ variables predictoras tendríamos, en general,
 
-$$
-X\in\mathbb{R}^{n\times p}.
-$$
-
-
+$$X\in\mathbb{R}^{n\times p}.$$
 
 ## Modelo de regresión simbólica
 
@@ -183,15 +163,11 @@ No le indicaremos que la función contiene $x^2$ ni que el coeficiente de $\sin(
 
 Únicamente permitiremos las operaciones
 
-$$
-+,\qquad -,\qquad \times
-$$
+$$+,\qquad -,\qquad \times$$
 
 y la función
 
-$$
-\sin(x).
-$$
+$$\sin(x).$$
 
 ```{python}
 model = PySRRegressor(
@@ -208,26 +184,21 @@ model = PySRRegressor(
 )
 ```
 
-::: {.callout-tip}
+::: callout-tip
 ### ¿Qué estamos especificando?
 
 `binary_operators` contiene operaciones que necesitan **dos argumentos**, por ejemplo
 
-$$
-x_1+x_2
+$$x_1+x_2
 \qquad\text{o}\qquad
-x_1x_2.
-$$
+x_1x_2.$$
 
 `unary_operators` contiene operaciones que necesitan **un argumento**, como
 
-$$
-\sin(x).
-$$
+$$\sin(x).$$
 
 Estas elecciones determinan el conjunto de expresiones que PySR puede explorar.
 :::
-
 
 ## Ajuste del modelo
 
@@ -237,7 +208,7 @@ Ajustamos el modelo utilizando los datos.
 model.fit(X, y)
 ```
 
-::: {.callout-note}
+::: callout-note
 ### Nota para la primera ejecución
 
 La primera vez que se ejecuta `fit()` puede tardar más de lo habitual debido a la inicialización y compilación de componentes de Julia.
@@ -245,14 +216,14 @@ La primera vez que se ejecuta `fit()` puede tardar más de lo habitual debido a 
 Es importante esperar a que la celda termine completamente antes de continuar.
 :::
 
-::: {.callout-warning}
+::: callout-warning
 ### Si `model.equations_` aparece como `None`
 
 Después del ajuste utilizaremos `model.equations_`.
 
 Si obtenemos
 
-```text
+``` text
 PySRRegressor.equations_ = None
 ```
 
@@ -260,15 +231,13 @@ significa que todavía no tenemos disponible la tabla de ecuaciones del ajuste.
 
 Durante la primera instalación, una solución puede ser:
 
-1. comprobar que `model.fit(X, y)` terminó;
-2. reiniciar el kernel;
-3. ejecutar nuevamente todas las celdas desde el inicio;
-4. volver a realizar el ajuste.
+1.  comprobar que `model.fit(X, y)` terminó;
+2.  reiniciar el kernel;
+3.  ejecutar nuevamente todas las celdas desde el inicio;
+4.  volver a realizar el ajuste.
 
 Esto puede ocurrir especialmente durante la primera configuración de PySR y Julia.
 :::
-
-
 
 ## Ecuaciones encontradas
 
@@ -297,11 +266,9 @@ Por tanto, no necesariamente buscamos únicamente la expresión con menor error.
 
 Queremos un equilibrio entre
 
-$$
-\boxed{\text{buen ajuste}}
+$$\boxed{\text{buen ajuste}}
 \qquad\text{y}\qquad
-\boxed{\text{expresión sencilla}}.
-$$
+\boxed{\text{expresión sencilla}}.$$
 
 ## Expresión seleccionada
 
@@ -313,13 +280,11 @@ model.sympy()
 
 Recordemos que la función utilizada para generar nuestros datos fue
 
-$$
-f(x)=x^2+2\sin(x).
-$$
+$$f(x)=x^2+2\sin(x).$$
 
 Comparemos la expresión encontrada con esta función.
 
-::: {.callout-question}
+::: callout-question
 ### Para discutir
 
 - ¿Aparece un término equivalente a $x^2$?
@@ -328,8 +293,6 @@ Comparemos la expresión encontrada con esta función.
 - ¿Aparecen términos adicionales?
 - ¿La expresión encontrada es sencilla de interpretar?
 :::
-
-
 
 ## Visualización del ajuste
 
@@ -370,8 +333,6 @@ plt.legend()
 
 plt.show()
 ```
-
-
 
 ## ¿Encontramos la función verdadera?
 
@@ -421,42 +382,33 @@ La regresión simbólica no tiene que recuperar exactamente la expresión origin
 
 Además, encontrar una expresión matemática interpretable **no implica que hayamos descubierto una relación causal o una ley científica**.
 
-
 ## Ejercicios
 
 ### Ejercicio 1: Datos simulados
 
 Genera ahora un nuevo conjunto de datos utilizando
 
-$$
-y=3x^2-2x+5+\varepsilon,
+$$y=3x^2-2x+5+\varepsilon,
 \qquad
-\varepsilon\sim N(0,0.5^2).
-$$
+\varepsilon\sim N(0,0.5^2).$$
 
-1. Genera $200$ observaciones con $x\in[-3,3]$.
-2. Ajusta un modelo de regresión simbólica utilizando solamente
+1.  Genera $200$ observaciones con $x\in[-3,3]$.
+2.  Ajusta un modelo de regresión simbólica utilizando solamente
 
-$$
-+,\qquad -,\qquad \times.
-$$
+$$+,\qquad -,\qquad \times.$$
 
-3. Observa las ecuaciones encontradas.
-4. Compara la expresión seleccionada con
+3.  Observa las ecuaciones encontradas.
+4.  Compara la expresión seleccionada con
 
-$$
-3x^2-2x+5.
-$$
+$$3x^2-2x+5.$$
 
-5. Grafica los datos y la función encontrada.
+5.  Grafica los datos y la función encontrada.
 
-::: {.callout-question}
+::: callout-question
 ¿Logra PySR recuperar aproximadamente la estructura de la función original?
 
 ¿Qué ocurre con los coeficientes debido a la presencia de ruido?
 :::
-
-
 
 ### Ejercicio 2: Regresión simbólica con los datos de "Wage"
 
@@ -470,9 +422,7 @@ A diferencia del ejemplo anterior, en este caso **no conocemos la función que g
 
 Utiliza `age` como variable predictora y `wage` como variable respuesta:
 
-$$
-\text{wage}=f(\text{age}).
-$$
+$$\text{wage}=f(\text{age}).$$
 
 Prepara los datos en el formato requerido por PySR.
 
@@ -480,17 +430,13 @@ Prepara los datos en el formato requerido por PySR.
 
 Construye un modelo `PySRRegressor` utilizando inicialmente las operaciones
 
-$$
-+,\qquad -,\qquad \times,\qquad /.
-$$
+$$+,\qquad -,\qquad \times,\qquad /.$$
 
 No utilizar `sin` en este primer modelo.
 
 Ajustar el modelo y examinar las expresiones encontradas.
 
-
-
-::: {.callout-question}
+::: callout-question
 Observen las diferentes expresiones encontradas.
 
 - ¿Cuál tiene el menor error?
@@ -507,7 +453,7 @@ Graficar los datos originales y superponer la curva correspondiente a la regresi
 
 En prácticas anteriores modelamos estos mismos datos utilizando métodos como regresión polinomial y splines.
 
-::: {.callout-question}
+::: callout-question
 Compara cualitativamente la regresión simbólica con alguno de esos modelos.
 
 - ¿La regresión simbólica captura adecuadamente la relación entre edad y salario?
@@ -524,7 +470,7 @@ Prueba una segunda configuración modificando las operaciones o funciones dispon
 
 Comparen las ecuaciones obtenidas con las del primer modelo.
 
-::: {.callout-important}
+::: callout-important
 ### Para reflexionar
 
 La regresión simbólica busca automáticamente una expresión matemática, pero la búsqueda **no es completamente libre**.
@@ -533,5 +479,5 @@ Nosotros determinamos qué operaciones y funciones puede utilizar el algoritmo.
 
 Por tanto:
 
-> ¿Hasta qué punto podemos decir que el algoritmo ``descubrió'' la ecuación y hasta qué punto el resultado depende del espacio de búsqueda que nosotros definimos?
+> ¿Hasta qué punto podemos decir que el algoritmo \`\`descubrió'' la ecuación y hasta qué punto el resultado depende del espacio de búsqueda que nosotros definimos?
 :::

@@ -40,16 +40,18 @@ book:
           - parte8.qmd # EXTRA: Regresión Simbólica
     - part: "**Métodos de ensamble y optimización de modelos**"
       chapters:
-          - parte9.qmd
+          - parte9.qmd # Métodos modernos de Gradient Boosting
+          - parte10.qmd # Validación cruzada y optimización de hiperparámetros
+          - parte11.qmd # Evaluación y comparación de modelos
     - part: "**Máquinas de Soporte Vectorial**"
       chapters:
-          - parte9.qmd
+          - parte12.qmd
     - part: "**Aprendizaje no supervisado**"
       chapters:
-          - parte9.qmd
+          - parte12.qmd
     - part: "**Interpretabilidad y explicabilidad de modelos**"
       chapters:
-          - parte9.qmd  
+          - parte12.qmd  
     
   # Information
   repo-url: https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1 # link de Github

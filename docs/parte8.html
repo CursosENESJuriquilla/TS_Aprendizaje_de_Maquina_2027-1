@@ -110,10 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
-
-
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -306,7 +303,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte9.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Métodos modernos de Gradient Boosting</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">parte10.html</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">parte11.html</span></span></a>
   </div>
 </li>
       </ul>
@@ -322,8 +331,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte9.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+  <a href="./parte12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">parte12.html</span></span></a>
   </div>
 </li>
       </ul>
@@ -339,8 +348,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte9.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+  <a href="./parte12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">parte12.html</span></span></a>
   </div>
 </li>
       </ul>
@@ -356,8 +365,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte9.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+  <a href="./parte12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">parte12.html</span></span></a>
   </div>
 </li>
       </ul>
@@ -417,9 +426,7 @@ window.Quarto = {
 
 <p>Utilizaremos <strong>regresión simbólica</strong> para encontrar una expresión matemática que describa la relación entre una variable predictora <span class="math inline">\(x\)</span> y una variable respuesta <span class="math inline">\(y\)</span>.</p>
 <p>A diferencia de otros métodos de regresión, no especificaremos de antemano una forma funcional como</p>
-<p><span class="math display">\[
-y = \beta_0+\beta_1x+\beta_2x^2.
-\]</span></p>
+<p><span class="math display">\[y = \beta_0+\beta_1x+\beta_2x^2.\]</span></p>
 <p>En su lugar, indicaremos qué operaciones matemáticas puede utilizar el algoritmo y dejaremos que busque expresiones que expliquen los datos.</p>
 <p>Trabajaremos con datos simulados para conocer la función que generó los datos y poder compararla con la expresión encontrada por el algoritmo.</p>
 <div class="diapositivas">
@@ -434,7 +441,7 @@ y = \beta_0+\beta_1x+\beta_2x^2.
 <h2 data-number="8.1" class="anchored" data-anchor-id="instalación-de-pysr"><span class="header-section-number">8.1</span> Instalación de PySR</h2>
 <p>Utilizaremos la biblioteca <code>PySR</code>.</p>
 <p>En un notebook de Jupyter se recomienda instalarla mediante:</p>
-<div id="9092a3ba" class="cell" data-execution_count="1">
+<div id="6ca08f0d" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>pip install pysr</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -478,7 +485,7 @@ y = \beta_0+\beta_1x+\beta_2x^2.
 </div>
 </div>
 <p>Ahora importamos las bibliotecas necesarias.</p>
-<div id="98a9e6eb" class="cell" data-execution_count="2">
+<div id="882ac79a" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -491,15 +498,11 @@ y = \beta_0+\beta_1x+\beta_2x^2.
 <section id="generación-de-los-datos" class="level2" data-number="8.2">
 <h2 data-number="8.2" class="anchored" data-anchor-id="generación-de-los-datos"><span class="header-section-number">8.2</span> Generación de los datos</h2>
 <p>Vamos a generar datos utilizando la función</p>
-<p><span class="math display">\[
-y=x^2+2\sin(x)+\varepsilon,
-\]</span></p>
+<p><span class="math display">\[y=x^2+2\sin(x)+\varepsilon,\]</span></p>
 <p>donde</p>
-<p><span class="math display">\[
-\varepsilon\sim N(0,0.3^2)
-\]</span></p>
+<p><span class="math display">\[\varepsilon\sim N(0,0.3^2)\]</span></p>
 <p>representa ruido aleatorio.</p>
-<div id="e6ee091d" class="cell" data-execution_count="3">
+<div id="3586e263" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">123</span>)</span>
@@ -522,7 +525,7 @@ y=x^2+2\sin(x)+\varepsilon,
 <section id="visualización" class="level2" data-number="8.3">
 <h2 data-number="8.3" class="anchored" data-anchor-id="visualización"><span class="header-section-number">8.3</span> Visualización</h2>
 <p>Antes de construir un modelo, observemos los datos.</p>
-<div id="0c6052b7" class="cell" data-execution_count="4">
+<div id="98da97c9" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
@@ -549,16 +552,14 @@ y=x^2+2\sin(x)+\varepsilon,
 </div>
 <p>A simple vista podemos observar una relación no lineal.</p>
 <p>Sin embargo, a partir de la gráfica no necesariamente es evidente que los datos fueron generados mediante</p>
-<p><span class="math display">\[
-x^2+2\sin(x).
-\]</span></p>
+<p><span class="math display">\[x^2+2\sin(x).\]</span></p>
 <p>Ese será precisamente el objetivo de la regresión simbólica.</p>
 </section>
 <section id="preparación-de-los-datos" class="level2" data-number="8.4">
 <h2 data-number="8.4" class="anchored" data-anchor-id="preparación-de-los-datos"><span class="header-section-number">8.4</span> Preparación de los datos</h2>
 <p>PySR espera que las variables predictoras se proporcionen mediante una matriz.</p>
 <p>Actualmente <code>x</code> es un vector:</p>
-<div id="cd254e79" class="cell" data-execution_count="5">
+<div id="4669cb9d" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -568,7 +569,7 @@ x^2+2\sin(x).
 </div>
 </div>
 <p>Lo convertimos en una matriz con una columna:</p>
-<div id="5746c37c" class="cell" data-execution_count="6">
+<div id="88380a94" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> x.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
@@ -580,27 +581,19 @@ x^2+2\sin(x).
 </div>
 </div>
 <p>Por tanto,</p>
-<p><span class="math display">\[
-X\in\mathbb{R}^{200\times1}.
-\]</span></p>
+<p><span class="math display">\[X\in\mathbb{R}^{200\times1}.\]</span></p>
 <p>En un problema con <span class="math inline">\(p\)</span> variables predictoras tendríamos, en general,</p>
-<p><span class="math display">\[
-X\in\mathbb{R}^{n\times p}.
-\]</span></p>
+<p><span class="math display">\[X\in\mathbb{R}^{n\times p}.\]</span></p>
 </section>
 <section id="modelo-de-regresión-simbólica" class="level2" data-number="8.5">
 <h2 data-number="8.5" class="anchored" data-anchor-id="modelo-de-regresión-simbólica"><span class="header-section-number">8.5</span> Modelo de regresión simbólica</h2>
 <p>Ahora construiremos el modelo.</p>
 <p>No le indicaremos que la función contiene <span class="math inline">\(x^2\)</span> ni que el coeficiente de <span class="math inline">\(\sin(x)\)</span> es 2.</p>
 <p>Únicamente permitiremos las operaciones</p>
-<p><span class="math display">\[
-+,\qquad -,\qquad \times
-\]</span></p>
+<p><span class="math display">\[+,\qquad -,\qquad \times\]</span></p>
 <p>y la función</p>
-<p><span class="math display">\[
-\sin(x).
-\]</span></p>
-<div id="a8d39952" class="cell" data-execution_count="7">
+<p><span class="math display">\[\sin(x).\]</span></p>
+<div id="f50efe08" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> PySRRegressor(</span>
@@ -628,15 +621,11 @@ X\in\mathbb{R}^{n\times p}.
 </div>
 <div class="callout-body-container callout-body">
 <p><code>binary_operators</code> contiene operaciones que necesitan <strong>dos argumentos</strong>, por ejemplo</p>
-<p><span class="math display">\[
-x_1+x_2
+<p><span class="math display">\[x_1+x_2
 \qquad\text{o}\qquad
-x_1x_2.
-\]</span></p>
+x_1x_2.\]</span></p>
 <p><code>unary_operators</code> contiene operaciones que necesitan <strong>un argumento</strong>, como</p>
-<p><span class="math display">\[
-\sin(x).
-\]</span></p>
+<p><span class="math display">\[\sin(x).\]</span></p>
 <p>Estas elecciones determinan el conjunto de expresiones que PySR puede explorar.</p>
 </div>
 </div>
@@ -644,7 +633,7 @@ x_1x_2.
 <section id="ajuste-del-modelo" class="level2" data-number="8.6">
 <h2 data-number="8.6" class="anchored" data-anchor-id="ajuste-del-modelo"><span class="header-section-number">8.6</span> Ajuste del modelo</h2>
 <p>Ajustamos el modelo utilizando los datos.</p>
-<div id="afa020f1" class="cell" data-execution_count="8">
+<div id="6cc398a9" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>model.fit(X, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -655,19 +644,20 @@ x_1x_2.
 <div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>PySRRegressor.equations_ = [
         pick     score                                           equation  \
-    0         0.000000                                           2.561706   
+    0         0.000000                                          2.5617034   
     1         0.679629                                            x0 * x0   
-    2         0.579735                             x0 * (x0 + 0.76096517)   
+    2         0.579735                              x0 * (x0 + 0.7609701)   
     3         0.126188                                (x0 * x0) + sin(x0)   
-    4   &gt;&gt;&gt;&gt;  0.983947                  (x0 * x0) - (sin(x0) * -1.989588)   
-    5         0.007986  ((x0 * x0) - (sin(x0) * -1.9915231)) + -0.0362...   
-    6         0.002095  ((x0 * x0) - (sin(x0 + -0.013783997) * -1.9923...   
-    7         0.000500  (((x0 * x0) * 1.015002) + -0.078925006) - (sin...   
-    8         0.002786  sin(x0) + (sin((sin(x0 * x0) * -0.15038097) + ...   
-    9         0.002977  sin(x0) + (sin((sin(x0 * (x0 + 0.22649544)) * ...   
-    10        0.000069  sin((sin(sin(x0 * (0.33803654 + x0))) * -0.150...   
-    11        0.032679  sin((sin(x0 * (x0 + (x0 - -0.5411373))) * -0.1...   
-    12        0.003621  sin((sin((x0 * 0.41036305) + ((x0 * x0) * 2.03...   
+    4   &gt;&gt;&gt;&gt;  0.983948                 (x0 * x0) - (sin(x0) * -1.9895947)   
+    5         0.007986  ((x0 * x0) - (sin(x0) * -1.9915228)) - 0.03626...   
+    6         0.002095  (x0 * x0) + (-0.03175083 - (sin(x0 - 0.0137921...   
+    7         0.000598  (((x0 * 1.0079818) + 0.0068731476) * x0) + (-0...   
+    8         0.003239  ((x0 * x0) - (sin(x0) * ((sin(x0 * -1.6106116)...   
+    9         0.000641  ((x0 * x0) + -0.03840707) - ((sin(x0) * -1.993...   
+    10        0.006166  (((x0 * x0) + -0.02529789) - (sin(x0) * -1.995...   
+    11        0.012768  ((x0 * x0) + (sin(x0) + sin(x0))) + (sin(x0 * ...   
+    12        0.002719  ((x0 * x0) + (sin(x0) + sin(x0))) + ((sin(x0 *...   
+    13        0.007539  sin(x0) + (((x0 * x0) + -0.0076015424) + sin(x...   
     
             loss  complexity  
     0   8.351337           1  
@@ -677,12 +667,13 @@ x_1x_2.
     4   0.082878           8  
     5   0.081564          10  
     6   0.081223          12  
-    7   0.081142          14  
-    8   0.080691          16  
-    9   0.080212          18  
-    10  0.080207          19  
-    11  0.077628          20  
-    12  0.077068          22  
+    7   0.081126          14  
+    8   0.080342          17  
+    9   0.080187          20  
+    10  0.079694          21  
+    11  0.078683          22  
+    12  0.078469          23  
+    13  0.077295          25  
 ]</code></pre>
 </div>
 </div>
@@ -729,7 +720,7 @@ x_1x_2.
 <h2 data-number="8.7" class="anchored" data-anchor-id="ecuaciones-encontradas"><span class="header-section-number">8.7</span> Ecuaciones encontradas</h2>
 <p>PySR no necesariamente encuentra una única ecuación.</p>
 <p>Durante la búsqueda genera diferentes expresiones con distintos niveles de complejidad y error.</p>
-<div id="baa842d1" class="cell" data-execution_count="9">
+<div id="2ed852f2" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model.equations_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -755,10 +746,10 @@ x_1x_2.
 <th data-quarto-table-cell-role="th">0</th>
 <td>1</td>
 <td>8.351337</td>
-<td>2.561706</td>
+<td>2.5617034</td>
 <td>0.000000</td>
-<td>2.56170600000000</td>
-<td>PySRFunction(X=&gt;2.56170600000000)</td>
+<td>2.56170340000000</td>
+<td>PySRFunction(X=&gt;2.56170340000000)</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
@@ -773,10 +764,10 @@ x_1x_2.
 <th data-quarto-table-cell-role="th">2</th>
 <td>5</td>
 <td>0.672800</td>
-<td>x0 * (x0 + 0.76096517)</td>
+<td>x0 * (x0 + 0.7609701)</td>
 <td>0.579735</td>
-<td>x0*(x0 + 0.76096517)</td>
-<td>PySRFunction(X=&gt;x0*(x0 + 0.76096517))</td>
+<td>x0*(x0 + 0.7609701)</td>
+<td>PySRFunction(X=&gt;x0*(x0 + 0.7609701))</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
@@ -791,81 +782,90 @@ x_1x_2.
 <th data-quarto-table-cell-role="th">4</th>
 <td>8</td>
 <td>0.082878</td>
-<td>(x0 * x0) - (sin(x0) * -1.989588)</td>
-<td>0.983947</td>
-<td>x0*x0 - (-1.989588)*sin(x0)</td>
-<td>PySRFunction(X=&gt;x0*x0 - (-1.989588)*sin(x0))</td>
+<td>(x0 * x0) - (sin(x0) * -1.9895947)</td>
+<td>0.983948</td>
+<td>x0*x0 - (-1.9895947)*sin(x0)</td>
+<td>PySRFunction(X=&gt;x0*x0 - (-1.9895947)*sin(x0))</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">5</th>
 <td>10</td>
 <td>0.081564</td>
-<td>((x0 * x0) - (sin(x0) * -1.9915231)) + -0.0362...</td>
+<td>((x0 * x0) - (sin(x0) * -1.9915228)) - 0.03626...</td>
 <td>0.007986</td>
-<td>x0*x0 - (-1.9915231)*sin(x0) - 0.03627173</td>
-<td>PySRFunction(X=&gt;x0*x0 - (-1.9915231)*sin(x0) -...</td>
+<td>x0*x0 - (-1.9915228)*sin(x0) - 1*0.036266066</td>
+<td>PySRFunction(X=&gt;x0*x0 - (-1.9915228)*sin(x0) -...</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">6</th>
 <td>12</td>
 <td>0.081223</td>
-<td>((x0 * x0) - (sin(x0 + -0.013783997) * -1.9923...</td>
+<td>(x0 * x0) + (-0.03175083 - (sin(x0 - 0.0137921...</td>
 <td>0.002095</td>
-<td>x0*x0 - (-1.992308)*sin(x0 - 0.013783997) - 0....</td>
-<td>PySRFunction(X=&gt;x0*x0 - (-1.992308)*sin(x0 - 0...</td>
+<td>x0*x0 - (-1.9923584)*sin(x0 - 1*0.013792183) -...</td>
+<td>PySRFunction(X=&gt;x0*x0 - (-1.9923584)*sin(x0 - ...</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">7</th>
 <td>14</td>
-<td>0.081142</td>
-<td>(((x0 * x0) * 1.015002) + -0.078925006) - (sin...</td>
-<td>0.000500</td>
-<td>x0*x0*1.015002 - 1.9928889*sin(x0 - 3.127969) ...</td>
-<td>PySRFunction(X=&gt;x0*x0*1.015002 - 1.9928889*sin...</td>
+<td>0.081126</td>
+<td>(((x0 * 1.0079818) + 0.0068731476) * x0) + (-0...</td>
+<td>0.000598</td>
+<td>x0*(x0*1.0079818 + 0.0068731476) - (-1.9796847...</td>
+<td>PySRFunction(X=&gt;x0*(x0*1.0079818 + 0.006873147...</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">8</th>
-<td>16</td>
-<td>0.080691</td>
-<td>sin(x0) + (sin((sin(x0 * x0) * -0.15038097) + ...</td>
-<td>0.002786</td>
-<td>x0*x0 + sin(x0) + sin(x0 + sin(x0*x0)*(-0.1503...</td>
-<td>PySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...</td>
+<td>17</td>
+<td>0.080342</td>
+<td>((x0 * x0) - (sin(x0) * ((sin(x0 * -1.6106116)...</td>
+<td>0.003239</td>
+<td>x0*x0 - (sin(x0*(-1.6106116))*(-0.07718013) - ...</td>
+<td>PySRFunction(X=&gt;x0*x0 - (sin(x0*(-1.6106116))*...</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">9</th>
-<td>18</td>
-<td>0.080212</td>
-<td>sin(x0) + (sin((sin(x0 * (x0 + 0.22649544)) * ...</td>
-<td>0.002977</td>
-<td>x0*x0 + sin(x0) + sin(x0 + sin(x0*(x0 + 0.2264...</td>
-<td>PySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...</td>
+<td>20</td>
+<td>0.080187</td>
+<td>((x0 * x0) + -0.03840707) - ((sin(x0) * -1.993...</td>
+<td>0.000641</td>
+<td>x0*x0 - (sin(x0)*(-1.9931599) + sin(x0*sin(x0*...</td>
+<td>PySRFunction(X=&gt;x0*x0 - (sin(x0)*(-1.9931599) ...</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">10</th>
-<td>19</td>
-<td>0.080207</td>
-<td>sin((sin(sin(x0 * (0.33803654 + x0))) * -0.150...</td>
-<td>0.000069</td>
-<td>x0*x0 + sin(x0) + sin(x0 + sin(sin(x0*(x0 + 0....</td>
-<td>PySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...</td>
+<td>21</td>
+<td>0.079694</td>
+<td>(((x0 * x0) + -0.02529789) - (sin(x0) * -1.995...</td>
+<td>0.006166</td>
+<td>x0*x0 - (-1.995117)*sin(x0) + sin(x0*x0*x0*x0)...</td>
+<td>PySRFunction(X=&gt;x0*x0 - (-1.995117)*sin(x0) + ...</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">11</th>
-<td>20</td>
-<td>0.077628</td>
-<td>sin((sin(x0 * (x0 + (x0 - -0.5411373))) * -0.1...</td>
-<td>0.032679</td>
-<td>x0*x0 + sin(x0) + sin(x0 + sin(x0*(x0 + x0 - 1...</td>
-<td>PySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...</td>
+<td>22</td>
+<td>0.078683</td>
+<td>((x0 * x0) + (sin(x0) + sin(x0))) + (sin(x0 * ...</td>
+<td>0.012768</td>
+<td>x0*x0 + sin(x0) + sin(x0) + sin(-0.12129636)*s...</td>
+<td>PySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0) + si...</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">12</th>
-<td>22</td>
-<td>0.077068</td>
-<td>sin((sin((x0 * 0.41036305) + ((x0 * x0) * 2.03...</td>
-<td>0.003621</td>
-<td>x0*x0 + sin(x0) + sin(x0 + sin(x0*0.41036305 +...</td>
+<td>23</td>
+<td>0.078469</td>
+<td>((x0 * x0) + (sin(x0) + sin(x0))) + ((sin(x0 *...</td>
+<td>0.002719</td>
+<td>x0*x0 + (sin(x0*(x0 + sin(x0*x0))) + 0.1376214...</td>
+<td>PySRFunction(X=&gt;x0*x0 + (sin(x0*(x0 + sin(x0*x...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">13</th>
+<td>25</td>
+<td>0.077295</td>
+<td>sin(x0) + (((x0 * x0) + -0.0076015424) + sin(x...</td>
+<td>0.007539</td>
+<td>x0*x0 + sin(x0) + sin(x0 + sin(sin(x0*(x0 + 0....</td>
 <td>PySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...</td>
 </tr>
 </tbody>
@@ -875,7 +875,7 @@ x_1x_2.
 </div>
 </div>
 <p>Podemos observar algunas de las columnas principales:</p>
-<div id="d0d7f6ba" class="cell" data-execution_count="10">
+<div id="6e4350e0" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>model.equations_[</span>
@@ -901,7 +901,7 @@ x_1x_2.
 <th data-quarto-table-cell-role="th">0</th>
 <td>1</td>
 <td>8.351337</td>
-<td>2.561706</td>
+<td>2.5617034</td>
 <td>0.000000</td>
 </tr>
 <tr class="even">
@@ -915,7 +915,7 @@ x_1x_2.
 <th data-quarto-table-cell-role="th">2</th>
 <td>5</td>
 <td>0.672800</td>
-<td>x0 * (x0 + 0.76096517)</td>
+<td>x0 * (x0 + 0.7609701)</td>
 <td>0.579735</td>
 </tr>
 <tr class="even">
@@ -929,64 +929,71 @@ x_1x_2.
 <th data-quarto-table-cell-role="th">4</th>
 <td>8</td>
 <td>0.082878</td>
-<td>(x0 * x0) - (sin(x0) * -1.989588)</td>
-<td>0.983947</td>
+<td>(x0 * x0) - (sin(x0) * -1.9895947)</td>
+<td>0.983948</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">5</th>
 <td>10</td>
 <td>0.081564</td>
-<td>((x0 * x0) - (sin(x0) * -1.9915231)) + -0.0362...</td>
+<td>((x0 * x0) - (sin(x0) * -1.9915228)) - 0.03626...</td>
 <td>0.007986</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">6</th>
 <td>12</td>
 <td>0.081223</td>
-<td>((x0 * x0) - (sin(x0 + -0.013783997) * -1.9923...</td>
+<td>(x0 * x0) + (-0.03175083 - (sin(x0 - 0.0137921...</td>
 <td>0.002095</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">7</th>
 <td>14</td>
-<td>0.081142</td>
-<td>(((x0 * x0) * 1.015002) + -0.078925006) - (sin...</td>
-<td>0.000500</td>
+<td>0.081126</td>
+<td>(((x0 * 1.0079818) + 0.0068731476) * x0) + (-0...</td>
+<td>0.000598</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">8</th>
-<td>16</td>
-<td>0.080691</td>
-<td>sin(x0) + (sin((sin(x0 * x0) * -0.15038097) + ...</td>
-<td>0.002786</td>
+<td>17</td>
+<td>0.080342</td>
+<td>((x0 * x0) - (sin(x0) * ((sin(x0 * -1.6106116)...</td>
+<td>0.003239</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">9</th>
-<td>18</td>
-<td>0.080212</td>
-<td>sin(x0) + (sin((sin(x0 * (x0 + 0.22649544)) * ...</td>
-<td>0.002977</td>
+<td>20</td>
+<td>0.080187</td>
+<td>((x0 * x0) + -0.03840707) - ((sin(x0) * -1.993...</td>
+<td>0.000641</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">10</th>
-<td>19</td>
-<td>0.080207</td>
-<td>sin((sin(sin(x0 * (0.33803654 + x0))) * -0.150...</td>
-<td>0.000069</td>
+<td>21</td>
+<td>0.079694</td>
+<td>(((x0 * x0) + -0.02529789) - (sin(x0) * -1.995...</td>
+<td>0.006166</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">11</th>
-<td>20</td>
-<td>0.077628</td>
-<td>sin((sin(x0 * (x0 + (x0 - -0.5411373))) * -0.1...</td>
-<td>0.032679</td>
+<td>22</td>
+<td>0.078683</td>
+<td>((x0 * x0) + (sin(x0) + sin(x0))) + (sin(x0 * ...</td>
+<td>0.012768</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">12</th>
-<td>22</td>
-<td>0.077068</td>
-<td>sin((sin((x0 * 0.41036305) + ((x0 * x0) * 2.03...</td>
-<td>0.003621</td>
+<td>23</td>
+<td>0.078469</td>
+<td>((x0 * x0) + (sin(x0) + sin(x0))) + ((sin(x0 *...</td>
+<td>0.002719</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">13</th>
+<td>25</td>
+<td>0.077295</td>
+<td>sin(x0) + (((x0 * x0) + -0.0076015424) + sin(x...</td>
+<td>0.007539</td>
 </tr>
 </tbody>
 </table>
@@ -1001,28 +1008,24 @@ x_1x_2.
 </ul>
 <p>Por tanto, no necesariamente buscamos únicamente la expresión con menor error.</p>
 <p>Queremos un equilibrio entre</p>
-<p><span class="math display">\[
-\boxed{\text{buen ajuste}}
+<p><span class="math display">\[\boxed{\text{buen ajuste}}
 \qquad\text{y}\qquad
-\boxed{\text{expresión sencilla}}.
-\]</span></p>
+\boxed{\text{expresión sencilla}}.\]</span></p>
 </section>
 <section id="expresión-seleccionada" class="level2" data-number="8.8">
 <h2 data-number="8.8" class="anchored" data-anchor-id="expresión-seleccionada"><span class="header-section-number">8.8</span> Expresión seleccionada</h2>
 <p>Podemos obtener la expresión seleccionada por PySR en formato simbólico:</p>
-<div id="98d70566" class="cell" data-execution_count="11">
+<div id="dfbc7f5a" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model.sympy()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display cell-output-markdown" data-execution_count="10">
-<p><span class="math inline">\(\displaystyle x_{0} x_{0} - \sin{\left(x_{0} \right)} \left(-1.989588\right)\)</span></p>
+<p><span class="math inline">\(\displaystyle x_{0} x_{0} - \sin{\left(x_{0} \right)} \left(-1.9895947\right)\)</span></p>
 </div>
 </div>
 <p>Recordemos que la función utilizada para generar nuestros datos fue</p>
-<p><span class="math display">\[
-f(x)=x^2+2\sin(x).
-\]</span></p>
+<p><span class="math display">\[f(x)=x^2+2\sin(x).\]</span></p>
 <p>Comparemos la expresión encontrada con esta función.</p>
 <section id="para-discutir" class="level3 callout-question" data-number="8.8.1">
 <h3 data-number="8.8.1" class="anchored" data-anchor-id="para-discutir"><span class="header-section-number">8.8.1</span> Para discutir</h3>
@@ -1038,7 +1041,7 @@ f(x)=x^2+2\sin(x).
 <section id="visualización-del-ajuste" class="level2" data-number="8.9">
 <h2 data-number="8.9" class="anchored" data-anchor-id="visualización-del-ajuste"><span class="header-section-number">8.9</span> Visualización del ajuste</h2>
 <p>Generamos valores de <span class="math inline">\(x\)</span> en todo el intervalo observado.</p>
-<div id="10b96c1f" class="cell" data-execution_count="12">
+<div id="f0558d78" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>x_grid <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">500</span>)</span>
@@ -1049,7 +1052,7 @@ f(x)=x^2+2\sin(x).
 </details>
 </div>
 <p>Y comparamos los datos con la predicción.</p>
-<div id="2553ab41" class="cell" data-execution_count="13">
+<div id="64d25007" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
@@ -1088,14 +1091,14 @@ f(x)=x^2+2\sin(x).
 <section id="encontramos-la-función-verdadera" class="level2" data-number="8.10">
 <h2 data-number="8.10" class="anchored" data-anchor-id="encontramos-la-función-verdadera"><span class="header-section-number">8.10</span> ¿Encontramos la función verdadera?</h2>
 <p>Como nuestros datos son simulados, conocemos la función verdadera:</p>
-<div id="2fe71cff" class="cell" data-execution_count="14">
+<div id="ab018042" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>y_true <span class="op">=</span> x_grid<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">2</span><span class="op">*</span>np.sin(x_grid)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Podemos compararla directamente con la función encontrada.</p>
-<div id="aeae4599" class="cell" data-execution_count="15">
+<div id="ba5d8f28" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
@@ -1146,25 +1149,19 @@ f(x)=x^2+2\sin(x).
 <section id="ejercicio-1-datos-simulados" class="level3" data-number="8.11.1">
 <h3 data-number="8.11.1" class="anchored" data-anchor-id="ejercicio-1-datos-simulados"><span class="header-section-number">8.11.1</span> Ejercicio 1: Datos simulados</h3>
 <p>Genera ahora un nuevo conjunto de datos utilizando</p>
-<p><span class="math display">\[
-y=3x^2-2x+5+\varepsilon,
+<p><span class="math display">\[y=3x^2-2x+5+\varepsilon,
 \qquad
-\varepsilon\sim N(0,0.5^2).
-\]</span></p>
+\varepsilon\sim N(0,0.5^2).\]</span></p>
 <ol type="1">
 <li>Genera <span class="math inline">\(200\)</span> observaciones con <span class="math inline">\(x\in[-3,3]\)</span>.</li>
 <li>Ajusta un modelo de regresión simbólica utilizando solamente</li>
 </ol>
-<p><span class="math display">\[
-+,\qquad -,\qquad \times.
-\]</span></p>
+<p><span class="math display">\[+,\qquad -,\qquad \times.\]</span></p>
 <ol start="3" type="1">
 <li>Observa las ecuaciones encontradas.</li>
 <li>Compara la expresión seleccionada con</li>
 </ol>
-<p><span class="math display">\[
-3x^2-2x+5.
-\]</span></p>
+<p><span class="math display">\[3x^2-2x+5.\]</span></p>
 <ol start="5" type="1">
 <li>Grafica los datos y la función encontrada.</li>
 </ol>
@@ -1180,15 +1177,11 @@ y=3x^2-2x+5+\varepsilon,
 <p>A diferencia del ejemplo anterior, en este caso <strong>no conocemos la función que generó los datos</strong>.</p>
 <p><strong>1. Preparación de los datos</strong></p>
 <p>Utiliza <code>age</code> como variable predictora y <code>wage</code> como variable respuesta:</p>
-<p><span class="math display">\[
-\text{wage}=f(\text{age}).
-\]</span></p>
+<p><span class="math display">\[\text{wage}=f(\text{age}).\]</span></p>
 <p>Prepara los datos en el formato requerido por PySR.</p>
 <p><strong>2. Regresión simbólica</strong></p>
 <p>Construye un modelo <code>PySRRegressor</code> utilizando inicialmente las operaciones</p>
-<p><span class="math display">\[
-+,\qquad -,\qquad \times,\qquad /.
-\]</span></p>
+<p><span class="math display">\[+,\qquad -,\qquad \times,\qquad /.\]</span></p>
 <p>No utilizar <code>sin</code> en este primer modelo.</p>
 <p>Ajustar el modelo y examinar las expresiones encontradas.</p>
 <div class="callout-question">
@@ -1687,8 +1680,8 @@ y=3x^2-2x+5+\varepsilon,
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./parte9.html" class="pagination-link" aria-label="Pendiente">
-        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pendiente</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./parte9.html" class="pagination-link" aria-label="Métodos modernos de Gradient Boosting">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Métodos modernos de Gradient Boosting</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

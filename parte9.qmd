@@ -1,1 +1,1391 @@
-# Pendiente
+# Métodos modernos de Gradient Boosting
+
+Vamos a utilizar **Gradient Boosting** para resolver un problema de regresión.
+
+Intentaremos:
+
+- implementar un modelo de Gradient Boosting con `scikit-learn`;
+- interpretar los hiperparámetros `n_estimators`, `learning_rate` y `max_depth`;
+- estudiar cómo cambia el desempeño al modificar estos hiperparámetros;
+- visualizar cómo evoluciona el error conforme se agregan árboles al ensamble;
+- reconocer la relación entre el *learning rate* y el número de árboles.
+
+Después utilizaremos estos resultados para introducir métodos modernos como **XGBoost**.
+
+
+::::: diapositivas
+::: diapositivas-title
+📝 **Diapositivas**
+:::
+
+::: diapositivas-body
+[Ver diapositivas Métodos Modernos de Gradient Boosting](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/3.1_Metodos_XGBoost.pdf)
+:::
+:::::
+
+## Datos: California Housing
+
+Utilizaremos el conjunto de datos **California Housing**, disponible directamente en `scikit-learn`.
+
+Este conjunto contiene información obtenida a partir del censo de California. Nuestro objetivo será predecir el valor mediano de las viviendas a partir de características relacionadas con los hogares y su ubicación geográfica.
+
+Importamos primero las bibliotecas necesarias.
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.dummy import DummyRegressor
+```
+
+Cargamos los datos utilizando la opción `as_frame=True` para obtener directamente objetos de `pandas`.
+
+```{python}
+housing = fetch_california_housing(as_frame=True)
+
+X = housing.data
+y = housing.target
+```
+
+Veamos las primeras observaciones.
+
+```{python}
+X.head()
+```
+
+La matriz de características contiene las siguientes variables:
+
+```{python}
+X.columns
+```
+
+Podemos consultar también la descripción incluida en `scikit-learn`.
+
+```{python}
+print(housing.DESCR)
+```
+
+La variable respuesta corresponde al valor mediano de las viviendas, expresado en unidades de **100,000 dólares**.
+
+Por ejemplo, un valor de $y=2.5$ corresponde aproximadamente a un valor mediano de vivienda de $250\,000$ dólares.
+
+
+Antes de construir cualquier modelo, revisemos el tamaño de nuestros datos.
+
+```{python}
+print("Número de observaciones:", X.shape[0])
+print("Número de características:", X.shape[1])
+```
+
+También podemos revisar si existen valores faltantes.
+
+```{python}
+X.isna().sum()
+```
+
+En este conjunto no necesitamos realizar una limpieza compleja.
+
+Veamos algunos estadísticos descriptivos.
+
+```{python}
+X.describe().T
+```
+
+También podemos examinar la distribución de la variable respuesta.
+
+```{python}
+plt.figure(figsize=(7, 4))
+plt.hist(y, bins=30)
+plt.xlabel("Valor mediano de la vivienda")
+plt.ylabel("Frecuencia")
+plt.title("Distribución de la variable respuesta")
+plt.show()
+```
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿La variable respuesta parece simétrica?  
+¿Observas algún comportamiento particular en los valores más altos?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+
+:::
+::::
+
+
+
+Este conjunto contiene dos variables especialmente interesantes:
+
+- `Latitude`
+- `Longitude`
+
+que permiten visualizar aproximadamente la distribución espacial de las observaciones.
+
+
+```{python}
+plt.figure(figsize=(8, 6))
+
+plt.scatter(
+    X["Longitude"],
+    X["Latitude"],
+    c=y,
+    s=8,
+    alpha=0.5
+)
+
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+plt.title("Distribución geográfica de las observaciones")
+plt.colorbar(label="Valor mediano de la vivienda")
+plt.show()
+```
+
+La localización contiene información potencialmente importante para predecir el valor de las viviendas.
+
+
+## Separación de los datos
+
+Antes de comenzar a probar modelos, reservaremos una parte de los datos para realizar una evaluación final.
+
+Utilizaremos $80\%$ de las observaciones para entrenamiento y reservaremos el $20\%$ restante para prueba.
+
+```{python}
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.20,
+    random_state=42
+)
+```
+
+Revisemos las dimensiones.
+
+```{python}
+print("X_train:", X_train.shape)
+print("X_test: ", X_test.shape)
+```
+
+::: {.callout-important}
+## El conjunto de prueba se reserva
+
+A partir de este momento trabajaremos principalmente con `X_train` y `y_train`.
+
+El conjunto de prueba representa datos que el modelo no debe utilizar durante el proceso de entrenamiento y selección.
+
+En las siguientes clases veremos con mayor detalle cómo utilizar **Cross-Validation** para realizar esta selección correctamente.
+:::
+
+## Una referencia inicial: DummyRegressor
+
+Antes de utilizar un modelo más complejo necesitamos una referencia.
+
+Un modelo complicado no es necesariamente útil simplemente porque produce predicciones. Debemos preguntarnos si logra mejorar una estrategia extremadamente sencilla.
+
+Utilizaremos `DummyRegressor`, que puede predecir siempre la media de la variable respuesta.
+
+```{python}
+dummy = DummyRegressor(strategy="mean")
+
+dummy.fit(X_train, y_train)
+```
+
+Generamos las predicciones sobre el conjunto de entrenamiento.
+
+```{python}
+y_pred_dummy = dummy.predict(X_train)
+```
+
+Calculamos MAE y RMSE.
+
+Recordemos que
+
+$$
+\operatorname{MAE}
+=
+\frac{1}{n}
+\sum_{i=1}^{n}
+|y_i-\widehat y_i|,
+$$
+
+mientras que
+
+$$
+\operatorname{RMSE}
+=
+\sqrt{
+\frac{1}{n}
+\sum_{i=1}^{n}
+(y_i-\widehat y_i)^2
+}.
+$$
+
+```{python}
+mae_dummy = mean_absolute_error(y_train, y_pred_dummy)
+rmse_dummy = np.sqrt(
+    mean_squared_error(y_train, y_pred_dummy)
+)
+
+print(f"MAE:  {mae_dummy:.4f}")
+print(f"RMSE: {rmse_dummy:.4f}")
+```
+
+Estos valores constituyen una **baseline** muy sencilla.
+
+Nuestro Gradient Boosting debería ser capaz de mejorar claramente esta referencia.
+
+## Nuestro primer Gradient Boosting
+
+Construyamos ahora un modelo de Gradient Boosting.
+
+Comenzaremos con una configuración sencilla:
+
+```{python}
+gbr = GradientBoostingRegressor(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=2,
+    random_state=42
+)
+```
+
+Recordemos el significado de estos tres hiperparámetros:
+
+| Hiperparámetro | Interpretación |
+|---|---|
+| `n_estimators` | Número de árboles construidos secuencialmente |
+| `learning_rate` | Magnitud de la contribución de cada nuevo árbol |
+| `max_depth` | Profundidad máxima de cada árbol |
+
+Entrenamos el modelo.
+
+```{python}
+gbr.fit(X_train, y_train)
+```
+
+Y obtenemos las predicciones.
+
+```{python}
+y_pred_train = gbr.predict(X_train)
+```
+
+Calculamos nuevamente MAE y RMSE.
+
+```{python}
+mae_gbr = mean_absolute_error(y_train, y_pred_train)
+
+rmse_gbr = np.sqrt(
+    mean_squared_error(y_train, y_pred_train)
+)
+
+print(f"MAE:  {mae_gbr:.4f}")
+print(f"RMSE: {rmse_gbr:.4f}")
+```
+
+Comparemos con nuestra baseline.
+
+```{python}
+resultados = pd.DataFrame({
+    "Modelo": ["Dummy", "Gradient Boosting"],
+    "MAE": [mae_dummy, mae_gbr],
+    "RMSE": [rmse_dummy, rmse_gbr]
+})
+
+resultados
+```
+
+::: {.callout-note}
+## Cuidado con la interpretación
+
+Por ahora estamos comparando el desempeño sobre los **datos de entrenamiento**.
+
+Un menor error de entrenamiento no garantiza que el modelo generalice mejor.
+
+En la siguiente clase utilizaremos Cross-Validation para realizar una comparación mucho más adecuada.
+:::
+
+
+## ¿Cómo aprende el ensamble?
+
+Una ventaja de `GradientBoostingRegressor` es que podemos observar las predicciones después de cada etapa del ensamble.
+
+Nuestro modelo contiene $100$ árboles:
+
+```{python}
+gbr.n_estimators
+```
+
+Con `staged_predict()` podemos obtener las predicciones después de utilizar:
+
+$$
+1,2,3,\ldots,100
+$$
+
+árboles.
+
+Calcularemos el RMSE después de cada etapa.
+
+```{python}
+errores_train = []
+
+for y_pred in gbr.staged_predict(X_train):
+    rmse = np.sqrt(
+        mean_squared_error(y_train, y_pred)
+    )
+    errores_train.append(rmse)
+```
+
+Ahora graficamos el error.
+
+```{python}
+plt.figure(figsize=(8, 5))
+
+plt.plot(
+    range(1, len(errores_train) + 1),
+    errores_train
+)
+
+plt.xlabel("Número de árboles")
+plt.ylabel("RMSE de entrenamiento")
+plt.title("Evolución del error durante Gradient Boosting")
+plt.show()
+```
+
+¿Qué observamos?
+
+A medida que agregamos árboles, el ensamble intenta corregir los errores de los modelos anteriores.
+
+En términos generales, el modelo después de $m$ iteraciones tiene la forma
+
+$$
+F_m(\mathbf{x})
+=
+F_{m-1}(\mathbf{x})
++
+\eta h_m(\mathbf{x}),
+$$
+
+donde $h_m(\mathbf{x})$ representa la corrección aprendida por el nuevo árbol y $\eta$ es el *learning rate*.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿El error de entrenamiento aumenta o disminuye al agregar árboles? ¿Significa esto que siempre debemos utilizar tantos árboles como sea posible?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+
+:::
+::::
+
+
+La segunda pregunta es especialmente importante. El comportamiento sobre entrenamiento no es suficiente para decidir cuántos árboles necesitamos.
+
+## Learning rate
+
+El hiperparámetro `learning_rate` controla cuánto contribuye cada nuevo árbol al ensamble.
+
+La actualización es
+
+$$
+F_m(\mathbf{x})
+=
+F_{m-1}(\mathbf{x})
++
+\eta h_m(\mathbf{x}).
+$$
+
+Si $\eta$ es grande, cada árbol puede producir una corrección importante.
+
+Si $\eta$ es pequeño, las correcciones son más conservadoras.
+
+Comparemos tres valores:
+
+$$
+\eta\in\{1,\;0.1,\;0.01\}.
+$$
+
+Mantendremos inicialmente el mismo número de árboles.
+
+```{python}
+learning_rates = [1.0, 0.1, 0.01]
+
+modelos_lr = {}
+
+for lr in learning_rates:
+    
+    modelo = GradientBoostingRegressor(
+        n_estimators=100,
+        learning_rate=lr,
+        max_depth=2,
+        random_state=42
+    )
+    
+    modelo.fit(X_train, y_train)
+    
+    modelos_lr[lr] = modelo
+```
+
+Calculemos el RMSE de entrenamiento.
+
+```{python}
+resultados_lr = []
+
+for lr, modelo in modelos_lr.items():
+    
+    pred = modelo.predict(X_train)
+    
+    rmse = np.sqrt(
+        mean_squared_error(y_train, pred)
+    )
+    
+    resultados_lr.append({
+        "learning_rate": lr,
+        "RMSE_train": rmse
+    })
+
+pd.DataFrame(resultados_lr)
+```
+
+Pero resulta más interesante observar cómo evoluciona el error.
+
+```{python}
+plt.figure(figsize=(8, 5))
+
+for lr, modelo in modelos_lr.items():
+    
+    errores = []
+    
+    for pred in modelo.staged_predict(X_train):
+        rmse = np.sqrt(
+            mean_squared_error(y_train, pred)
+        )
+        errores.append(rmse)
+    
+    plt.plot(
+        range(1, len(errores) + 1),
+        errores,
+        label=f"learning_rate = {lr}"
+    )
+
+plt.xlabel("Número de árboles")
+plt.ylabel("RMSE de entrenamiento")
+plt.title("Efecto del learning rate")
+plt.legend()
+plt.show()
+```
+
+::: {.callout-tip}
+## Learning rate y número de árboles
+
+Un `learning_rate` pequeño no significa necesariamente un peor modelo.
+
+Significa que cada árbol contribuye menos y, por lo tanto, generalmente necesitaremos **más árboles**.
+
+Podemos pensar en la relación
+
+$$
+\text{learning rate pequeño}
+\quad\longrightarrow\quad
+\text{más árboles}.
+$$
+:::
+
+
+## Interacción entre learning rate y número de árboles
+
+Hasta ahora fijamos
+
+```text
+n_estimators = 100
+```
+
+para todos los modelos.
+
+Esto puede ser injusto para un modelo con `learning_rate=0.01`, ya que sus correcciones son mucho más pequeñas.
+
+Comparemos diferentes combinaciones.
+
+```{python}
+configuraciones = [
+    (1.0, 50),
+    (0.1, 100),
+    (0.05, 200),
+    (0.01, 500)
+]
+
+resultados = []
+
+for lr, n_arboles in configuraciones:
+    
+    modelo = GradientBoostingRegressor(
+        n_estimators=n_arboles,
+        learning_rate=lr,
+        max_depth=2,
+        random_state=42
+    )
+    
+    modelo.fit(X_train, y_train)
+    
+    pred = modelo.predict(X_train)
+    
+    rmse = np.sqrt(
+        mean_squared_error(y_train, pred)
+    )
+    
+    resultados.append({
+        "learning_rate": lr,
+        "n_estimators": n_arboles,
+        "RMSE_train": rmse
+    })
+
+pd.DataFrame(resultados)
+```
+
+Esto muestra una característica importante de los hiperparámetros:
+
+::: {.callout-important}
+## Los hiperparámetros interactúan
+
+No tiene mucho sentido buscar el ``mejor `learning_rate`'' de manera completamente independiente del número de árboles.
+
+Los hiperparámetros pueden **interactuar entre sí**.
+
+Esta observación será fundamental cuando estudiemos Grid Search y Random Search.
+:::
+
+
+
+## Complejidad de los árboles
+
+También podemos modificar la complejidad de cada árbol.
+
+En este caso utilizaremos `max_depth`.
+
+Comparemos:
+
+$$
+\texttt{max\_depth}\in\{1,2,3,5\}.
+$$
+
+```{python}
+profundidades = [1, 2, 3, 5]
+
+resultados_depth = []
+
+for depth in profundidades:
+    
+    modelo = GradientBoostingRegressor(
+        n_estimators=100,
+        learning_rate=0.1,
+        max_depth=depth,
+        random_state=42
+    )
+    
+    modelo.fit(X_train, y_train)
+    
+    pred = modelo.predict(X_train)
+    
+    rmse = np.sqrt(
+        mean_squared_error(y_train, pred)
+    )
+    
+    resultados_depth.append({
+        "max_depth": depth,
+        "RMSE_train": rmse
+    })
+
+pd.DataFrame(resultados_depth)
+```
+
+Podemos visualizar los resultados.
+
+```{python}
+df_depth = pd.DataFrame(resultados_depth)
+
+plt.figure(figsize=(7, 4))
+
+plt.plot(
+    df_depth["max_depth"],
+    df_depth["RMSE_train"],
+    marker="o"
+)
+
+plt.xlabel("max_depth")
+plt.ylabel("RMSE de entrenamiento")
+plt.title("Complejidad de los árboles")
+plt.show()
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Qué ocurre con el error de entrenamiento cuando aumentamos `max_depth`?
+¿Podemos concluir a partir de esta gráfica que debemos utilizar el árbol más profundo?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+
+:::
+::::
+
+
+
+
+Nuevamente, la respuesta es **no**.
+
+Un modelo más complejo puede disminuir el error de entrenamiento simplemente porque tiene mayor capacidad para ajustarse a los datos.
+
+Para decidir si esa complejidad realmente mejora la capacidad de generalización necesitamos evaluar el modelo sobre observaciones que no hayan participado en su entrenamiento.
+
+
+
+Hasta ahora, hemos construido un modelo de Gradient Boosting y modificado manualmente tres de sus hiperparámetros principales:
+
+$$
+\boxed{
+\texttt{learning\_rate},
+\qquad
+\texttt{n\_estimators},
+\qquad
+\texttt{max\_depth}
+}
+$$
+
+Observamos que:
+
+1. agregar árboles permite realizar correcciones sucesivas;
+2. el `learning_rate` controla la magnitud de estas correcciones;
+3. un `learning_rate` pequeño suele requerir un mayor número de árboles;
+4. árboles más profundos aumentan la capacidad del modelo;
+5. los hiperparámetros interactúan entre sí;
+6. el error de entrenamiento no es suficiente para decidir qué configuración utilizar.
+
+Esto nos deja con dos preguntas:
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+1) ¿Cómo sabemos cuándo dejar de agregar árboles?
+
+2) ¿Cómo sabemos si una configuración realmente generaliza mejor?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+
+:::
+::::
+
+
+
+Vamos a ver ahora **early stopping** y utilizaremos un conjunto de validación para observar qué ocurre con el error fuera de los datos utilizados para entrenar.
+
+
+## Entrenamiento y validación
+
+Hasta ahora hemos evaluado las diferentes configuraciones utilizando el error de entrenamiento.
+
+Esto nos permitió estudiar cómo cambia la capacidad del modelo, pero no nos permite responder una pregunta fundamental:
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Agregar más árboles realmente mejora las predicciones sobre datos que el modelo no utilizó para entrenarse?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+
+:::
+::::
+
+
+Para explorar esta pregunta dividiremos **temporalmente** nuestro conjunto de entrenamiento en dos partes:
+
+- un conjunto para entrenar los modelos;
+- un conjunto de validación para observar su comportamiento sobre datos no utilizados durante el ajuste.
+
+El conjunto `X_test` que separamos al inicio continuará reservado.
+
+```{python}
+X_train_gb, X_val, y_train_gb, y_val = train_test_split(
+    X_train,
+    y_train,
+    test_size=0.20,
+    random_state=42
+)
+
+print("Entrenamiento:", X_train_gb.shape)
+print("Validación:   ", X_val.shape)
+print("Test:         ", X_test.shape)
+```
+
+Por ahora nuestro esquema es
+
+$$
+\text{Datos}
+\longrightarrow
+\begin{cases}
+\text{Train} \\
+\text{Test reservado}
+\end{cases}
+$$
+
+y dentro del conjunto de entrenamiento hemos creado
+
+$$
+\text{Train}
+\longrightarrow
+\begin{cases}
+\text{Train GB}\\
+\text{Validation}
+\end{cases}.
+$$
+
+::: {.callout-note}
+## ¿Por qué hacemos otra división?
+
+Esta división nos servirá únicamente para introducir la idea de validación y estudiar el número de árboles.
+
+Después veremos una estrategia más robusta: **Cross-Validation**, donde no dependeremos de una única partición train--validation.
+:::
+
+
+## Error de entrenamiento vs. error de validación
+
+Entrenemos ahora un Gradient Boosting con un número relativamente grande de árboles.
+
+```{python}
+gbr_long = GradientBoostingRegressor(
+    n_estimators=500,
+    learning_rate=0.1,
+    max_depth=2,
+    random_state=42
+)
+
+gbr_long.fit(X_train_gb, y_train_gb)
+```
+
+Utilizaremos `staged_predict()` para calcular las predicciones después de cada árbol.
+
+Primero calculamos el RMSE sobre entrenamiento y validación.
+
+```{python}
+rmse_train = []
+rmse_val = []
+
+for pred_train, pred_val in zip(
+    gbr_long.staged_predict(X_train_gb),
+    gbr_long.staged_predict(X_val)
+):
+    
+    rmse_train.append(
+        np.sqrt(
+            mean_squared_error(y_train_gb, pred_train)
+        )
+    )
+    
+    rmse_val.append(
+        np.sqrt(
+            mean_squared_error(y_val, pred_val)
+        )
+    )
+```
+
+Ahora podemos visualizar ambas curvas.
+
+```{python}
+plt.figure(figsize=(9, 5))
+
+plt.plot(
+    range(1, len(rmse_train) + 1),
+    rmse_train,
+    label="Entrenamiento"
+)
+
+plt.plot(
+    range(1, len(rmse_val) + 1),
+    rmse_val,
+    label="Validación"
+)
+
+plt.xlabel("Número de árboles")
+plt.ylabel("RMSE")
+plt.title("Error de entrenamiento y validación")
+plt.legend()
+plt.show()
+```
+
+Esta gráfica contiene mucha más información que la curva de entrenamiento que observamos anteriormente.
+
+El error de entrenamiento puede continuar disminuyendo conforme aumenta el número de árboles. Sin embargo, el error de validación no necesariamente seguirá el mismo comportamiento.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Observenm la gráfica:
+
+1. ¿El RMSE de entrenamiento continúa disminuyendo?
+
+2. ¿El RMSE de validación se comporta de la misma manera?
+
+3. ¿Existe un punto a partir del cual agregar árboles produce mejoras muy pequeñas?
+
+4. ¿Observas evidencia de sobreajuste?
+
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+
+:::
+::::
+
+
+## ¿Cuál fue el mejor número de árboles?
+
+Podemos encontrar la etapa que produjo el menor RMSE de validación.
+
+```{python}
+best_n_estimators = np.argmin(rmse_val) + 1
+best_rmse_val = np.min(rmse_val)
+
+print("Mejor número de árboles:", best_n_estimators)
+print(f"Mejor RMSE de validación: {best_rmse_val:.4f}")
+```
+
+¿Por qué agregamos `+1`?
+
+`np.argmin()` devuelve la posición del valor mínimo comenzando desde cero.
+
+Por ejemplo, si
+
+```text
+np.argmin(rmse_val) = 137
+```
+
+el valor corresponde al árbol
+
+$$
+137+1=138.
+$$
+
+Podemos marcar este punto en la gráfica.
+
+```{python}
+plt.figure(figsize=(9, 5))
+
+plt.plot(
+    range(1, len(rmse_train) + 1),
+    rmse_train,
+    label="Entrenamiento"
+)
+
+plt.plot(
+    range(1, len(rmse_val) + 1),
+    rmse_val,
+    label="Validación"
+)
+
+plt.axvline(
+    best_n_estimators,
+    linestyle="--",
+    label=f"Mejor iteración = {best_n_estimators}"
+)
+
+plt.xlabel("Número de árboles")
+plt.ylabel("RMSE")
+plt.title("Selección del número de árboles")
+plt.legend()
+plt.show()
+```
+
+El número
+
+$$
+m^*
+=
+\arg\min_m
+\operatorname{RMSE}_{val}(m)
+$$
+
+nos proporciona una posible elección del número de árboles.
+
+::: {.callout-important}
+## Una diferencia fundamental
+
+El número de árboles que minimiza el **error de entrenamiento** no es necesariamente el que produce el mejor comportamiento sobre datos nuevos.
+
+Por esta razón necesitamos alguna forma de validación.
+:::
+
+## Early stopping
+
+La idea anterior conduce al concepto de **early stopping**.
+
+En lugar de continuar agregando árboles indefinidamente, podemos detener el entrenamiento cuando el desempeño sobre validación deja de mejorar.
+
+Conceptualmente buscamos una iteración $m^*$ tal que
+
+$$
+m^*
+=
+\arg\min_m
+L_{\mathrm{val}}(F_m).
+$$
+
+Una forma sencilla de hacerlo es:
+
+1. entrenar un número grande de árboles;
+2. observar el desempeño de validación en cada etapa;
+3. identificar el número adecuado de árboles;
+4. entrenar el modelo final utilizando ese número.
+
+Por ejemplo:
+
+```{python}
+gbr_early = GradientBoostingRegressor(
+    n_estimators=best_n_estimators,
+    learning_rate=0.1,
+    max_depth=2,
+    random_state=42
+)
+
+gbr_early.fit(X_train_gb, y_train_gb)
+```
+
+Evaluamos sobre validación:
+
+```{python}
+pred_val = gbr_early.predict(X_val)
+
+rmse_early = np.sqrt(
+    mean_squared_error(y_val, pred_val)
+)
+
+print(f"RMSE de validación: {rmse_early:.4f}")
+```
+
+::: {.callout-tip}
+## Early stopping
+
+La idea no es que exista un número universal de árboles adecuado.
+
+El objetivo es evitar seguir aumentando la complejidad del ensamble cuando las nuevas iteraciones ya no producen una mejora útil sobre datos de validación.
+:::
+
+### Early stopping automático en Scikit-Learn
+
+`GradientBoostingRegressor` también permite utilizar una fracción de los datos de entrenamiento para detener automáticamente el proceso.
+
+Por ejemplo:
+
+```{python}
+gbr_auto = GradientBoostingRegressor(
+    n_estimators=1000,
+    learning_rate=0.1,
+    max_depth=2,
+    validation_fraction=0.1,
+    n_iter_no_change=10,
+    tol=1e-4,
+    random_state=42
+)
+
+gbr_auto.fit(X_train, y_train)
+```
+
+Podemos consultar cuántos árboles fueron construidos realmente:
+
+```{python}
+gbr_auto.n_estimators_
+```
+
+Aquí:
+
+- `validation_fraction=0.1` reserva una fracción de los datos para validación;
+- `n_iter_no_change=10` permite detener el entrenamiento si no se observa una mejora suficiente durante varias iteraciones consecutivas;
+- `tol=1e-4` establece la tolerancia utilizada para determinar si existe una mejora.
+
+::: {.callout-note}
+Primero construimos el procedimiento manual porque permite **visualizar qué significa early stopping**.
+
+En aplicaciones reales podemos utilizar mecanismos automáticos cuando estén disponibles.
+:::
+
+
+## Stochastic Gradient Boosting
+
+Hasta ahora cada árbol ha utilizado todas las observaciones disponibles para su entrenamiento.
+
+También podemos hacer que cada árbol utilice solamente una fracción aleatoria de los datos mediante el hiperparámetro `subsample`.
+
+Por ejemplo:
+
+```{python}
+gbr_stochastic = GradientBoostingRegressor(
+    n_estimators=200,
+    learning_rate=0.1,
+    max_depth=2,
+    subsample=0.8,
+    random_state=42
+)
+
+gbr_stochastic.fit(X_train_gb, y_train_gb)
+```
+
+Con
+
+$$
+\texttt{subsample}=0.8,
+$$
+
+cada árbol utiliza una muestra que contiene aproximadamente el $80\%$ de las observaciones disponibles para esa iteración.
+
+Esta variante se conoce como **Stochastic Gradient Boosting**.
+
+La introducción de aleatoriedad puede funcionar como una forma adicional de regularización.
+
+::: {.callout-note}
+No exploraremos exhaustivamente `subsample` en esta práctica.
+
+Nuestro objetivo es reconocer que también constituye un hiperparámetro del modelo y que, al igual que `learning_rate`, `n_estimators` y `max_depth`, puede afectar su desempeño.
+:::
+
+
+
+## De Gradient Boosting a XGBoost
+
+Hasta ahora hemos utilizado la implementación clásica de Gradient Boosting disponible en `scikit-learn`.
+
+Ahora veremos una implementación moderna: **XGBoost**.
+
+XGBoost conserva la idea fundamental de construir árboles secuencialmente para mejorar el ensamble, pero incorpora mecanismos adicionales de regularización y optimizaciones computacionales.
+
+Ya vimos que su función objetivo puede representarse esquemáticamente como
+
+$$
+\mathcal{J}
+=
+\sum_{i=1}^{n}
+L(y_i,\widehat y_i)
++
+\sum_{m=1}^{M}\Omega(h_m),
+$$
+
+donde el primer término mide el error de predicción y $\Omega(h_m)$ penaliza la complejidad de los árboles.
+
+
+### Instalación
+
+XGBoost no forma parte directamente de `scikit-learn`, por lo que puede ser necesario instalarlo.
+
+Desde una terminal podemos utilizar:
+
+```bash
+pip install xgboost
+```
+
+
+
+::: {.callout-important}
+## Antes de instalar
+
+
+Podemos verificar la instalación:
+
+```{python}
+import xgboost
+
+print(xgboost.__version__)
+```
+:::
+
+
+## Nuestro primer modelo con XGBoost
+
+Importamos `XGBRegressor`.
+
+```{python}
+from xgboost import XGBRegressor
+```
+
+Construiremos primero un modelo sencillo con hiperparámetros similares a los utilizados en Gradient Boosting.
+
+```{python}
+xgb = XGBRegressor(
+    n_estimators=200,
+    learning_rate=0.1,
+    max_depth=2,
+    objective="reg:squarederror",
+    random_state=42,
+    n_jobs=-1
+)
+```
+
+Los hiperparámetros
+
+```text
+n_estimators
+learning_rate
+max_depth
+```
+
+tienen una interpretación semejante a la que ya conocemos.
+
+Entrenamos el modelo:
+
+```{python}
+xgb.fit(X_train_gb, y_train_gb)
+```
+
+Realizamos predicciones sobre validación:
+
+```{python}
+pred_xgb = xgb.predict(X_val)
+```
+
+y calculamos el error.
+
+```{python}
+mae_xgb = mean_absolute_error(y_val, pred_xgb)
+
+rmse_xgb = np.sqrt(
+    mean_squared_error(y_val, pred_xgb)
+)
+
+print(f"MAE:  {mae_xgb:.4f}")
+print(f"RMSE: {rmse_xgb:.4f}")
+```
+
+
+## Comparación inicial
+
+Comparemos nuestro Gradient Boosting con XGBoost.
+
+Para realizar una comparación razonable, entrenaremos ambos utilizando los mismos datos y los evaluaremos sobre el mismo conjunto de validación.
+
+```{python}
+gbr_compare = GradientBoostingRegressor(
+    n_estimators=200,
+    learning_rate=0.1,
+    max_depth=2,
+    random_state=42
+)
+
+gbr_compare.fit(X_train_gb, y_train_gb)
+
+pred_gbr = gbr_compare.predict(X_val)
+```
+
+Calculamos las métricas.
+
+```{python}
+resultados_comparacion = pd.DataFrame({
+    "Modelo": [
+        "Gradient Boosting",
+        "XGBoost"
+    ],
+    "MAE": [
+        mean_absolute_error(y_val, pred_gbr),
+        mean_absolute_error(y_val, pred_xgb)
+    ],
+    "RMSE": [
+        np.sqrt(mean_squared_error(y_val, pred_gbr)),
+        np.sqrt(mean_squared_error(y_val, pred_xgb))
+    ]
+})
+
+resultados_comparacion
+```
+
+::: {.callout-warning}
+## Esta todavía no es nuestra comparación final
+
+No debemos concluir que un algoritmo es mejor en general simplemente porque obtuvo un RMSE menor en esta partición.
+
+Además:
+
+- sólo estamos utilizando una partición de validación;
+- prácticamente no hemos ajustado los hiperparámetros;
+- distintas configuraciones pueden producir resultados diferentes.
+
+Utilizaremos después **Cross-Validation** para realizar comparaciones más robustas.
+:::
+
+
+## Más hiperparámetros de XGBoost
+
+XGBoost incorpora varios mecanismos adicionales para controlar la complejidad del modelo.
+
+Algunos hiperparámetros importantes son:
+
+| Hiperparámetro | Función |
+|---|---|
+| `n_estimators` | Número de árboles |
+| `learning_rate` | Contribución de cada árbol |
+| `max_depth` | Profundidad máxima |
+| `subsample` | Fracción de observaciones utilizadas por árbol |
+| `colsample_bytree` | Fracción de características utilizadas por árbol |
+| `reg_alpha` | Regularización tipo $L_1$ |
+| `reg_lambda` | Regularización tipo $L_2$ |
+
+Por ejemplo:
+
+```{python}
+xgb_reg = XGBRegressor(
+    n_estimators=300,
+    learning_rate=0.05,
+    max_depth=3,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    reg_alpha=0.1,
+    reg_lambda=1.0,
+    objective="reg:squarederror",
+    random_state=42,
+    n_jobs=-1
+)
+
+xgb_reg.fit(X_train_gb, y_train_gb)
+```
+
+Podemos calcular su RMSE:
+
+```{python}
+pred_xgb_reg = xgb_reg.predict(X_val)
+
+rmse_xgb_reg = np.sqrt(
+    mean_squared_error(y_val, pred_xgb_reg)
+)
+
+print(f"RMSE: {rmse_xgb_reg:.4f}")
+```
+
+Ahora aparece un problema evidente.
+
+Tenemos que decidir valores para:
+
+$$
+\texttt{learning\_rate},
+$$
+
+$$
+\texttt{n\_estimators},
+$$
+
+$$
+\texttt{max\_depth},
+$$
+
+$$
+\texttt{subsample},
+$$
+
+$$
+\texttt{colsample\_bytree},
+$$
+
+$$
+\texttt{reg\_alpha},
+$$
+
+$$
+\texttt{reg\_lambda}.
+$$
+
+Probar manualmente todas las posibilidades rápidamente se vuelve poco práctico.
+
+::: {.callout-tip}
+
+Hasta ahora hemos seleccionado hiperparámetros de forma manual.
+
+La siguiente pregunta es:
+
+> **¿Cómo podemos buscar buenas combinaciones de hiperparámetros de manera sistemática?**
+
+Para responderla utilizaremos **Cross-Validation, Grid Search y Random Search**.
+:::
+
+
+## Ejercicio
+
+Vamos a experimentar con el modelo `GradientBoostingRegressor` con los mismos datos.
+
+Considera las siguientes configuraciones:
+
+| Modelo | `learning_rate` | `n_estimators` | `max_depth` |
+|---|---:|---:|---:|
+| A | 0.1 | 100 | 2 |
+| B | 0.05 | 200 | 2 |
+| C | 0.01 | 500 | 2 |
+| D | 0.1 | 100 | 4 |
+
+### Parte 1
+
+Entrena los cuatro modelos utilizando `X_train_gb` y `y_train_gb`.
+
+Completa el siguiente código.
+
+```{python}
+configuraciones = [
+    # ("A", ..., ..., ...),
+    # ("B", ..., ..., ...),
+    # ("C", ..., ..., ...),
+    # ("D", ..., ..., ...)
+]
+```
+
+Para cada configuración:
+
+1. entrena un `GradientBoostingRegressor`;
+2. calcula el RMSE de entrenamiento;
+3. calcula el RMSE de validación;
+4. guarda los resultados en un `DataFrame`.
+
+Tu tabla debe tener una estructura similar a:
+
+| Modelo | learning rate | n estimators | max depth | RMSE train | RMSE validation |
+|---|---:|---:|---:|---:|---:|
+| A | | | | | |
+| B | | | | | |
+| C | | | | | |
+| D | | | | | |
+
+
+### Parte 2
+
+Responde brevemente:
+
+1. ¿Cuál configuración obtiene el menor error de entrenamiento?
+2. ¿Coincide con la configuración que obtiene el menor error de validación?
+3. Compara A, B y C. ¿Qué observas sobre la relación entre `learning_rate` y `n_estimators`?
+4. ¿Qué efecto observas al aumentar `max_depth` de 2 a 4?
+5. ¿Por qué no deberíamos utilizar `X_test` para decidir cuál de estas cuatro configuraciones conservar?
+
+::: {.callout-important}
+## No utilices el conjunto de prueba
+
+Para este ejercicio debes trabajar únicamente con
+
+```text
+X_train_gb
+y_train_gb
+X_val
+y_val
+```
+
+No utilices `X_test` ni `y_test`.
+
+Los reservaremos para la evaluación final más adelante.
+:::
+
