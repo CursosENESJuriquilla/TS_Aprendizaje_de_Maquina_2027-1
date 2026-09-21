@@ -1,0 +1,1858 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# GAMs: Modelos Aditivos Generalizados\n",
+        "\n",
+        "Hasta ahora hemos estudiado diferentes maneras de introducir no linealidad cuando tenemos una variable predictora.\n",
+        "\n",
+        "Entre ellas:\n",
+        "\n",
+        "- regresión polinomial;\n",
+        "- splines;\n",
+        "- smoothing splines;\n",
+        "- regresión local.\n",
+        "\n",
+        "Los **Modelos Aditivos Generalizados**, o GAMs, permiten extender estas ideas al caso en el que tenemos varias variables predictoras.\n",
+        "\n",
+        "La idea fundamental es reemplazar los términos lineales de una regresión múltiple por funciones flexibles.\n",
+        "\n",
+        "En una regresión lineal múltiple tenemos\n",
+        "\n",
+        "$$Y_i\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "\\beta_1X_{i1}\n",
+        "+\n",
+        "\\beta_2X_{i2}\n",
+        "+\\cdots+\n",
+        "\\beta_pX_{ip}\n",
+        "+\n",
+        "\\varepsilon_i.$$\n",
+        "\n",
+        "En un GAM escribimos\n",
+        "\n",
+        "$$Y_i\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(X_{i1})\n",
+        "+\n",
+        "f_2(X_{i2})\n",
+        "+\\cdots+\n",
+        "f_p(X_{ip})\n",
+        "+\n",
+        "\\varepsilon_i.$$\n",
+        "\n",
+        "Cada función $f_j$ puede tener una forma diferente.\n",
+        "\n",
+        "::::: diapositivas\n",
+        "::: diapositivas-title\n",
+        "📝 **Diapositivas**\n",
+        ":::\n",
+        "\n",
+        "::: diapositivas-body\n",
+        "[Ver diapositivas GAMs](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/2.8_GAMs.pdf)\n",
+        ":::\n",
+        ":::::\n",
+        "\n",
+        "## Preparación\n",
+        "\n",
+        "Utilizaremos nuevamente el conjunto de datos `Wage`."
+      ],
+      "id": "09b1b69f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "\n",
+        "from ISLP import load_data\n",
+        "\n",
+        "from pygam import LinearGAM, LogisticGAM, s, l, f"
+      ],
+      "id": "51d4cdd2",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Cargamos los datos."
+      ],
+      "id": "cdb0566d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "Wage = load_data(\"Wage\")"
+      ],
+      "id": "eca622d4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Revisamos las primeras observaciones."
+      ],
+      "id": "a3c2041c"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "Wage.head()"
+      ],
+      "id": "7101debf",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Nos interesarán principalmente:\n",
+        "\n",
+        "- `age`: edad;\n",
+        "- `year`: año;\n",
+        "- `education`: nivel educativo;\n",
+        "- `wage`: salario.\n",
+        "\n",
+        "## Preparar las variables\n",
+        "\n",
+        "`pygam` espera que la matriz de predictores sea bidimensional.\n",
+        "\n",
+        "Además, para una variable categórica como `education`, necesitamos una representación numérica.\n",
+        "\n",
+        "Primero revisamos sus categorías."
+      ],
+      "id": "6330f857"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "Wage[\"education\"].cat.categories"
+      ],
+      "id": "63b9665e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos obtener códigos enteros con:"
+      ],
+      "id": "b69cb943"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "education_code = Wage[\"education\"].cat.codes"
+      ],
+      "id": "fbdb9373",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Construimos la matriz de predictores."
+      ],
+      "id": "ea45caab"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X = np.column_stack([\n",
+        "    Wage[\"age\"],\n",
+        "    Wage[\"year\"],\n",
+        "    education_code\n",
+        "])\n",
+        "\n",
+        "y = Wage[\"wage\"].to_numpy()"
+      ],
+      "id": "61227d92",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Revisamos las dimensiones."
+      ],
+      "id": "460a03bd"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X.shape"
+      ],
+      "id": "d401e0a3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "La matriz tiene tres columnas:\n",
+        "\n",
+        "$$X_1=\\text{age},\n",
+        "\\qquad\n",
+        "X_2=\\text{year},\n",
+        "\\qquad\n",
+        "X_3=\\text{education}.$$\n",
+        "\n",
+        "## Nuestro primer GAM\n",
+        "\n",
+        "Consideremos el modelo\n",
+        "\n",
+        "$$\\text{wage}\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(\\text{age})\n",
+        "+\n",
+        "f_2(\\text{year})\n",
+        "+\n",
+        "f_3(\\text{education})\n",
+        "+\n",
+        "\\varepsilon.$$\n",
+        "\n",
+        "Utilizaremos:\n",
+        "\n",
+        "- un término suavizado para `age`;\n",
+        "- un término suavizado para `year`;\n",
+        "- un término categórico para `education`.\n",
+        "\n",
+        "En `pygam` podemos escribir:"
+      ],
+      "id": "1794eec7"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gam = LinearGAM(\n",
+        "    s(0) +\n",
+        "    s(1) +\n",
+        "    f(2)\n",
+        ")"
+      ],
+      "id": "02626b49",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Aquí:\n",
+        "\n",
+        "- `s(0)` aplica un suavizador a la primera columna;\n",
+        "- `s(1)` aplica un suavizador a la segunda columna;\n",
+        "- `f(2)` trata la tercera columna como una variable categórica.\n",
+        "\n",
+        "Ajustamos el modelo."
+      ],
+      "id": "c3712858"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gam.fit(X, y)"
+      ],
+      "id": "ec50923e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## ¿Qué significa cada término?\n",
+        "\n",
+        "Nuestro modelo tiene la forma\n",
+        "\n",
+        "$$\\hat y\n",
+        "=\n",
+        "\\hat\\beta_0\n",
+        "+\n",
+        "\\hat f_1(\\text{age})\n",
+        "+\n",
+        "\\hat f_2(\\text{year})\n",
+        "+\n",
+        "\\hat f_3(\\text{education}).$$\n",
+        "\n",
+        "Esto significa que la predicción se construye sumando contribuciones separadas.\n",
+        "\n",
+        "Por ejemplo:\n",
+        "\n",
+        "$$\\hat y\n",
+        "=\n",
+        "\\text{intercepto}\n",
+        "+\n",
+        "\\text{efecto de age}\n",
+        "+\n",
+        "\\text{efecto de year}\n",
+        "+\n",
+        "\\text{efecto de education}.$$\n",
+        "\n",
+        "La palabra **aditivo** proviene precisamente de esta estructura.\n",
+        "\n",
+        "## Efecto parcial de `age`\n",
+        "\n",
+        "Una de las principales ventajas de los GAMs es que podemos examinar el efecto de cada predictor por separado.\n",
+        "\n",
+        "Construimos una malla para el término correspondiente a `age`."
+      ],
+      "id": "c507ed37"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "XX = gam.generate_X_grid(\n",
+        "    term=0\n",
+        ")"
+      ],
+      "id": "5f8eb76e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Calculamos el efecto parcial."
+      ],
+      "id": "3af0140f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "partial_age = gam.partial_dependence(\n",
+        "    term=0,\n",
+        "    X=XX\n",
+        ")"
+      ],
+      "id": "772982a5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "También podemos obtener intervalos de confianza."
+      ],
+      "id": "c6e0dc1e"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pdep_age, confi_age = gam.partial_dependence(\n",
+        "    term=0,\n",
+        "    X=XX,\n",
+        "    width=0.95\n",
+        ")"
+      ],
+      "id": "9a2ae33b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Visualizamos el efecto."
+      ],
+      "id": "961427b2"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.plot(\n",
+        "    XX[:, 0],\n",
+        "    pdep_age,\n",
+        "    linewidth=3\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    XX[:, 0],\n",
+        "    confi_age[:, 0],\n",
+        "    linestyle=\"--\"\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    XX[:, 0],\n",
+        "    confi_age[:, 1],\n",
+        "    linestyle=\"--\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Efecto parcial sobre wage\")\n",
+        "plt.title(\"Efecto parcial de age\")\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "79f2601c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### ¿Cómo interpretar esta gráfica?\n",
+        "\n",
+        "La curva representa la contribución estimada de `age` al salario.\n",
+        "\n",
+        "No representa directamente el salario esperado.\n",
+        "\n",
+        "Representa\n",
+        "\n",
+        "$$\\hat f_1(\\text{age}),$$\n",
+        "\n",
+        "es decir, la contribución de la edad después de considerar simultáneamente los demás términos del modelo.\n",
+        "\n",
+        "::: callout-note\n",
+        "Un valor positivo de $\\hat f_1(\\text{age})$ indica que esa edad contribuye a aumentar la predicción respecto al nivel promedio del modelo.\n",
+        "\n",
+        "Un valor negativo indica una contribución en sentido contrario.\n",
+        ":::\n",
+        "\n",
+        "## Efecto parcial de `year`\n",
+        "\n",
+        "Repetimos el procedimiento para `year`."
+      ],
+      "id": "f3e091b9"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "XX_year = gam.generate_X_grid(\n",
+        "    term=1\n",
+        ")"
+      ],
+      "id": "5f56e504",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pdep_year, confi_year = gam.partial_dependence(\n",
+        "    term=1,\n",
+        "    X=XX_year,\n",
+        "    width=0.95\n",
+        ")"
+      ],
+      "id": "67af2960",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.plot(\n",
+        "    XX_year[:, 1],\n",
+        "    pdep_year,\n",
+        "    linewidth=3\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    XX_year[:, 1],\n",
+        "    confi_year[:, 0],\n",
+        "    linestyle=\"--\"\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    XX_year[:, 1],\n",
+        "    confi_year[:, 1],\n",
+        "    linestyle=\"--\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Año\")\n",
+        "plt.ylabel(\"Efecto parcial sobre wage\")\n",
+        "plt.title(\"Efecto parcial de year\")\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "fc2e05a8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿El efecto de `year` parece claramente no lineal?\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Discusión\n",
+        "\n",
+        "Es posible que el efecto de `year` tenga una forma bastante cercana a una recta.\n",
+        "\n",
+        "Esto plantea una pregunta importante:\n",
+        "\n",
+        "> ¿Realmente necesitamos un término no lineal para `year`?\n",
+        "\n",
+        "Más adelante compararemos modelos para responderlo.\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "## Efecto de una variable categórica\n",
+        "\n",
+        "El término\n",
+        "\n",
+        "``` python\n",
+        "f(2)\n",
+        "```\n",
+        "\n",
+        "corresponde a `education`.\n",
+        "\n",
+        "A diferencia de `age` y `year`, `education` no es una variable continua. Por tanto, no queremos construir una curva sobre una malla de muchos valores.\n",
+        "\n",
+        "Queremos estimar una contribución para **cada nivel educativo**.\n",
+        "\n",
+        "Primero revisamos las categorías."
+      ],
+      "id": "7c97591d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "education_levels = Wage[\"education\"].cat.categories\n",
+        "\n",
+        "education_levels"
+      ],
+      "id": "4e68d3aa",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Recordemos que `pygam` trabaja con los códigos numéricos de estas categorías:"
+      ],
+      "id": "599c01f1"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "education_codes = np.arange(len(education_levels))\n",
+        "\n",
+        "education_codes"
+      ],
+      "id": "9ad22b7f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora construiremos una matriz con una fila para cada nivel educativo.\n",
+        "\n",
+        "Mantendremos `age` y `year` en valores representativos y cambiaremos únicamente `education`."
+      ],
+      "id": "ae793d0c"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_education = np.column_stack([\n",
+        "    np.repeat(Wage[\"age\"].mean(), len(education_levels)),\n",
+        "    np.repeat(Wage[\"year\"].mean(), len(education_levels)),\n",
+        "    education_codes\n",
+        "])"
+      ],
+      "id": "429fe75c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos revisar la matriz."
+      ],
+      "id": "66d74a0c"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_education"
+      ],
+      "id": "d719adc8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Cada fila corresponde a un nivel educativo distinto, mientras que `age` y `year` permanecen constantes.\n",
+        "\n",
+        "Calculamos ahora el efecto parcial del término categórico."
+      ],
+      "id": "0ec24b92"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pdep_education, confi_education = gam.partial_dependence(\n",
+        "    term=2,\n",
+        "    X=X_education,\n",
+        "    width=0.95\n",
+        ")"
+      ],
+      "id": "3d1396ff",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos revisar los resultados."
+      ],
+      "id": "58c37779"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pdep_education"
+      ],
+      "id": "f16121be",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora tenemos exactamente un valor por cada nivel educativo."
+      ],
+      "id": "c2fae6b1"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "len(education_levels), len(pdep_education)"
+      ],
+      "id": "5081c816",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Representamos las contribuciones."
+      ],
+      "id": "974062e2"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(10, 6))\n",
+        "\n",
+        "x_pos = np.arange(len(education_levels))\n",
+        "\n",
+        "plt.errorbar(\n",
+        "    x_pos,\n",
+        "    pdep_education,\n",
+        "    yerr=[\n",
+        "        pdep_education - confi_education[:, 0],\n",
+        "        confi_education[:, 1] - pdep_education\n",
+        "    ],\n",
+        "    fmt=\"o\",\n",
+        "    capsize=4\n",
+        ")\n",
+        "\n",
+        "plt.axhline(\n",
+        "    y=0,\n",
+        "    linestyle=\"--\",\n",
+        "    alpha=0.5\n",
+        ")\n",
+        "\n",
+        "plt.xticks(\n",
+        "    x_pos,\n",
+        "    education_levels,\n",
+        "    rotation=45,\n",
+        "    ha=\"right\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Nivel educativo\")\n",
+        "plt.ylabel(\"Efecto parcial sobre wage\")\n",
+        "plt.title(\"Efecto parcial de education\")\n",
+        "\n",
+        "plt.tight_layout()\n",
+        "plt.show()"
+      ],
+      "id": "f00e07d1",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## ¿Cómo interpretar esta gráfica?\n",
+        "\n",
+        "Cada punto representa la contribución estimada de un nivel educativo al modelo.\n",
+        "\n",
+        "Es decir, estamos visualizando\n",
+        "\n",
+        "$$\\hat f_3(\\text{education}).$$\n",
+        "\n",
+        "Un valor mayor indica una contribución más positiva a la predicción de `wage`, una vez considerados simultáneamente los efectos de `age` y `year`.\n",
+        "\n",
+        "::: callout-note\n",
+        "El eje vertical representa el **efecto parcial**, no el salario predicho directamente.\n",
+        "\n",
+        "El salario estimado completo se obtiene sumando\n",
+        "\n",
+        "$$\\hat y\n",
+        "=\n",
+        "\\hat\\beta_0\n",
+        "+\n",
+        "\\hat f_1(\\text{age})\n",
+        "+\n",
+        "\\hat f_2(\\text{year})\n",
+        "+\n",
+        "\\hat f_3(\\text{education}).$$\n",
+        ":::\n",
+        "\n",
+        "## Interpretar el modelo de manera conjunta\n",
+        "\n",
+        "Recordemos que el modelo es\n",
+        "\n",
+        "$$\\hat y\n",
+        "=\n",
+        "\\hat\\beta_0\n",
+        "+\n",
+        "\\hat f_1(\\text{age})\n",
+        "+\n",
+        "\\hat f_2(\\text{year})\n",
+        "+\n",
+        "\\hat f_3(\\text{education}).$$\n",
+        "\n",
+        "Supongamos conceptualmente que para una persona obtenemos\n",
+        "\n",
+        "$$\\hat\\beta_0=100,$$\n",
+        "\n",
+        "$$\\hat f_1(\\text{age})=15,$$\n",
+        "\n",
+        "$$\\hat f_2(\\text{year})=5,$$\n",
+        "\n",
+        "$$\\hat f_3(\\text{education})=20.$$\n",
+        "\n",
+        "Entonces\n",
+        "\n",
+        "$$\\hat y\n",
+        "=\n",
+        "100+15+5+20\n",
+        "=\n",
+        "140.$$\n",
+        "\n",
+        "Cada término aporta una contribución separada.\n",
+        "\n",
+        "## Predicciones con el GAM\n",
+        "\n",
+        "Una vez ajustado el modelo podemos hacer predicciones."
+      ],
+      "id": "15857a9a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "y_hat = gam.predict(X)"
+      ],
+      "id": "f896e2e7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos comparar valores observados y predichos."
+      ],
+      "id": "58cd7453"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(7, 7))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    y,\n",
+        "    y_hat,\n",
+        "    alpha=0.4\n",
+        ")\n",
+        "\n",
+        "min_val = min(y.min(), y_hat.min())\n",
+        "max_val = max(y.max(), y_hat.max())\n",
+        "\n",
+        "plt.plot(\n",
+        "    [min_val, max_val],\n",
+        "    [min_val, max_val],\n",
+        "    linestyle=\"--\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Wage observado\")\n",
+        "plt.ylabel(\"Wage predicho\")\n",
+        "plt.title(\"Valores observados vs. predichos\")\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "62318669",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Si las predicciones fueran perfectas, todos los puntos caerían sobre la diagonal.\n",
+        "\n",
+        "## ¿Necesitamos que todos los términos sean no lineales?\n",
+        "\n",
+        "Un GAM no obliga a que todos los predictores sean suavizados.\n",
+        "\n",
+        "Podemos combinar términos lineales y no lineales.\n",
+        "\n",
+        "Por ejemplo,\n",
+        "\n",
+        "$$\\text{wage}\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(\\text{age})\n",
+        "+\n",
+        "\\beta_2\\text{year}\n",
+        "+\n",
+        "f_3(\\text{education})\n",
+        "+\n",
+        "\\varepsilon.$$\n",
+        "\n",
+        "En `pygam`:"
+      ],
+      "id": "d20d15a8"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gam_year_linear = LinearGAM(\n",
+        "    s(0) +\n",
+        "    l(1) +\n",
+        "    f(2)\n",
+        ")"
+      ],
+      "id": "eff81d70",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ajustamos el modelo."
+      ],
+      "id": "8d58df42"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gam_year_linear.fit(X, y)"
+      ],
+      "id": "3084a589",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora `age` sigue teniendo una relación flexible, pero `year` entra linealmente.\n",
+        "\n",
+        "## Tres modelos para estudiar `year`\n",
+        "\n",
+        "Podemos comparar tres posibilidades.\n",
+        "\n",
+        "### Modelo 1: sin `year`\n",
+        "\n",
+        "$$\\text{wage}\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(\\text{age})\n",
+        "+\n",
+        "f_3(\\text{education})\n",
+        "+\n",
+        "\\varepsilon.$$"
+      ],
+      "id": "88972d24"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gam_no_year = LinearGAM(\n",
+        "    s(0) +\n",
+        "    f(2)\n",
+        ")\n",
+        "\n",
+        "gam_no_year.fit(X, y)"
+      ],
+      "id": "17f1ae46",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Modelo 2: `year` lineal\n",
+        "\n",
+        "$$\\text{wage}\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(\\text{age})\n",
+        "+\n",
+        "\\beta_2\\text{year}\n",
+        "+\n",
+        "f_3(\\text{education})\n",
+        "+\n",
+        "\\varepsilon.$$"
+      ],
+      "id": "c7cb3410"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gam_year_linear = LinearGAM(\n",
+        "    s(0) +\n",
+        "    l(1) +\n",
+        "    f(2)\n",
+        ")\n",
+        "\n",
+        "gam_year_linear.fit(X, y)"
+      ],
+      "id": "c633b69c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Modelo 3: `year` suavizado\n",
+        "\n",
+        "$$\\text{wage}\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(\\text{age})\n",
+        "+\n",
+        "f_2(\\text{year})\n",
+        "+\n",
+        "f_3(\\text{education})\n",
+        "+\n",
+        "\\varepsilon.$$"
+      ],
+      "id": "1bfc7f2b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gam_year_smooth = LinearGAM(\n",
+        "    s(0) +\n",
+        "    s(1) +\n",
+        "    f(2)\n",
+        ")\n",
+        "\n",
+        "gam_year_smooth.fit(X, y)"
+      ],
+      "id": "a97418cb",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Comparación de modelos\n",
+        "\n",
+        "Podemos comparar la calidad de ajuste utilizando criterios como AIC."
+      ],
+      "id": "7ffc38e7"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "comparison = pd.DataFrame({\n",
+        "    \"Modelo\": [\n",
+        "        \"Sin year\",\n",
+        "        \"Year lineal\",\n",
+        "        \"Year suavizado\"\n",
+        "    ],\n",
+        "    \"AIC\": [\n",
+        "        gam_no_year.statistics_[\"AIC\"],\n",
+        "        gam_year_linear.statistics_[\"AIC\"],\n",
+        "        gam_year_smooth.statistics_[\"AIC\"]\n",
+        "    ]\n",
+        "})\n",
+        "\n",
+        "comparison"
+      ],
+      "id": "59a52bb9",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Recordemos que, en términos generales, un AIC más pequeño indica un mejor compromiso entre ajuste y complejidad.\n",
+        "\n",
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Preguntas\n",
+        "\n",
+        "1.  ¿Mejora el modelo al incluir `year`?\n",
+        "2.  ¿Vale la pena modelar `year` de manera no lineal?\n",
+        "3.  ¿El aumento en flexibilidad produce una mejora importante?\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Solución\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "## Una observación sobre ANOVA en GAMs\n",
+        "\n",
+        "En el libro se comparan modelos mediante pruebas tipo ANOVA.\n",
+        "\n",
+        "La idea conceptual es muy importante:\n",
+        "\n",
+        "podemos comparar modelos anidados para evaluar si un predictor\n",
+        "\n",
+        "- debe excluirse;\n",
+        "- debe aparecer linealmente;\n",
+        "- necesita un efecto no lineal.\n",
+        "\n",
+        "Conceptualmente podemos comparar\n",
+        "\n",
+        "$$M_1:\n",
+        "\\quad\n",
+        "Y\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(X_1)\n",
+        "+\n",
+        "f_3(X_3)\n",
+        "+\n",
+        "\\varepsilon,$$\n",
+        "\n",
+        "contra\n",
+        "\n",
+        "$$M_2:\n",
+        "\\quad\n",
+        "Y\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(X_1)\n",
+        "+\n",
+        "\\beta_2X_2\n",
+        "+\n",
+        "f_3(X_3)\n",
+        "+\n",
+        "\\varepsilon,$$\n",
+        "\n",
+        "y posteriormente contra\n",
+        "\n",
+        "$$M_3:\n",
+        "\\quad\n",
+        "Y\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(X_1)\n",
+        "+\n",
+        "f_2(X_2)\n",
+        "+\n",
+        "f_3(X_3)\n",
+        "+\n",
+        "\\varepsilon.$$\n",
+        "\n",
+        "La primera pregunta:\n",
+        "\n",
+        "::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿Aporta información $X_2$?\n",
+        ":::\n",
+        "\n",
+        "La segunda pregunta:\n",
+        "\n",
+        "::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿Necesitamos que el efecto de $X_2$ sea no lineal?\n",
+        ":::\n",
+        "\n",
+        "Nosotros utilizaremos principalmente criterios de ajuste y visualización, pero la lógica de comparación de modelos es la misma.\n",
+        "\n",
+        "### ¿Qué ocurre con `age`?\n",
+        "\n",
+        "Podemos hacer exactamente el mismo razonamiento para `age`.\n",
+        "\n",
+        "Consideremos:\n",
+        "\n",
+        "$$M_1:\n",
+        "\\quad\n",
+        "\\text{sin age},$$\n",
+        "\n",
+        "$$M_2:\n",
+        "\\quad\n",
+        "\\text{age lineal},$$\n",
+        "\n",
+        "$$M_3:\n",
+        "\\quad\n",
+        "\\text{age suavizado}.$$"
+      ],
+      "id": "c0f9af5d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gam_no_age = LinearGAM(\n",
+        "    s(1) +\n",
+        "    f(2)\n",
+        ").fit(X, y)\n",
+        "\n",
+        "gam_age_linear = LinearGAM(\n",
+        "    l(0) +\n",
+        "    s(1) +\n",
+        "    f(2)\n",
+        ").fit(X, y)\n",
+        "\n",
+        "gam_age_smooth = LinearGAM(\n",
+        "    s(0) +\n",
+        "    s(1) +\n",
+        "    f(2)\n",
+        ").fit(X, y)"
+      ],
+      "id": "1c0c4e57",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Comparamos."
+      ],
+      "id": "4f082700"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "comparison_age = pd.DataFrame({\n",
+        "    \"Modelo\": [\n",
+        "        \"Sin age\",\n",
+        "        \"Age lineal\",\n",
+        "        \"Age suavizado\"\n",
+        "    ],\n",
+        "    \"AIC\": [\n",
+        "        gam_no_age.statistics_[\"AIC\"],\n",
+        "        gam_age_linear.statistics_[\"AIC\"],\n",
+        "        gam_age_smooth.statistics_[\"AIC\"]\n",
+        "    ]\n",
+        "})\n",
+        "\n",
+        "comparison_age"
+      ],
+      "id": "8f9bd92d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿La evidencia a favor de un efecto no lineal de `age` parece más fuerte que para `year`?\n",
+        ":::\n",
+        "\n",
+        "## GAMs para clasificación\n",
+        "\n",
+        "Los GAMs también pueden utilizarse cuando la respuesta es binaria.\n",
+        "\n",
+        "Construiremos una variable que indique si el salario es superior a 250."
+      ],
+      "id": "da71db5d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "high_earn = (\n",
+        "    Wage[\"wage\"] > 250\n",
+        ").astype(int)"
+      ],
+      "id": "83f28ba9",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos revisar la frecuencia de ambas clases."
+      ],
+      "id": "ad05f069"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "high_earn.value_counts()"
+      ],
+      "id": "0777c2b9",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Nuestro objetivo es modelar\n",
+        "\n",
+        "$$P(\n",
+        "\\text{wage}>250\n",
+        "\\mid\n",
+        "\\text{age},\n",
+        "\\text{year},\n",
+        "\\text{education}\n",
+        ").$$\n",
+        "\n",
+        "## GAM logístico\n",
+        "\n",
+        "En regresión logística tradicional tenemos\n",
+        "\n",
+        "$$\\log\n",
+        "\\left(\n",
+        "\\frac{p(X)}{1-p(X)}\n",
+        "\\right)\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "\\beta_1X_1\n",
+        "+\\cdots+\n",
+        "\\beta_pX_p.$$\n",
+        "\n",
+        "En un GAM logístico reemplazamos algunos términos lineales por funciones flexibles:\n",
+        "\n",
+        "$$\\log\n",
+        "\\left(\n",
+        "\\frac{p(X)}{1-p(X)}\n",
+        "\\right)\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(X_1)\n",
+        "+\n",
+        "f_2(X_2)\n",
+        "+\\cdots+\n",
+        "f_p(X_p).$$\n",
+        "\n",
+        "Ajustamos:"
+      ],
+      "id": "7cb10d29"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gam_logit = LogisticGAM(\n",
+        "    s(0) +\n",
+        "    s(1) +\n",
+        "    f(2)\n",
+        ")"
+      ],
+      "id": "0a08fe41",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gam_logit.fit(\n",
+        "    X,\n",
+        "    high_earn\n",
+        ")"
+      ],
+      "id": "6484087f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Un problema con categorías poco representadas\n",
+        "\n",
+        "Antes de interpretar el modelo, conviene revisar la relación entre `education` y la respuesta."
+      ],
+      "id": "3c0158b1"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pd.crosstab(\n",
+        "    Wage[\"education\"],\n",
+        "    high_earn\n",
+        ")"
+      ],
+      "id": "4f938ecd",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Puede ocurrir que alguna categoría no contenga observaciones de una de las clases.\n",
+        "\n",
+        "Por ejemplo, si en un determinado nivel educativo no existen individuos con\n",
+        "\n",
+        "$$\\text{wage}>250,$$\n",
+        "\n",
+        "el modelo puede tener dificultades para estimar adecuadamente el efecto de esa categoría.\n",
+        "\n",
+        "Este fenómeno está relacionado con problemas de **separación** en modelos logísticos.\n",
+        "\n",
+        "## Ajuste restringido\n",
+        "\n",
+        "Para evitar ese problema podemos excluir una categoría sin observaciones positivas."
+      ],
+      "id": "51fa189b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "mask = (\n",
+        "    Wage[\"education\"] !=\n",
+        "    Wage[\"education\"].cat.categories[0]\n",
+        ")\n",
+        "\n",
+        "Wage_sub = Wage.loc[mask].copy()"
+      ],
+      "id": "3e77d658",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Reconstruimos las variables."
+      ],
+      "id": "8a1953c8"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "education_sub = (\n",
+        "    Wage_sub[\"education\"]\n",
+        "    .cat.remove_unused_categories()\n",
+        "    .cat.codes\n",
+        ")\n",
+        "\n",
+        "X_sub = np.column_stack([\n",
+        "    Wage_sub[\"age\"],\n",
+        "    Wage_sub[\"year\"],\n",
+        "    education_sub\n",
+        "])\n",
+        "\n",
+        "high_earn_sub = (\n",
+        "    Wage_sub[\"wage\"] > 250\n",
+        ").astype(int)"
+      ],
+      "id": "e71df0e8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ajustamos nuevamente."
+      ],
+      "id": "6283e4c2"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gam_logit_sub = LogisticGAM(\n",
+        "    s(0) +\n",
+        "    s(1) +\n",
+        "    f(2)\n",
+        ")\n",
+        "\n",
+        "gam_logit_sub.fit(\n",
+        "    X_sub,\n",
+        "    high_earn_sub\n",
+        ")"
+      ],
+      "id": "fa54bbf8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Efecto parcial de `age` en clasificación"
+      ],
+      "id": "62183c43"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "XX_age_logit = gam_logit_sub.generate_X_grid(\n",
+        "    term=0\n",
+        ")\n",
+        "\n",
+        "pdep_age_logit, confi_age_logit = gam_logit_sub.partial_dependence(\n",
+        "    term=0,\n",
+        "    X=XX_age_logit,\n",
+        "    width=0.95\n",
+        ")"
+      ],
+      "id": "e1989dc4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 6))\n",
+        "\n",
+        "plt.plot(\n",
+        "    XX_age_logit[:, 0],\n",
+        "    pdep_age_logit,\n",
+        "    linewidth=3\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    XX_age_logit[:, 0],\n",
+        "    confi_age_logit[:, 0],\n",
+        "    linestyle=\"--\"\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    XX_age_logit[:, 0],\n",
+        "    confi_age_logit[:, 1],\n",
+        "    linestyle=\"--\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Edad\")\n",
+        "plt.ylabel(\"Efecto parcial\")\n",
+        "plt.title(\n",
+        "    \"Efecto parcial de age sobre la clasificación\"\n",
+        ")\n",
+        "\n",
+        "plt.show()"
+      ],
+      "id": "793190d6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Importante\n",
+        "\n",
+        "En un GAM logístico, el eje vertical no representa directamente una probabilidad.\n",
+        "\n",
+        "La función contribuye a\n",
+        "\n",
+        "$$\\log\n",
+        "\\left(\n",
+        "\\frac{p}{1-p}\n",
+        "\\right).$$\n",
+        "\n",
+        "Por tanto, debemos interpretar principalmente la forma de la curva:\n",
+        "\n",
+        "- regiones donde la contribución aumenta;\n",
+        "- regiones donde disminuye;\n",
+        "- cambios no lineales;\n",
+        "- regiones con mayor incertidumbre.\n",
+        "\n",
+        "## Probabilidades predichas\n",
+        "\n",
+        "Podemos obtener probabilidades directamente con:"
+      ],
+      "id": "453948c8"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "probabilities = gam_logit_sub.predict_proba(\n",
+        "    X_sub\n",
+        ")"
+      ],
+      "id": "f51ffcd8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Revisamos algunas."
+      ],
+      "id": "717a9f64"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "probabilities[:10]"
+      ],
+      "id": "0d06fca7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Estas sí corresponden a valores entre 0 y 1.\n",
+        "\n",
+        "## Clasificación\n",
+        "\n",
+        "También podemos producir clases predichas."
+      ],
+      "id": "21e596bc"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "predicted_class = gam_logit_sub.predict(\n",
+        "    X_sub\n",
+        ")"
+      ],
+      "id": "3f316db0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos construir una tabla de contingencia."
+      ],
+      "id": "1ea506c7"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pd.crosstab(\n",
+        "    high_earn_sub,\n",
+        "    predicted_class,\n",
+        "    rownames=[\"Real\"],\n",
+        "    colnames=[\"Predicho\"]\n",
+        ")"
+      ],
+      "id": "27ec204e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## ¿Qué hemos ganado con un GAM?\n",
+        "\n",
+        "Consideremos nuevamente el modelo\n",
+        "\n",
+        "$$Y\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(X_1)\n",
+        "+\n",
+        "f_2(X_2)\n",
+        "+\n",
+        "f_3(X_3)\n",
+        "+\n",
+        "\\varepsilon.$$\n",
+        "\n",
+        "Un GAM nos permite:\n",
+        "\n",
+        "- conservar una estructura parecida a una regresión;\n",
+        "- permitir relaciones no lineales;\n",
+        "- mezclar predictores lineales y no lineales;\n",
+        "- incorporar variables categóricas;\n",
+        "- interpretar el efecto individual de cada predictor;\n",
+        "- extender el modelo a clasificación.\n",
+        "\n",
+        "Esta combinación de **flexibilidad e interpretabilidad** es una de sus principales ventajas.\n",
+        "\n",
+        "## Limitación: aditividad\n",
+        "\n",
+        "El GAM que hemos utilizado supone que\n",
+        "\n",
+        "$$\\hat Y\n",
+        "=\n",
+        "\\hat\\beta_0\n",
+        "+\n",
+        "\\hat f_1(X_1)\n",
+        "+\n",
+        "\\hat f_2(X_2)\n",
+        "+\n",
+        "\\hat f_3(X_3).$$\n",
+        "\n",
+        "Esto implica que el efecto de una variable se suma al de las demás.\n",
+        "\n",
+        "Por ejemplo, el efecto de `age` no cambia dependiendo de `year`.\n",
+        "\n",
+        "Sin embargo, puede existir una interacción:\n",
+        "\n",
+        "$$f_{12}(X_1,X_2).$$\n",
+        "\n",
+        "En ese caso podríamos utilizar modelos más complejos.\n",
+        "\n",
+        "Por ahora nos concentraremos en modelos aditivos.\n",
+        "\n",
+        "## Ejercicios\n",
+        "\n",
+        "### Ejercicio 1. Interpretación de efectos parciales\n",
+        "\n",
+        "Ajusta el modelo\n",
+        "\n",
+        "$$\\text{wage}\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(\\text{age})\n",
+        "+\n",
+        "f_2(\\text{year})\n",
+        "+\n",
+        "f_3(\\text{education})\n",
+        "+\n",
+        "\\varepsilon.$$\n",
+        "\n",
+        "Construye las tres gráficas de efectos parciales.\n",
+        "\n",
+        "Describe la forma de cada efecto.\n",
+        "\n",
+        "Responde:\n",
+        "\n",
+        "1.  ¿Qué edades parecen asociarse con mayores salarios?\n",
+        "2.  ¿El efecto de `year` parece lineal?\n",
+        "3.  ¿Qué niveles educativos producen las mayores contribuciones?\n",
+        "\n",
+        "### Ejercicio 2. `age` lineal vs. no lineal\n",
+        "\n",
+        "Ajusta dos modelos:\n",
+        "\n",
+        "$$M_1:\n",
+        "\\quad\n",
+        "\\text{wage}\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "\\beta_1\\text{age}\n",
+        "+\n",
+        "f_2(\\text{year})\n",
+        "+\n",
+        "f_3(\\text{education})\n",
+        "+\n",
+        "\\varepsilon,$$\n",
+        "\n",
+        "y\n",
+        "\n",
+        "$$M_2:\n",
+        "\\quad\n",
+        "\\text{wage}\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(\\text{age})\n",
+        "+\n",
+        "f_2(\\text{year})\n",
+        "+\n",
+        "f_3(\\text{education})\n",
+        "+\n",
+        "\\varepsilon.$$\n",
+        "\n",
+        "Compara los modelos utilizando AIC.\n",
+        "\n",
+        "¿Cuál prefieres?\n",
+        "\n",
+        "### Ejercicio 3. `year` lineal vs. no lineal\n",
+        "\n",
+        "Repite el ejercicio anterior para `year`.\n",
+        "\n",
+        "Compara:\n",
+        "\n",
+        "$$\\beta_2\\text{year}$$\n",
+        "\n",
+        "contra\n",
+        "\n",
+        "$$f_2(\\text{year}).$$\n",
+        "\n",
+        "¿Hay evidencia práctica de que necesitemos un efecto no lineal?\n",
+        "\n",
+        "### Ejercicio 4. Comparación con regresión lineal\n",
+        "\n",
+        "Ajusta una regresión lineal múltiple utilizando:\n",
+        "\n",
+        "- `age`;\n",
+        "- `year`;\n",
+        "- `education`.\n",
+        "\n",
+        "Después ajusta el GAM correspondiente.\n",
+        "\n",
+        "Compara:\n",
+        "\n",
+        "- valores predichos;\n",
+        "- error cuadrático medio;\n",
+        "- AIC;\n",
+        "- interpretabilidad.\n",
+        "\n",
+        "### Ejercicio 5. Clasificación\n",
+        "\n",
+        "Construye la variable\n",
+        "\n",
+        "$$Y=\n",
+        "I(\\text{wage}>200).$$\n",
+        "\n",
+        "Ajusta un GAM logístico utilizando:\n",
+        "\n",
+        "- `age`;\n",
+        "- `year`;\n",
+        "- `education`.\n",
+        "\n",
+        "Construye las gráficas de efectos parciales.\n",
+        "\n",
+        "¿Cambian las conclusiones respecto al modelo que utiliza el umbral 250?\n",
+        "\n",
+        "### Ejercicio 6. Interpretación\n",
+        "\n",
+        "Explica con tus propias palabras la diferencia entre\n",
+        "\n",
+        "$$Y\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "\\beta_1X_1\n",
+        "+\n",
+        "\\beta_2X_2\n",
+        "+\n",
+        "\\varepsilon$$\n",
+        "\n",
+        "y\n",
+        "\n",
+        "$$Y\n",
+        "=\n",
+        "\\beta_0\n",
+        "+\n",
+        "f_1(X_1)\n",
+        "+\n",
+        "f_2(X_2)\n",
+        "+\n",
+        "\\varepsilon.$$\n",
+        "\n",
+        "Tu explicación debe mencionar:\n",
+        "\n",
+        "- linealidad;\n",
+        "- flexibilidad;\n",
+        "- aditividad;\n",
+        "- interpretación de $f_1$ y $f_2$."
+      ],
+      "id": "09ac3e39"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "C:\\Users\\HaydeePeruyero\\AppData\\Local\\Python\\pythoncore-3.14-64\\share\\jupyter\\kernels\\python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

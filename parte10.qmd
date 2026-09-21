@@ -1,1 +1,1336 @@
 # Validación cruzada y optimización de hiperparámetros
+
+
+En sección anterior modificamos manualmente diferentes hiperparámetros de Gradient Boosting y XGBoost.
+
+Por ejemplo:
+
+```python
+GradientBoostingRegressor(
+    n_estimators=200,
+    learning_rate=0.05,
+    max_depth=2
+)
+```
+
+Sin embargo, inmediatamente aparecieron dos problemas:
+
+1. nuestro resultado dependía de una única partición train--validation;
+2. probar manualmente muchas combinaciones de hiperparámetros resulta poco práctico.
+
+Ahora vamos a explorar:
+
+- implementar $k$-fold Cross-Validation;
+- interpretar la media y variabilidad del desempeño entre folds;
+- utilizar `KFold`;
+- realizar una búsqueda sistemática con `GridSearchCV`;
+- realizar una búsqueda aleatoria con `RandomizedSearchCV`;
+- comparar el costo computacional de ambas estrategias;
+- integrar preprocesamiento y modelado mediante un `Pipeline`.
+
+
+::: {.diapositivas}
+::: {.diapositivas-title}
+📝 **Diapositivas**
+:::
+
+::: {.diapositivas-body}
+[Ver diapositivas](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/3.2-3.5_ValidacionCruzada_y_GridSearch.pdf)
+:::
+:::
+
+## Preparación
+
+Importamos las bibliotecas necesarias.
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from time import perf_counter
+
+from sklearn.datasets import fetch_california_housing
+
+from sklearn.model_selection import (
+    train_test_split,
+    KFold,
+    cross_val_score,
+    GridSearchCV,
+    RandomizedSearchCV
+)
+
+from sklearn.ensemble import GradientBoostingRegressor
+
+from sklearn.metrics import (
+    mean_squared_error,
+    mean_absolute_error
+)
+```
+
+
+Cargamos nuevamente California Housing.
+
+```{python}
+housing = fetch_california_housing(as_frame=True)
+
+X = housing.data
+y = housing.target
+```
+
+Recordemos las dimensiones:
+
+```{python}
+X.shape
+```
+
+Y las características:
+
+```{python}
+X.columns
+```
+
+## Reservamos el conjunto de prueba
+
+Realizamos exactamente la misma separación utilizada.
+
+```{python}
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.20,
+    random_state=42
+)
+```
+
+```{python}
+print("Entrenamiento:", X_train.shape)
+print("Test:", X_test.shape)
+```
+
+::: {.callout-important}
+## El test continúa cerrado
+
+Utilizaremos únicamente:
+
+```text
+X_train
+y_train
+```
+
+para seleccionar hiperparámetros.
+
+No utilizaremos `X_test` ni `y_test` para decidir qué configuración funciona mejor.
+
+El conjunto de prueba se utilizará para realizar la evaluación final.
+:::
+
+## El problema de una única partición
+
+Antes dividimos temporalmente el conjunto de entrenamiento en:
+
+$$
+\text{Train}
+\longrightarrow
+\begin{cases}
+\text{Train GB}\\
+\text{Validation}
+\end{cases}.
+$$
+
+Esto nos permitió comparar configuraciones.
+
+Pero aparece una pregunta:
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Qué ocurre si cambiamos las observaciones que terminaron en el conjunto de validación?
+
+::::
+
+
+Vamos a comprobarlo.
+
+Definimos primero una configuración fija de Gradient Boosting.
+
+```{python}
+modelo = GradientBoostingRegressor(
+    n_estimators=200,
+    learning_rate=0.05,
+    max_depth=2,
+    random_state=42
+)
+```
+
+Ahora realizaremos varias divisiones cambiando únicamente la semilla aleatoria.
+
+```{python}
+resultados_split = []
+
+for semilla in [1, 10, 42, 100, 500]:
+
+    X_tr, X_val, y_tr, y_val = train_test_split(
+        X_train,
+        y_train,
+        test_size=0.20,
+        random_state=semilla
+    )
+
+    modelo.fit(X_tr, y_tr)
+
+    pred = modelo.predict(X_val)
+
+    rmse = np.sqrt(
+        mean_squared_error(y_val, pred)
+    )
+
+    resultados_split.append({
+        "random_state": semilla,
+        "RMSE": rmse
+    })
+
+df_split = pd.DataFrame(resultados_split)
+
+df_split
+```
+
+Visualicemos los resultados.
+
+```{python}
+plt.figure(figsize=(7, 4))
+
+plt.plot(
+    df_split["random_state"].astype(str),
+    df_split["RMSE"],
+    marker="o"
+)
+
+plt.xlabel("Partición")
+plt.ylabel("RMSE de validación")
+plt.title("El resultado depende de la partición")
+plt.show()
+```
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+El modelo es esencialmente el mismo en todos los casos. Entonces, ¿por qué obtenemos distintos valores de RMSE?
+::::
+
+
+La evaluación depende de qué observaciones fueron utilizadas para entrenar y cuáles fueron utilizadas para validar.
+
+Por eso es importante **Cross-Validation**.
+
+## $k$-fold Cross-Validation
+
+En $k$-fold Cross-Validation dividimos los datos en $k$ subconjuntos o *folds*:
+
+$$
+D_1,D_2,\ldots,D_k.
+$$
+
+Cada fold se utiliza una vez como conjunto de validación y los restantes se utilizan para entrenamiento.
+
+Por ejemplo, para $k=5$ realizamos cinco entrenamientos.
+
+El desempeño promedio es
+
+$$
+\overline{s}_{CV}
+=
+\frac{1}{k}
+\sum_{j=1}^{k}s_j.
+$$
+
+También podemos estudiar su variabilidad mediante la desviación estándar.
+
+
+## Nuestro primer Cross-Validation
+
+Crearemos una estrategia de 5-fold Cross-Validation.
+
+```{python}
+cv = KFold(
+    n_splits=5,
+    shuffle=True,
+    random_state=42
+)
+```
+
+Utilizaremos el mismo Gradient Boosting:
+
+```{python}
+modelo = GradientBoostingRegressor(
+    n_estimators=200,
+    learning_rate=0.05,
+    max_depth=2,
+    random_state=42
+)
+```
+
+Ahora utilizamos `cross_val_score()`.
+
+```{python}
+scores = cross_val_score(
+    modelo,
+    X_train,
+    y_train,
+    cv=cv,
+    scoring="neg_root_mean_squared_error"
+)
+```
+
+Veamos el resultado:
+
+```{python}
+scores
+```
+
+Puede llamar la atención que los valores sean negativos.
+
+Esto ocurre porque `scikit-learn` utiliza la convención de que un *score* mayor debe representar un mejor desempeño.
+
+Sin embargo, RMSE es un error:
+
+$$
+\text{menor RMSE}
+\quad\Longrightarrow\quad
+\text{mejor}.
+$$
+
+Por ello, `scikit-learn` devuelve:
+
+$$
+-\operatorname{RMSE}.
+$$
+
+Para trabajar directamente con RMSE podemos cambiar el signo:
+
+```{python}
+rmse_cv = -scores
+
+rmse_cv
+```
+
+### Desempeño promedio
+
+Calculamos ahora la media:
+
+```{python}
+rmse_cv.mean()
+```
+
+y la desviación estándar:
+
+```{python}
+rmse_cv.std()
+```
+
+Podemos reportar:
+
+```{python}
+print(
+    f"RMSE CV: {rmse_cv.mean():.4f} "
+    f"+/- {rmse_cv.std():.4f}"
+)
+```
+
+Por ejemplo, conceptualmente obtenemos algo de la forma
+
+$$
+\operatorname{RMSE}_{CV}
+=
+\overline{\operatorname{RMSE}}
+\pm
+SD.
+$$
+
+::: {.callout-tip}
+## Cross-Validation nos proporciona más de un número
+
+La media nos informa sobre el desempeño promedio.
+
+La desviación estándar nos ayuda a observar cuánto cambia el resultado entre diferentes particiones.
+:::
+
+## Visualización de los folds
+
+Podemos visualizar los cinco resultados obtenidos.
+
+```{python}
+plt.figure(figsize=(7, 4))
+
+plt.plot(
+    range(1, len(rmse_cv) + 1),
+    rmse_cv,
+    marker="o"
+)
+
+plt.axhline(
+    rmse_cv.mean(),
+    linestyle="--",
+    label="RMSE promedio"
+)
+
+plt.xlabel("Fold")
+plt.ylabel("RMSE")
+plt.title("RMSE en cada fold")
+plt.xticks(range(1, 6))
+plt.legend()
+plt.show()
+```
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Todos los folds producen exactamente el mismo resultado?
+¿Por qué es más informativo observar los cinco resultados que una única partición train--validation?
+
+::::
+
+## Comparando algunas configuraciones
+
+Antes comparamos manualmente diferentes configuraciones.
+
+Hagámoslo nuevamente, pero ahora utilizando Cross-Validation.
+
+Consideremos:
+
+```{python}
+configuraciones = [
+    ("A", 0.1, 100, 2),
+    ("B", 0.05, 200, 2),
+    ("C", 0.01, 500, 2),
+    ("D", 0.1, 100, 4)
+]
+```
+
+Evaluaremos cada configuración con exactamente los mismos folds.
+
+```{python}
+resultados_cv = []
+
+for nombre, lr, n_est, depth in configuraciones:
+
+    modelo = GradientBoostingRegressor(
+        learning_rate=lr,
+        n_estimators=n_est,
+        max_depth=depth,
+        random_state=42
+    )
+
+    scores = cross_val_score(
+        modelo,
+        X_train,
+        y_train,
+        cv=cv,
+        scoring="neg_root_mean_squared_error"
+    )
+
+    rmse = -scores
+
+    resultados_cv.append({
+        "Modelo": nombre,
+        "learning_rate": lr,
+        "n_estimators": n_est,
+        "max_depth": depth,
+        "RMSE_CV": rmse.mean(),
+        "SD_CV": rmse.std()
+    })
+```
+
+Construimos una tabla.
+
+```{python}
+df_cv = pd.DataFrame(resultados_cv)
+
+df_cv
+```
+
+Ahora nuestra comparación ya no depende de una única partición.
+
+
+### Visualización
+
+Podemos representar el RMSE promedio junto con su variabilidad.
+
+```{python}
+plt.figure(figsize=(7, 4))
+
+plt.errorbar(
+    df_cv["Modelo"],
+    df_cv["RMSE_CV"],
+    yerr=df_cv["SD_CV"],
+    fmt="o",
+    capsize=5
+)
+
+plt.xlabel("Configuración")
+plt.ylabel("RMSE de Cross-Validation")
+plt.title("Comparación mediante 5-fold Cross-Validation")
+plt.show()
+```
+
+::: {.callout-note}
+Las barras muestran la variabilidad entre folds.
+
+Una diferencia pequeña entre dos medias no debe interpretarse automáticamente como una diferencia importante entre los modelos.
+:::
+
+
+## El problema de la búsqueda manual
+
+Hasta ahora evaluamos únicamente cuatro configuraciones.
+
+Pero podríamos querer explorar:
+
+$$
+\texttt{learning\_rate}
+\in
+\{0.01,0.05,0.1\},
+$$
+
+$$
+\texttt{n\_estimators}
+\in
+\{100,200,500\},
+$$
+
+y
+
+$$
+\texttt{max\_depth}
+\in
+\{2,3,4\}.
+$$
+
+¿Cuántas configuraciones tenemos?
+
+```{python}
+3 * 3 * 3
+```
+
+Son:
+
+$$
+3\times3\times3=27
+$$
+
+configuraciones.
+
+Pero cada configuración se evalúa mediante 5-fold Cross-Validation.
+
+Por lo tanto:
+
+```{python}
+27 * 5
+```
+
+necesitamos al menos
+
+$$
+27\times5=135
+$$
+
+ajustes del modelo.
+
+Escribir manualmente los ciclos necesarios sería posible, pero `scikit-learn` proporciona herramientas específicamente diseñadas para este proceso.
+
+## Grid Search
+
+`GridSearchCV` evalúa sistemáticamente todas las combinaciones que especifiquemos.
+
+Definimos primero nuestra cuadrícula.
+
+```{python}
+param_grid = {
+    "learning_rate": [0.01, 0.05, 0.1],
+    "n_estimators": [100, 200, 500],
+    "max_depth": [2, 3, 4]
+}
+```
+
+Podemos calcular el número de configuraciones:
+
+```{python}
+n_configuraciones = (
+    len(param_grid["learning_rate"])
+    * len(param_grid["n_estimators"])
+    * len(param_grid["max_depth"])
+)
+
+print(n_configuraciones)
+```
+
+Construimos la búsqueda.
+
+```{python}
+modelo = GradientBoostingRegressor(
+    random_state=42
+)
+
+grid_search = GridSearchCV(
+    estimator=modelo,
+    param_grid=param_grid,
+    scoring="neg_root_mean_squared_error",
+    cv=cv,
+    n_jobs=1,
+    return_train_score=True
+)
+
+#grid_search.fit(X_train, y_train)
+```
+
+::: {.callout-note}
+## `n_jobs=-1`
+
+Con `n_jobs=-1`, `scikit-learn` puede utilizar los procesadores disponibles para ejecutar parte del trabajo en paralelo.
+
+Esto puede reducir considerablemente el tiempo de búsqueda. En una computadora de 32GB de ram y 12 CPUs, lo recomendable es `n_jobs=4`.
+:::
+
+
+### Ejecutamos la búsqueda
+
+Vamos a medir también cuánto tarda.
+
+```{python}
+inicio = perf_counter()
+
+grid_search.fit(X_train, y_train)
+
+tiempo_grid = perf_counter() - inicio
+
+print(f"Tiempo: {tiempo_grid:.2f} segundos")
+```
+
+
+
+## Resultados de Grid Search
+
+Podemos consultar directamente la configuración seleccionada.
+
+```{python}
+grid_search.best_params_
+```
+
+Y el mejor score:
+
+```{python}
+grid_search.best_score_
+```
+
+Recordemos que el valor corresponde a
+
+$$
+-\operatorname{RMSE}.
+$$
+
+Por lo tanto:
+
+```{python}
+best_rmse_grid = -grid_search.best_score_
+
+print(f"Mejor RMSE CV: {best_rmse_grid:.4f}")
+```
+
+También podemos recuperar el modelo seleccionado:
+
+```{python}
+grid_search.best_estimator_
+```
+
+
+
+## Todos los resultados de Grid Search
+
+`GridSearchCV` almacena mucha más información en:
+
+```{python}
+grid_search.cv_results_
+```
+
+Podemos convertirla en un `DataFrame`.
+
+```{python}
+resultados_grid = pd.DataFrame(
+    grid_search.cv_results_
+)
+
+resultados_grid.head()
+```
+
+Seleccionemos algunas columnas importantes.
+
+```{python}
+columnas = [
+    "param_learning_rate",
+    "param_n_estimators",
+    "param_max_depth",
+    "mean_test_score",
+    "std_test_score",
+    "rank_test_score",
+    "mean_fit_time"
+]
+
+resultados_grid[columnas].head()
+```
+
+Como los scores están negativos, crearemos una columna de RMSE.
+
+```{python}
+resultados_grid["RMSE_CV"] = (
+    -resultados_grid["mean_test_score"]
+)
+```
+
+Ordenamos las configuraciones:
+
+```{python}
+resultados_grid[
+    [
+        "param_learning_rate",
+        "param_n_estimators",
+        "param_max_depth",
+        "RMSE_CV",
+        "std_test_score",
+        "mean_fit_time"
+    ]
+].sort_values("RMSE_CV").head(10)
+```
+
+Esto nos permite observar que Grid Search no produce solamente una configuración.
+
+Podemos estudiar el comportamiento de todo el espacio que decidimos explorar.
+
+## Visualizando una parte de la búsqueda
+
+Para visualizar los resultados fijaremos, por ejemplo,
+
+$$
+\texttt{max\_depth}=2.
+$$
+
+```{python}
+grid_depth2 = resultados_grid[
+    resultados_grid["param_max_depth"] == 2
+].copy()
+```
+
+Ahora podemos representar el RMSE para diferentes combinaciones de `learning_rate` y `n_estimators`.
+
+```{python}
+for lr in sorted(
+    grid_depth2["param_learning_rate"].unique()
+):
+
+    datos = grid_depth2[
+        grid_depth2["param_learning_rate"] == lr
+    ].sort_values("param_n_estimators")
+
+    plt.plot(
+        datos["param_n_estimators"],
+        datos["RMSE_CV"],
+        marker="o",
+        label=f"learning_rate = {lr}"
+    )
+
+plt.xlabel("n_estimators")
+plt.ylabel("RMSE CV")
+plt.title("Interacción entre learning rate y número de árboles")
+plt.legend()
+plt.show()
+```
+
+Esta gráfica nos permite recuperar una idea de la práctica anterior:
+
+$$
+\texttt{learning\_rate}
+\quad\text{y}\quad
+\texttt{n\_estimators}
+$$
+
+no deben interpretarse necesariamente de manera aislada.
+
+
+
+## ¿Qué limitación tiene Grid Search?
+
+Nuestra búsqueda anterior utilizó solamente tres hiperparámetros.
+
+Supongamos ahora que queremos explorar:
+
+```text
+learning_rate
+n_estimators
+max_depth
+subsample
+min_samples_leaf
+```
+
+y que consideramos cinco valores para cada uno.
+
+El número de configuraciones sería
+
+$$
+5^5=3125.
+$$
+
+Con 5-fold Cross-Validation:
+
+$$
+3125\times5=15625
+$$
+
+ajustes del modelo.
+
+```{python}
+5**5 * 5
+```
+
+El costo crece rápidamente.
+
+Además, para variables continuas como `learning_rate`, una cuadrícula solamente evalúa los valores específicos que nosotros elegimos.
+
+Esto motiva una estrategia diferente.
+
+## Random Search
+
+En Random Search especificamos un espacio de búsqueda, pero evaluamos solamente un número determinado de configuraciones.
+
+Por ejemplo, podemos decidir:
+
+$$
+B=20.
+$$
+
+Esto significa que evaluaremos únicamente 20 configuraciones.
+
+Con 5-fold Cross-Validation:
+
+$$
+20\times5=100
+$$
+
+ajustes principales del modelo.
+
+
+### Definimos el espacio de búsqueda
+
+Para aprovechar mejor Random Search podemos utilizar distribuciones continuas.
+
+Importamos:
+
+```{python}
+from scipy.stats import randint, loguniform, uniform
+```
+
+Definimos:
+
+```{python}
+param_distributions = {
+    "n_estimators": randint(100, 601),
+    "learning_rate": loguniform(0.01, 0.2),
+    "max_depth": randint(1, 6),
+    "subsample": uniform(0.6, 0.4)
+}
+```
+
+Aquí:
+
+- `randint(100, 601)` genera enteros entre 100 y 600;
+- `loguniform(0.01, 0.2)` explora valores positivos de `learning_rate` en escala logarítmica;
+- `randint(1, 6)` genera profundidades entre 1 y 5;
+- `uniform(0.6, 0.4)` genera valores entre 0.6 y 1.0.
+
+::: {.callout-tip}
+## ¿Por qué `loguniform` para learning rate?
+
+Para hiperparámetros positivos que pueden variar en diferentes órdenes de magnitud, puede ser más informativo explorar una escala logarítmica.
+
+Por ejemplo, queremos distinguir adecuadamente entre valores cercanos a
+
+$$
+0.01,\quad 0.1
+$$
+
+en lugar de concentrar el muestreo únicamente en diferencias absolutas.
+:::
+
+
+## RandomizedSearchCV
+
+Construimos la búsqueda.
+
+```{python}
+random_search = RandomizedSearchCV(
+    estimator=GradientBoostingRegressor(
+        random_state=42
+    ),
+    param_distributions=param_distributions,
+    n_iter=20,
+    scoring="neg_root_mean_squared_error",
+    cv=cv,
+    random_state=42,
+    n_jobs=1,
+    return_train_score=True
+)
+```
+
+Ejecutamos y medimos el tiempo.
+
+```{python}
+inicio = perf_counter()
+
+random_search.fit(X_train, y_train)
+
+tiempo_random = perf_counter() - inicio
+
+print(f"Tiempo: {tiempo_random:.2f} segundos")
+```
+
+## Resultados de Random Search
+
+Consultamos la configuración seleccionada.
+
+```{python}
+random_search.best_params_
+```
+
+Y su RMSE promedio:
+
+```{python}
+best_rmse_random = -random_search.best_score_
+
+print(f"Mejor RMSE CV: {best_rmse_random:.4f}")
+```
+
+Podemos recuperar nuevamente todos los resultados.
+
+```{python}
+resultados_random = pd.DataFrame(
+    random_search.cv_results_
+)
+
+resultados_random["RMSE_CV"] = (
+    -resultados_random["mean_test_score"]
+)
+```
+
+Veamos las mejores configuraciones:
+
+```{python}
+resultados_random[
+    [
+        "param_learning_rate",
+        "param_n_estimators",
+        "param_max_depth",
+        "param_subsample",
+        "RMSE_CV",
+        "mean_fit_time"
+    ]
+].sort_values("RMSE_CV").head(10)
+```
+
+## Grid Search vs. Random Search
+
+Construyamos una comparación sencilla.
+
+```{python}
+comparacion_busquedas = pd.DataFrame({
+    "Método": [
+        "Grid Search",
+        "Random Search"
+    ],
+    "Configuraciones evaluadas": [
+        len(resultados_grid),
+        len(resultados_random)
+    ],
+    "RMSE CV": [
+        best_rmse_grid,
+        best_rmse_random
+    ],
+    "Tiempo (s)": [
+        tiempo_grid,
+        tiempo_random
+    ]
+})
+
+comparacion_busquedas
+```
+
+Es importante interpretar esta tabla con cuidado.
+
+Las dos búsquedas no exploraron exactamente el mismo espacio:
+
+- Grid Search utilizó una cuadrícula discreta;
+- Random Search utilizó distribuciones más amplias;
+- Random Search exploró `subsample`, mientras que nuestra cuadrícula inicial no lo hizo.
+
+Por lo tanto, esta comparación tiene principalmente un objetivo didáctico.
+
+::: {.callout-important}
+## No buscamos demostrar que un método "gana"
+
+El objetivo es observar dos estrategias diferentes.
+
+**Grid Search**
+
+$$
+\longrightarrow
+$$
+
+evalúa todas las combinaciones de una cuadrícula especificada.
+
+**Random Search**
+
+$$
+\longrightarrow
+$$
+
+permite fijar directamente un presupuesto de configuraciones mediante `n_iter`.
+:::
+
+
+## ¿Y XGBoost?
+
+Exactamente las mismas herramientas pueden utilizarse con XGBoost.
+
+Por ejemplo:
+
+```{python}
+from xgboost import XGBRegressor
+```
+
+Podríamos definir:
+
+```{python}
+xgb = XGBRegressor(
+    objective="reg:squarederror",
+    random_state=42,
+    n_jobs=1
+)
+```
+
+y un espacio como:
+
+```{python}
+param_xgb = {
+    "n_estimators": [100, 300, 500],
+    "learning_rate": [0.01, 0.05, 0.1],
+    "max_depth": [2, 3, 5],
+    "subsample": [0.7, 0.9, 1.0],
+    "colsample_bytree": [0.7, 0.9, 1.0]
+}
+```
+
+Pero observa cuántas combinaciones produce:
+
+```{python}
+3**5
+```
+
+Tenemos
+
+$$
+3^5=243
+$$
+
+configuraciones.
+
+Con 5-fold Cross-Validation:
+
+$$
+243\times5=1215
+$$
+
+ajustes.
+
+Por esta razón, para espacios como éste suele ser más atractivo comenzar con una búsqueda aleatoria.
+
+::: {.callout-note}
+No ejecutaremos esta búsqueda completa durante la clase.
+
+El objetivo es reconocer que las mismas herramientas pueden aplicarse a diferentes estimadores compatibles con la interfaz de `scikit-learn`.
+:::
+
+
+## Preprocesamiento y Cross-Validation
+
+California Housing tiene una ventaja para nuestro ejemplo de Gradient Boosting: los modelos basados en árboles no requieren estandarización para construir sus divisiones.
+
+Pero imaginemos que utilizamos un modelo que sí depende de la escala de las variables.
+
+Podríamos pensar en hacer(no correr):
+
+```python
+scaler.fit(X_train)
+
+X_train_scaled = scaler.transform(X_train)
+
+cross_val_score(
+    modelo,
+    X_train_scaled,
+    y_train,
+    cv=cv
+)
+```
+
+Sin embargo, existe un problema.
+
+El escalador aprendió sus parámetros utilizando **todo `X_train`** antes de construir los folds.
+
+Por ejemplo, `StandardScaler` utiliza
+
+$$
+z
+=
+\frac{x-\mu}{\sigma}.
+$$
+
+Si calculamos $\mu$ y $\sigma$ utilizando todo `X_train`, las observaciones que posteriormente pertenecerán al validation fold ya participaron en el preprocesamiento.
+
+Esto constituye una forma de **data leakage**.
+
+
+## Pipelines
+
+La solución es incluir las transformaciones que aprenden de los datos dentro de un `Pipeline`.
+
+Para ilustrarlo utilizaremos un modelo que ellos ya conocen: regresión lineal regularizada.
+
+```{python}
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import Ridge
+```
+
+Construimos:
+
+```{python}
+pipeline = Pipeline([
+    ("scaler", StandardScaler()),
+    ("model", Ridge())
+])
+```
+
+Ahora realizamos Cross-Validation sobre **todo el pipeline**.
+
+```{python}
+scores_ridge = cross_val_score(
+    pipeline,
+    X_train,
+    y_train,
+    cv=cv,
+    scoring="neg_root_mean_squared_error"
+)
+
+rmse_ridge = -scores_ridge
+
+print(
+    f"RMSE CV: {rmse_ridge.mean():.4f} "
+    f"+/- {rmse_ridge.std():.4f}"
+)
+```
+
+Durante cada fold, `scikit-learn` realiza conceptualmente:
+
+$$
+\text{training fold}
+$$
+
+$$
+\downarrow
+$$
+
+$$
+\text{ajustar StandardScaler}
+$$
+
+$$
+\downarrow
+$$
+
+$$
+\text{transformar training fold}
+$$
+
+$$
+\downarrow
+$$
+
+$$
+\text{entrenar Ridge}
+$$
+
+y solamente después utiliza esos parámetros para transformar el validation fold.
+
+## Tuning dentro de un Pipeline
+
+También podemos optimizar hiperparámetros dentro de un pipeline.
+
+Para referirnos a un hiperparámetro utilizamos:
+
+```text
+nombre_del_paso__nombre_del_hiperparametro
+```
+
+Por ejemplo:
+
+```{python}
+param_grid_ridge = {
+    "model__alpha": [0.01, 0.1, 1, 10, 100]
+}
+```
+
+Construimos la búsqueda:
+
+```{python}
+grid_ridge = GridSearchCV(
+    estimator=pipeline,
+    param_grid=param_grid_ridge,
+    cv=cv,
+    scoring="neg_root_mean_squared_error",
+    n_jobs=1
+)
+
+grid_ridge.fit(X_train, y_train)
+```
+
+Consultamos:
+
+```{python}
+grid_ridge.best_params_
+```
+
+y:
+
+```{python}
+-grid_ridge.best_score_
+```
+
+::: {.callout-important}
+## La idea central
+
+Cuando una operación aprende información de los datos, debe formar parte del procedimiento que se valida.
+
+Por ejemplo:
+
+$$
+\boxed{
+\text{imputación}
+\rightarrow
+\text{escalamiento}
+\rightarrow
+\text{selección de variables}
+\rightarrow
+\text{modelo}
+}
+$$
+
+puede constituir un único pipeline.
+:::
+
+## ¿Qué ocurre después de la búsqueda?
+
+Cuando ejecutamos:
+
+```python
+grid_search.fit(X_train, y_train)
+```
+
+`GridSearchCV`:
+
+1. evalúa las configuraciones mediante Cross-Validation;
+2. identifica la configuración seleccionada;
+3. por defecto vuelve a entrenar esa configuración utilizando **todo `X_train`**.
+
+Este último paso se conoce como **refit**.
+
+Podemos comprobar que:
+
+```{python}
+grid_search.refit
+```
+
+y recuperar el modelo reajustado:
+
+```{python}
+modelo_seleccionado = grid_search.best_estimator_
+
+modelo_seleccionado
+```
+
+::: {.callout-warning}
+## Todavía no evaluaremos sobre test
+
+Tenemos un modelo seleccionado y reajustado.
+
+Podríamos ejecutar:
+
+```python
+modelo_seleccionado.predict(X_test)
+```
+
+pero **no lo haremos todavía**.
+
+En la siguiente seccióm estudiaremos cómo comparar varios modelos y realizaremos finalmente la evaluación sobre el conjunto de prueba.
+:::
+
+
+## Ejercicio
+
+Utiliza `RandomizedSearchCV` para explorar un modelo de Gradient Boosting con el mismo conjunto de datos usados.
+
+Considera:
+
+```{python}
+param_ejercicio = {
+    "n_estimators": [100, 200, 300, 500],
+    "learning_rate": [0.01, 0.03, 0.05, 0.1],
+    "max_depth": [1, 2, 3, 4],
+    "subsample": [0.7, 0.8, 0.9, 1.0]
+}
+```
+
+Realiza una búsqueda de solamente
+
+$$
+15
+$$
+
+configuraciones utilizando 5-fold Cross-Validation.
+
+Completa:
+
+```python
+busqueda = RandomizedSearchCV(
+    # completar
+)
+```
+
+Después:
+
+1. muestra los hiperparámetros seleccionados;
+2. reporta el RMSE promedio de Cross-Validation;
+3. construye un `DataFrame` con las 15 configuraciones;
+4. ordénalas de menor a mayor RMSE;
+5. muestra las cinco primeras.
+
+Finalmente responde:
+
+a) ¿Cuántas configuraciones contiene el espacio completo?
+
+b) ¿Cuántos ajustes serían necesarios si utilizáramos Grid Search con 5-fold CV?
+
+c) ¿Cuántos ajustes principales realizamos utilizando `n_iter=15`?
+
+d) ¿Por qué Random Search puede resultar útil cuando aumentamos el número de hiperparámetros?
+
+::: {.callout-important}
+No utilices `X_test` ni `y_test` para resolver el ejercicio.
+:::
