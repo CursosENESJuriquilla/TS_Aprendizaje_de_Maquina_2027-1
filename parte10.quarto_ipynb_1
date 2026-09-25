@@ -1,0 +1,2100 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# Validación cruzada y optimización de hiperparámetros\n",
+        "\n",
+        "\n",
+        "En sección anterior modificamos manualmente diferentes hiperparámetros de Gradient Boosting y XGBoost.\n",
+        "\n",
+        "Por ejemplo:\n",
+        "\n",
+        "```python\n",
+        "GradientBoostingRegressor(\n",
+        "    n_estimators=200,\n",
+        "    learning_rate=0.05,\n",
+        "    max_depth=2\n",
+        ")\n",
+        "```\n",
+        "\n",
+        "Sin embargo, inmediatamente aparecieron dos problemas:\n",
+        "\n",
+        "1. nuestro resultado dependía de una única partición train--validation;\n",
+        "2. probar manualmente muchas combinaciones de hiperparámetros resulta poco práctico.\n",
+        "\n",
+        "Ahora vamos a explorar:\n",
+        "\n",
+        "- implementar $k$-fold Cross-Validation;\n",
+        "- interpretar la media y variabilidad del desempeño entre folds;\n",
+        "- utilizar `KFold`;\n",
+        "- realizar una búsqueda sistemática con `GridSearchCV`;\n",
+        "- realizar una búsqueda aleatoria con `RandomizedSearchCV`;\n",
+        "- comparar el costo computacional de ambas estrategias;\n",
+        "- integrar preprocesamiento y modelado mediante un `Pipeline`.\n",
+        "\n",
+        "\n",
+        "::: {.diapositivas}\n",
+        "::: {.diapositivas-title}\n",
+        "📝 **Diapositivas**\n",
+        ":::\n",
+        "\n",
+        "::: {.diapositivas-body}\n",
+        "[Ver diapositivas](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/3.2-3.5_ValidacionCruzada_y_GridSearch.pdf)\n",
+        ":::\n",
+        ":::\n",
+        "\n",
+        "## Preparación\n",
+        "\n",
+        "Importamos las bibliotecas necesarias."
+      ],
+      "id": "ecfbc0ed"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "\n",
+        "from time import perf_counter\n",
+        "\n",
+        "from sklearn.datasets import fetch_california_housing\n",
+        "\n",
+        "from sklearn.model_selection import (\n",
+        "    train_test_split,\n",
+        "    KFold,\n",
+        "    cross_val_score,\n",
+        "    GridSearchCV,\n",
+        "    RandomizedSearchCV\n",
+        ")\n",
+        "\n",
+        "from sklearn.ensemble import GradientBoostingRegressor\n",
+        "\n",
+        "from sklearn.metrics import (\n",
+        "    mean_squared_error,\n",
+        "    mean_absolute_error\n",
+        ")"
+      ],
+      "id": "d4968c0d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Cargamos nuevamente California Housing."
+      ],
+      "id": "d771653f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "housing = fetch_california_housing(as_frame=True)\n",
+        "\n",
+        "X = housing.data\n",
+        "y = housing.target"
+      ],
+      "id": "566b08ff",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Recordemos las dimensiones:"
+      ],
+      "id": "23b4c5d6"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X.shape"
+      ],
+      "id": "09603adc",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Y las características:"
+      ],
+      "id": "706fea66"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X.columns"
+      ],
+      "id": "24e4ca03",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Reservamos el conjunto de prueba\n",
+        "\n",
+        "Realizamos exactamente la misma separación utilizada."
+      ],
+      "id": "e5aba2cf"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_train, X_test, y_train, y_test = train_test_split(\n",
+        "    X,\n",
+        "    y,\n",
+        "    test_size=0.20,\n",
+        "    random_state=42\n",
+        ")"
+      ],
+      "id": "4b26c62e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "print(\"Entrenamiento:\", X_train.shape)\n",
+        "print(\"Test:\", X_test.shape)"
+      ],
+      "id": "e0fec345",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.callout-important}\n",
+        "## El test continúa cerrado\n",
+        "\n",
+        "Utilizaremos únicamente:\n",
+        "\n",
+        "```text\n",
+        "X_train\n",
+        "y_train\n",
+        "```\n",
+        "\n",
+        "para seleccionar hiperparámetros.\n",
+        "\n",
+        "No utilizaremos `X_test` ni `y_test` para decidir qué configuración funciona mejor.\n",
+        "\n",
+        "El conjunto de prueba se utilizará para realizar la evaluación final.\n",
+        ":::\n",
+        "\n",
+        "## El problema de una única partición\n",
+        "\n",
+        "Antes dividimos temporalmente el conjunto de entrenamiento en:\n",
+        "\n",
+        "$$\n",
+        "\\text{Train}\n",
+        "\\longrightarrow\n",
+        "\\begin{cases}\n",
+        "\\text{Train GB}\\\\\n",
+        "\\text{Validation}\n",
+        "\\end{cases}.\n",
+        "$$\n",
+        "\n",
+        "Esto nos permitió comparar configuraciones.\n",
+        "\n",
+        "Pero aparece una pregunta:\n",
+        "\n",
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿Qué ocurre si cambiamos las observaciones que terminaron en el conjunto de validación?\n",
+        "\n",
+        "::::\n",
+        "\n",
+        "\n",
+        "Vamos a comprobarlo.\n",
+        "\n",
+        "Definimos primero una configuración fija de Gradient Boosting."
+      ],
+      "id": "ce40b95b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "modelo = GradientBoostingRegressor(\n",
+        "    n_estimators=200,\n",
+        "    learning_rate=0.05,\n",
+        "    max_depth=2,\n",
+        "    random_state=42\n",
+        ")"
+      ],
+      "id": "ec4520a2",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora realizaremos varias divisiones cambiando únicamente la semilla aleatoria."
+      ],
+      "id": "4e9f7f3d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "resultados_split = []\n",
+        "\n",
+        "for semilla in [1, 10, 42, 100, 500]:\n",
+        "\n",
+        "    X_tr, X_val, y_tr, y_val = train_test_split(\n",
+        "        X_train,\n",
+        "        y_train,\n",
+        "        test_size=0.20,\n",
+        "        random_state=semilla\n",
+        "    )\n",
+        "\n",
+        "    modelo.fit(X_tr, y_tr)\n",
+        "\n",
+        "    pred = modelo.predict(X_val)\n",
+        "\n",
+        "    rmse = np.sqrt(\n",
+        "        mean_squared_error(y_val, pred)\n",
+        "    )\n",
+        "\n",
+        "    resultados_split.append({\n",
+        "        \"random_state\": semilla,\n",
+        "        \"RMSE\": rmse\n",
+        "    })\n",
+        "\n",
+        "df_split = pd.DataFrame(resultados_split)\n",
+        "\n",
+        "df_split"
+      ],
+      "id": "2b531e27",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Visualicemos los resultados."
+      ],
+      "id": "f111c564"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(7, 4))\n",
+        "\n",
+        "plt.plot(\n",
+        "    df_split[\"random_state\"].astype(str),\n",
+        "    df_split[\"RMSE\"],\n",
+        "    marker=\"o\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Partición\")\n",
+        "plt.ylabel(\"RMSE de validación\")\n",
+        "plt.title(\"El resultado depende de la partición\")\n",
+        "plt.show()"
+      ],
+      "id": "a80b4789",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "El modelo es esencialmente el mismo en todos los casos. Entonces, ¿por qué obtenemos distintos valores de RMSE?\n",
+        "::::\n",
+        "\n",
+        "\n",
+        "La evaluación depende de qué observaciones fueron utilizadas para entrenar y cuáles fueron utilizadas para validar.\n",
+        "\n",
+        "Por eso es importante **Cross-Validation**.\n",
+        "\n",
+        "## $k$-fold Cross-Validation\n",
+        "\n",
+        "En $k$-fold Cross-Validation dividimos los datos en $k$ subconjuntos o *folds*:\n",
+        "\n",
+        "$$\n",
+        "D_1,D_2,\\ldots,D_k.\n",
+        "$$\n",
+        "\n",
+        "Cada fold se utiliza una vez como conjunto de validación y los restantes se utilizan para entrenamiento.\n",
+        "\n",
+        "Por ejemplo, para $k=5$ realizamos cinco entrenamientos.\n",
+        "\n",
+        "El desempeño promedio es\n",
+        "\n",
+        "$$\n",
+        "\\overline{s}_{CV}\n",
+        "=\n",
+        "\\frac{1}{k}\n",
+        "\\sum_{j=1}^{k}s_j.\n",
+        "$$\n",
+        "\n",
+        "También podemos estudiar su variabilidad mediante la desviación estándar.\n",
+        "\n",
+        "\n",
+        "## Nuestro primer Cross-Validation\n",
+        "\n",
+        "Crearemos una estrategia de 5-fold Cross-Validation."
+      ],
+      "id": "252713e9"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "cv = KFold(\n",
+        "    n_splits=5,\n",
+        "    shuffle=True,\n",
+        "    random_state=42\n",
+        ")"
+      ],
+      "id": "98d425c3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Utilizaremos el mismo Gradient Boosting:"
+      ],
+      "id": "73ced55a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "modelo = GradientBoostingRegressor(\n",
+        "    n_estimators=200,\n",
+        "    learning_rate=0.05,\n",
+        "    max_depth=2,\n",
+        "    random_state=42\n",
+        ")"
+      ],
+      "id": "be1d3681",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora utilizamos `cross_val_score()`."
+      ],
+      "id": "a1fd4858"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "scores = cross_val_score(\n",
+        "    modelo,\n",
+        "    X_train,\n",
+        "    y_train,\n",
+        "    cv=cv,\n",
+        "    scoring=\"neg_root_mean_squared_error\"\n",
+        ")"
+      ],
+      "id": "0c4bf571",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Veamos el resultado:"
+      ],
+      "id": "90a06aeb"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "scores"
+      ],
+      "id": "90ebcdb8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Puede llamar la atención que los valores sean negativos.\n",
+        "\n",
+        "Esto ocurre porque `scikit-learn` utiliza la convención de que un *score* mayor debe representar un mejor desempeño.\n",
+        "\n",
+        "Sin embargo, RMSE es un error:\n",
+        "\n",
+        "$$\n",
+        "\\text{menor RMSE}\n",
+        "\\quad\\Longrightarrow\\quad\n",
+        "\\text{mejor}.\n",
+        "$$\n",
+        "\n",
+        "Por ello, `scikit-learn` devuelve:\n",
+        "\n",
+        "$$\n",
+        "-\\operatorname{RMSE}.\n",
+        "$$\n",
+        "\n",
+        "Para trabajar directamente con RMSE podemos cambiar el signo:"
+      ],
+      "id": "550ceb3b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "rmse_cv = -scores\n",
+        "\n",
+        "rmse_cv"
+      ],
+      "id": "39667177",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Desempeño promedio\n",
+        "\n",
+        "Calculamos ahora la media:"
+      ],
+      "id": "80d1c4b3"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "rmse_cv.mean()"
+      ],
+      "id": "35918fc4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "y la desviación estándar:"
+      ],
+      "id": "6d3217ba"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "rmse_cv.std()"
+      ],
+      "id": "0a271eda",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos reportar:"
+      ],
+      "id": "1d74ecb5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "print(\n",
+        "    f\"RMSE CV: {rmse_cv.mean():.4f} \"\n",
+        "    f\"+/- {rmse_cv.std():.4f}\"\n",
+        ")"
+      ],
+      "id": "4ab36316",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Por ejemplo, conceptualmente obtenemos algo de la forma\n",
+        "\n",
+        "$$\n",
+        "\\operatorname{RMSE}_{CV}\n",
+        "=\n",
+        "\\overline{\\operatorname{RMSE}}\n",
+        "\\pm\n",
+        "SD.\n",
+        "$$\n",
+        "\n",
+        "::: {.callout-tip}\n",
+        "## Cross-Validation nos proporciona más de un número\n",
+        "\n",
+        "La media nos informa sobre el desempeño promedio.\n",
+        "\n",
+        "La desviación estándar nos ayuda a observar cuánto cambia el resultado entre diferentes particiones.\n",
+        ":::\n",
+        "\n",
+        "## Visualización de los folds\n",
+        "\n",
+        "Podemos visualizar los cinco resultados obtenidos."
+      ],
+      "id": "bdcd0e63"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(7, 4))\n",
+        "\n",
+        "plt.plot(\n",
+        "    range(1, len(rmse_cv) + 1),\n",
+        "    rmse_cv,\n",
+        "    marker=\"o\"\n",
+        ")\n",
+        "\n",
+        "plt.axhline(\n",
+        "    rmse_cv.mean(),\n",
+        "    linestyle=\"--\",\n",
+        "    label=\"RMSE promedio\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Fold\")\n",
+        "plt.ylabel(\"RMSE\")\n",
+        "plt.title(\"RMSE en cada fold\")\n",
+        "plt.xticks(range(1, 6))\n",
+        "plt.legend()\n",
+        "plt.show()"
+      ],
+      "id": "07ae157e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿Todos los folds producen exactamente el mismo resultado?\n",
+        "¿Por qué es más informativo observar los cinco resultados que una única partición train--validation?\n",
+        "\n",
+        "::::\n",
+        "\n",
+        "## Comparando algunas configuraciones\n",
+        "\n",
+        "Antes comparamos manualmente diferentes configuraciones.\n",
+        "\n",
+        "Hagámoslo nuevamente, pero ahora utilizando Cross-Validation.\n",
+        "\n",
+        "Consideremos:"
+      ],
+      "id": "c7f7177b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "configuraciones = [\n",
+        "    (\"A\", 0.1, 100, 2),\n",
+        "    (\"B\", 0.05, 200, 2),\n",
+        "    (\"C\", 0.01, 500, 2),\n",
+        "    (\"D\", 0.1, 100, 4)\n",
+        "]"
+      ],
+      "id": "422c4899",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Evaluaremos cada configuración con exactamente los mismos folds."
+      ],
+      "id": "7cccafcb"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "resultados_cv = []\n",
+        "\n",
+        "for nombre, lr, n_est, depth in configuraciones:\n",
+        "\n",
+        "    modelo = GradientBoostingRegressor(\n",
+        "        learning_rate=lr,\n",
+        "        n_estimators=n_est,\n",
+        "        max_depth=depth,\n",
+        "        random_state=42\n",
+        "    )\n",
+        "\n",
+        "    scores = cross_val_score(\n",
+        "        modelo,\n",
+        "        X_train,\n",
+        "        y_train,\n",
+        "        cv=cv,\n",
+        "        scoring=\"neg_root_mean_squared_error\"\n",
+        "    )\n",
+        "\n",
+        "    rmse = -scores\n",
+        "\n",
+        "    resultados_cv.append({\n",
+        "        \"Modelo\": nombre,\n",
+        "        \"learning_rate\": lr,\n",
+        "        \"n_estimators\": n_est,\n",
+        "        \"max_depth\": depth,\n",
+        "        \"RMSE_CV\": rmse.mean(),\n",
+        "        \"SD_CV\": rmse.std()\n",
+        "    })"
+      ],
+      "id": "6b202de7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Construimos una tabla."
+      ],
+      "id": "5079c063"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "df_cv = pd.DataFrame(resultados_cv)\n",
+        "\n",
+        "df_cv"
+      ],
+      "id": "03aef67c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora nuestra comparación ya no depende de una única partición.\n",
+        "\n",
+        "\n",
+        "### Visualización\n",
+        "\n",
+        "Podemos representar el RMSE promedio junto con su variabilidad."
+      ],
+      "id": "574f682a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(7, 4))\n",
+        "\n",
+        "plt.errorbar(\n",
+        "    df_cv[\"Modelo\"],\n",
+        "    df_cv[\"RMSE_CV\"],\n",
+        "    yerr=df_cv[\"SD_CV\"],\n",
+        "    fmt=\"o\",\n",
+        "    capsize=5\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Configuración\")\n",
+        "plt.ylabel(\"RMSE de Cross-Validation\")\n",
+        "plt.title(\"Comparación mediante 5-fold Cross-Validation\")\n",
+        "plt.show()"
+      ],
+      "id": "79c9e4c8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.callout-note}\n",
+        "Las barras muestran la variabilidad entre folds.\n",
+        "\n",
+        "Una diferencia pequeña entre dos medias no debe interpretarse automáticamente como una diferencia importante entre los modelos.\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "## El problema de la búsqueda manual\n",
+        "\n",
+        "Hasta ahora evaluamos únicamente cuatro configuraciones.\n",
+        "\n",
+        "Pero podríamos querer explorar:\n",
+        "\n",
+        "$$\n",
+        "\\texttt{learning\\_rate}\n",
+        "\\in\n",
+        "\\{0.01,0.05,0.1\\},\n",
+        "$$\n",
+        "\n",
+        "$$\n",
+        "\\texttt{n\\_estimators}\n",
+        "\\in\n",
+        "\\{100,200,500\\},\n",
+        "$$\n",
+        "\n",
+        "y\n",
+        "\n",
+        "$$\n",
+        "\\texttt{max\\_depth}\n",
+        "\\in\n",
+        "\\{2,3,4\\}.\n",
+        "$$\n",
+        "\n",
+        "¿Cuántas configuraciones tenemos?"
+      ],
+      "id": "7a3f51dd"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "3 * 3 * 3"
+      ],
+      "id": "8d819aff",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Son:\n",
+        "\n",
+        "$$\n",
+        "3\\times3\\times3=27\n",
+        "$$\n",
+        "\n",
+        "configuraciones.\n",
+        "\n",
+        "Pero cada configuración se evalúa mediante 5-fold Cross-Validation.\n",
+        "\n",
+        "Por lo tanto:"
+      ],
+      "id": "10ebc824"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "27 * 5"
+      ],
+      "id": "d1d20d3f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "necesitamos al menos\n",
+        "\n",
+        "$$\n",
+        "27\\times5=135\n",
+        "$$\n",
+        "\n",
+        "ajustes del modelo.\n",
+        "\n",
+        "Escribir manualmente los ciclos necesarios sería posible, pero `scikit-learn` proporciona herramientas específicamente diseñadas para este proceso.\n",
+        "\n",
+        "## Grid Search\n",
+        "\n",
+        "`GridSearchCV` evalúa sistemáticamente todas las combinaciones que especifiquemos.\n",
+        "\n",
+        "Definimos primero nuestra cuadrícula."
+      ],
+      "id": "495210be"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "param_grid = {\n",
+        "    \"learning_rate\": [0.01, 0.05, 0.1],\n",
+        "    \"n_estimators\": [100, 200, 500],\n",
+        "    \"max_depth\": [2, 3, 4]\n",
+        "}"
+      ],
+      "id": "6f1a62eb",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos calcular el número de configuraciones:"
+      ],
+      "id": "1b6ef10d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "n_configuraciones = (\n",
+        "    len(param_grid[\"learning_rate\"])\n",
+        "    * len(param_grid[\"n_estimators\"])\n",
+        "    * len(param_grid[\"max_depth\"])\n",
+        ")\n",
+        "\n",
+        "print(n_configuraciones)"
+      ],
+      "id": "d630c586",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Construimos la búsqueda."
+      ],
+      "id": "54d499f4"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "modelo = GradientBoostingRegressor(\n",
+        "    random_state=42\n",
+        ")\n",
+        "\n",
+        "grid_search = GridSearchCV(\n",
+        "    estimator=modelo,\n",
+        "    param_grid=param_grid,\n",
+        "    scoring=\"neg_root_mean_squared_error\",\n",
+        "    cv=cv,\n",
+        "    n_jobs=1,\n",
+        "    return_train_score=True\n",
+        ")\n",
+        "\n",
+        "#grid_search.fit(X_train, y_train)"
+      ],
+      "id": "f4de377f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.callout-note}\n",
+        "## `n_jobs=-1`\n",
+        "\n",
+        "Con `n_jobs=-1`, `scikit-learn` puede utilizar los procesadores disponibles para ejecutar parte del trabajo en paralelo.\n",
+        "\n",
+        "Esto puede reducir considerablemente el tiempo de búsqueda. En una computadora de 32GB de ram y 12 CPUs, lo recomendable es `n_jobs=4`.\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "### Ejecutamos la búsqueda\n",
+        "\n",
+        "Vamos a medir también cuánto tarda."
+      ],
+      "id": "148dfab7"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "inicio = perf_counter()\n",
+        "\n",
+        "grid_search.fit(X_train, y_train)\n",
+        "\n",
+        "tiempo_grid = perf_counter() - inicio\n",
+        "\n",
+        "print(f\"Tiempo: {tiempo_grid:.2f} segundos\")"
+      ],
+      "id": "d798ea10",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Resultados de Grid Search\n",
+        "\n",
+        "Podemos consultar directamente la configuración seleccionada."
+      ],
+      "id": "6bc711c6"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "grid_search.best_params_"
+      ],
+      "id": "6c88bc50",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Y el mejor score:"
+      ],
+      "id": "5c760f9d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "grid_search.best_score_"
+      ],
+      "id": "654ebe12",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Recordemos que el valor corresponde a\n",
+        "\n",
+        "$$\n",
+        "-\\operatorname{RMSE}.\n",
+        "$$\n",
+        "\n",
+        "Por lo tanto:"
+      ],
+      "id": "2e6b7f8d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "best_rmse_grid = -grid_search.best_score_\n",
+        "\n",
+        "print(f\"Mejor RMSE CV: {best_rmse_grid:.4f}\")"
+      ],
+      "id": "39b4dafe",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "También podemos recuperar el modelo seleccionado:"
+      ],
+      "id": "065fe730"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "grid_search.best_estimator_"
+      ],
+      "id": "b3848fd5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Todos los resultados de Grid Search\n",
+        "\n",
+        "`GridSearchCV` almacena mucha más información en:"
+      ],
+      "id": "1271a166"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "grid_search.cv_results_"
+      ],
+      "id": "97ac963c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos convertirla en un `DataFrame`."
+      ],
+      "id": "b97a78aa"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "resultados_grid = pd.DataFrame(\n",
+        "    grid_search.cv_results_\n",
+        ")\n",
+        "\n",
+        "resultados_grid.head()"
+      ],
+      "id": "0bdd93ee",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Seleccionemos algunas columnas importantes."
+      ],
+      "id": "7ea26976"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "columnas = [\n",
+        "    \"param_learning_rate\",\n",
+        "    \"param_n_estimators\",\n",
+        "    \"param_max_depth\",\n",
+        "    \"mean_test_score\",\n",
+        "    \"std_test_score\",\n",
+        "    \"rank_test_score\",\n",
+        "    \"mean_fit_time\"\n",
+        "]\n",
+        "\n",
+        "resultados_grid[columnas].head()"
+      ],
+      "id": "a29011fc",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Como los scores están negativos, crearemos una columna de RMSE."
+      ],
+      "id": "46b96654"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "resultados_grid[\"RMSE_CV\"] = (\n",
+        "    -resultados_grid[\"mean_test_score\"]\n",
+        ")"
+      ],
+      "id": "44283d8d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ordenamos las configuraciones:"
+      ],
+      "id": "9bc3f9c5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "resultados_grid[\n",
+        "    [\n",
+        "        \"param_learning_rate\",\n",
+        "        \"param_n_estimators\",\n",
+        "        \"param_max_depth\",\n",
+        "        \"RMSE_CV\",\n",
+        "        \"std_test_score\",\n",
+        "        \"mean_fit_time\"\n",
+        "    ]\n",
+        "].sort_values(\"RMSE_CV\").head(10)"
+      ],
+      "id": "7f165f40",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Esto nos permite observar que Grid Search no produce solamente una configuración.\n",
+        "\n",
+        "Podemos estudiar el comportamiento de todo el espacio que decidimos explorar.\n",
+        "\n",
+        "## Visualizando una parte de la búsqueda\n",
+        "\n",
+        "Para visualizar los resultados fijaremos, por ejemplo,\n",
+        "\n",
+        "$$\n",
+        "\\texttt{max\\_depth}=2.\n",
+        "$$"
+      ],
+      "id": "8a6d0255"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "grid_depth2 = resultados_grid[\n",
+        "    resultados_grid[\"param_max_depth\"] == 2\n",
+        "].copy()"
+      ],
+      "id": "25f12c2b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora podemos representar el RMSE para diferentes combinaciones de `learning_rate` y `n_estimators`."
+      ],
+      "id": "45b24b12"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "for lr in sorted(\n",
+        "    grid_depth2[\"param_learning_rate\"].unique()\n",
+        "):\n",
+        "\n",
+        "    datos = grid_depth2[\n",
+        "        grid_depth2[\"param_learning_rate\"] == lr\n",
+        "    ].sort_values(\"param_n_estimators\")\n",
+        "\n",
+        "    plt.plot(\n",
+        "        datos[\"param_n_estimators\"],\n",
+        "        datos[\"RMSE_CV\"],\n",
+        "        marker=\"o\",\n",
+        "        label=f\"learning_rate = {lr}\"\n",
+        "    )\n",
+        "\n",
+        "plt.xlabel(\"n_estimators\")\n",
+        "plt.ylabel(\"RMSE CV\")\n",
+        "plt.title(\"Interacción entre learning rate y número de árboles\")\n",
+        "plt.legend()\n",
+        "plt.show()"
+      ],
+      "id": "1d9dcd3d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Esta gráfica nos permite recuperar una idea de la práctica anterior:\n",
+        "\n",
+        "$$\n",
+        "\\texttt{learning\\_rate}\n",
+        "\\quad\\text{y}\\quad\n",
+        "\\texttt{n\\_estimators}\n",
+        "$$\n",
+        "\n",
+        "no deben interpretarse necesariamente de manera aislada.\n",
+        "\n",
+        "\n",
+        "\n",
+        "## ¿Qué limitación tiene Grid Search?\n",
+        "\n",
+        "Nuestra búsqueda anterior utilizó solamente tres hiperparámetros.\n",
+        "\n",
+        "Supongamos ahora que queremos explorar:\n",
+        "\n",
+        "```text\n",
+        "learning_rate\n",
+        "n_estimators\n",
+        "max_depth\n",
+        "subsample\n",
+        "min_samples_leaf\n",
+        "```\n",
+        "\n",
+        "y que consideramos cinco valores para cada uno.\n",
+        "\n",
+        "El número de configuraciones sería\n",
+        "\n",
+        "$$\n",
+        "5^5=3125.\n",
+        "$$\n",
+        "\n",
+        "Con 5-fold Cross-Validation:\n",
+        "\n",
+        "$$\n",
+        "3125\\times5=15625\n",
+        "$$\n",
+        "\n",
+        "ajustes del modelo."
+      ],
+      "id": "c29da45b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "5**5 * 5"
+      ],
+      "id": "3ce2f3aa",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "El costo crece rápidamente.\n",
+        "\n",
+        "Además, para variables continuas como `learning_rate`, una cuadrícula solamente evalúa los valores específicos que nosotros elegimos.\n",
+        "\n",
+        "Esto motiva una estrategia diferente.\n",
+        "\n",
+        "## Random Search\n",
+        "\n",
+        "En Random Search especificamos un espacio de búsqueda, pero evaluamos solamente un número determinado de configuraciones.\n",
+        "\n",
+        "Por ejemplo, podemos decidir:\n",
+        "\n",
+        "$$\n",
+        "B=20.\n",
+        "$$\n",
+        "\n",
+        "Esto significa que evaluaremos únicamente 20 configuraciones.\n",
+        "\n",
+        "Con 5-fold Cross-Validation:\n",
+        "\n",
+        "$$\n",
+        "20\\times5=100\n",
+        "$$\n",
+        "\n",
+        "ajustes principales del modelo.\n",
+        "\n",
+        "\n",
+        "### Definimos el espacio de búsqueda\n",
+        "\n",
+        "Para aprovechar mejor Random Search podemos utilizar distribuciones continuas.\n",
+        "\n",
+        "Importamos:"
+      ],
+      "id": "a44af22f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "from scipy.stats import randint, loguniform, uniform"
+      ],
+      "id": "97631e8f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Definimos:"
+      ],
+      "id": "ae3f665d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "param_distributions = {\n",
+        "    \"n_estimators\": randint(100, 601),\n",
+        "    \"learning_rate\": loguniform(0.01, 0.2),\n",
+        "    \"max_depth\": randint(1, 6),\n",
+        "    \"subsample\": uniform(0.6, 0.4)\n",
+        "}"
+      ],
+      "id": "eb4426ec",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Aquí:\n",
+        "\n",
+        "- `randint(100, 601)` genera enteros entre 100 y 600;\n",
+        "- `loguniform(0.01, 0.2)` explora valores positivos de `learning_rate` en escala logarítmica;\n",
+        "- `randint(1, 6)` genera profundidades entre 1 y 5;\n",
+        "- `uniform(0.6, 0.4)` genera valores entre 0.6 y 1.0.\n",
+        "\n",
+        "::: {.callout-tip}\n",
+        "## ¿Por qué `loguniform` para learning rate?\n",
+        "\n",
+        "Para hiperparámetros positivos que pueden variar en diferentes órdenes de magnitud, puede ser más informativo explorar una escala logarítmica.\n",
+        "\n",
+        "Por ejemplo, queremos distinguir adecuadamente entre valores cercanos a\n",
+        "\n",
+        "$$\n",
+        "0.01,\\quad 0.1\n",
+        "$$\n",
+        "\n",
+        "en lugar de concentrar el muestreo únicamente en diferencias absolutas.\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "## RandomizedSearchCV\n",
+        "\n",
+        "Construimos la búsqueda."
+      ],
+      "id": "caa56ed4"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "random_search = RandomizedSearchCV(\n",
+        "    estimator=GradientBoostingRegressor(\n",
+        "        random_state=42\n",
+        "    ),\n",
+        "    param_distributions=param_distributions,\n",
+        "    n_iter=20,\n",
+        "    scoring=\"neg_root_mean_squared_error\",\n",
+        "    cv=cv,\n",
+        "    random_state=42,\n",
+        "    n_jobs=1,\n",
+        "    return_train_score=True\n",
+        ")"
+      ],
+      "id": "7e66ae92",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ejecutamos y medimos el tiempo."
+      ],
+      "id": "68f56e14"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "inicio = perf_counter()\n",
+        "\n",
+        "random_search.fit(X_train, y_train)\n",
+        "\n",
+        "tiempo_random = perf_counter() - inicio\n",
+        "\n",
+        "print(f\"Tiempo: {tiempo_random:.2f} segundos\")"
+      ],
+      "id": "810000e2",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Resultados de Random Search\n",
+        "\n",
+        "Consultamos la configuración seleccionada."
+      ],
+      "id": "2bdbf499"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "random_search.best_params_"
+      ],
+      "id": "e7629108",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Y su RMSE promedio:"
+      ],
+      "id": "6513118c"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "best_rmse_random = -random_search.best_score_\n",
+        "\n",
+        "print(f\"Mejor RMSE CV: {best_rmse_random:.4f}\")"
+      ],
+      "id": "3640c301",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos recuperar nuevamente todos los resultados."
+      ],
+      "id": "bfafcc04"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "resultados_random = pd.DataFrame(\n",
+        "    random_search.cv_results_\n",
+        ")\n",
+        "\n",
+        "resultados_random[\"RMSE_CV\"] = (\n",
+        "    -resultados_random[\"mean_test_score\"]\n",
+        ")"
+      ],
+      "id": "343012f6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Veamos las mejores configuraciones:"
+      ],
+      "id": "4487194f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "resultados_random[\n",
+        "    [\n",
+        "        \"param_learning_rate\",\n",
+        "        \"param_n_estimators\",\n",
+        "        \"param_max_depth\",\n",
+        "        \"param_subsample\",\n",
+        "        \"RMSE_CV\",\n",
+        "        \"mean_fit_time\"\n",
+        "    ]\n",
+        "].sort_values(\"RMSE_CV\").head(10)"
+      ],
+      "id": "04a7d93f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Grid Search vs. Random Search\n",
+        "\n",
+        "Construyamos una comparación sencilla."
+      ],
+      "id": "aca3b237"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "comparacion_busquedas = pd.DataFrame({\n",
+        "    \"Método\": [\n",
+        "        \"Grid Search\",\n",
+        "        \"Random Search\"\n",
+        "    ],\n",
+        "    \"Configuraciones evaluadas\": [\n",
+        "        len(resultados_grid),\n",
+        "        len(resultados_random)\n",
+        "    ],\n",
+        "    \"RMSE CV\": [\n",
+        "        best_rmse_grid,\n",
+        "        best_rmse_random\n",
+        "    ],\n",
+        "    \"Tiempo (s)\": [\n",
+        "        tiempo_grid,\n",
+        "        tiempo_random\n",
+        "    ]\n",
+        "})\n",
+        "\n",
+        "comparacion_busquedas"
+      ],
+      "id": "2357088e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Es importante interpretar esta tabla con cuidado.\n",
+        "\n",
+        "Las dos búsquedas no exploraron exactamente el mismo espacio:\n",
+        "\n",
+        "- Grid Search utilizó una cuadrícula discreta;\n",
+        "- Random Search utilizó distribuciones más amplias;\n",
+        "- Random Search exploró `subsample`, mientras que nuestra cuadrícula inicial no lo hizo.\n",
+        "\n",
+        "Por lo tanto, esta comparación tiene principalmente un objetivo didáctico.\n",
+        "\n",
+        "::: {.callout-important}\n",
+        "## No buscamos demostrar que un método \"gana\"\n",
+        "\n",
+        "El objetivo es observar dos estrategias diferentes.\n",
+        "\n",
+        "**Grid Search**\n",
+        "\n",
+        "$$\n",
+        "\\longrightarrow\n",
+        "$$\n",
+        "\n",
+        "evalúa todas las combinaciones de una cuadrícula especificada.\n",
+        "\n",
+        "**Random Search**\n",
+        "\n",
+        "$$\n",
+        "\\longrightarrow\n",
+        "$$\n",
+        "\n",
+        "permite fijar directamente un presupuesto de configuraciones mediante `n_iter`.\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "## ¿Y XGBoost?\n",
+        "\n",
+        "Exactamente las mismas herramientas pueden utilizarse con XGBoost.\n",
+        "\n",
+        "Por ejemplo:"
+      ],
+      "id": "14044c77"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "from xgboost import XGBRegressor"
+      ],
+      "id": "e5ee1c27",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podríamos definir:"
+      ],
+      "id": "d61bdb35"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "xgb = XGBRegressor(\n",
+        "    objective=\"reg:squarederror\",\n",
+        "    random_state=42,\n",
+        "    n_jobs=1\n",
+        ")"
+      ],
+      "id": "43ae94b1",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "y un espacio como:"
+      ],
+      "id": "9a8554de"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "param_xgb = {\n",
+        "    \"n_estimators\": [100, 300, 500],\n",
+        "    \"learning_rate\": [0.01, 0.05, 0.1],\n",
+        "    \"max_depth\": [2, 3, 5],\n",
+        "    \"subsample\": [0.7, 0.9, 1.0],\n",
+        "    \"colsample_bytree\": [0.7, 0.9, 1.0]\n",
+        "}"
+      ],
+      "id": "711795d1",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Pero observa cuántas combinaciones produce:"
+      ],
+      "id": "54aab32e"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "3**5"
+      ],
+      "id": "affa2e82",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Tenemos\n",
+        "\n",
+        "$$\n",
+        "3^5=243\n",
+        "$$\n",
+        "\n",
+        "configuraciones.\n",
+        "\n",
+        "Con 5-fold Cross-Validation:\n",
+        "\n",
+        "$$\n",
+        "243\\times5=1215\n",
+        "$$\n",
+        "\n",
+        "ajustes.\n",
+        "\n",
+        "Por esta razón, para espacios como éste suele ser más atractivo comenzar con una búsqueda aleatoria.\n",
+        "\n",
+        "::: {.callout-note}\n",
+        "No ejecutaremos esta búsqueda completa durante la clase.\n",
+        "\n",
+        "El objetivo es reconocer que las mismas herramientas pueden aplicarse a diferentes estimadores compatibles con la interfaz de `scikit-learn`.\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "## Preprocesamiento y Cross-Validation\n",
+        "\n",
+        "California Housing tiene una ventaja para nuestro ejemplo de Gradient Boosting: los modelos basados en árboles no requieren estandarización para construir sus divisiones.\n",
+        "\n",
+        "Pero imaginemos que utilizamos un modelo que sí depende de la escala de las variables.\n",
+        "\n",
+        "Podríamos pensar en hacer(no correr):\n",
+        "\n",
+        "```python\n",
+        "scaler.fit(X_train)\n",
+        "\n",
+        "X_train_scaled = scaler.transform(X_train)\n",
+        "\n",
+        "cross_val_score(\n",
+        "    modelo,\n",
+        "    X_train_scaled,\n",
+        "    y_train,\n",
+        "    cv=cv\n",
+        ")\n",
+        "```\n",
+        "\n",
+        "Sin embargo, existe un problema.\n",
+        "\n",
+        "El escalador aprendió sus parámetros utilizando **todo `X_train`** antes de construir los folds.\n",
+        "\n",
+        "Por ejemplo, `StandardScaler` utiliza\n",
+        "\n",
+        "$$\n",
+        "z\n",
+        "=\n",
+        "\\frac{x-\\mu}{\\sigma}.\n",
+        "$$\n",
+        "\n",
+        "Si calculamos $\\mu$ y $\\sigma$ utilizando todo `X_train`, las observaciones que posteriormente pertenecerán al validation fold ya participaron en el preprocesamiento.\n",
+        "\n",
+        "Esto constituye una forma de **data leakage**.\n",
+        "\n",
+        "\n",
+        "## Pipelines\n",
+        "\n",
+        "La solución es incluir las transformaciones que aprenden de los datos dentro de un `Pipeline`.\n",
+        "\n",
+        "Para ilustrarlo utilizaremos un modelo que ellos ya conocen: regresión lineal regularizada."
+      ],
+      "id": "9e225609"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "from sklearn.pipeline import Pipeline\n",
+        "from sklearn.preprocessing import StandardScaler\n",
+        "from sklearn.linear_model import Ridge"
+      ],
+      "id": "fa4de101",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Construimos:"
+      ],
+      "id": "c3261d4e"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pipeline = Pipeline([\n",
+        "    (\"scaler\", StandardScaler()),\n",
+        "    (\"model\", Ridge())\n",
+        "])"
+      ],
+      "id": "9debebf5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora realizamos Cross-Validation sobre **todo el pipeline**."
+      ],
+      "id": "e0c7e0df"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "scores_ridge = cross_val_score(\n",
+        "    pipeline,\n",
+        "    X_train,\n",
+        "    y_train,\n",
+        "    cv=cv,\n",
+        "    scoring=\"neg_root_mean_squared_error\"\n",
+        ")\n",
+        "\n",
+        "rmse_ridge = -scores_ridge\n",
+        "\n",
+        "print(\n",
+        "    f\"RMSE CV: {rmse_ridge.mean():.4f} \"\n",
+        "    f\"+/- {rmse_ridge.std():.4f}\"\n",
+        ")"
+      ],
+      "id": "eac2dd94",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Durante cada fold, `scikit-learn` realiza conceptualmente:\n",
+        "\n",
+        "$$\n",
+        "\\text{training fold}\n",
+        "$$\n",
+        "\n",
+        "$$\n",
+        "\\downarrow\n",
+        "$$\n",
+        "\n",
+        "$$\n",
+        "\\text{ajustar StandardScaler}\n",
+        "$$\n",
+        "\n",
+        "$$\n",
+        "\\downarrow\n",
+        "$$\n",
+        "\n",
+        "$$\n",
+        "\\text{transformar training fold}\n",
+        "$$\n",
+        "\n",
+        "$$\n",
+        "\\downarrow\n",
+        "$$\n",
+        "\n",
+        "$$\n",
+        "\\text{entrenar Ridge}\n",
+        "$$\n",
+        "\n",
+        "y solamente después utiliza esos parámetros para transformar el validation fold.\n",
+        "\n",
+        "## Tuning dentro de un Pipeline\n",
+        "\n",
+        "También podemos optimizar hiperparámetros dentro de un pipeline.\n",
+        "\n",
+        "Para referirnos a un hiperparámetro utilizamos:\n",
+        "\n",
+        "```text\n",
+        "nombre_del_paso__nombre_del_hiperparametro\n",
+        "```\n",
+        "\n",
+        "Por ejemplo:"
+      ],
+      "id": "72907786"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "param_grid_ridge = {\n",
+        "    \"model__alpha\": [0.01, 0.1, 1, 10, 100]\n",
+        "}"
+      ],
+      "id": "73e49dd3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Construimos la búsqueda:"
+      ],
+      "id": "2b746781"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "grid_ridge = GridSearchCV(\n",
+        "    estimator=pipeline,\n",
+        "    param_grid=param_grid_ridge,\n",
+        "    cv=cv,\n",
+        "    scoring=\"neg_root_mean_squared_error\",\n",
+        "    n_jobs=1\n",
+        ")\n",
+        "\n",
+        "grid_ridge.fit(X_train, y_train)"
+      ],
+      "id": "87fed0f8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Consultamos:"
+      ],
+      "id": "8789e981"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "grid_ridge.best_params_"
+      ],
+      "id": "8e3b1abf",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "y:"
+      ],
+      "id": "a104e02a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "-grid_ridge.best_score_"
+      ],
+      "id": "bb4863fe",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.callout-important}\n",
+        "## La idea central\n",
+        "\n",
+        "Cuando una operación aprende información de los datos, debe formar parte del procedimiento que se valida.\n",
+        "\n",
+        "Por ejemplo:\n",
+        "\n",
+        "$$\n",
+        "\\boxed{\n",
+        "\\text{imputación}\n",
+        "\\rightarrow\n",
+        "\\text{escalamiento}\n",
+        "\\rightarrow\n",
+        "\\text{selección de variables}\n",
+        "\\rightarrow\n",
+        "\\text{modelo}\n",
+        "}\n",
+        "$$\n",
+        "\n",
+        "puede constituir un único pipeline.\n",
+        ":::\n",
+        "\n",
+        "## ¿Qué ocurre después de la búsqueda?\n",
+        "\n",
+        "Cuando ejecutamos:\n",
+        "\n",
+        "```python\n",
+        "grid_search.fit(X_train, y_train)\n",
+        "```\n",
+        "\n",
+        "`GridSearchCV`:\n",
+        "\n",
+        "1. evalúa las configuraciones mediante Cross-Validation;\n",
+        "2. identifica la configuración seleccionada;\n",
+        "3. por defecto vuelve a entrenar esa configuración utilizando **todo `X_train`**.\n",
+        "\n",
+        "Este último paso se conoce como **refit**.\n",
+        "\n",
+        "Podemos comprobar que:"
+      ],
+      "id": "e75f2d13"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "grid_search.refit"
+      ],
+      "id": "12f6baa3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "y recuperar el modelo reajustado:"
+      ],
+      "id": "4005fbf3"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "modelo_seleccionado = grid_search.best_estimator_\n",
+        "\n",
+        "modelo_seleccionado"
+      ],
+      "id": "21d20ece",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.callout-warning}\n",
+        "## Todavía no evaluaremos sobre test\n",
+        "\n",
+        "Tenemos un modelo seleccionado y reajustado.\n",
+        "\n",
+        "Podríamos ejecutar:\n",
+        "\n",
+        "```python\n",
+        "modelo_seleccionado.predict(X_test)\n",
+        "```\n",
+        "\n",
+        "pero **no lo haremos todavía**.\n",
+        "\n",
+        "En la siguiente seccióm estudiaremos cómo comparar varios modelos y realizaremos finalmente la evaluación sobre el conjunto de prueba.\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "## Ejercicio\n",
+        "\n",
+        "Utiliza `RandomizedSearchCV` para explorar un modelo de Gradient Boosting con el mismo conjunto de datos usados.\n",
+        "\n",
+        "Considera:"
+      ],
+      "id": "cbfb16fe"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "param_ejercicio = {\n",
+        "    \"n_estimators\": [100, 200, 300, 500],\n",
+        "    \"learning_rate\": [0.01, 0.03, 0.05, 0.1],\n",
+        "    \"max_depth\": [1, 2, 3, 4],\n",
+        "    \"subsample\": [0.7, 0.8, 0.9, 1.0]\n",
+        "}"
+      ],
+      "id": "ebdd6020",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Realiza una búsqueda de solamente\n",
+        "\n",
+        "$$\n",
+        "15\n",
+        "$$\n",
+        "\n",
+        "configuraciones utilizando 5-fold Cross-Validation.\n",
+        "\n",
+        "Completa:\n",
+        "\n",
+        "```python\n",
+        "busqueda = RandomizedSearchCV(\n",
+        "    # completar\n",
+        ")\n",
+        "```\n",
+        "\n",
+        "Después:\n",
+        "\n",
+        "1. muestra los hiperparámetros seleccionados;\n",
+        "2. reporta el RMSE promedio de Cross-Validation;\n",
+        "3. construye un `DataFrame` con las 15 configuraciones;\n",
+        "4. ordénalas de menor a mayor RMSE;\n",
+        "5. muestra las cinco primeras.\n",
+        "\n",
+        "Finalmente responde:\n",
+        "\n",
+        "a) ¿Cuántas configuraciones contiene el espacio completo?\n",
+        "\n",
+        "b) ¿Cuántos ajustes serían necesarios si utilizáramos Grid Search con 5-fold CV?\n",
+        "\n",
+        "c) ¿Cuántos ajustes principales realizamos utilizando `n_iter=15`?\n",
+        "\n",
+        "d) ¿Por qué Random Search puede resultar útil cuando aumentamos el número de hiperparámetros?\n",
+        "\n",
+        "::: {.callout-important}\n",
+        "No utilices `X_test` ni `y_test` para resolver el ejercicio.\n",
+        ":::"
+      ],
+      "id": "8a745f8e"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "C:\\Users\\HaydeePeruyero\\AppData\\Local\\Python\\pythoncore-3.14-64\\share\\jupyter\\kernels\\python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

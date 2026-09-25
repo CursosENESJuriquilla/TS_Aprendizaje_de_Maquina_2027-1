@@ -63,7 +63,7 @@
         "\n",
         "Utilizaremos nuevamente el conjunto de datos `Wage`."
       ],
-      "id": "d71dec36"
+      "id": "1b44eeba"
     },
     {
       "cell_type": "code",
@@ -77,7 +77,7 @@
         "\n",
         "from pygam import LinearGAM, LogisticGAM, s, l, f"
       ],
-      "id": "12a719c9",
+      "id": "a44c0a84",
       "execution_count": null,
       "outputs": []
     },
@@ -87,7 +87,7 @@
       "source": [
         "Cargamos los datos."
       ],
-      "id": "37ab383e"
+      "id": "772f9bcf"
     },
     {
       "cell_type": "code",
@@ -95,7 +95,7 @@
       "source": [
         "Wage = load_data(\"Wage\")"
       ],
-      "id": "6dee7c6b",
+      "id": "393a8333",
       "execution_count": null,
       "outputs": []
     },
@@ -105,7 +105,7 @@
       "source": [
         "Revisamos las primeras observaciones."
       ],
-      "id": "74529f40"
+      "id": "2582f5eb"
     },
     {
       "cell_type": "code",
@@ -113,7 +113,7 @@
       "source": [
         "Wage.head()"
       ],
-      "id": "2dffae8b",
+      "id": "eecdd32b",
       "execution_count": null,
       "outputs": []
     },
@@ -136,7 +136,7 @@
         "\n",
         "Primero revisamos sus categorías."
       ],
-      "id": "c9ceaed5"
+      "id": "af50266e"
     },
     {
       "cell_type": "code",
@@ -144,7 +144,7 @@
       "source": [
         "Wage[\"education\"].cat.categories"
       ],
-      "id": "bbf4046c",
+      "id": "72b1b79c",
       "execution_count": null,
       "outputs": []
     },
@@ -154,7 +154,7 @@
       "source": [
         "Podemos obtener códigos enteros con:"
       ],
-      "id": "176fea0a"
+      "id": "d381f927"
     },
     {
       "cell_type": "code",
@@ -162,7 +162,7 @@
       "source": [
         "education_code = Wage[\"education\"].cat.codes"
       ],
-      "id": "44cadc3f",
+      "id": "d0340fe9",
       "execution_count": null,
       "outputs": []
     },
@@ -172,7 +172,7 @@
       "source": [
         "Construimos la matriz de predictores."
       ],
-      "id": "e63d7f7f"
+      "id": "e1e92d29"
     },
     {
       "cell_type": "code",
@@ -186,7 +186,7 @@
         "\n",
         "y = Wage[\"wage\"].to_numpy()"
       ],
-      "id": "505fd514",
+      "id": "a647885d",
       "execution_count": null,
       "outputs": []
     },
@@ -196,7 +196,7 @@
       "source": [
         "Revisamos las dimensiones."
       ],
-      "id": "ff19011c"
+      "id": "fdd13ead"
     },
     {
       "cell_type": "code",
@@ -204,7 +204,7 @@
       "source": [
         "X.shape"
       ],
-      "id": "389727bb",
+      "id": "1a31bff1",
       "execution_count": null,
       "outputs": []
     },
@@ -244,7 +244,7 @@
         "\n",
         "En `pygam` podemos escribir:"
       ],
-      "id": "78e80d5b"
+      "id": "ada2d3b0"
     },
     {
       "cell_type": "code",
@@ -256,7 +256,7 @@
         "    f(2)\n",
         ")"
       ],
-      "id": "fa932e80",
+      "id": "1e6c58b6",
       "execution_count": null,
       "outputs": []
     },
@@ -272,7 +272,7 @@
         "\n",
         "Ajustamos el modelo."
       ],
-      "id": "605af860"
+      "id": "c63e35f5"
     },
     {
       "cell_type": "code",
@@ -280,7 +280,7 @@
       "source": [
         "gam.fit(X, y)"
       ],
-      "id": "52b31852",
+      "id": "6b61a745",
       "execution_count": null,
       "outputs": []
     },
@@ -324,7 +324,7 @@
         "\n",
         "Construimos una malla para el término correspondiente a `age`."
       ],
-      "id": "779097f9"
+      "id": "fafd73c3"
     },
     {
       "cell_type": "code",
@@ -334,7 +334,7 @@
         "    term=0\n",
         ")"
       ],
-      "id": "fa3f8375",
+      "id": "7cf8a22f",
       "execution_count": null,
       "outputs": []
     },
@@ -344,7 +344,7 @@
       "source": [
         "Calculamos el efecto parcial."
       ],
-      "id": "c3f1188c"
+      "id": "a03664b5"
     },
     {
       "cell_type": "code",
@@ -355,7 +355,7 @@
         "    X=XX\n",
         ")"
       ],
-      "id": "85495bd2",
+      "id": "f853339f",
       "execution_count": null,
       "outputs": []
     },
@@ -365,7 +365,7 @@
       "source": [
         "También podemos obtener intervalos de confianza."
       ],
-      "id": "239da7b8"
+      "id": "77db0617"
     },
     {
       "cell_type": "code",
@@ -377,7 +377,7 @@
         "    width=0.95\n",
         ")"
       ],
-      "id": "c536c3e7",
+      "id": "f326394f",
       "execution_count": null,
       "outputs": []
     },
@@ -387,7 +387,7 @@
       "source": [
         "Visualizamos el efecto."
       ],
-      "id": "1744dd3b"
+      "id": "23fb764b"
     },
     {
       "cell_type": "code",
@@ -419,7 +419,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "0a06c9b9",
+      "id": "08a1fe2c",
       "execution_count": null,
       "outputs": []
     },
@@ -449,7 +449,7 @@
         "\n",
         "Repetimos el procedimiento para `year`."
       ],
-      "id": "e2a0282b"
+      "id": "867a02fd"
     },
     {
       "cell_type": "code",
@@ -459,7 +459,7 @@
         "    term=1\n",
         ")"
       ],
-      "id": "fae7e37f",
+      "id": "75a2c3a9",
       "execution_count": null,
       "outputs": []
     },
@@ -473,7 +473,7 @@
         "    width=0.95\n",
         ")"
       ],
-      "id": "716d2750",
+      "id": "b53d1722",
       "execution_count": null,
       "outputs": []
     },
@@ -507,7 +507,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "ae5d7665",
+      "id": "ffe916e1",
       "execution_count": null,
       "outputs": []
     },
@@ -549,7 +549,7 @@
         "\n",
         "Primero revisamos las categorías."
       ],
-      "id": "f865e618"
+      "id": "7d29527e"
     },
     {
       "cell_type": "code",
@@ -559,7 +559,7 @@
         "\n",
         "education_levels"
       ],
-      "id": "0d31ee58",
+      "id": "d087d404",
       "execution_count": null,
       "outputs": []
     },
@@ -569,7 +569,7 @@
       "source": [
         "Recordemos que `pygam` trabaja con los códigos numéricos de estas categorías:"
       ],
-      "id": "b0392687"
+      "id": "2c9be16f"
     },
     {
       "cell_type": "code",
@@ -579,7 +579,7 @@
         "\n",
         "education_codes"
       ],
-      "id": "1aec34d5",
+      "id": "ff726f75",
       "execution_count": null,
       "outputs": []
     },
@@ -591,7 +591,7 @@
         "\n",
         "Mantendremos `age` y `year` en valores representativos y cambiaremos únicamente `education`."
       ],
-      "id": "f1915358"
+      "id": "852b0897"
     },
     {
       "cell_type": "code",
@@ -603,7 +603,7 @@
         "    education_codes\n",
         "])"
       ],
-      "id": "87a42dfb",
+      "id": "1e71fff9",
       "execution_count": null,
       "outputs": []
     },
@@ -613,7 +613,7 @@
       "source": [
         "Podemos revisar la matriz."
       ],
-      "id": "6241d9fa"
+      "id": "0739bc6b"
     },
     {
       "cell_type": "code",
@@ -621,7 +621,7 @@
       "source": [
         "X_education"
       ],
-      "id": "9fda62d3",
+      "id": "52b73299",
       "execution_count": null,
       "outputs": []
     },
@@ -633,7 +633,7 @@
         "\n",
         "Calculamos ahora el efecto parcial del término categórico."
       ],
-      "id": "66c95fd0"
+      "id": "387e3617"
     },
     {
       "cell_type": "code",
@@ -645,7 +645,7 @@
         "    width=0.95\n",
         ")"
       ],
-      "id": "cc41eb18",
+      "id": "8da8c9f1",
       "execution_count": null,
       "outputs": []
     },
@@ -655,7 +655,7 @@
       "source": [
         "Podemos revisar los resultados."
       ],
-      "id": "d1d84093"
+      "id": "7f07b214"
     },
     {
       "cell_type": "code",
@@ -663,7 +663,7 @@
       "source": [
         "pdep_education"
       ],
-      "id": "19667951",
+      "id": "67f61a39",
       "execution_count": null,
       "outputs": []
     },
@@ -673,7 +673,7 @@
       "source": [
         "Ahora tenemos exactamente un valor por cada nivel educativo."
       ],
-      "id": "c4ba287f"
+      "id": "22aa3e45"
     },
     {
       "cell_type": "code",
@@ -681,7 +681,7 @@
       "source": [
         "len(education_levels), len(pdep_education)"
       ],
-      "id": "a61006e5",
+      "id": "d70adf42",
       "execution_count": null,
       "outputs": []
     },
@@ -691,7 +691,7 @@
       "source": [
         "Representamos las contribuciones."
       ],
-      "id": "f0017af2"
+      "id": "efd855da"
     },
     {
       "cell_type": "code",
@@ -732,7 +732,7 @@
         "plt.tight_layout()\n",
         "plt.show()"
       ],
-      "id": "4e655012",
+      "id": "d7464fab",
       "execution_count": null,
       "outputs": []
     },
@@ -804,7 +804,7 @@
         "\n",
         "Una vez ajustado el modelo podemos hacer predicciones."
       ],
-      "id": "963dc3a1"
+      "id": "00ee461e"
     },
     {
       "cell_type": "code",
@@ -812,7 +812,7 @@
       "source": [
         "y_hat = gam.predict(X)"
       ],
-      "id": "b130aa8a",
+      "id": "13413299",
       "execution_count": null,
       "outputs": []
     },
@@ -822,7 +822,7 @@
       "source": [
         "Podemos comparar valores observados y predichos."
       ],
-      "id": "3ee68e88"
+      "id": "2d02b241"
     },
     {
       "cell_type": "code",
@@ -851,7 +851,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "23ccd568",
+      "id": "a68f0b04",
       "execution_count": null,
       "outputs": []
     },
@@ -883,7 +883,7 @@
         "\n",
         "En `pygam`:"
       ],
-      "id": "7eb88876"
+      "id": "c4f9aada"
     },
     {
       "cell_type": "code",
@@ -895,7 +895,7 @@
         "    f(2)\n",
         ")"
       ],
-      "id": "ae191914",
+      "id": "017ae137",
       "execution_count": null,
       "outputs": []
     },
@@ -905,7 +905,7 @@
       "source": [
         "Ajustamos el modelo."
       ],
-      "id": "bfbf95ab"
+      "id": "954647d9"
     },
     {
       "cell_type": "code",
@@ -913,7 +913,7 @@
       "source": [
         "gam_year_linear.fit(X, y)"
       ],
-      "id": "a00bba9c",
+      "id": "0fc3e9aa",
       "execution_count": null,
       "outputs": []
     },
@@ -939,7 +939,7 @@
         "+\n",
         "\\varepsilon.$$"
       ],
-      "id": "8d6b8a31"
+      "id": "85fb59e7"
     },
     {
       "cell_type": "code",
@@ -952,7 +952,7 @@
         "\n",
         "gam_no_year.fit(X, y)"
       ],
-      "id": "6415a30b",
+      "id": "ceea593f",
       "execution_count": null,
       "outputs": []
     },
@@ -974,7 +974,7 @@
         "+\n",
         "\\varepsilon.$$"
       ],
-      "id": "bf9a9291"
+      "id": "f3524fb4"
     },
     {
       "cell_type": "code",
@@ -988,7 +988,7 @@
         "\n",
         "gam_year_linear.fit(X, y)"
       ],
-      "id": "7a13bc8f",
+      "id": "66efbfe8",
       "execution_count": null,
       "outputs": []
     },
@@ -1010,7 +1010,7 @@
         "+\n",
         "\\varepsilon.$$"
       ],
-      "id": "baa6e898"
+      "id": "2efeb50d"
     },
     {
       "cell_type": "code",
@@ -1024,7 +1024,7 @@
         "\n",
         "gam_year_smooth.fit(X, y)"
       ],
-      "id": "d04479da",
+      "id": "6dbaa4a2",
       "execution_count": null,
       "outputs": []
     },
@@ -1036,7 +1036,7 @@
         "\n",
         "Podemos comparar la calidad de ajuste utilizando criterios como AIC."
       ],
-      "id": "befe69cd"
+      "id": "bcf2b1e4"
     },
     {
       "cell_type": "code",
@@ -1057,7 +1057,7 @@
         "\n",
         "comparison"
       ],
-      "id": "114b8584",
+      "id": "a08c74a5",
       "execution_count": null,
       "outputs": []
     },
@@ -1173,7 +1173,7 @@
         "\\quad\n",
         "\\text{age suavizado}.$$"
       ],
-      "id": "8fd698da"
+      "id": "9b9a6c12"
     },
     {
       "cell_type": "code",
@@ -1196,7 +1196,7 @@
         "    f(2)\n",
         ").fit(X, y)"
       ],
-      "id": "efc21430",
+      "id": "459b7ccd",
       "execution_count": null,
       "outputs": []
     },
@@ -1206,7 +1206,7 @@
       "source": [
         "Comparamos."
       ],
-      "id": "283d7abb"
+      "id": "bce27e7b"
     },
     {
       "cell_type": "code",
@@ -1227,7 +1227,7 @@
         "\n",
         "comparison_age"
       ],
-      "id": "0485cbb6",
+      "id": "15e36df6",
       "execution_count": null,
       "outputs": []
     },
@@ -1247,7 +1247,7 @@
         "\n",
         "Construiremos una variable que indique si el salario es superior a 250."
       ],
-      "id": "8e58074c"
+      "id": "30b062ba"
     },
     {
       "cell_type": "code",
@@ -1257,7 +1257,7 @@
         "    Wage[\"wage\"] > 250\n",
         ").astype(int)"
       ],
-      "id": "e1fe3480",
+      "id": "f433af43",
       "execution_count": null,
       "outputs": []
     },
@@ -1267,7 +1267,7 @@
       "source": [
         "Podemos revisar la frecuencia de ambas clases."
       ],
-      "id": "124e4a29"
+      "id": "3f6a6554"
     },
     {
       "cell_type": "code",
@@ -1275,7 +1275,7 @@
       "source": [
         "high_earn.value_counts()"
       ],
-      "id": "39de8ffd",
+      "id": "18d1a8ca",
       "execution_count": null,
       "outputs": []
     },
@@ -1325,7 +1325,7 @@
         "\n",
         "Ajustamos:"
       ],
-      "id": "c44ae1e1"
+      "id": "a7089e68"
     },
     {
       "cell_type": "code",
@@ -1337,7 +1337,7 @@
         "    f(2)\n",
         ")"
       ],
-      "id": "3e4a87f6",
+      "id": "135db6c8",
       "execution_count": null,
       "outputs": []
     },
@@ -1350,7 +1350,7 @@
         "    high_earn\n",
         ")"
       ],
-      "id": "4ede831f",
+      "id": "8f8be00b",
       "execution_count": null,
       "outputs": []
     },
@@ -1362,7 +1362,7 @@
         "\n",
         "Antes de interpretar el modelo, conviene revisar la relación entre `education` y la respuesta."
       ],
-      "id": "f2bccf55"
+      "id": "b0562042"
     },
     {
       "cell_type": "code",
@@ -1373,7 +1373,7 @@
         "    high_earn\n",
         ")"
       ],
-      "id": "70deb6a0",
+      "id": "bd7b9113",
       "execution_count": null,
       "outputs": []
     },
@@ -1395,7 +1395,7 @@
         "\n",
         "Para evitar ese problema podemos excluir una categoría sin observaciones positivas."
       ],
-      "id": "0ce2da06"
+      "id": "88bf37e7"
     },
     {
       "cell_type": "code",
@@ -1408,7 +1408,7 @@
         "\n",
         "Wage_sub = Wage.loc[mask].copy()"
       ],
-      "id": "acb5becb",
+      "id": "619002fa",
       "execution_count": null,
       "outputs": []
     },
@@ -1418,7 +1418,7 @@
       "source": [
         "Reconstruimos las variables."
       ],
-      "id": "8cda40ac"
+      "id": "72378e6b"
     },
     {
       "cell_type": "code",
@@ -1440,7 +1440,7 @@
         "    Wage_sub[\"wage\"] > 250\n",
         ").astype(int)"
       ],
-      "id": "b4f29542",
+      "id": "0d846f39",
       "execution_count": null,
       "outputs": []
     },
@@ -1450,7 +1450,7 @@
       "source": [
         "Ajustamos nuevamente."
       ],
-      "id": "c86403bc"
+      "id": "ad51b38f"
     },
     {
       "cell_type": "code",
@@ -1467,7 +1467,7 @@
         "    high_earn_sub\n",
         ")"
       ],
-      "id": "43747659",
+      "id": "13c14547",
       "execution_count": null,
       "outputs": []
     },
@@ -1477,7 +1477,7 @@
       "source": [
         "## Efecto parcial de `age` en clasificación"
       ],
-      "id": "d9f9d9b1"
+      "id": "dc938706"
     },
     {
       "cell_type": "code",
@@ -1493,7 +1493,7 @@
         "    width=0.95\n",
         ")"
       ],
-      "id": "3368b3db",
+      "id": "0d463c00",
       "execution_count": null,
       "outputs": []
     },
@@ -1529,7 +1529,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "bb574504",
+      "id": "5aeeaf24",
       "execution_count": null,
       "outputs": []
     },
@@ -1559,7 +1559,7 @@
         "\n",
         "Podemos obtener probabilidades directamente con:"
       ],
-      "id": "7e6b75c9"
+      "id": "7f47933b"
     },
     {
       "cell_type": "code",
@@ -1569,7 +1569,7 @@
         "    X_sub\n",
         ")"
       ],
-      "id": "65576211",
+      "id": "b4fdf913",
       "execution_count": null,
       "outputs": []
     },
@@ -1579,7 +1579,7 @@
       "source": [
         "Revisamos algunas."
       ],
-      "id": "23d0f134"
+      "id": "e01d3f67"
     },
     {
       "cell_type": "code",
@@ -1587,7 +1587,7 @@
       "source": [
         "probabilities[:10]"
       ],
-      "id": "76013f13",
+      "id": "b5c34b1e",
       "execution_count": null,
       "outputs": []
     },
@@ -1601,7 +1601,7 @@
         "\n",
         "También podemos producir clases predichas."
       ],
-      "id": "8f756d4a"
+      "id": "2d6b6017"
     },
     {
       "cell_type": "code",
@@ -1611,7 +1611,7 @@
         "    X_sub\n",
         ")"
       ],
-      "id": "31f1d353",
+      "id": "8c1aa5a9",
       "execution_count": null,
       "outputs": []
     },
@@ -1621,7 +1621,7 @@
       "source": [
         "Podemos construir una tabla de contingencia."
       ],
-      "id": "ea6e4641"
+      "id": "ec86ef7e"
     },
     {
       "cell_type": "code",
@@ -1634,7 +1634,7 @@
         "    colnames=[\"Predicho\"]\n",
         ")"
       ],
-      "id": "0f9a9341",
+      "id": "8d9ed6b7",
       "execution_count": null,
       "outputs": []
     },
@@ -1842,7 +1842,7 @@
         "- aditividad;\n",
         "- interpretación de $f_1$ y $f_2$."
       ],
-      "id": "8bf07e85"
+      "id": "7b36ed00"
     }
   ],
   "metadata": {

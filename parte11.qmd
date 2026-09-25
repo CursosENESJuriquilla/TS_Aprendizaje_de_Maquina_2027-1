@@ -1,1 +1,1245 @@
 # Evaluación y comparación de modelos
+
+
+En las secciones anteriores construimos modelos de Gradient Boosting y aprendimos a utilizar Cross-Validation para seleccionar hiperparámetros.
+
+Ahora integraremos estos elementos dentro de un flujo completo de aprendizaje automático.
+
+Al finalizar esta práctica seremos capaces de:
+
+- establecer una **baseline**;
+- comparar diferentes modelos utilizando los mismos folds;
+- analizar el desempeño promedio y su variabilidad;
+- realizar una optimización de hiperparámetros;
+- recuperar y reajustar el modelo seleccionado;
+- evaluar finalmente el procedimiento sobre el conjunto de prueba;
+- analizar predicciones y residuos.
+
+Nuestro flujo de trabajo será:
+
+$$
+\boxed{\text{Datos}}
+\longrightarrow
+\boxed{\text{Train/Test}}
+\longrightarrow
+\boxed{\text{Cross-Validation}}
+\longrightarrow
+\boxed{\text{Comparación}}
+\longrightarrow
+\boxed{\text{Tuning}}
+\longrightarrow
+\boxed{\text{Refit}}
+\longrightarrow
+\boxed{\text{Evaluación final}}.
+$$
+
+::: {.diapositivas}
+::: {.diapositivas-title}
+📝 **Diapositivas**
+:::
+
+::: {.diapositivas-body}
+[Ver diapositivas](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/3.6_ComparacionDeModelos.pdf)
+:::
+:::
+
+
+## Preparación
+
+Importamos las bibliotecas necesarias.
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from time import perf_counter
+
+from sklearn.datasets import fetch_california_housing
+
+from sklearn.model_selection import (
+    train_test_split,
+    KFold,
+    cross_validate,
+    RandomizedSearchCV
+)
+
+from sklearn.dummy import DummyRegressor
+from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import (
+    RandomForestRegressor,
+    GradientBoostingRegressor
+)
+
+from sklearn.metrics import (
+    mean_absolute_error,
+    mean_squared_error,
+    r2_score
+)
+```
+
+Cargamos nuevamente California Housing.
+
+```{python}
+housing = fetch_california_housing(as_frame=True)
+
+X = housing.data
+y = housing.target
+```
+
+Realizamos la misma partición que utilizamos en las prácticas anteriores.
+
+```{python}
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.20,
+    random_state=42
+)
+```
+
+```{python}
+print("Train:", X_train.shape)
+print("Test: ", X_test.shape)
+```
+
+::: {.callout-important}
+## Última práctica: el test sigue cerrado
+
+Todavía no utilizaremos `X_test` ni `y_test`.
+
+Primero realizaremos toda la comparación y selección utilizando exclusivamente los datos de entrenamiento.
+
+Abriremos el test solamente al final.
+:::
+
+
+## ¿Contra qué debemos comparar?
+
+Antes de construir modelos complejos necesitamos una referencia sencilla.
+
+Para ello utilizaremos `DummyRegressor`.
+
+```{python}
+baseline = DummyRegressor(
+    strategy="mean"
+)
+```
+
+Este modelo predice esencialmente una cantidad constante basada en la respuesta observada durante el entrenamiento.
+
+Por sí mismo no pretende ser un buen modelo.
+
+Su función es responder una pregunta mucho más importante:
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+ ¿Nuestros modelos realmente están aprendiendo estructura útil en los datos?
+
+::::
+
+## Modelos que compararemos
+
+Consideraremos cinco modelos:
+
+```{python}
+modelos = {
+    "Baseline": DummyRegressor(
+        strategy="mean"
+    ),
+
+    "Linear Regression": LinearRegression(),
+
+    "Decision Tree": DecisionTreeRegressor(
+        random_state=42
+    ),
+
+    "Random Forest": RandomForestRegressor(
+        n_estimators=200,
+        random_state=42,
+        n_jobs=1
+    ),
+
+    "Gradient Boosting": GradientBoostingRegressor(
+        n_estimators=200,
+        learning_rate=0.05,
+        max_depth=2,
+        random_state=42
+    )
+}
+```
+
+Observen que estamos comparando modelos con características muy diferentes.
+
+Tenemos desde una baseline extremadamente sencilla hasta métodos de ensamble.
+
+::: {.callout-note}
+## Primera comparación
+
+En esta primera etapa no intentaremos optimizar exhaustivamente todos los modelos.
+
+Queremos obtener una comparación inicial utilizando un procedimiento común de evaluación.
+
+Posteriormente realizaremos tuning sobre algunos de los modelos.
+:::
+
+## Una estrategia común de Cross-Validation
+
+Utilizaremos exactamente los mismos folds para todos los modelos.
+
+```{python}
+cv = KFold(
+    n_splits=5,
+    shuffle=True,
+    random_state=42
+)
+```
+
+Esto significa que cada modelo será entrenado y evaluado sobre las mismas particiones.
+
+Conceptualmente queremos:
+
+$$
+\boxed{
+\text{mismos datos}
++
+\text{mismos folds}
++
+\text{mismas métricas}
+}.
+$$
+
+
+## Evaluaremos más de una métrica
+
+Hasta ahora utilizamos principalmente RMSE.
+
+En esta práctica utilizaremos:
+
+- MAE;
+- RMSE;
+- $R^2$.
+
+Definimos las métricas:
+
+```{python}
+scoring = {
+    "MAE": "neg_mean_absolute_error",
+    "RMSE": "neg_root_mean_squared_error",
+    "R2": "r2"
+}
+```
+
+Recordemos que `scikit-learn` devuelve MAE y RMSE negativos cuando se utilizan como *scores*.
+
+Esto permite mantener la convención
+
+$$
+\text{score mayor}
+\quad\Longrightarrow\quad
+\text{mejor}.
+$$
+
+Después cambiaremos el signo para recuperar los errores en su interpretación habitual.
+
+
+## Comparación mediante Cross-Validation
+
+Utilizaremos `cross_validate()`.
+
+A diferencia de `cross_val_score()`, esta función nos permite calcular varias métricas simultáneamente y registrar tiempos de entrenamiento.
+
+```{python}
+resultados = []
+
+for nombre, modelo in modelos.items():
+
+    cv_result = cross_validate(
+        modelo,
+        X_train,
+        y_train,
+        cv=cv,
+        scoring=scoring,
+        n_jobs=1
+    )
+
+    resultados.append({
+        "Modelo": nombre,
+
+        "MAE_CV":
+            -cv_result["test_MAE"].mean(),
+
+        "MAE_SD":
+            cv_result["test_MAE"].std(),
+
+        "RMSE_CV":
+            -cv_result["test_RMSE"].mean(),
+
+        "RMSE_SD":
+            cv_result["test_RMSE"].std(),
+
+        "R2_CV":
+            cv_result["test_R2"].mean(),
+
+        "R2_SD":
+            cv_result["test_R2"].std(),
+
+        "Tiempo":
+            cv_result["fit_time"].mean()
+    })
+```
+
+Construimos una tabla.
+
+```{python}
+df_resultados = pd.DataFrame(resultados)
+
+df_resultados
+```
+
+Para facilitar la lectura podemos ordenar por RMSE.
+
+```{python}
+df_resultados.sort_values("RMSE_CV")
+```
+
+## ¿Cómo interpretamos la tabla?
+
+Tenemos ahora información sobre tres aspectos:
+
+$$
+\boxed{\text{desempeño promedio}}
+$$
+
+$$
+\boxed{\text{variabilidad entre folds}}
+$$
+
+$$
+\boxed{\text{costo computacional}}.
+$$
+
+Por ejemplo, el RMSE promedio se calcula como
+
+$$
+\overline{\operatorname{RMSE}}
+=
+\frac{1}{k}
+\sum_{j=1}^{k}
+\operatorname{RMSE}_j.
+$$
+
+Mientras que `RMSE_SD` resume cuánto varían esos resultados entre folds.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Discusión
+
+1. ¿Todos los modelos mejoran la baseline?
+2. ¿Los modelos con menor RMSE también presentan mayor $R^2$?
+3. ¿Cuál presenta mayor variabilidad entre folds?
+4. ¿Existen diferencias importantes en tiempo de entrenamiento?
+5. ¿Una diferencia pequeña en RMSE sería suficiente por sí sola para afirmar que dos procedimientos se comportan de manera sustancialmente distinta?
+
+
+::::
+
+
+## Visualización de la comparación
+
+Representemos el RMSE promedio y su desviación estándar.
+
+```{python}
+df_plot = df_resultados.sort_values(
+    "RMSE_CV",
+    ascending=False
+)
+
+plt.figure(figsize=(9, 5))
+
+plt.errorbar(
+    df_plot["RMSE_CV"],
+    df_plot["Modelo"],
+    xerr=df_plot["RMSE_SD"],
+    fmt="o",
+    capsize=5
+)
+
+plt.xlabel("RMSE de Cross-Validation")
+plt.ylabel("Modelo")
+plt.title("Comparación de modelos")
+plt.show()
+```
+
+::: {.callout-note}
+## Las barras no son intervalos de confianza
+
+En esta gráfica las barras representan simplemente la desviación estándar de los resultados obtenidos entre folds.
+
+No deben interpretarse automáticamente como intervalos de confianza.
+:::
+
+
+## Observar los resultados fold por fold
+
+La media puede ocultar información.
+
+Comparemos, por ejemplo, Random Forest y Gradient Boosting.
+
+```{python}
+modelos_comparar = {
+    "Random Forest": modelos["Random Forest"],
+    "Gradient Boosting": modelos["Gradient Boosting"]
+}
+
+scores_folds = []
+
+for nombre, modelo in modelos_comparar.items():
+
+    resultado = cross_validate(
+        modelo,
+        X_train,
+        y_train,
+        cv=cv,
+        scoring="neg_root_mean_squared_error",
+        n_jobs=1
+    )
+
+    for fold, score in enumerate(
+        -resultado["test_score"],
+        start=1
+    ):
+        scores_folds.append({
+            "Modelo": nombre,
+            "Fold": fold,
+            "RMSE": score
+        })
+
+df_folds = pd.DataFrame(scores_folds)
+
+df_folds
+```
+
+Visualizamos:
+
+```{python}
+for nombre in df_folds["Modelo"].unique():
+
+    datos = df_folds[
+        df_folds["Modelo"] == nombre
+    ]
+
+    plt.plot(
+        datos["Fold"],
+        datos["RMSE"],
+        marker="o",
+        label=nombre
+    )
+
+plt.xlabel("Fold")
+plt.ylabel("RMSE")
+plt.title("Desempeño en cada fold")
+plt.xticks(range(1, 6))
+plt.legend()
+plt.show()
+```
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Uno de los modelos presenta menor RMSE en todos los folds?
+¿O las diferencias dependen también de la partición?
+
+::::
+
+
+## Comparar modelos no termina aquí
+
+Hasta ahora hemos utilizado configuraciones razonables, pero no necesariamente optimizadas.
+
+Por ejemplo, Gradient Boosting depende de
+
+$$
+\texttt{learning\_rate},
+\qquad
+\texttt{n\_estimators},
+\qquad
+\texttt{max\_depth},
+\qquad
+\texttt{subsample}.
+$$
+
+Random Forest también posee hiperparámetros como
+
+$$
+\texttt{n\_estimators},
+\qquad
+\texttt{max\_depth},
+\qquad
+\texttt{max\_features},
+\qquad
+\texttt{min\_samples\_leaf}.
+$$
+
+Por ello, una comparación más completa puede incluir un procedimiento de tuning.
+
+Para mantener razonable el tiempo de cómputo realizaremos una búsqueda pequeña sobre estos dos modelos.
+
+## Tuning de Random Forest
+
+Definimos un espacio de búsqueda.
+
+```{python}
+param_rf = {
+    "n_estimators": [100, 200, 400],
+    "max_depth": [None, 10, 20, 30],
+    "max_features": [0.5, 0.75, 1.0],
+    "min_samples_leaf": [1, 2, 4]
+}
+```
+
+Utilizaremos `RandomizedSearchCV`.
+
+```{python}
+search_rf = RandomizedSearchCV(
+    estimator=RandomForestRegressor(
+        random_state=42,
+        n_jobs=1
+    ),
+    param_distributions=param_rf,
+    n_iter=12,
+    scoring="neg_root_mean_squared_error",
+    cv=cv,
+    random_state=42,
+    n_jobs=1
+)
+```
+
+Ejecutamos:
+
+```{python}
+inicio = perf_counter()
+
+search_rf.fit(X_train, y_train)
+
+tiempo_rf = perf_counter() - inicio
+```
+
+Consultamos los hiperparámetros seleccionados:
+
+```{python}
+search_rf.best_params_
+```
+
+y el RMSE:
+
+```{python}
+print(
+    f"RMSE CV: {-search_rf.best_score_:.4f}"
+)
+```
+
+
+## Tuning de Gradient Boosting
+
+Definimos ahora:
+
+```{python}
+param_gb = {
+    "n_estimators": [100, 200, 300, 500],
+    "learning_rate": [0.01, 0.03, 0.05, 0.1],
+    "max_depth": [1, 2, 3, 4],
+    "subsample": [0.7, 0.8, 0.9, 1.0]
+}
+```
+
+Construimos la búsqueda.
+
+```{python}
+search_gb = RandomizedSearchCV(
+    estimator=GradientBoostingRegressor(
+        random_state=42
+    ),
+    param_distributions=param_gb,
+    n_iter=12,
+    scoring="neg_root_mean_squared_error",
+    cv=cv,
+    random_state=42,
+    n_jobs=1
+)
+```
+
+Ejecutamos:
+
+```{python}
+inicio = perf_counter()
+
+search_gb.fit(X_train, y_train)
+
+tiempo_gb = perf_counter() - inicio
+```
+
+Consultamos:
+
+```{python}
+search_gb.best_params_
+```
+
+y:
+
+```{python}
+print(
+    f"RMSE CV: {-search_gb.best_score_:.4f}"
+)
+```
+
+
+
+## Comparación después del tuning
+
+Construimos una tabla pequeña con los dos procedimientos ajustados.
+
+```{python}
+df_tuning = pd.DataFrame({
+    "Modelo": [
+        "Random Forest",
+        "Gradient Boosting"
+    ],
+    "RMSE_CV": [
+        -search_rf.best_score_,
+        -search_gb.best_score_
+    ],
+    "Tiempo_busqueda": [
+        tiempo_rf,
+        tiempo_gb
+    ]
+})
+
+df_tuning
+```
+
+Ahora podemos comparar estos resultados con los obtenidos antes del tuning.
+
+```{python}
+df_resultados[
+    df_resultados["Modelo"].isin(
+        ["Random Forest", "Gradient Boosting"]
+    )
+][
+    ["Modelo", "RMSE_CV", "RMSE_SD"]
+]
+```
+
+::: {.callout-tip}
+## Tuning no garantiza una mejora enorme
+
+La optimización de hiperparámetros puede mejorar el desempeño, pero no debemos esperar necesariamente cambios espectaculares.
+
+Si una configuración inicial ya era razonable, la mejora puede ser relativamente pequeña.
+:::
+
+
+## El refit ya ocurrió
+
+Recordemos que `RandomizedSearchCV` utiliza por defecto
+
+```text
+refit=True
+```
+
+Después de seleccionar los hiperparámetros, vuelve a entrenar la configuración seleccionada utilizando **todo el conjunto `X_train`**.
+
+Por ello tenemos disponibles:
+
+```{python}
+modelo_rf_final = search_rf.best_estimator_
+modelo_gb_final = search_gb.best_estimator_
+```
+
+Estos modelos ya fueron reajustados con todos los datos de entrenamiento.
+
+Hasta este momento:
+
+```text
+X_test
+y_test
+```
+
+siguen sin participar en ninguna decisión.
+
+
+## Antes de abrir el test
+
+Este es un momento importante del flujo de trabajo.
+
+Ya realizamos:
+
+- comparación inicial;
+- Cross-Validation;
+- selección de hiperparámetros;
+- refit.
+
+El conjunto de prueba no participó en ninguna de estas decisiones.
+
+Nuestro esquema es:
+
+$$
+\boxed{
+X_{\text{train}}
+}
+\longrightarrow
+\boxed{
+\text{CV + comparación + tuning}
+}
+\longrightarrow
+\boxed{
+\text{modelo ajustado}
+}.
+$$
+
+Ahora sí podemos utilizar
+
+$$
+X_{\text{test}}
+$$
+
+para obtener una evaluación final.
+
+::: {.callout-important}
+## Una vez abierto el test
+
+No utilizaremos el resultado de test para volver a modificar repetidamente los hiperparámetros.
+
+Si lo hiciéramos, el test comenzaría a funcionar como un nuevo conjunto de validación.
+:::
+
+
+
+## Evaluación final
+
+En este ejemplo evaluaremos los dos procedimientos ajustados para observar su comportamiento sobre datos no utilizados durante el desarrollo.
+
+Generamos predicciones:
+
+```{python}
+pred_rf_test = modelo_rf_final.predict(
+    X_test
+)
+
+pred_gb_test = modelo_gb_final.predict(
+    X_test
+)
+```
+
+Crearemos una función para calcular las métricas.
+
+```{python}
+def metricas_regresion(y_real, y_pred):
+
+    mae = mean_absolute_error(
+        y_real,
+        y_pred
+    )
+
+    rmse = np.sqrt(
+        mean_squared_error(
+            y_real,
+            y_pred
+        )
+    )
+
+    r2 = r2_score(
+        y_real,
+        y_pred
+    )
+
+    return mae, rmse, r2
+```
+
+Calculamos:
+
+```{python}
+mae_rf, rmse_rf, r2_rf = metricas_regresion(
+    y_test,
+    pred_rf_test
+)
+
+mae_gb, rmse_gb, r2_gb = metricas_regresion(
+    y_test,
+    pred_gb_test
+)
+```
+
+Construimos la tabla final.
+
+```{python}
+resultados_test = pd.DataFrame({
+    "Modelo": [
+        "Random Forest",
+        "Gradient Boosting"
+    ],
+
+    "MAE_test": [
+        mae_rf,
+        mae_gb
+    ],
+
+    "RMSE_test": [
+        rmse_rf,
+        rmse_gb
+    ],
+
+    "R2_test": [
+        r2_rf,
+        r2_gb
+    ]
+})
+
+resultados_test
+```
+
+
+## CV vs. test
+
+Comparemos el RMSE estimado durante Cross-Validation con el observado finalmente en test.
+
+```{python}
+comparacion_final = pd.DataFrame({
+    "Modelo": [
+        "Random Forest",
+        "Gradient Boosting"
+    ],
+
+    "RMSE_CV": [
+        -search_rf.best_score_,
+        -search_gb.best_score_
+    ],
+
+    "RMSE_test": [
+        rmse_rf,
+        rmse_gb
+    ]
+})
+
+comparacion_final
+```
+
+No esperamos que
+
+$$
+\operatorname{RMSE}_{CV}
+=
+\operatorname{RMSE}_{test}
+$$
+
+exactamente.
+
+Son estimaciones obtenidas con observaciones y procedimientos diferentes.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Discusión
+
+¿El desempeño en test es razonablemente consistente con lo observado durante Cross-Validation?
+
+¿Qué significaría encontrar una diferencia muy grande entre ambos?
+
+
+
+::::
+
+
+
+## Predicho vs. observado
+
+Una métrica resume el desempeño en un único número.
+
+Pero también debemos observar las predicciones.
+
+Tomemos uno de los modelos finales para ilustrar el diagnóstico. Por ejemplo, Gradient Boosting:
+
+```{python}
+plt.figure(figsize=(6, 6))
+
+plt.scatter(
+    y_test,
+    pred_gb_test,
+    alpha=0.3
+)
+
+limites = [
+    min(y_test.min(), pred_gb_test.min()),
+    max(y_test.max(), pred_gb_test.max())
+]
+
+plt.plot(
+    limites,
+    limites,
+    linestyle="--"
+)
+
+plt.xlabel("Valor observado")
+plt.ylabel("Valor predicho")
+plt.title("Observado vs. predicho")
+plt.show()
+```
+
+La línea punteada representa
+
+$$
+\widehat y=y.
+$$
+
+Predicciones perfectas caerían exactamente sobre esta línea.
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Observa
+
+¿Las predicciones se distribuyen aproximadamente alrededor de la diagonal?
+
+¿En qué regiones parecen existir mayores errores?
+
+
+::::
+
+
+
+
+
+## Residuos
+
+Definimos los residuos como
+
+$$
+e_i
+=
+y_i-\widehat y_i.
+$$
+
+Calculamos:
+
+```{python}
+residuos = y_test - pred_gb_test
+```
+
+Veamos su distribución.
+
+```{python}
+plt.figure(figsize=(7, 4))
+
+plt.hist(
+    residuos,
+    bins=30
+)
+
+plt.xlabel("Residuo")
+plt.ylabel("Frecuencia")
+plt.title("Distribución de los residuos")
+plt.show()
+```
+
+También podemos representar residuos contra predicciones.
+
+```{python}
+plt.figure(figsize=(7, 5))
+
+plt.scatter(
+    pred_gb_test,
+    residuos,
+    alpha=0.3
+)
+
+plt.axhline(
+    0,
+    linestyle="--"
+)
+
+plt.xlabel("Valor predicho")
+plt.ylabel("Residuo")
+plt.title("Residuos vs. valores predichos")
+plt.show()
+```
+
+Una gráfica de residuos puede revelar patrones que una métrica agregada no muestra.
+
+::: {.callout-note}
+## Las métricas no sustituyen el diagnóstico
+
+Dos modelos pueden tener valores similares de RMSE y, sin embargo, cometer errores de maneras diferentes.
+
+Por eso conviene complementar las métricas con visualizaciones y análisis del error.
+:::
+
+## ¿Dónde se equivoca más el modelo?
+
+Podemos construir una tabla con las predicciones y sus errores.
+
+```{python}
+diagnostico = X_test.copy()
+
+diagnostico["y_real"] = y_test
+diagnostico["y_pred"] = pred_gb_test
+diagnostico["residuo"] = (
+    diagnostico["y_real"]
+    - diagnostico["y_pred"]
+)
+
+diagnostico["error_absoluto"] = (
+    diagnostico["residuo"].abs()
+)
+```
+
+Observemos las predicciones con mayor error absoluto.
+
+```{python}
+diagnostico.sort_values(
+    "error_absoluto",
+    ascending=False
+).head(10)
+```
+
+Esto permite pasar de la pregunta
+
+> ¿Cuál es el RMSE?
+
+a otra pregunta potencialmente más interesante:
+
+> ¿En qué observaciones se está equivocando el modelo?
+
+## Error y localización geográfica
+
+Como California Housing contiene coordenadas geográficas, podemos explorar espacialmente el error.
+
+```{python}
+plt.figure(figsize=(8, 6))
+
+plt.scatter(
+    diagnostico["Longitude"],
+    diagnostico["Latitude"],
+    c=diagnostico["error_absoluto"],
+    s=10,
+    alpha=0.6
+)
+
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
+plt.title("Distribución geográfica del error absoluto")
+plt.colorbar(label="Error absoluto")
+plt.show()
+```
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Los errores parecen distribuirse uniformemente?
+¿Observas regiones donde el modelo parece tener mayores dificultades?
+
+::::
+
+
+
+Este tipo de análisis puede revelar estructura que una única métrica no muestra.
+
+## El flujo completo
+
+Ya podemos representar todo el procedimiento realizado durante las tres prácticas.
+
+### Paso 1: separar los datos
+
+$$
+\mathcal{D}
+\longrightarrow
+\boxed{
+\mathcal{D}_{\text{train}}
+}
++
+\boxed{
+\mathcal{D}_{\text{test}}
+}.
+$$
+
+### Paso 2: trabajar solamente con train
+
+Dentro de $\mathcal{D}_{\text{train}}$ realizamos:
+
+$$
+\text{Cross-Validation}
+\longrightarrow
+\text{comparación}
+\longrightarrow
+\text{tuning}.
+$$
+
+### Paso 3: seleccionar hiperparámetros
+
+Por ejemplo:
+
+$$
+\boldsymbol{\lambda}^{*}
+=
+\arg\min_{\boldsymbol{\lambda}}
+\operatorname{RMSE}_{CV}(\boldsymbol{\lambda}).
+$$
+
+### Paso 4: refit
+
+El procedimiento seleccionado se vuelve a entrenar utilizando todo
+
+$$
+\mathcal{D}_{\text{train}}.
+$$
+
+### Paso 5: evaluación final
+
+Finalmente:
+
+$$
+\widehat f^{*}(X_{\text{test}})
+$$
+
+permite calcular
+
+$$
+\operatorname{MAE}_{test},
+\qquad
+\operatorname{RMSE}_{test},
+\qquad
+R^2_{\text{test}}.
+$$
+
+::: {.callout-tip}
+## La idea central de la unidad
+
+El objetivo no es encontrar el modelo que produzca el número más pequeño en una tabla.
+
+El objetivo es construir un procedimiento de evaluación en el que cada conjunto de datos tenga una función clara y donde las decisiones de modelado no contaminen la evaluación final.
+:::
+
+## Ejercicio integrador
+
+Ahora realizarás el mismo flujo utilizando **XGBoost**.
+
+Importa:
+
+```python
+from xgboost import XGBRegressor
+```
+
+Define inicialmente:
+
+```python
+xgb = XGBRegressor(
+    objective="reg:squarederror",
+    random_state=42,
+    n_jobs=1
+)
+```
+
+Utiliza el siguiente espacio:
+
+```python
+param_xgb = {
+    "n_estimators": [100, 200, 300, 500],
+    "learning_rate": [0.01, 0.03, 0.05, 0.1],
+    "max_depth": [2, 3, 4, 5],
+    "subsample": [0.7, 0.8, 0.9, 1.0],
+    "colsample_bytree": [0.7, 0.8, 0.9, 1.0]
+}
+```
+
+Realiza un `RandomizedSearchCV` con:
+
+$$
+\texttt{n\_iter}=15
+$$
+
+y
+
+$$
+5\text{-fold Cross-Validation}.
+$$
+
+Utiliza como métrica principal:
+
+```text
+neg_root_mean_squared_error
+```
+
+Reporta:
+
+1. los hiperparámetros seleccionados;
+2. el RMSE promedio de Cross-Validation;
+3. el tiempo utilizado por la búsqueda;
+4. MAE, RMSE y $R^2$ sobre test;
+5. una gráfica observado vs. predicho;
+6. una gráfica de residuos.
+
+Finalmente responde:
+
+> ¿El desempeño sobre test fue consistente con el estimado mediante Cross-Validation?
+
+> ¿Qué información adicional obtuviste al observar los residuos que no era visible únicamente con RMSE?
+
+
+## Reto adicional: clasificación
+
+Hasta ahora toda nuestra práctica se ha desarrollado sobre un problema de regresión.
+
+Sin embargo, el procedimiento general también puede utilizarse en clasificación.
+
+`scikit-learn` contiene el conjunto **Breast Cancer Wisconsin**.
+
+Puedes cargarlo mediante:
+
+```python
+from sklearn.datasets import load_breast_cancer
+
+cancer = load_breast_cancer(
+    as_frame=True
+)
+
+X_cancer = cancer.data
+y_cancer = cancer.target
+```
+
+En clasificación debemos reconsiderar algunos elementos.
+
+Por ejemplo, en lugar de `KFold` puede ser conveniente utilizar:
+
+```python
+from sklearn.model_selection import StratifiedKFold
+```
+
+y nuestras métricas pueden incluir:
+
+$$
+\text{accuracy},
+\qquad
+\text{precision},
+\qquad
+\text{recall},
+\qquad
+F_1,
+\qquad
+\text{ROC-AUC}.
+$$
+
+**Pregunta**
+
+¿Cómo modificarías el flujo utilizado en California Housing para resolver este problema de clasificación?
+
+No es necesario implementar toda la búsqueda.
+
+Identifica al menos:
+
+1. qué modelo utilizarías como baseline;
+2. qué estrategia de Cross-Validation utilizarías;
+3. qué métricas reportarías;
+4. qué modelos compararías;
+5. qué información reservarías hasta la evaluación final.
+
+

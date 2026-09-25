@@ -23,10 +23,45 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -73,7 +108,42 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Buscar"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
+
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -309,8 +379,44 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#preparación" id="toc-preparación" class="nav-link active" data-scroll-target="#preparación"><span class="header-section-number">11.1</span> Preparación</a></li>
+  <li><a href="#contra-qué-debemos-comparar" id="toc-contra-qué-debemos-comparar" class="nav-link" data-scroll-target="#contra-qué-debemos-comparar"><span class="header-section-number">11.2</span> ¿Contra qué debemos comparar?</a></li>
+  <li><a href="#modelos-que-compararemos" id="toc-modelos-que-compararemos" class="nav-link" data-scroll-target="#modelos-que-compararemos"><span class="header-section-number">11.3</span> Modelos que compararemos</a></li>
+  <li><a href="#una-estrategia-común-de-cross-validation" id="toc-una-estrategia-común-de-cross-validation" class="nav-link" data-scroll-target="#una-estrategia-común-de-cross-validation"><span class="header-section-number">11.4</span> Una estrategia común de Cross-Validation</a></li>
+  <li><a href="#evaluaremos-más-de-una-métrica" id="toc-evaluaremos-más-de-una-métrica" class="nav-link" data-scroll-target="#evaluaremos-más-de-una-métrica"><span class="header-section-number">11.5</span> Evaluaremos más de una métrica</a></li>
+  <li><a href="#comparación-mediante-cross-validation" id="toc-comparación-mediante-cross-validation" class="nav-link" data-scroll-target="#comparación-mediante-cross-validation"><span class="header-section-number">11.6</span> Comparación mediante Cross-Validation</a></li>
+  <li><a href="#cómo-interpretamos-la-tabla" id="toc-cómo-interpretamos-la-tabla" class="nav-link" data-scroll-target="#cómo-interpretamos-la-tabla"><span class="header-section-number">11.7</span> ¿Cómo interpretamos la tabla?</a></li>
+  <li><a href="#visualización-de-la-comparación" id="toc-visualización-de-la-comparación" class="nav-link" data-scroll-target="#visualización-de-la-comparación"><span class="header-section-number">11.8</span> Visualización de la comparación</a></li>
+  <li><a href="#observar-los-resultados-fold-por-fold" id="toc-observar-los-resultados-fold-por-fold" class="nav-link" data-scroll-target="#observar-los-resultados-fold-por-fold"><span class="header-section-number">11.9</span> Observar los resultados fold por fold</a></li>
+  <li><a href="#comparar-modelos-no-termina-aquí" id="toc-comparar-modelos-no-termina-aquí" class="nav-link" data-scroll-target="#comparar-modelos-no-termina-aquí"><span class="header-section-number">11.10</span> Comparar modelos no termina aquí</a></li>
+  <li><a href="#tuning-de-random-forest" id="toc-tuning-de-random-forest" class="nav-link" data-scroll-target="#tuning-de-random-forest"><span class="header-section-number">11.11</span> Tuning de Random Forest</a></li>
+  <li><a href="#tuning-de-gradient-boosting" id="toc-tuning-de-gradient-boosting" class="nav-link" data-scroll-target="#tuning-de-gradient-boosting"><span class="header-section-number">11.12</span> Tuning de Gradient Boosting</a></li>
+  <li><a href="#comparación-después-del-tuning" id="toc-comparación-después-del-tuning" class="nav-link" data-scroll-target="#comparación-después-del-tuning"><span class="header-section-number">11.13</span> Comparación después del tuning</a></li>
+  <li><a href="#el-refit-ya-ocurrió" id="toc-el-refit-ya-ocurrió" class="nav-link" data-scroll-target="#el-refit-ya-ocurrió"><span class="header-section-number">11.14</span> El refit ya ocurrió</a></li>
+  <li><a href="#antes-de-abrir-el-test" id="toc-antes-de-abrir-el-test" class="nav-link" data-scroll-target="#antes-de-abrir-el-test"><span class="header-section-number">11.15</span> Antes de abrir el test</a></li>
+  <li><a href="#evaluación-final" id="toc-evaluación-final" class="nav-link" data-scroll-target="#evaluación-final"><span class="header-section-number">11.16</span> Evaluación final</a></li>
+  <li><a href="#cv-vs.-test" id="toc-cv-vs.-test" class="nav-link" data-scroll-target="#cv-vs.-test"><span class="header-section-number">11.17</span> CV vs.&nbsp;test</a></li>
+  <li><a href="#predicho-vs.-observado" id="toc-predicho-vs.-observado" class="nav-link" data-scroll-target="#predicho-vs.-observado"><span class="header-section-number">11.18</span> Predicho vs.&nbsp;observado</a></li>
+  <li><a href="#residuos" id="toc-residuos" class="nav-link" data-scroll-target="#residuos"><span class="header-section-number">11.19</span> Residuos</a></li>
+  <li><a href="#dónde-se-equivoca-más-el-modelo" id="toc-dónde-se-equivoca-más-el-modelo" class="nav-link" data-scroll-target="#dónde-se-equivoca-más-el-modelo"><span class="header-section-number">11.20</span> ¿Dónde se equivoca más el modelo?</a></li>
+  <li><a href="#error-y-localización-geográfica" id="toc-error-y-localización-geográfica" class="nav-link" data-scroll-target="#error-y-localización-geográfica"><span class="header-section-number">11.21</span> Error y localización geográfica</a></li>
+  <li><a href="#el-flujo-completo" id="toc-el-flujo-completo" class="nav-link" data-scroll-target="#el-flujo-completo"><span class="header-section-number">11.22</span> El flujo completo</a>
+  <ul>
+  <li><a href="#paso-1-separar-los-datos" id="toc-paso-1-separar-los-datos" class="nav-link" data-scroll-target="#paso-1-separar-los-datos"><span class="header-section-number">11.22.1</span> Paso 1: separar los datos</a></li>
+  <li><a href="#paso-2-trabajar-solamente-con-train" id="toc-paso-2-trabajar-solamente-con-train" class="nav-link" data-scroll-target="#paso-2-trabajar-solamente-con-train"><span class="header-section-number">11.22.2</span> Paso 2: trabajar solamente con train</a></li>
+  <li><a href="#paso-3-seleccionar-hiperparámetros" id="toc-paso-3-seleccionar-hiperparámetros" class="nav-link" data-scroll-target="#paso-3-seleccionar-hiperparámetros"><span class="header-section-number">11.22.3</span> Paso 3: seleccionar hiperparámetros</a></li>
+  <li><a href="#paso-4-refit" id="toc-paso-4-refit" class="nav-link" data-scroll-target="#paso-4-refit"><span class="header-section-number">11.22.4</span> Paso 4: refit</a></li>
+  <li><a href="#paso-5-evaluación-final" id="toc-paso-5-evaluación-final" class="nav-link" data-scroll-target="#paso-5-evaluación-final"><span class="header-section-number">11.22.5</span> Paso 5: evaluación final</a></li>
+  </ul></li>
+  <li><a href="#ejercicio-integrador" id="toc-ejercicio-integrador" class="nav-link" data-scroll-target="#ejercicio-integrador"><span class="header-section-number">11.23</span> Ejercicio integrador</a></li>
+  <li><a href="#reto-adicional-clasificación" id="toc-reto-adicional-clasificación" class="nav-link" data-scroll-target="#reto-adicional-clasificación"><span class="header-section-number">11.24</span> Reto adicional: clasificación</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -334,8 +440,1846 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>En las secciones anteriores construimos modelos de Gradient Boosting y aprendimos a utilizar Cross-Validation para seleccionar hiperparámetros.</p>
+<p>Ahora integraremos estos elementos dentro de un flujo completo de aprendizaje automático.</p>
+<p>Al finalizar esta práctica seremos capaces de:</p>
+<ul>
+<li>establecer una <strong>baseline</strong>;</li>
+<li>comparar diferentes modelos utilizando los mismos folds;</li>
+<li>analizar el desempeño promedio y su variabilidad;</li>
+<li>realizar una optimización de hiperparámetros;</li>
+<li>recuperar y reajustar el modelo seleccionado;</li>
+<li>evaluar finalmente el procedimiento sobre el conjunto de prueba;</li>
+<li>analizar predicciones y residuos.</li>
+</ul>
+<p>Nuestro flujo de trabajo será:</p>
+<p><span class="math display">\[
+\boxed{\text{Datos}}
+\longrightarrow
+\boxed{\text{Train/Test}}
+\longrightarrow
+\boxed{\text{Cross-Validation}}
+\longrightarrow
+\boxed{\text{Comparación}}
+\longrightarrow
+\boxed{\text{Tuning}}
+\longrightarrow
+\boxed{\text{Refit}}
+\longrightarrow
+\boxed{\text{Evaluación final}}.
+\]</span></p>
+<div class="diapositivas">
+<div class="diapositivas-title">
+<p>📝 <strong>Diapositivas</strong></p>
+</div>
+<div class="diapositivas-body">
+<p><a href="https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/3.6_ComparacionDeModelos.pdf">Ver diapositivas</a></p>
+</div>
+</div>
+<section id="preparación" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="preparación"><span class="header-section-number">11.1</span> Preparación</h2>
+<p>Importamos las bibliotecas necesarias.</p>
+<div id="cd4290a0" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> time <span class="im">import</span> perf_counter</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> fetch_california_housing</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> (</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    train_test_split,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    KFold,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    cross_validate,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    RandomizedSearchCV</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.dummy <span class="im">import</span> DummyRegressor</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeRegressor</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> (</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    RandomForestRegressor,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    GradientBoostingRegressor</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> (</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    mean_absolute_error,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    mean_squared_error,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    r2_score</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Cargamos nuevamente California Housing.</p>
+<div id="853db3c2" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>housing <span class="op">=</span> fetch_california_housing(as_frame<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> housing.data</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> housing.target</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Realizamos la misma partición que utilizamos en las prácticas anteriores.</p>
+<div id="4e0591bb" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    X,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    test_size<span class="op">=</span><span class="fl">0.20</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="b83da558" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Train:"</span>, X_train.shape)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test: "</span>, X_test.shape)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Train: (16512, 8)
+Test:  (4128, 8)</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Última práctica: el test sigue cerrado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Todavía no utilizaremos <code>X_test</code> ni <code>y_test</code>.</p>
+<p>Primero realizaremos toda la comparación y selección utilizando exclusivamente los datos de entrenamiento.</p>
+<p>Abriremos el test solamente al final.</p>
+</div>
+</div>
+</section>
+<section id="contra-qué-debemos-comparar" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="contra-qué-debemos-comparar"><span class="header-section-number">11.2</span> ¿Contra qué debemos comparar?</h2>
+<p>Antes de construir modelos complejos necesitamos una referencia sencilla.</p>
+<p>Para ello utilizaremos <code>DummyRegressor</code>.</p>
+<div id="1017d2ed" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>baseline <span class="op">=</span> DummyRegressor(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    strategy<span class="op">=</span><span class="st">"mean"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Este modelo predice esencialmente una cantidad constante basada en la respuesta observada durante el entrenamiento.</p>
+<p>Por sí mismo no pretende ser un buen modelo.</p>
+<p>Su función es responder una pregunta mucho más importante:</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>🧠 Pregunta
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿Nuestros modelos realmente están aprendiendo estructura útil en los datos?</p>
+</div>
+</div>
+</section>
+<section id="modelos-que-compararemos" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="modelos-que-compararemos"><span class="header-section-number">11.3</span> Modelos que compararemos</h2>
+<p>Consideraremos cinco modelos:</p>
+<div id="1c9cc9dd" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>modelos <span class="op">=</span> {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Baseline"</span>: DummyRegressor(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        strategy<span class="op">=</span><span class="st">"mean"</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Linear Regression"</span>: LinearRegression(),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Decision Tree"</span>: DecisionTreeRegressor(</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Random Forest"</span>: RandomForestRegressor(</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        n_estimators<span class="op">=</span><span class="dv">200</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        n_jobs<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Gradient Boosting"</span>: GradientBoostingRegressor(</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        n_estimators<span class="op">=</span><span class="dv">200</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        learning_rate<span class="op">=</span><span class="fl">0.05</span>,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        max_depth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Observen que estamos comparando modelos con características muy diferentes.</p>
+<p>Tenemos desde una baseline extremadamente sencilla hasta métodos de ensamble.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Primera comparación
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En esta primera etapa no intentaremos optimizar exhaustivamente todos los modelos.</p>
+<p>Queremos obtener una comparación inicial utilizando un procedimiento común de evaluación.</p>
+<p>Posteriormente realizaremos tuning sobre algunos de los modelos.</p>
+</div>
+</div>
+</section>
+<section id="una-estrategia-común-de-cross-validation" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="una-estrategia-común-de-cross-validation"><span class="header-section-number">11.4</span> Una estrategia común de Cross-Validation</h2>
+<p>Utilizaremos exactamente los mismos folds para todos los modelos.</p>
+<div id="23e845b8" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> KFold(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    n_splits<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    shuffle<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Esto significa que cada modelo será entrenado y evaluado sobre las mismas particiones.</p>
+<p>Conceptualmente queremos:</p>
+<p><span class="math display">\[
+\boxed{
+\text{mismos datos}
++
+\text{mismos folds}
++
+\text{mismas métricas}
+}.
+\]</span></p>
+</section>
+<section id="evaluaremos-más-de-una-métrica" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="evaluaremos-más-de-una-métrica"><span class="header-section-number">11.5</span> Evaluaremos más de una métrica</h2>
+<p>Hasta ahora utilizamos principalmente RMSE.</p>
+<p>En esta práctica utilizaremos:</p>
+<ul>
+<li>MAE;</li>
+<li>RMSE;</li>
+<li><span class="math inline">\(R^2\)</span>.</li>
+</ul>
+<p>Definimos las métricas:</p>
+<div id="5676974f" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>scoring <span class="op">=</span> {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MAE"</span>: <span class="st">"neg_mean_absolute_error"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RMSE"</span>: <span class="st">"neg_root_mean_squared_error"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R2"</span>: <span class="st">"r2"</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Recordemos que <code>scikit-learn</code> devuelve MAE y RMSE negativos cuando se utilizan como <em>scores</em>.</p>
+<p>Esto permite mantener la convención</p>
+<p><span class="math display">\[
+\text{score mayor}
+\quad\Longrightarrow\quad
+\text{mejor}.
+\]</span></p>
+<p>Después cambiaremos el signo para recuperar los errores en su interpretación habitual.</p>
+</section>
+<section id="comparación-mediante-cross-validation" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="comparación-mediante-cross-validation"><span class="header-section-number">11.6</span> Comparación mediante Cross-Validation</h2>
+<p>Utilizaremos <code>cross_validate()</code>.</p>
+<p>A diferencia de <code>cross_val_score()</code>, esta función nos permite calcular varias métricas simultáneamente y registrar tiempos de entrenamiento.</p>
+<div id="edc38755" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>resultados <span class="op">=</span> []</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nombre, modelo <span class="kw">in</span> modelos.items():</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    cv_result <span class="op">=</span> cross_validate(</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        modelo,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        X_train,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        y_train,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        cv<span class="op">=</span>cv,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        scoring<span class="op">=</span>scoring,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        n_jobs<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    resultados.append({</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Modelo"</span>: nombre,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">"MAE_CV"</span>:</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>            <span class="op">-</span>cv_result[<span class="st">"test_MAE"</span>].mean(),</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"MAE_SD"</span>:</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>            cv_result[<span class="st">"test_MAE"</span>].std(),</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">"RMSE_CV"</span>:</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>            <span class="op">-</span>cv_result[<span class="st">"test_RMSE"</span>].mean(),</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">"RMSE_SD"</span>:</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>            cv_result[<span class="st">"test_RMSE"</span>].std(),</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">"R2_CV"</span>:</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>            cv_result[<span class="st">"test_R2"</span>].mean(),</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>        <span class="st">"R2_SD"</span>:</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>            cv_result[<span class="st">"test_R2"</span>].std(),</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Tiempo"</span>:</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>            cv_result[<span class="st">"fit_time"</span>].mean()</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    })</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Construimos una tabla.</p>
+<div id="7ffa60e4" class="cell" data-execution_count="10">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df_resultados <span class="op">=</span> pd.DataFrame(resultados)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>df_resultados</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<div>
 
 
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th data-quarto-table-cell-role="th">MAE_CV</th>
+<th data-quarto-table-cell-role="th">MAE_SD</th>
+<th data-quarto-table-cell-role="th">RMSE_CV</th>
+<th data-quarto-table-cell-role="th">RMSE_SD</th>
+<th data-quarto-table-cell-role="th">R2_CV</th>
+<th data-quarto-table-cell-role="th">R2_SD</th>
+<th data-quarto-table-cell-role="th">Tiempo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Baseline</td>
+<td>0.913915</td>
+<td>0.010082</td>
+<td>1.156172</td>
+<td>0.012163</td>
+<td>-0.000215</td>
+<td>0.000213</td>
+<td>0.005357</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Linear Regression</td>
+<td>0.529061</td>
+<td>0.009383</td>
+<td>0.720510</td>
+<td>0.013895</td>
+<td>0.611457</td>
+<td>0.012359</td>
+<td>0.002153</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Decision Tree</td>
+<td>0.472372</td>
+<td>0.017891</td>
+<td>0.733020</td>
+<td>0.026927</td>
+<td>0.597422</td>
+<td>0.028399</td>
+<td>0.082880</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>Random Forest</td>
+<td>0.333872</td>
+<td>0.005736</td>
+<td>0.509701</td>
+<td>0.012328</td>
+<td>0.805590</td>
+<td>0.006514</td>
+<td>10.256716</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>Gradient Boosting</td>
+<td>0.405271</td>
+<td>0.008466</td>
+<td>0.572787</td>
+<td>0.014558</td>
+<td>0.754431</td>
+<td>0.010070</td>
+<td>2.690172</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Para facilitar la lectura podemos ordenar por RMSE.</p>
+<div id="aeb376c5" class="cell" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df_resultados.sort_values(<span class="st">"RMSE_CV"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th data-quarto-table-cell-role="th">MAE_CV</th>
+<th data-quarto-table-cell-role="th">MAE_SD</th>
+<th data-quarto-table-cell-role="th">RMSE_CV</th>
+<th data-quarto-table-cell-role="th">RMSE_SD</th>
+<th data-quarto-table-cell-role="th">R2_CV</th>
+<th data-quarto-table-cell-role="th">R2_SD</th>
+<th data-quarto-table-cell-role="th">Tiempo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">3</th>
+<td>Random Forest</td>
+<td>0.333872</td>
+<td>0.005736</td>
+<td>0.509701</td>
+<td>0.012328</td>
+<td>0.805590</td>
+<td>0.006514</td>
+<td>10.256716</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">4</th>
+<td>Gradient Boosting</td>
+<td>0.405271</td>
+<td>0.008466</td>
+<td>0.572787</td>
+<td>0.014558</td>
+<td>0.754431</td>
+<td>0.010070</td>
+<td>2.690172</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Linear Regression</td>
+<td>0.529061</td>
+<td>0.009383</td>
+<td>0.720510</td>
+<td>0.013895</td>
+<td>0.611457</td>
+<td>0.012359</td>
+<td>0.002153</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Decision Tree</td>
+<td>0.472372</td>
+<td>0.017891</td>
+<td>0.733020</td>
+<td>0.026927</td>
+<td>0.597422</td>
+<td>0.028399</td>
+<td>0.082880</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Baseline</td>
+<td>0.913915</td>
+<td>0.010082</td>
+<td>1.156172</td>
+<td>0.012163</td>
+<td>-0.000215</td>
+<td>0.000213</td>
+<td>0.005357</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="cómo-interpretamos-la-tabla" class="level2" data-number="11.7">
+<h2 data-number="11.7" class="anchored" data-anchor-id="cómo-interpretamos-la-tabla"><span class="header-section-number">11.7</span> ¿Cómo interpretamos la tabla?</h2>
+<p>Tenemos ahora información sobre tres aspectos:</p>
+<p><span class="math display">\[
+\boxed{\text{desempeño promedio}}
+\]</span></p>
+<p><span class="math display">\[
+\boxed{\text{variabilidad entre folds}}
+\]</span></p>
+<p><span class="math display">\[
+\boxed{\text{costo computacional}}.
+\]</span></p>
+<p>Por ejemplo, el RMSE promedio se calcula como</p>
+<p><span class="math display">\[
+\overline{\operatorname{RMSE}}
+=
+\frac{1}{k}
+\sum_{j=1}^{k}
+\operatorname{RMSE}_j.
+\]</span></p>
+<p>Mientras que <code>RMSE_SD</code> resume cuánto varían esos resultados entre folds.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>🧠 Discusión
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>¿Todos los modelos mejoran la baseline?</li>
+<li>¿Los modelos con menor RMSE también presentan mayor <span class="math inline">\(R^2\)</span>?</li>
+<li>¿Cuál presenta mayor variabilidad entre folds?</li>
+<li>¿Existen diferencias importantes en tiempo de entrenamiento?</li>
+<li>¿Una diferencia pequeña en RMSE sería suficiente por sí sola para afirmar que dos procedimientos se comportan de manera sustancialmente distinta?</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="visualización-de-la-comparación" class="level2" data-number="11.8">
+<h2 data-number="11.8" class="anchored" data-anchor-id="visualización-de-la-comparación"><span class="header-section-number">11.8</span> Visualización de la comparación</h2>
+<p>Representemos el RMSE promedio y su desviación estándar.</p>
+<div id="5770b061" class="cell" data-execution_count="12">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df_plot <span class="op">=</span> df_resultados.sort_values(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RMSE_CV"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    ascending<span class="op">=</span><span class="va">False</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>plt.errorbar(</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    df_plot[<span class="st">"RMSE_CV"</span>],</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    df_plot[<span class="st">"Modelo"</span>],</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    xerr<span class="op">=</span>df_plot[<span class="st">"RMSE_SD"</span>],</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    fmt<span class="op">=</span><span class="st">"o"</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    capsize<span class="op">=</span><span class="dv">5</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"RMSE de Cross-Validation"</span>)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Modelo"</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Comparación de modelos"</span>)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte11_files/figure-html/cell-13-output-1.png" width="850" height="452" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Las barras no son intervalos de confianza
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En esta gráfica las barras representan simplemente la desviación estándar de los resultados obtenidos entre folds.</p>
+<p>No deben interpretarse automáticamente como intervalos de confianza.</p>
+</div>
+</div>
+</section>
+<section id="observar-los-resultados-fold-por-fold" class="level2" data-number="11.9">
+<h2 data-number="11.9" class="anchored" data-anchor-id="observar-los-resultados-fold-por-fold"><span class="header-section-number">11.9</span> Observar los resultados fold por fold</h2>
+<p>La media puede ocultar información.</p>
+<p>Comparemos, por ejemplo, Random Forest y Gradient Boosting.</p>
+<div id="b669107f" class="cell" data-execution_count="13">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>modelos_comparar <span class="op">=</span> {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Random Forest"</span>: modelos[<span class="st">"Random Forest"</span>],</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Gradient Boosting"</span>: modelos[<span class="st">"Gradient Boosting"</span>]</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>scores_folds <span class="op">=</span> []</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nombre, modelo <span class="kw">in</span> modelos_comparar.items():</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    resultado <span class="op">=</span> cross_validate(</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        modelo,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        X_train,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        y_train,</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        cv<span class="op">=</span>cv,</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        scoring<span class="op">=</span><span class="st">"neg_root_mean_squared_error"</span>,</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>        n_jobs<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> fold, score <span class="kw">in</span> <span class="bu">enumerate</span>(</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">-</span>resultado[<span class="st">"test_score"</span>],</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>        start<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    ):</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>        scores_folds.append({</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Modelo"</span>: nombre,</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Fold"</span>: fold,</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>            <span class="st">"RMSE"</span>: score</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>df_folds <span class="op">=</span> pd.DataFrame(scores_folds)</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>df_folds</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th data-quarto-table-cell-role="th">Fold</th>
+<th data-quarto-table-cell-role="th">RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Random Forest</td>
+<td>1</td>
+<td>0.526053</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Random Forest</td>
+<td>2</td>
+<td>0.497128</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Random Forest</td>
+<td>3</td>
+<td>0.502483</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>Random Forest</td>
+<td>4</td>
+<td>0.523178</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>Random Forest</td>
+<td>5</td>
+<td>0.499665</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>Gradient Boosting</td>
+<td>1</td>
+<td>0.589458</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>Gradient Boosting</td>
+<td>2</td>
+<td>0.567389</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>Gradient Boosting</td>
+<td>3</td>
+<td>0.551357</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>Gradient Boosting</td>
+<td>4</td>
+<td>0.588859</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>Gradient Boosting</td>
+<td>5</td>
+<td>0.566871</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Visualizamos:</p>
+<div id="681572ba" class="cell" data-execution_count="14">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nombre <span class="kw">in</span> df_folds[<span class="st">"Modelo"</span>].unique():</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    datos <span class="op">=</span> df_folds[</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        df_folds[<span class="st">"Modelo"</span>] <span class="op">==</span> nombre</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    plt.plot(</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        datos[<span class="st">"Fold"</span>],</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        datos[<span class="st">"RMSE"</span>],</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        marker<span class="op">=</span><span class="st">"o"</span>,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>        label<span class="op">=</span>nombre</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Fold"</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"RMSE"</span>)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Desempeño en cada fold"</span>)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>plt.xticks(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">6</span>))</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte11_files/figure-html/cell-15-output-1.png" width="598" height="451" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>🧠 Pregunta
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿Uno de los modelos presenta menor RMSE en todos los folds? ¿O las diferencias dependen también de la partición?</p>
+</div>
+</div>
+</section>
+<section id="comparar-modelos-no-termina-aquí" class="level2" data-number="11.10">
+<h2 data-number="11.10" class="anchored" data-anchor-id="comparar-modelos-no-termina-aquí"><span class="header-section-number">11.10</span> Comparar modelos no termina aquí</h2>
+<p>Hasta ahora hemos utilizado configuraciones razonables, pero no necesariamente optimizadas.</p>
+<p>Por ejemplo, Gradient Boosting depende de</p>
+<p><span class="math display">\[
+\texttt{learning\_rate},
+\qquad
+\texttt{n\_estimators},
+\qquad
+\texttt{max\_depth},
+\qquad
+\texttt{subsample}.
+\]</span></p>
+<p>Random Forest también posee hiperparámetros como</p>
+<p><span class="math display">\[
+\texttt{n\_estimators},
+\qquad
+\texttt{max\_depth},
+\qquad
+\texttt{max\_features},
+\qquad
+\texttt{min\_samples\_leaf}.
+\]</span></p>
+<p>Por ello, una comparación más completa puede incluir un procedimiento de tuning.</p>
+<p>Para mantener razonable el tiempo de cómputo realizaremos una búsqueda pequeña sobre estos dos modelos.</p>
+</section>
+<section id="tuning-de-random-forest" class="level2" data-number="11.11">
+<h2 data-number="11.11" class="anchored" data-anchor-id="tuning-de-random-forest"><span class="header-section-number">11.11</span> Tuning de Random Forest</h2>
+<p>Definimos un espacio de búsqueda.</p>
+<div id="a0dad7bf" class="cell" data-execution_count="15">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>param_rf <span class="op">=</span> {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"n_estimators"</span>: [<span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">400</span>],</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"max_depth"</span>: [<span class="va">None</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>],</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"max_features"</span>: [<span class="fl">0.5</span>, <span class="fl">0.75</span>, <span class="fl">1.0</span>],</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"min_samples_leaf"</span>: [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>]</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Utilizaremos <code>RandomizedSearchCV</code>.</p>
+<div id="6a7354cd" class="cell" data-execution_count="16">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>search_rf <span class="op">=</span> RandomizedSearchCV(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    estimator<span class="op">=</span>RandomForestRegressor(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        n_jobs<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    param_distributions<span class="op">=</span>param_rf,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    n_iter<span class="op">=</span><span class="dv">12</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    scoring<span class="op">=</span><span class="st">"neg_root_mean_squared_error"</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">=</span>cv,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    n_jobs<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Ejecutamos:</p>
+<div id="ca5cd379" class="cell" data-execution_count="17">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>inicio <span class="op">=</span> perf_counter()</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>search_rf.fit(X_train, y_train)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>tiempo_rf <span class="op">=</span> perf_counter() <span class="op">-</span> inicio</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Consultamos los hiperparámetros seleccionados:</p>
+<div id="415c7cab" class="cell" data-execution_count="18">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>search_rf.best_params_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>{'n_estimators': 400,
+ 'min_samples_leaf': 1,
+ 'max_features': 0.5,
+ 'max_depth': 30}</code></pre>
+</div>
+</div>
+<p>y el RMSE:</p>
+<div id="27c383d3" class="cell" data-execution_count="19">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"RMSE CV: </span><span class="sc">{</span><span class="op">-</span>search_rf<span class="sc">.</span>best_score_<span class="sc">:.4f}</span><span class="ss">"</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>RMSE CV: 0.4986</code></pre>
+</div>
+</div>
+</section>
+<section id="tuning-de-gradient-boosting" class="level2" data-number="11.12">
+<h2 data-number="11.12" class="anchored" data-anchor-id="tuning-de-gradient-boosting"><span class="header-section-number">11.12</span> Tuning de Gradient Boosting</h2>
+<p>Definimos ahora:</p>
+<div id="e1497ae1" class="cell" data-execution_count="20">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>param_gb <span class="op">=</span> {</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"n_estimators"</span>: [<span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">300</span>, <span class="dv">500</span>],</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"learning_rate"</span>: [<span class="fl">0.01</span>, <span class="fl">0.03</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>],</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"max_depth"</span>: [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>],</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"subsample"</span>: [<span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.0</span>]</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Construimos la búsqueda.</p>
+<div id="13ccd559" class="cell" data-execution_count="21">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>search_gb <span class="op">=</span> RandomizedSearchCV(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    estimator<span class="op">=</span>GradientBoostingRegressor(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    param_distributions<span class="op">=</span>param_gb,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    n_iter<span class="op">=</span><span class="dv">12</span>,</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    scoring<span class="op">=</span><span class="st">"neg_root_mean_squared_error"</span>,</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">=</span>cv,</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    n_jobs<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Ejecutamos:</p>
+<div id="263fda8c" class="cell" data-execution_count="22">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>inicio <span class="op">=</span> perf_counter()</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>search_gb.fit(X_train, y_train)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>tiempo_gb <span class="op">=</span> perf_counter() <span class="op">-</span> inicio</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Consultamos:</p>
+<div id="7c665537" class="cell" data-execution_count="23">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>search_gb.best_params_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="23">
+<pre><code>{'subsample': 0.8, 'n_estimators': 300, 'max_depth': 4, 'learning_rate': 0.05}</code></pre>
+</div>
+</div>
+<p>y:</p>
+<div id="2edafc5d" class="cell" data-execution_count="24">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"RMSE CV: </span><span class="sc">{</span><span class="op">-</span>search_gb<span class="sc">.</span>best_score_<span class="sc">:.4f}</span><span class="ss">"</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>RMSE CV: 0.4923</code></pre>
+</div>
+</div>
+</section>
+<section id="comparación-después-del-tuning" class="level2" data-number="11.13">
+<h2 data-number="11.13" class="anchored" data-anchor-id="comparación-después-del-tuning"><span class="header-section-number">11.13</span> Comparación después del tuning</h2>
+<p>Construimos una tabla pequeña con los dos procedimientos ajustados.</p>
+<div id="23247f05" class="cell" data-execution_count="25">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>df_tuning <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Modelo"</span>: [</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Random Forest"</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Gradient Boosting"</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RMSE_CV"</span>: [</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">-</span>search_rf.best_score_,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">-</span>search_gb.best_score_</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Tiempo_busqueda"</span>: [</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>        tiempo_rf,</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>        tiempo_gb</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>df_tuning</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th data-quarto-table-cell-role="th">RMSE_CV</th>
+<th data-quarto-table-cell-role="th">Tiempo_busqueda</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Random Forest</td>
+<td>0.498638</td>
+<td>536.236901</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Gradient Boosting</td>
+<td>0.492318</td>
+<td>231.249613</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Ahora podemos comparar estos resultados con los obtenidos antes del tuning.</p>
+<div id="019fb5f6" class="cell" data-execution_count="26">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>df_resultados[</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    df_resultados[<span class="st">"Modelo"</span>].isin(</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"Random Forest"</span>, <span class="st">"Gradient Boosting"</span>]</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>][</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Modelo"</span>, <span class="st">"RMSE_CV"</span>, <span class="st">"RMSE_SD"</span>]</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="26">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th data-quarto-table-cell-role="th">RMSE_CV</th>
+<th data-quarto-table-cell-role="th">RMSE_SD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">3</th>
+<td>Random Forest</td>
+<td>0.509701</td>
+<td>0.012328</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">4</th>
+<td>Gradient Boosting</td>
+<td>0.572787</td>
+<td>0.014558</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Tuning no garantiza una mejora enorme
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La optimización de hiperparámetros puede mejorar el desempeño, pero no debemos esperar necesariamente cambios espectaculares.</p>
+<p>Si una configuración inicial ya era razonable, la mejora puede ser relativamente pequeña.</p>
+</div>
+</div>
+</section>
+<section id="el-refit-ya-ocurrió" class="level2" data-number="11.14">
+<h2 data-number="11.14" class="anchored" data-anchor-id="el-refit-ya-ocurrió"><span class="header-section-number">11.14</span> El refit ya ocurrió</h2>
+<p>Recordemos que <code>RandomizedSearchCV</code> utiliza por defecto</p>
+<pre class="text"><code>refit=True</code></pre>
+<p>Después de seleccionar los hiperparámetros, vuelve a entrenar la configuración seleccionada utilizando <strong>todo el conjunto <code>X_train</code></strong>.</p>
+<p>Por ello tenemos disponibles:</p>
+<div id="fb992e7d" class="cell" data-execution_count="27">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>modelo_rf_final <span class="op">=</span> search_rf.best_estimator_</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>modelo_gb_final <span class="op">=</span> search_gb.best_estimator_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Estos modelos ya fueron reajustados con todos los datos de entrenamiento.</p>
+<p>Hasta este momento:</p>
+<pre class="text"><code>X_test
+y_test</code></pre>
+<p>siguen sin participar en ninguna decisión.</p>
+</section>
+<section id="antes-de-abrir-el-test" class="level2" data-number="11.15">
+<h2 data-number="11.15" class="anchored" data-anchor-id="antes-de-abrir-el-test"><span class="header-section-number">11.15</span> Antes de abrir el test</h2>
+<p>Este es un momento importante del flujo de trabajo.</p>
+<p>Ya realizamos:</p>
+<ul>
+<li>comparación inicial;</li>
+<li>Cross-Validation;</li>
+<li>selección de hiperparámetros;</li>
+<li>refit.</li>
+</ul>
+<p>El conjunto de prueba no participó en ninguna de estas decisiones.</p>
+<p>Nuestro esquema es:</p>
+<p><span class="math display">\[
+\boxed{
+X_{\text{train}}
+}
+\longrightarrow
+\boxed{
+\text{CV + comparación + tuning}
+}
+\longrightarrow
+\boxed{
+\text{modelo ajustado}
+}.
+\]</span></p>
+<p>Ahora sí podemos utilizar</p>
+<p><span class="math display">\[
+X_{\text{test}}
+\]</span></p>
+<p>para obtener una evaluación final.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Una vez abierto el test
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>No utilizaremos el resultado de test para volver a modificar repetidamente los hiperparámetros.</p>
+<p>Si lo hiciéramos, el test comenzaría a funcionar como un nuevo conjunto de validación.</p>
+</div>
+</div>
+</section>
+<section id="evaluación-final" class="level2" data-number="11.16">
+<h2 data-number="11.16" class="anchored" data-anchor-id="evaluación-final"><span class="header-section-number">11.16</span> Evaluación final</h2>
+<p>En este ejemplo evaluaremos los dos procedimientos ajustados para observar su comportamiento sobre datos no utilizados durante el desarrollo.</p>
+<p>Generamos predicciones:</p>
+<div id="8ef7f5b3" class="cell" data-execution_count="28">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>pred_rf_test <span class="op">=</span> modelo_rf_final.predict(</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    X_test</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>pred_gb_test <span class="op">=</span> modelo_gb_final.predict(</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    X_test</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Crearemos una función para calcular las métricas.</p>
+<div id="5db77e5c" class="cell" data-execution_count="29">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> metricas_regresion(y_real, y_pred):</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    mae <span class="op">=</span> mean_absolute_error(</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>        y_real,</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>        y_pred</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    rmse <span class="op">=</span> np.sqrt(</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>        mean_squared_error(</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>            y_real,</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>            y_pred</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>    r2 <span class="op">=</span> r2_score(</span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>        y_real,</span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>        y_pred</span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> mae, rmse, r2</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Calculamos:</p>
+<div id="b5c25212" class="cell" data-execution_count="30">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>mae_rf, rmse_rf, r2_rf <span class="op">=</span> metricas_regresion(</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    y_test,</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    pred_rf_test</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>mae_gb, rmse_gb, r2_gb <span class="op">=</span> metricas_regresion(</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    y_test,</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    pred_gb_test</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Construimos la tabla final.</p>
+<div id="1ff4a72b" class="cell" data-execution_count="31">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>resultados_test <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Modelo"</span>: [</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Random Forest"</span>,</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Gradient Boosting"</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MAE_test"</span>: [</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>        mae_rf,</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>        mae_gb</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RMSE_test"</span>: [</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>        rmse_rf,</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>        rmse_gb</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R2_test"</span>: [</span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>        r2_rf,</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>        r2_gb</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>resultados_test</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="31">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th data-quarto-table-cell-role="th">MAE_test</th>
+<th data-quarto-table-cell-role="th">RMSE_test</th>
+<th data-quarto-table-cell-role="th">R2_test</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Random Forest</td>
+<td>0.320270</td>
+<td>0.493625</td>
+<td>0.814054</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Gradient Boosting</td>
+<td>0.332126</td>
+<td>0.493815</td>
+<td>0.813911</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="cv-vs.-test" class="level2" data-number="11.17">
+<h2 data-number="11.17" class="anchored" data-anchor-id="cv-vs.-test"><span class="header-section-number">11.17</span> CV vs.&nbsp;test</h2>
+<p>Comparemos el RMSE estimado durante Cross-Validation con el observado finalmente en test.</p>
+<div id="10c18333" class="cell" data-execution_count="32">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>comparacion_final <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Modelo"</span>: [</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Random Forest"</span>,</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Gradient Boosting"</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RMSE_CV"</span>: [</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">-</span>search_rf.best_score_,</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">-</span>search_gb.best_score_</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RMSE_test"</span>: [</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>        rmse_rf,</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>        rmse_gb</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>comparacion_final</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="32">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th data-quarto-table-cell-role="th">RMSE_CV</th>
+<th data-quarto-table-cell-role="th">RMSE_test</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Random Forest</td>
+<td>0.498638</td>
+<td>0.493625</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Gradient Boosting</td>
+<td>0.492318</td>
+<td>0.493815</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>No esperamos que</p>
+<p><span class="math display">\[
+\operatorname{RMSE}_{CV}
+=
+\operatorname{RMSE}_{test}
+\]</span></p>
+<p>exactamente.</p>
+<p>Son estimaciones obtenidas con observaciones y procedimientos diferentes.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>🧠 Discusión
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿El desempeño en test es razonablemente consistente con lo observado durante Cross-Validation?</p>
+<p>¿Qué significaría encontrar una diferencia muy grande entre ambos?</p>
+</div>
+</div>
+</section>
+<section id="predicho-vs.-observado" class="level2" data-number="11.18">
+<h2 data-number="11.18" class="anchored" data-anchor-id="predicho-vs.-observado"><span class="header-section-number">11.18</span> Predicho vs.&nbsp;observado</h2>
+<p>Una métrica resume el desempeño en un único número.</p>
+<p>Pero también debemos observar las predicciones.</p>
+<p>Tomemos uno de los modelos finales para ilustrar el diagnóstico. Por ejemplo, Gradient Boosting:</p>
+<div id="108d8228" class="cell" data-execution_count="33">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    y_test,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    pred_gb_test,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.3</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>limites <span class="op">=</span> [</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">min</span>(y_test.<span class="bu">min</span>(), pred_gb_test.<span class="bu">min</span>()),</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">max</span>(y_test.<span class="bu">max</span>(), pred_gb_test.<span class="bu">max</span>())</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>    limites,</span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>    limites,</span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=</span><span class="st">"--"</span></span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Valor observado"</span>)</span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Valor predicho"</span>)</span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Observado vs. predicho"</span>)</span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte11_files/figure-html/cell-34-output-1.png" width="502" height="525" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La línea punteada representa</p>
+<p><span class="math display">\[
+\widehat y=y.
+\]</span></p>
+<p>Predicciones perfectas caerían exactamente sobre esta línea.</p>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>🧠 Observa
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿Las predicciones se distribuyen aproximadamente alrededor de la diagonal?</p>
+<p>¿En qué regiones parecen existir mayores errores?</p>
+</div>
+</div>
+</section>
+<section id="residuos" class="level2" data-number="11.19">
+<h2 data-number="11.19" class="anchored" data-anchor-id="residuos"><span class="header-section-number">11.19</span> Residuos</h2>
+<p>Definimos los residuos como</p>
+<p><span class="math display">\[
+e_i
+=
+y_i-\widehat y_i.
+\]</span></p>
+<p>Calculamos:</p>
+<div id="edfe8d35" class="cell" data-execution_count="34">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>residuos <span class="op">=</span> y_test <span class="op">-</span> pred_gb_test</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Veamos su distribución.</p>
+<div id="20bafdc8" class="cell" data-execution_count="35">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">4</span>))</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>plt.hist(</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    residuos,</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    bins<span class="op">=</span><span class="dv">30</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Residuo"</span>)</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Frecuencia"</span>)</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Distribución de los residuos"</span>)</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte11_files/figure-html/cell-36-output-1.png" width="602" height="378" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>También podemos representar residuos contra predicciones.</p>
+<div id="6e94fa27" class="cell" data-execution_count="36">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    pred_gb_test,</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    residuos,</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.3</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>plt.axhline(</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>    <span class="dv">0</span>,</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=</span><span class="st">"--"</span></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Valor predicho"</span>)</span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Residuo"</span>)</span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Residuos vs. valores predichos"</span>)</span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte11_files/figure-html/cell-37-output-1.png" width="588" height="451" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Una gráfica de residuos puede revelar patrones que una métrica agregada no muestra.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Las métricas no sustituyen el diagnóstico
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Dos modelos pueden tener valores similares de RMSE y, sin embargo, cometer errores de maneras diferentes.</p>
+<p>Por eso conviene complementar las métricas con visualizaciones y análisis del error.</p>
+</div>
+</div>
+</section>
+<section id="dónde-se-equivoca-más-el-modelo" class="level2" data-number="11.20">
+<h2 data-number="11.20" class="anchored" data-anchor-id="dónde-se-equivoca-más-el-modelo"><span class="header-section-number">11.20</span> ¿Dónde se equivoca más el modelo?</h2>
+<p>Podemos construir una tabla con las predicciones y sus errores.</p>
+<div id="a37dc1f9" class="cell" data-execution_count="37">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>diagnostico <span class="op">=</span> X_test.copy()</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>diagnostico[<span class="st">"y_real"</span>] <span class="op">=</span> y_test</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>diagnostico[<span class="st">"y_pred"</span>] <span class="op">=</span> pred_gb_test</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>diagnostico[<span class="st">"residuo"</span>] <span class="op">=</span> (</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>    diagnostico[<span class="st">"y_real"</span>]</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">-</span> diagnostico[<span class="st">"y_pred"</span>]</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>diagnostico[<span class="st">"error_absoluto"</span>] <span class="op">=</span> (</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>    diagnostico[<span class="st">"residuo"</span>].<span class="bu">abs</span>()</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Observemos las predicciones con mayor error absoluto.</p>
+<div id="ab5b4477" class="cell" data-execution_count="38">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>diagnostico.sort_values(</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"error_absoluto"</span>,</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    ascending<span class="op">=</span><span class="va">False</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>).head(<span class="dv">10</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="38">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">MedInc</th>
+<th data-quarto-table-cell-role="th">HouseAge</th>
+<th data-quarto-table-cell-role="th">AveRooms</th>
+<th data-quarto-table-cell-role="th">AveBedrms</th>
+<th data-quarto-table-cell-role="th">Population</th>
+<th data-quarto-table-cell-role="th">AveOccup</th>
+<th data-quarto-table-cell-role="th">Latitude</th>
+<th data-quarto-table-cell-role="th">Longitude</th>
+<th data-quarto-table-cell-role="th">y_real</th>
+<th data-quarto-table-cell-role="th">y_pred</th>
+<th data-quarto-table-cell-role="th">residuo</th>
+<th data-quarto-table-cell-role="th">error_absoluto</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10574</th>
+<td>1.9659</td>
+<td>6.0</td>
+<td>4.795455</td>
+<td>1.159091</td>
+<td>125.0</td>
+<td>2.840909</td>
+<td>33.72</td>
+<td>-117.70</td>
+<td>5.00001</td>
+<td>1.707870</td>
+<td>3.292140</td>
+<td>3.292140</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">19542</th>
+<td>1.7679</td>
+<td>39.0</td>
+<td>5.000000</td>
+<td>0.888889</td>
+<td>22.0</td>
+<td>2.444444</td>
+<td>37.63</td>
+<td>-120.92</td>
+<td>4.50000</td>
+<td>1.243524</td>
+<td>3.256476</td>
+<td>3.256476</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">12069</th>
+<td>4.2386</td>
+<td>6.0</td>
+<td>7.723077</td>
+<td>1.169231</td>
+<td>228.0</td>
+<td>3.507692</td>
+<td>33.83</td>
+<td>-117.55</td>
+<td>5.00001</td>
+<td>1.909156</td>
+<td>3.090854</td>
+<td>3.090854</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">12389</th>
+<td>3.7727</td>
+<td>24.0</td>
+<td>10.953586</td>
+<td>1.848101</td>
+<td>473.0</td>
+<td>1.995781</td>
+<td>33.75</td>
+<td>-116.43</td>
+<td>5.00001</td>
+<td>2.084833</td>
+<td>2.915177</td>
+<td>2.915177</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">459</th>
+<td>1.1696</td>
+<td>52.0</td>
+<td>2.436000</td>
+<td>0.944000</td>
+<td>1349.0</td>
+<td>5.396000</td>
+<td>37.87</td>
+<td>-122.25</td>
+<td>5.00001</td>
+<td>2.280264</td>
+<td>2.719746</td>
+<td>2.719746</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">20325</th>
+<td>4.5833</td>
+<td>21.0</td>
+<td>7.278431</td>
+<td>1.082353</td>
+<td>863.0</td>
+<td>3.384314</td>
+<td>34.28</td>
+<td>-119.04</td>
+<td>5.00001</td>
+<td>2.286901</td>
+<td>2.713109</td>
+<td>2.713109</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">59</th>
+<td>2.5625</td>
+<td>2.0</td>
+<td>2.771930</td>
+<td>0.754386</td>
+<td>94.0</td>
+<td>1.649123</td>
+<td>37.82</td>
+<td>-122.29</td>
+<td>0.60000</td>
+<td>3.304656</td>
+<td>-2.704656</td>
+<td>2.704656</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5887</th>
+<td>2.3667</td>
+<td>39.0</td>
+<td>3.572464</td>
+<td>1.217391</td>
+<td>259.0</td>
+<td>1.876812</td>
+<td>34.15</td>
+<td>-118.33</td>
+<td>0.17500</td>
+<td>2.820821</td>
+<td>-2.645821</td>
+<td>2.645821</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">20349</th>
+<td>7.3004</td>
+<td>32.0</td>
+<td>5.724138</td>
+<td>0.758621</td>
+<td>63.0</td>
+<td>2.172414</td>
+<td>34.17</td>
+<td>-119.08</td>
+<td>1.25000</td>
+<td>3.765107</td>
+<td>-2.515107</td>
+<td>2.515107</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">4630</th>
+<td>2.3674</td>
+<td>20.0</td>
+<td>2.740554</td>
+<td>1.047859</td>
+<td>2919.0</td>
+<td>2.450882</td>
+<td>34.07</td>
+<td>-118.31</td>
+<td>5.00001</td>
+<td>2.561162</td>
+<td>2.438848</td>
+<td>2.438848</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Esto permite pasar de la pregunta</p>
+<blockquote class="blockquote">
+<p>¿Cuál es el RMSE?</p>
+</blockquote>
+<p>a otra pregunta potencialmente más interesante:</p>
+<blockquote class="blockquote">
+<p>¿En qué observaciones se está equivocando el modelo?</p>
+</blockquote>
+</section>
+<section id="error-y-localización-geográfica" class="level2" data-number="11.21">
+<h2 data-number="11.21" class="anchored" data-anchor-id="error-y-localización-geográfica"><span class="header-section-number">11.21</span> Error y localización geográfica</h2>
+<p>Como California Housing contiene coordenadas geográficas, podemos explorar espacialmente el error.</p>
+<div id="7ae3afe6" class="cell" data-execution_count="39">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    diagnostico[<span class="st">"Longitude"</span>],</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    diagnostico[<span class="st">"Latitude"</span>],</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>    c<span class="op">=</span>diagnostico[<span class="st">"error_absoluto"</span>],</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    s<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.6</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Longitude"</span>)</span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Latitude"</span>)</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Distribución geográfica del error absoluto"</span>)</span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>plt.colorbar(label<span class="op">=</span><span class="st">"Error absoluto"</span>)</span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="parte11_files/figure-html/cell-40-output-1.png" width="643" height="525" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>🧠 Pregunta
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿Los errores parecen distribuirse uniformemente? ¿Observas regiones donde el modelo parece tener mayores dificultades?</p>
+</div>
+</div>
+<p>Este tipo de análisis puede revelar estructura que una única métrica no muestra.</p>
+</section>
+<section id="el-flujo-completo" class="level2" data-number="11.22">
+<h2 data-number="11.22" class="anchored" data-anchor-id="el-flujo-completo"><span class="header-section-number">11.22</span> El flujo completo</h2>
+<p>Ya podemos representar todo el procedimiento realizado durante las tres prácticas.</p>
+<section id="paso-1-separar-los-datos" class="level3" data-number="11.22.1">
+<h3 data-number="11.22.1" class="anchored" data-anchor-id="paso-1-separar-los-datos"><span class="header-section-number">11.22.1</span> Paso 1: separar los datos</h3>
+<p><span class="math display">\[
+\mathcal{D}
+\longrightarrow
+\boxed{
+\mathcal{D}_{\text{train}}
+}
++
+\boxed{
+\mathcal{D}_{\text{test}}
+}.
+\]</span></p>
+</section>
+<section id="paso-2-trabajar-solamente-con-train" class="level3" data-number="11.22.2">
+<h3 data-number="11.22.2" class="anchored" data-anchor-id="paso-2-trabajar-solamente-con-train"><span class="header-section-number">11.22.2</span> Paso 2: trabajar solamente con train</h3>
+<p>Dentro de <span class="math inline">\(\mathcal{D}_{\text{train}}\)</span> realizamos:</p>
+<p><span class="math display">\[
+\text{Cross-Validation}
+\longrightarrow
+\text{comparación}
+\longrightarrow
+\text{tuning}.
+\]</span></p>
+</section>
+<section id="paso-3-seleccionar-hiperparámetros" class="level3" data-number="11.22.3">
+<h3 data-number="11.22.3" class="anchored" data-anchor-id="paso-3-seleccionar-hiperparámetros"><span class="header-section-number">11.22.3</span> Paso 3: seleccionar hiperparámetros</h3>
+<p>Por ejemplo:</p>
+<p><span class="math display">\[
+\boldsymbol{\lambda}^{*}
+=
+\arg\min_{\boldsymbol{\lambda}}
+\operatorname{RMSE}_{CV}(\boldsymbol{\lambda}).
+\]</span></p>
+</section>
+<section id="paso-4-refit" class="level3" data-number="11.22.4">
+<h3 data-number="11.22.4" class="anchored" data-anchor-id="paso-4-refit"><span class="header-section-number">11.22.4</span> Paso 4: refit</h3>
+<p>El procedimiento seleccionado se vuelve a entrenar utilizando todo</p>
+<p><span class="math display">\[
+\mathcal{D}_{\text{train}}.
+\]</span></p>
+</section>
+<section id="paso-5-evaluación-final" class="level3" data-number="11.22.5">
+<h3 data-number="11.22.5" class="anchored" data-anchor-id="paso-5-evaluación-final"><span class="header-section-number">11.22.5</span> Paso 5: evaluación final</h3>
+<p>Finalmente:</p>
+<p><span class="math display">\[
+\widehat f^{*}(X_{\text{test}})
+\]</span></p>
+<p>permite calcular</p>
+<p><span class="math display">\[
+\operatorname{MAE}_{test},
+\qquad
+\operatorname{RMSE}_{test},
+\qquad
+R^2_{\text{test}}.
+\]</span></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>La idea central de la unidad
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El objetivo no es encontrar el modelo que produzca el número más pequeño en una tabla.</p>
+<p>El objetivo es construir un procedimiento de evaluación en el que cada conjunto de datos tenga una función clara y donde las decisiones de modelado no contaminen la evaluación final.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="ejercicio-integrador" class="level2" data-number="11.23">
+<h2 data-number="11.23" class="anchored" data-anchor-id="ejercicio-integrador"><span class="header-section-number">11.23</span> Ejercicio integrador</h2>
+<p>Ahora realizarás el mismo flujo utilizando <strong>XGBoost</strong>.</p>
+<p>Importa:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> xgboost <span class="im">import</span> XGBRegressor</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Define inicialmente:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>xgb <span class="op">=</span> XGBRegressor(</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    objective<span class="op">=</span><span class="st">"reg:squarederror"</span>,</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>    n_jobs<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Utiliza el siguiente espacio:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>param_xgb <span class="op">=</span> {</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"n_estimators"</span>: [<span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">300</span>, <span class="dv">500</span>],</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"learning_rate"</span>: [<span class="fl">0.01</span>, <span class="fl">0.03</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>],</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"max_depth"</span>: [<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>],</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"subsample"</span>: [<span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.0</span>],</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"colsample_bytree"</span>: [<span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.0</span>]</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Realiza un <code>RandomizedSearchCV</code> con:</p>
+<p><span class="math display">\[
+\texttt{n\_iter}=15
+\]</span></p>
+<p>y</p>
+<p><span class="math display">\[
+5\text{-fold Cross-Validation}.
+\]</span></p>
+<p>Utiliza como métrica principal:</p>
+<pre class="text"><code>neg_root_mean_squared_error</code></pre>
+<p>Reporta:</p>
+<ol type="1">
+<li>los hiperparámetros seleccionados;</li>
+<li>el RMSE promedio de Cross-Validation;</li>
+<li>el tiempo utilizado por la búsqueda;</li>
+<li>MAE, RMSE y <span class="math inline">\(R^2\)</span> sobre test;</li>
+<li>una gráfica observado vs.&nbsp;predicho;</li>
+<li>una gráfica de residuos.</li>
+</ol>
+<p>Finalmente responde:</p>
+<blockquote class="blockquote">
+<p>¿El desempeño sobre test fue consistente con el estimado mediante Cross-Validation?</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>¿Qué información adicional obtuviste al observar los residuos que no era visible únicamente con RMSE?</p>
+</blockquote>
+</section>
+<section id="reto-adicional-clasificación" class="level2" data-number="11.24">
+<h2 data-number="11.24" class="anchored" data-anchor-id="reto-adicional-clasificación"><span class="header-section-number">11.24</span> Reto adicional: clasificación</h2>
+<p>Hasta ahora toda nuestra práctica se ha desarrollado sobre un problema de regresión.</p>
+<p>Sin embargo, el procedimiento general también puede utilizarse en clasificación.</p>
+<p><code>scikit-learn</code> contiene el conjunto <strong>Breast Cancer Wisconsin</strong>.</p>
+<p>Puedes cargarlo mediante:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_breast_cancer</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>cancer <span class="op">=</span> load_breast_cancer(</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    as_frame<span class="op">=</span><span class="va">True</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>X_cancer <span class="op">=</span> cancer.data</span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>y_cancer <span class="op">=</span> cancer.target</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>En clasificación debemos reconsiderar algunos elementos.</p>
+<p>Por ejemplo, en lugar de <code>KFold</code> puede ser conveniente utilizar:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> StratifiedKFold</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>y nuestras métricas pueden incluir:</p>
+<p><span class="math display">\[
+\text{accuracy},
+\qquad
+\text{precision},
+\qquad
+\text{recall},
+\qquad
+F_1,
+\qquad
+\text{ROC-AUC}.
+\]</span></p>
+<p><strong>Pregunta</strong></p>
+<p>¿Cómo modificarías el flujo utilizado en California Housing para resolver este problema de clasificación?</p>
+<p>No es necesario implementar toda la búsqueda.</p>
+<p>Identifica al menos:</p>
+<ol type="1">
+<li>qué modelo utilizarías como baseline;</li>
+<li>qué estrategia de Cross-Validation utilizarías;</li>
+<li>qué métricas reportarías;</li>
+<li>qué modelos compararías;</li>
+<li>qué información reservarías hasta la evaluación final.</li>
+</ol>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

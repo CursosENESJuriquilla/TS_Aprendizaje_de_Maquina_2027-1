@@ -2794,12 +2794,12 @@
   {
     "objectID": "parte11.html",
     "href": "parte11.html",
-    "title": "Temas Selectos de Aprendizaje de Máquina",
+    "title": "11  Evaluación y comparación de modelos",
     "section": "",
-    "text": "Pendiente",
+    "text": "11.1 Preparación\nEn las secciones anteriores construimos modelos de Gradient Boosting y aprendimos a utilizar Cross-Validation para seleccionar hiperparámetros.\nAhora integraremos estos elementos dentro de un flujo completo de aprendizaje automático.\nAl finalizar esta práctica seremos capaces de:\nNuestro flujo de trabajo será:\n\\[\n\\boxed{\\text{Datos}}\n\\longrightarrow\n\\boxed{\\text{Train/Test}}\n\\longrightarrow\n\\boxed{\\text{Cross-Validation}}\n\\longrightarrow\n\\boxed{\\text{Comparación}}\n\\longrightarrow\n\\boxed{\\text{Tuning}}\n\\longrightarrow\n\\boxed{\\text{Refit}}\n\\longrightarrow\n\\boxed{\\text{Evaluación final}}.\n\\]\nImportamos las bibliotecas necesarias.\nCódigo\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nfrom time import perf_counter\n\nfrom sklearn.datasets import fetch_california_housing\n\nfrom sklearn.model_selection import (\n    train_test_split,\n    KFold,\n    cross_validate,\n    RandomizedSearchCV\n)\n\nfrom sklearn.dummy import DummyRegressor\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.tree import DecisionTreeRegressor\nfrom sklearn.ensemble import (\n    RandomForestRegressor,\n    GradientBoostingRegressor\n)\n\nfrom sklearn.metrics import (\n    mean_absolute_error,\n    mean_squared_error,\n    r2_score\n)\nCargamos nuevamente California Housing.\nCódigo\nhousing = fetch_california_housing(as_frame=True)\n\nX = housing.data\ny = housing.target\nRealizamos la misma partición que utilizamos en las prácticas anteriores.\nCódigo\nX_train, X_test, y_train, y_test = train_test_split(\n    X,\n    y,\n    test_size=0.20,\n    random_state=42\n)\nCódigo\nprint(\"Train:\", X_train.shape)\nprint(\"Test: \", X_test.shape)\n\n\nTrain: (16512, 8)\nTest:  (4128, 8)",
     "crumbs": [
       "**Métodos de ensamble y optimización de modelos**",
-      "<span class='chapter-number'>11</span>  <span class='chapter-title'>parte11.html</span>"
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
     ]
   },
   {
@@ -3251,6 +3251,270 @@
     "crumbs": [
       "**Métodos de ensamble y optimización de modelos**",
       "<span class='chapter-number'>10</span>  <span class='chapter-title'>Validación cruzada y optimización de hiperparámetros</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#preparación",
+    "href": "parte11.html#preparación",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "",
+    "text": "ImportanteÚltima práctica: el test sigue cerrado\n\n\n\nTodavía no utilizaremos X_test ni y_test.\nPrimero realizaremos toda la comparación y selección utilizando exclusivamente los datos de entrenamiento.\nAbriremos el test solamente al final.",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#contra-qué-debemos-comparar",
+    "href": "parte11.html#contra-qué-debemos-comparar",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.2 ¿Contra qué debemos comparar?",
+    "text": "11.2 ¿Contra qué debemos comparar?\nAntes de construir modelos complejos necesitamos una referencia sencilla.\nPara ello utilizaremos DummyRegressor.\n\n\nCódigo\nbaseline = DummyRegressor(\n    strategy=\"mean\"\n)\n\n\nEste modelo predice esencialmente una cantidad constante basada en la respuesta observada durante el entrenamiento.\nPor sí mismo no pretende ser un buen modelo.\nSu función es responder una pregunta mucho más importante:\n\n\n\n\n\n\nAdvertencia🧠 Pregunta\n\n\n\n¿Nuestros modelos realmente están aprendiendo estructura útil en los datos?",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#modelos-que-compararemos",
+    "href": "parte11.html#modelos-que-compararemos",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.3 Modelos que compararemos",
+    "text": "11.3 Modelos que compararemos\nConsideraremos cinco modelos:\n\n\nCódigo\nmodelos = {\n    \"Baseline\": DummyRegressor(\n        strategy=\"mean\"\n    ),\n\n    \"Linear Regression\": LinearRegression(),\n\n    \"Decision Tree\": DecisionTreeRegressor(\n        random_state=42\n    ),\n\n    \"Random Forest\": RandomForestRegressor(\n        n_estimators=200,\n        random_state=42,\n        n_jobs=1\n    ),\n\n    \"Gradient Boosting\": GradientBoostingRegressor(\n        n_estimators=200,\n        learning_rate=0.05,\n        max_depth=2,\n        random_state=42\n    )\n}\n\n\nObserven que estamos comparando modelos con características muy diferentes.\nTenemos desde una baseline extremadamente sencilla hasta métodos de ensamble.\n\n\n\n\n\n\nNotaPrimera comparación\n\n\n\nEn esta primera etapa no intentaremos optimizar exhaustivamente todos los modelos.\nQueremos obtener una comparación inicial utilizando un procedimiento común de evaluación.\nPosteriormente realizaremos tuning sobre algunos de los modelos.",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#una-estrategia-común-de-cross-validation",
+    "href": "parte11.html#una-estrategia-común-de-cross-validation",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.4 Una estrategia común de Cross-Validation",
+    "text": "11.4 Una estrategia común de Cross-Validation\nUtilizaremos exactamente los mismos folds para todos los modelos.\n\n\nCódigo\ncv = KFold(\n    n_splits=5,\n    shuffle=True,\n    random_state=42\n)\n\n\nEsto significa que cada modelo será entrenado y evaluado sobre las mismas particiones.\nConceptualmente queremos:\n\\[\n\\boxed{\n\\text{mismos datos}\n+\n\\text{mismos folds}\n+\n\\text{mismas métricas}\n}.\n\\]",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#evaluaremos-más-de-una-métrica",
+    "href": "parte11.html#evaluaremos-más-de-una-métrica",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.5 Evaluaremos más de una métrica",
+    "text": "11.5 Evaluaremos más de una métrica\nHasta ahora utilizamos principalmente RMSE.\nEn esta práctica utilizaremos:\n\nMAE;\nRMSE;\n\\(R^2\\).\n\nDefinimos las métricas:\n\n\nCódigo\nscoring = {\n    \"MAE\": \"neg_mean_absolute_error\",\n    \"RMSE\": \"neg_root_mean_squared_error\",\n    \"R2\": \"r2\"\n}\n\n\nRecordemos que scikit-learn devuelve MAE y RMSE negativos cuando se utilizan como scores.\nEsto permite mantener la convención\n\\[\n\\text{score mayor}\n\\quad\\Longrightarrow\\quad\n\\text{mejor}.\n\\]\nDespués cambiaremos el signo para recuperar los errores en su interpretación habitual.",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#comparación-mediante-cross-validation",
+    "href": "parte11.html#comparación-mediante-cross-validation",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.6 Comparación mediante Cross-Validation",
+    "text": "11.6 Comparación mediante Cross-Validation\nUtilizaremos cross_validate().\nA diferencia de cross_val_score(), esta función nos permite calcular varias métricas simultáneamente y registrar tiempos de entrenamiento.\n\n\nCódigo\nresultados = []\n\nfor nombre, modelo in modelos.items():\n\n    cv_result = cross_validate(\n        modelo,\n        X_train,\n        y_train,\n        cv=cv,\n        scoring=scoring,\n        n_jobs=1\n    )\n\n    resultados.append({\n        \"Modelo\": nombre,\n\n        \"MAE_CV\":\n            -cv_result[\"test_MAE\"].mean(),\n\n        \"MAE_SD\":\n            cv_result[\"test_MAE\"].std(),\n\n        \"RMSE_CV\":\n            -cv_result[\"test_RMSE\"].mean(),\n\n        \"RMSE_SD\":\n            cv_result[\"test_RMSE\"].std(),\n\n        \"R2_CV\":\n            cv_result[\"test_R2\"].mean(),\n\n        \"R2_SD\":\n            cv_result[\"test_R2\"].std(),\n\n        \"Tiempo\":\n            cv_result[\"fit_time\"].mean()\n    })\n\n\nConstruimos una tabla.\n\n\nCódigo\ndf_resultados = pd.DataFrame(resultados)\n\ndf_resultados\n\n\n\n\n\n\n\n\n\nModelo\nMAE_CV\nMAE_SD\nRMSE_CV\nRMSE_SD\nR2_CV\nR2_SD\nTiempo\n\n\n\n\n0\nBaseline\n0.913915\n0.010082\n1.156172\n0.012163\n-0.000215\n0.000213\n0.005357\n\n\n1\nLinear Regression\n0.529061\n0.009383\n0.720510\n0.013895\n0.611457\n0.012359\n0.002153\n\n\n2\nDecision Tree\n0.472372\n0.017891\n0.733020\n0.026927\n0.597422\n0.028399\n0.082880\n\n\n3\nRandom Forest\n0.333872\n0.005736\n0.509701\n0.012328\n0.805590\n0.006514\n10.256716\n\n\n4\nGradient Boosting\n0.405271\n0.008466\n0.572787\n0.014558\n0.754431\n0.010070\n2.690172\n\n\n\n\n\n\n\nPara facilitar la lectura podemos ordenar por RMSE.\n\n\nCódigo\ndf_resultados.sort_values(\"RMSE_CV\")\n\n\n\n\n\n\n\n\n\nModelo\nMAE_CV\nMAE_SD\nRMSE_CV\nRMSE_SD\nR2_CV\nR2_SD\nTiempo\n\n\n\n\n3\nRandom Forest\n0.333872\n0.005736\n0.509701\n0.012328\n0.805590\n0.006514\n10.256716\n\n\n4\nGradient Boosting\n0.405271\n0.008466\n0.572787\n0.014558\n0.754431\n0.010070\n2.690172\n\n\n1\nLinear Regression\n0.529061\n0.009383\n0.720510\n0.013895\n0.611457\n0.012359\n0.002153\n\n\n2\nDecision Tree\n0.472372\n0.017891\n0.733020\n0.026927\n0.597422\n0.028399\n0.082880\n\n\n0\nBaseline\n0.913915\n0.010082\n1.156172\n0.012163\n-0.000215\n0.000213\n0.005357",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#cómo-interpretamos-la-tabla",
+    "href": "parte11.html#cómo-interpretamos-la-tabla",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.7 ¿Cómo interpretamos la tabla?",
+    "text": "11.7 ¿Cómo interpretamos la tabla?\nTenemos ahora información sobre tres aspectos:\n\\[\n\\boxed{\\text{desempeño promedio}}\n\\]\n\\[\n\\boxed{\\text{variabilidad entre folds}}\n\\]\n\\[\n\\boxed{\\text{costo computacional}}.\n\\]\nPor ejemplo, el RMSE promedio se calcula como\n\\[\n\\overline{\\operatorname{RMSE}}\n=\n\\frac{1}{k}\n\\sum_{j=1}^{k}\n\\operatorname{RMSE}_j.\n\\]\nMientras que RMSE_SD resume cuánto varían esos resultados entre folds.\n\n\n\n\n\n\nAdvertencia🧠 Discusión\n\n\n\n\n¿Todos los modelos mejoran la baseline?\n¿Los modelos con menor RMSE también presentan mayor \\(R^2\\)?\n¿Cuál presenta mayor variabilidad entre folds?\n¿Existen diferencias importantes en tiempo de entrenamiento?\n¿Una diferencia pequeña en RMSE sería suficiente por sí sola para afirmar que dos procedimientos se comportan de manera sustancialmente distinta?",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#visualización-de-la-comparación",
+    "href": "parte11.html#visualización-de-la-comparación",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.8 Visualización de la comparación",
+    "text": "11.8 Visualización de la comparación\nRepresentemos el RMSE promedio y su desviación estándar.\n\n\nCódigo\ndf_plot = df_resultados.sort_values(\n    \"RMSE_CV\",\n    ascending=False\n)\n\nplt.figure(figsize=(9, 5))\n\nplt.errorbar(\n    df_plot[\"RMSE_CV\"],\n    df_plot[\"Modelo\"],\n    xerr=df_plot[\"RMSE_SD\"],\n    fmt=\"o\",\n    capsize=5\n)\n\nplt.xlabel(\"RMSE de Cross-Validation\")\nplt.ylabel(\"Modelo\")\nplt.title(\"Comparación de modelos\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNotaLas barras no son intervalos de confianza\n\n\n\nEn esta gráfica las barras representan simplemente la desviación estándar de los resultados obtenidos entre folds.\nNo deben interpretarse automáticamente como intervalos de confianza.",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#observar-los-resultados-fold-por-fold",
+    "href": "parte11.html#observar-los-resultados-fold-por-fold",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.9 Observar los resultados fold por fold",
+    "text": "11.9 Observar los resultados fold por fold\nLa media puede ocultar información.\nComparemos, por ejemplo, Random Forest y Gradient Boosting.\n\n\nCódigo\nmodelos_comparar = {\n    \"Random Forest\": modelos[\"Random Forest\"],\n    \"Gradient Boosting\": modelos[\"Gradient Boosting\"]\n}\n\nscores_folds = []\n\nfor nombre, modelo in modelos_comparar.items():\n\n    resultado = cross_validate(\n        modelo,\n        X_train,\n        y_train,\n        cv=cv,\n        scoring=\"neg_root_mean_squared_error\",\n        n_jobs=1\n    )\n\n    for fold, score in enumerate(\n        -resultado[\"test_score\"],\n        start=1\n    ):\n        scores_folds.append({\n            \"Modelo\": nombre,\n            \"Fold\": fold,\n            \"RMSE\": score\n        })\n\ndf_folds = pd.DataFrame(scores_folds)\n\ndf_folds\n\n\n\n\n\n\n\n\n\nModelo\nFold\nRMSE\n\n\n\n\n0\nRandom Forest\n1\n0.526053\n\n\n1\nRandom Forest\n2\n0.497128\n\n\n2\nRandom Forest\n3\n0.502483\n\n\n3\nRandom Forest\n4\n0.523178\n\n\n4\nRandom Forest\n5\n0.499665\n\n\n5\nGradient Boosting\n1\n0.589458\n\n\n6\nGradient Boosting\n2\n0.567389\n\n\n7\nGradient Boosting\n3\n0.551357\n\n\n8\nGradient Boosting\n4\n0.588859\n\n\n9\nGradient Boosting\n5\n0.566871\n\n\n\n\n\n\n\nVisualizamos:\n\n\nCódigo\nfor nombre in df_folds[\"Modelo\"].unique():\n\n    datos = df_folds[\n        df_folds[\"Modelo\"] == nombre\n    ]\n\n    plt.plot(\n        datos[\"Fold\"],\n        datos[\"RMSE\"],\n        marker=\"o\",\n        label=nombre\n    )\n\nplt.xlabel(\"Fold\")\nplt.ylabel(\"RMSE\")\nplt.title(\"Desempeño en cada fold\")\nplt.xticks(range(1, 6))\nplt.legend()\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAdvertencia🧠 Pregunta\n\n\n\n¿Uno de los modelos presenta menor RMSE en todos los folds? ¿O las diferencias dependen también de la partición?",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#comparar-modelos-no-termina-aquí",
+    "href": "parte11.html#comparar-modelos-no-termina-aquí",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.10 Comparar modelos no termina aquí",
+    "text": "11.10 Comparar modelos no termina aquí\nHasta ahora hemos utilizado configuraciones razonables, pero no necesariamente optimizadas.\nPor ejemplo, Gradient Boosting depende de\n\\[\n\\texttt{learning\\_rate},\n\\qquad\n\\texttt{n\\_estimators},\n\\qquad\n\\texttt{max\\_depth},\n\\qquad\n\\texttt{subsample}.\n\\]\nRandom Forest también posee hiperparámetros como\n\\[\n\\texttt{n\\_estimators},\n\\qquad\n\\texttt{max\\_depth},\n\\qquad\n\\texttt{max\\_features},\n\\qquad\n\\texttt{min\\_samples\\_leaf}.\n\\]\nPor ello, una comparación más completa puede incluir un procedimiento de tuning.\nPara mantener razonable el tiempo de cómputo realizaremos una búsqueda pequeña sobre estos dos modelos.",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#tuning-de-random-forest",
+    "href": "parte11.html#tuning-de-random-forest",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.11 Tuning de Random Forest",
+    "text": "11.11 Tuning de Random Forest\nDefinimos un espacio de búsqueda.\n\n\nCódigo\nparam_rf = {\n    \"n_estimators\": [100, 200, 400],\n    \"max_depth\": [None, 10, 20, 30],\n    \"max_features\": [0.5, 0.75, 1.0],\n    \"min_samples_leaf\": [1, 2, 4]\n}\n\n\nUtilizaremos RandomizedSearchCV.\n\n\nCódigo\nsearch_rf = RandomizedSearchCV(\n    estimator=RandomForestRegressor(\n        random_state=42,\n        n_jobs=1\n    ),\n    param_distributions=param_rf,\n    n_iter=12,\n    scoring=\"neg_root_mean_squared_error\",\n    cv=cv,\n    random_state=42,\n    n_jobs=1\n)\n\n\nEjecutamos:\n\n\nCódigo\ninicio = perf_counter()\n\nsearch_rf.fit(X_train, y_train)\n\ntiempo_rf = perf_counter() - inicio\n\n\nConsultamos los hiperparámetros seleccionados:\n\n\nCódigo\nsearch_rf.best_params_\n\n\n{'n_estimators': 400,\n 'min_samples_leaf': 1,\n 'max_features': 0.5,\n 'max_depth': 30}\n\n\ny el RMSE:\n\n\nCódigo\nprint(\n    f\"RMSE CV: {-search_rf.best_score_:.4f}\"\n)\n\n\nRMSE CV: 0.4986",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#tuning-de-gradient-boosting",
+    "href": "parte11.html#tuning-de-gradient-boosting",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.12 Tuning de Gradient Boosting",
+    "text": "11.12 Tuning de Gradient Boosting\nDefinimos ahora:\n\n\nCódigo\nparam_gb = {\n    \"n_estimators\": [100, 200, 300, 500],\n    \"learning_rate\": [0.01, 0.03, 0.05, 0.1],\n    \"max_depth\": [1, 2, 3, 4],\n    \"subsample\": [0.7, 0.8, 0.9, 1.0]\n}\n\n\nConstruimos la búsqueda.\n\n\nCódigo\nsearch_gb = RandomizedSearchCV(\n    estimator=GradientBoostingRegressor(\n        random_state=42\n    ),\n    param_distributions=param_gb,\n    n_iter=12,\n    scoring=\"neg_root_mean_squared_error\",\n    cv=cv,\n    random_state=42,\n    n_jobs=1\n)\n\n\nEjecutamos:\n\n\nCódigo\ninicio = perf_counter()\n\nsearch_gb.fit(X_train, y_train)\n\ntiempo_gb = perf_counter() - inicio\n\n\nConsultamos:\n\n\nCódigo\nsearch_gb.best_params_\n\n\n{'subsample': 0.8, 'n_estimators': 300, 'max_depth': 4, 'learning_rate': 0.05}\n\n\ny:\n\n\nCódigo\nprint(\n    f\"RMSE CV: {-search_gb.best_score_:.4f}\"\n)\n\n\nRMSE CV: 0.4923",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#comparación-después-del-tuning",
+    "href": "parte11.html#comparación-después-del-tuning",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.13 Comparación después del tuning",
+    "text": "11.13 Comparación después del tuning\nConstruimos una tabla pequeña con los dos procedimientos ajustados.\n\n\nCódigo\ndf_tuning = pd.DataFrame({\n    \"Modelo\": [\n        \"Random Forest\",\n        \"Gradient Boosting\"\n    ],\n    \"RMSE_CV\": [\n        -search_rf.best_score_,\n        -search_gb.best_score_\n    ],\n    \"Tiempo_busqueda\": [\n        tiempo_rf,\n        tiempo_gb\n    ]\n})\n\ndf_tuning\n\n\n\n\n\n\n\n\n\nModelo\nRMSE_CV\nTiempo_busqueda\n\n\n\n\n0\nRandom Forest\n0.498638\n536.236901\n\n\n1\nGradient Boosting\n0.492318\n231.249613\n\n\n\n\n\n\n\nAhora podemos comparar estos resultados con los obtenidos antes del tuning.\n\n\nCódigo\ndf_resultados[\n    df_resultados[\"Modelo\"].isin(\n        [\"Random Forest\", \"Gradient Boosting\"]\n    )\n][\n    [\"Modelo\", \"RMSE_CV\", \"RMSE_SD\"]\n]\n\n\n\n\n\n\n\n\n\nModelo\nRMSE_CV\nRMSE_SD\n\n\n\n\n3\nRandom Forest\n0.509701\n0.012328\n\n\n4\nGradient Boosting\n0.572787\n0.014558\n\n\n\n\n\n\n\n\n\n\n\n\n\nTipTuning no garantiza una mejora enorme\n\n\n\nLa optimización de hiperparámetros puede mejorar el desempeño, pero no debemos esperar necesariamente cambios espectaculares.\nSi una configuración inicial ya era razonable, la mejora puede ser relativamente pequeña.",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#el-refit-ya-ocurrió",
+    "href": "parte11.html#el-refit-ya-ocurrió",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.14 El refit ya ocurrió",
+    "text": "11.14 El refit ya ocurrió\nRecordemos que RandomizedSearchCV utiliza por defecto\nrefit=True\nDespués de seleccionar los hiperparámetros, vuelve a entrenar la configuración seleccionada utilizando todo el conjunto X_train.\nPor ello tenemos disponibles:\n\n\nCódigo\nmodelo_rf_final = search_rf.best_estimator_\nmodelo_gb_final = search_gb.best_estimator_\n\n\nEstos modelos ya fueron reajustados con todos los datos de entrenamiento.\nHasta este momento:\nX_test\ny_test\nsiguen sin participar en ninguna decisión.",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#antes-de-abrir-el-test",
+    "href": "parte11.html#antes-de-abrir-el-test",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.15 Antes de abrir el test",
+    "text": "11.15 Antes de abrir el test\nEste es un momento importante del flujo de trabajo.\nYa realizamos:\n\ncomparación inicial;\nCross-Validation;\nselección de hiperparámetros;\nrefit.\n\nEl conjunto de prueba no participó en ninguna de estas decisiones.\nNuestro esquema es:\n\\[\n\\boxed{\nX_{\\text{train}}\n}\n\\longrightarrow\n\\boxed{\n\\text{CV + comparación + tuning}\n}\n\\longrightarrow\n\\boxed{\n\\text{modelo ajustado}\n}.\n\\]\nAhora sí podemos utilizar\n\\[\nX_{\\text{test}}\n\\]\npara obtener una evaluación final.\n\n\n\n\n\n\nImportanteUna vez abierto el test\n\n\n\nNo utilizaremos el resultado de test para volver a modificar repetidamente los hiperparámetros.\nSi lo hiciéramos, el test comenzaría a funcionar como un nuevo conjunto de validación.",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#evaluación-final",
+    "href": "parte11.html#evaluación-final",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.16 Evaluación final",
+    "text": "11.16 Evaluación final\nEn este ejemplo evaluaremos los dos procedimientos ajustados para observar su comportamiento sobre datos no utilizados durante el desarrollo.\nGeneramos predicciones:\n\n\nCódigo\npred_rf_test = modelo_rf_final.predict(\n    X_test\n)\n\npred_gb_test = modelo_gb_final.predict(\n    X_test\n)\n\n\nCrearemos una función para calcular las métricas.\n\n\nCódigo\ndef metricas_regresion(y_real, y_pred):\n\n    mae = mean_absolute_error(\n        y_real,\n        y_pred\n    )\n\n    rmse = np.sqrt(\n        mean_squared_error(\n            y_real,\n            y_pred\n        )\n    )\n\n    r2 = r2_score(\n        y_real,\n        y_pred\n    )\n\n    return mae, rmse, r2\n\n\nCalculamos:\n\n\nCódigo\nmae_rf, rmse_rf, r2_rf = metricas_regresion(\n    y_test,\n    pred_rf_test\n)\n\nmae_gb, rmse_gb, r2_gb = metricas_regresion(\n    y_test,\n    pred_gb_test\n)\n\n\nConstruimos la tabla final.\n\n\nCódigo\nresultados_test = pd.DataFrame({\n    \"Modelo\": [\n        \"Random Forest\",\n        \"Gradient Boosting\"\n    ],\n\n    \"MAE_test\": [\n        mae_rf,\n        mae_gb\n    ],\n\n    \"RMSE_test\": [\n        rmse_rf,\n        rmse_gb\n    ],\n\n    \"R2_test\": [\n        r2_rf,\n        r2_gb\n    ]\n})\n\nresultados_test\n\n\n\n\n\n\n\n\n\nModelo\nMAE_test\nRMSE_test\nR2_test\n\n\n\n\n0\nRandom Forest\n0.320270\n0.493625\n0.814054\n\n\n1\nGradient Boosting\n0.332126\n0.493815\n0.813911",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#cv-vs.-test",
+    "href": "parte11.html#cv-vs.-test",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.17 CV vs. test",
+    "text": "11.17 CV vs. test\nComparemos el RMSE estimado durante Cross-Validation con el observado finalmente en test.\n\n\nCódigo\ncomparacion_final = pd.DataFrame({\n    \"Modelo\": [\n        \"Random Forest\",\n        \"Gradient Boosting\"\n    ],\n\n    \"RMSE_CV\": [\n        -search_rf.best_score_,\n        -search_gb.best_score_\n    ],\n\n    \"RMSE_test\": [\n        rmse_rf,\n        rmse_gb\n    ]\n})\n\ncomparacion_final\n\n\n\n\n\n\n\n\n\nModelo\nRMSE_CV\nRMSE_test\n\n\n\n\n0\nRandom Forest\n0.498638\n0.493625\n\n\n1\nGradient Boosting\n0.492318\n0.493815\n\n\n\n\n\n\n\nNo esperamos que\n\\[\n\\operatorname{RMSE}_{CV}\n=\n\\operatorname{RMSE}_{test}\n\\]\nexactamente.\nSon estimaciones obtenidas con observaciones y procedimientos diferentes.\n\n\n\n\n\n\nAdvertencia🧠 Discusión\n\n\n\n¿El desempeño en test es razonablemente consistente con lo observado durante Cross-Validation?\n¿Qué significaría encontrar una diferencia muy grande entre ambos?",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#predicho-vs.-observado",
+    "href": "parte11.html#predicho-vs.-observado",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.18 Predicho vs. observado",
+    "text": "11.18 Predicho vs. observado\nUna métrica resume el desempeño en un único número.\nPero también debemos observar las predicciones.\nTomemos uno de los modelos finales para ilustrar el diagnóstico. Por ejemplo, Gradient Boosting:\n\n\nCódigo\nplt.figure(figsize=(6, 6))\n\nplt.scatter(\n    y_test,\n    pred_gb_test,\n    alpha=0.3\n)\n\nlimites = [\n    min(y_test.min(), pred_gb_test.min()),\n    max(y_test.max(), pred_gb_test.max())\n]\n\nplt.plot(\n    limites,\n    limites,\n    linestyle=\"--\"\n)\n\nplt.xlabel(\"Valor observado\")\nplt.ylabel(\"Valor predicho\")\nplt.title(\"Observado vs. predicho\")\nplt.show()\n\n\n\n\n\n\n\n\n\nLa línea punteada representa\n\\[\n\\widehat y=y.\n\\]\nPredicciones perfectas caerían exactamente sobre esta línea.\n\n\n\n\n\n\nAdvertencia🧠 Observa\n\n\n\n¿Las predicciones se distribuyen aproximadamente alrededor de la diagonal?\n¿En qué regiones parecen existir mayores errores?",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#residuos",
+    "href": "parte11.html#residuos",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.19 Residuos",
+    "text": "11.19 Residuos\nDefinimos los residuos como\n\\[\ne_i\n=\ny_i-\\widehat y_i.\n\\]\nCalculamos:\n\n\nCódigo\nresiduos = y_test - pred_gb_test\n\n\nVeamos su distribución.\n\n\nCódigo\nplt.figure(figsize=(7, 4))\n\nplt.hist(\n    residuos,\n    bins=30\n)\n\nplt.xlabel(\"Residuo\")\nplt.ylabel(\"Frecuencia\")\nplt.title(\"Distribución de los residuos\")\nplt.show()\n\n\n\n\n\n\n\n\n\nTambién podemos representar residuos contra predicciones.\n\n\nCódigo\nplt.figure(figsize=(7, 5))\n\nplt.scatter(\n    pred_gb_test,\n    residuos,\n    alpha=0.3\n)\n\nplt.axhline(\n    0,\n    linestyle=\"--\"\n)\n\nplt.xlabel(\"Valor predicho\")\nplt.ylabel(\"Residuo\")\nplt.title(\"Residuos vs. valores predichos\")\nplt.show()\n\n\n\n\n\n\n\n\n\nUna gráfica de residuos puede revelar patrones que una métrica agregada no muestra.\n\n\n\n\n\n\nNotaLas métricas no sustituyen el diagnóstico\n\n\n\nDos modelos pueden tener valores similares de RMSE y, sin embargo, cometer errores de maneras diferentes.\nPor eso conviene complementar las métricas con visualizaciones y análisis del error.",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#dónde-se-equivoca-más-el-modelo",
+    "href": "parte11.html#dónde-se-equivoca-más-el-modelo",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.20 ¿Dónde se equivoca más el modelo?",
+    "text": "11.20 ¿Dónde se equivoca más el modelo?\nPodemos construir una tabla con las predicciones y sus errores.\n\n\nCódigo\ndiagnostico = X_test.copy()\n\ndiagnostico[\"y_real\"] = y_test\ndiagnostico[\"y_pred\"] = pred_gb_test\ndiagnostico[\"residuo\"] = (\n    diagnostico[\"y_real\"]\n    - diagnostico[\"y_pred\"]\n)\n\ndiagnostico[\"error_absoluto\"] = (\n    diagnostico[\"residuo\"].abs()\n)\n\n\nObservemos las predicciones con mayor error absoluto.\n\n\nCódigo\ndiagnostico.sort_values(\n    \"error_absoluto\",\n    ascending=False\n).head(10)\n\n\n\n\n\n\n\n\n\nMedInc\nHouseAge\nAveRooms\nAveBedrms\nPopulation\nAveOccup\nLatitude\nLongitude\ny_real\ny_pred\nresiduo\nerror_absoluto\n\n\n\n\n10574\n1.9659\n6.0\n4.795455\n1.159091\n125.0\n2.840909\n33.72\n-117.70\n5.00001\n1.707870\n3.292140\n3.292140\n\n\n19542\n1.7679\n39.0\n5.000000\n0.888889\n22.0\n2.444444\n37.63\n-120.92\n4.50000\n1.243524\n3.256476\n3.256476\n\n\n12069\n4.2386\n6.0\n7.723077\n1.169231\n228.0\n3.507692\n33.83\n-117.55\n5.00001\n1.909156\n3.090854\n3.090854\n\n\n12389\n3.7727\n24.0\n10.953586\n1.848101\n473.0\n1.995781\n33.75\n-116.43\n5.00001\n2.084833\n2.915177\n2.915177\n\n\n459\n1.1696\n52.0\n2.436000\n0.944000\n1349.0\n5.396000\n37.87\n-122.25\n5.00001\n2.280264\n2.719746\n2.719746\n\n\n20325\n4.5833\n21.0\n7.278431\n1.082353\n863.0\n3.384314\n34.28\n-119.04\n5.00001\n2.286901\n2.713109\n2.713109\n\n\n59\n2.5625\n2.0\n2.771930\n0.754386\n94.0\n1.649123\n37.82\n-122.29\n0.60000\n3.304656\n-2.704656\n2.704656\n\n\n5887\n2.3667\n39.0\n3.572464\n1.217391\n259.0\n1.876812\n34.15\n-118.33\n0.17500\n2.820821\n-2.645821\n2.645821\n\n\n20349\n7.3004\n32.0\n5.724138\n0.758621\n63.0\n2.172414\n34.17\n-119.08\n1.25000\n3.765107\n-2.515107\n2.515107\n\n\n4630\n2.3674\n20.0\n2.740554\n1.047859\n2919.0\n2.450882\n34.07\n-118.31\n5.00001\n2.561162\n2.438848\n2.438848\n\n\n\n\n\n\n\nEsto permite pasar de la pregunta\n\n¿Cuál es el RMSE?\n\na otra pregunta potencialmente más interesante:\n\n¿En qué observaciones se está equivocando el modelo?",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#error-y-localización-geográfica",
+    "href": "parte11.html#error-y-localización-geográfica",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.21 Error y localización geográfica",
+    "text": "11.21 Error y localización geográfica\nComo California Housing contiene coordenadas geográficas, podemos explorar espacialmente el error.\n\n\nCódigo\nplt.figure(figsize=(8, 6))\n\nplt.scatter(\n    diagnostico[\"Longitude\"],\n    diagnostico[\"Latitude\"],\n    c=diagnostico[\"error_absoluto\"],\n    s=10,\n    alpha=0.6\n)\n\nplt.xlabel(\"Longitude\")\nplt.ylabel(\"Latitude\")\nplt.title(\"Distribución geográfica del error absoluto\")\nplt.colorbar(label=\"Error absoluto\")\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAdvertencia🧠 Pregunta\n\n\n\n¿Los errores parecen distribuirse uniformemente? ¿Observas regiones donde el modelo parece tener mayores dificultades?\n\n\nEste tipo de análisis puede revelar estructura que una única métrica no muestra.",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#el-flujo-completo",
+    "href": "parte11.html#el-flujo-completo",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.22 El flujo completo",
+    "text": "11.22 El flujo completo\nYa podemos representar todo el procedimiento realizado durante las tres prácticas.\n\n11.22.1 Paso 1: separar los datos\n\\[\n\\mathcal{D}\n\\longrightarrow\n\\boxed{\n\\mathcal{D}_{\\text{train}}\n}\n+\n\\boxed{\n\\mathcal{D}_{\\text{test}}\n}.\n\\]\n\n\n11.22.2 Paso 2: trabajar solamente con train\nDentro de \\(\\mathcal{D}_{\\text{train}}\\) realizamos:\n\\[\n\\text{Cross-Validation}\n\\longrightarrow\n\\text{comparación}\n\\longrightarrow\n\\text{tuning}.\n\\]\n\n\n11.22.3 Paso 3: seleccionar hiperparámetros\nPor ejemplo:\n\\[\n\\boldsymbol{\\lambda}^{*}\n=\n\\arg\\min_{\\boldsymbol{\\lambda}}\n\\operatorname{RMSE}_{CV}(\\boldsymbol{\\lambda}).\n\\]\n\n\n11.22.4 Paso 4: refit\nEl procedimiento seleccionado se vuelve a entrenar utilizando todo\n\\[\n\\mathcal{D}_{\\text{train}}.\n\\]\n\n\n11.22.5 Paso 5: evaluación final\nFinalmente:\n\\[\n\\widehat f^{*}(X_{\\text{test}})\n\\]\npermite calcular\n\\[\n\\operatorname{MAE}_{test},\n\\qquad\n\\operatorname{RMSE}_{test},\n\\qquad\nR^2_{\\text{test}}.\n\\]\n\n\n\n\n\n\nTipLa idea central de la unidad\n\n\n\nEl objetivo no es encontrar el modelo que produzca el número más pequeño en una tabla.\nEl objetivo es construir un procedimiento de evaluación en el que cada conjunto de datos tenga una función clara y donde las decisiones de modelado no contaminen la evaluación final.",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#ejercicio-integrador",
+    "href": "parte11.html#ejercicio-integrador",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.23 Ejercicio integrador",
+    "text": "11.23 Ejercicio integrador\nAhora realizarás el mismo flujo utilizando XGBoost.\nImporta:\nfrom xgboost import XGBRegressor\nDefine inicialmente:\nxgb = XGBRegressor(\n    objective=\"reg:squarederror\",\n    random_state=42,\n    n_jobs=1\n)\nUtiliza el siguiente espacio:\nparam_xgb = {\n    \"n_estimators\": [100, 200, 300, 500],\n    \"learning_rate\": [0.01, 0.03, 0.05, 0.1],\n    \"max_depth\": [2, 3, 4, 5],\n    \"subsample\": [0.7, 0.8, 0.9, 1.0],\n    \"colsample_bytree\": [0.7, 0.8, 0.9, 1.0]\n}\nRealiza un RandomizedSearchCV con:\n\\[\n\\texttt{n\\_iter}=15\n\\]\ny\n\\[\n5\\text{-fold Cross-Validation}.\n\\]\nUtiliza como métrica principal:\nneg_root_mean_squared_error\nReporta:\n\nlos hiperparámetros seleccionados;\nel RMSE promedio de Cross-Validation;\nel tiempo utilizado por la búsqueda;\nMAE, RMSE y \\(R^2\\) sobre test;\nuna gráfica observado vs. predicho;\nuna gráfica de residuos.\n\nFinalmente responde:\n\n¿El desempeño sobre test fue consistente con el estimado mediante Cross-Validation?\n\n\n¿Qué información adicional obtuviste al observar los residuos que no era visible únicamente con RMSE?",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
+    ]
+  },
+  {
+    "objectID": "parte11.html#reto-adicional-clasificación",
+    "href": "parte11.html#reto-adicional-clasificación",
+    "title": "11  Evaluación y comparación de modelos",
+    "section": "11.24 Reto adicional: clasificación",
+    "text": "11.24 Reto adicional: clasificación\nHasta ahora toda nuestra práctica se ha desarrollado sobre un problema de regresión.\nSin embargo, el procedimiento general también puede utilizarse en clasificación.\nscikit-learn contiene el conjunto Breast Cancer Wisconsin.\nPuedes cargarlo mediante:\nfrom sklearn.datasets import load_breast_cancer\n\ncancer = load_breast_cancer(\n    as_frame=True\n)\n\nX_cancer = cancer.data\ny_cancer = cancer.target\nEn clasificación debemos reconsiderar algunos elementos.\nPor ejemplo, en lugar de KFold puede ser conveniente utilizar:\nfrom sklearn.model_selection import StratifiedKFold\ny nuestras métricas pueden incluir:\n\\[\n\\text{accuracy},\n\\qquad\n\\text{precision},\n\\qquad\n\\text{recall},\n\\qquad\nF_1,\n\\qquad\n\\text{ROC-AUC}.\n\\]\nPregunta\n¿Cómo modificarías el flujo utilizado en California Housing para resolver este problema de clasificación?\nNo es necesario implementar toda la búsqueda.\nIdentifica al menos:\n\nqué modelo utilizarías como baseline;\nqué estrategia de Cross-Validation utilizarías;\nqué métricas reportarías;\nqué modelos compararías;\nqué información reservarías hasta la evaluación final.",
+    "crumbs": [
+      "**Métodos de ensamble y optimización de modelos**",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>Evaluación y comparación de modelos</span>"
     ]
   }
 ]

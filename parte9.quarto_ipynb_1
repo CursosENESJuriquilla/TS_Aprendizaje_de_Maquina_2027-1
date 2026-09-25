@@ -1,0 +1,2021 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# Métodos modernos de Gradient Boosting\n",
+        "\n",
+        "Vamos a utilizar **Gradient Boosting** para resolver un problema de regresión.\n",
+        "\n",
+        "Intentaremos:\n",
+        "\n",
+        "- implementar un modelo de Gradient Boosting con `scikit-learn`;\n",
+        "- interpretar los hiperparámetros `n_estimators`, `learning_rate` y `max_depth`;\n",
+        "- estudiar cómo cambia el desempeño al modificar estos hiperparámetros;\n",
+        "- visualizar cómo evoluciona el error conforme se agregan árboles al ensamble;\n",
+        "- reconocer la relación entre el *learning rate* y el número de árboles.\n",
+        "\n",
+        "Después utilizaremos estos resultados para introducir métodos modernos como **XGBoost**.\n",
+        "\n",
+        "\n",
+        "::::: diapositivas\n",
+        "::: diapositivas-title\n",
+        "📝 **Diapositivas**\n",
+        ":::\n",
+        "\n",
+        "::: diapositivas-body\n",
+        "[Ver diapositivas Métodos Modernos de Gradient Boosting](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/3.1_Metodos_XGBoost.pdf)\n",
+        ":::\n",
+        ":::::\n",
+        "\n",
+        "## Datos: California Housing\n",
+        "\n",
+        "Utilizaremos el conjunto de datos **California Housing**, disponible directamente en `scikit-learn`.\n",
+        "\n",
+        "Este conjunto contiene información obtenida a partir del censo de California. Nuestro objetivo será predecir el valor mediano de las viviendas a partir de características relacionadas con los hogares y su ubicación geográfica.\n",
+        "\n",
+        "Importamos primero las bibliotecas necesarias."
+      ],
+      "id": "b054a287"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "\n",
+        "from sklearn.datasets import fetch_california_housing\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.metrics import mean_squared_error, mean_absolute_error\n",
+        "from sklearn.ensemble import GradientBoostingRegressor\n",
+        "from sklearn.dummy import DummyRegressor"
+      ],
+      "id": "97a948b1",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Cargamos los datos utilizando la opción `as_frame=True` para obtener directamente objetos de `pandas`."
+      ],
+      "id": "1c7a5184"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "housing = fetch_california_housing(as_frame=True)\n",
+        "\n",
+        "X = housing.data\n",
+        "y = housing.target"
+      ],
+      "id": "f20d40c8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Veamos las primeras observaciones."
+      ],
+      "id": "5fb09966"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X.head()"
+      ],
+      "id": "26132595",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "La matriz de características contiene las siguientes variables:"
+      ],
+      "id": "d6ae709f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X.columns"
+      ],
+      "id": "93fcfdd7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos consultar también la descripción incluida en `scikit-learn`."
+      ],
+      "id": "757ec119"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "print(housing.DESCR)"
+      ],
+      "id": "a32856ca",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "La variable respuesta corresponde al valor mediano de las viviendas, expresado en unidades de **100,000 dólares**.\n",
+        "\n",
+        "Por ejemplo, un valor de $y=2.5$ corresponde aproximadamente a un valor mediano de vivienda de $250\\,000$ dólares.\n",
+        "\n",
+        "\n",
+        "Antes de construir cualquier modelo, revisemos el tamaño de nuestros datos."
+      ],
+      "id": "887ae128"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "print(\"Número de observaciones:\", X.shape[0])\n",
+        "print(\"Número de características:\", X.shape[1])"
+      ],
+      "id": "bc73aa3e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "También podemos revisar si existen valores faltantes."
+      ],
+      "id": "5f8e421f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X.isna().sum()"
+      ],
+      "id": "5e5776ca",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "En este conjunto no necesitamos realizar una limpieza compleja.\n",
+        "\n",
+        "Veamos algunos estadísticos descriptivos."
+      ],
+      "id": "177e505b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X.describe().T"
+      ],
+      "id": "bdec1143",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "También podemos examinar la distribución de la variable respuesta."
+      ],
+      "id": "2915c1e9"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(7, 4))\n",
+        "plt.hist(y, bins=30)\n",
+        "plt.xlabel(\"Valor mediano de la vivienda\")\n",
+        "plt.ylabel(\"Frecuencia\")\n",
+        "plt.title(\"Distribución de la variable respuesta\")\n",
+        "plt.show()"
+      ],
+      "id": "dbfd4b99",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿La variable respuesta parece simétrica?  \n",
+        "¿Observas algún comportamiento particular en los valores más altos?\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Solución\n",
+        "\n",
+        "\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "\n",
+        "\n",
+        "Este conjunto contiene dos variables especialmente interesantes:\n",
+        "\n",
+        "- `Latitude`\n",
+        "- `Longitude`\n",
+        "\n",
+        "que permiten visualizar aproximadamente la distribución espacial de las observaciones.\n"
+      ],
+      "id": "c3c49bfe"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(8, 6))\n",
+        "\n",
+        "plt.scatter(\n",
+        "    X[\"Longitude\"],\n",
+        "    X[\"Latitude\"],\n",
+        "    c=y,\n",
+        "    s=8,\n",
+        "    alpha=0.5\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Longitude\")\n",
+        "plt.ylabel(\"Latitude\")\n",
+        "plt.title(\"Distribución geográfica de las observaciones\")\n",
+        "plt.colorbar(label=\"Valor mediano de la vivienda\")\n",
+        "plt.show()"
+      ],
+      "id": "89e08fa2",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "La localización contiene información potencialmente importante para predecir el valor de las viviendas.\n",
+        "\n",
+        "\n",
+        "## Separación de los datos\n",
+        "\n",
+        "Antes de comenzar a probar modelos, reservaremos una parte de los datos para realizar una evaluación final.\n",
+        "\n",
+        "Utilizaremos $80\\%$ de las observaciones para entrenamiento y reservaremos el $20\\%$ restante para prueba."
+      ],
+      "id": "eb3c5873"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_train, X_test, y_train, y_test = train_test_split(\n",
+        "    X,\n",
+        "    y,\n",
+        "    test_size=0.20,\n",
+        "    random_state=42\n",
+        ")"
+      ],
+      "id": "2689f7ee",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Revisemos las dimensiones."
+      ],
+      "id": "8e8de7d8"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "print(\"X_train:\", X_train.shape)\n",
+        "print(\"X_test: \", X_test.shape)"
+      ],
+      "id": "1c7b6806",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.callout-important}\n",
+        "## El conjunto de prueba se reserva\n",
+        "\n",
+        "A partir de este momento trabajaremos principalmente con `X_train` y `y_train`.\n",
+        "\n",
+        "El conjunto de prueba representa datos que el modelo no debe utilizar durante el proceso de entrenamiento y selección.\n",
+        "\n",
+        "En las siguientes clases veremos con mayor detalle cómo utilizar **Cross-Validation** para realizar esta selección correctamente.\n",
+        ":::\n",
+        "\n",
+        "## Una referencia inicial: DummyRegressor\n",
+        "\n",
+        "Antes de utilizar un modelo más complejo necesitamos una referencia.\n",
+        "\n",
+        "Un modelo complicado no es necesariamente útil simplemente porque produce predicciones. Debemos preguntarnos si logra mejorar una estrategia extremadamente sencilla.\n",
+        "\n",
+        "Utilizaremos `DummyRegressor`, que puede predecir siempre la media de la variable respuesta."
+      ],
+      "id": "e4c389a5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "dummy = DummyRegressor(strategy=\"mean\")\n",
+        "\n",
+        "dummy.fit(X_train, y_train)"
+      ],
+      "id": "466829bc",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Generamos las predicciones sobre el conjunto de entrenamiento."
+      ],
+      "id": "8b3019b0"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "y_pred_dummy = dummy.predict(X_train)"
+      ],
+      "id": "1675a403",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Calculamos MAE y RMSE.\n",
+        "\n",
+        "Recordemos que\n",
+        "\n",
+        "$$\n",
+        "\\operatorname{MAE}\n",
+        "=\n",
+        "\\frac{1}{n}\n",
+        "\\sum_{i=1}^{n}\n",
+        "|y_i-\\widehat y_i|,\n",
+        "$$\n",
+        "\n",
+        "mientras que\n",
+        "\n",
+        "$$\n",
+        "\\operatorname{RMSE}\n",
+        "=\n",
+        "\\sqrt{\n",
+        "\\frac{1}{n}\n",
+        "\\sum_{i=1}^{n}\n",
+        "(y_i-\\widehat y_i)^2\n",
+        "}.\n",
+        "$$"
+      ],
+      "id": "0f9a95d5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "mae_dummy = mean_absolute_error(y_train, y_pred_dummy)\n",
+        "rmse_dummy = np.sqrt(\n",
+        "    mean_squared_error(y_train, y_pred_dummy)\n",
+        ")\n",
+        "\n",
+        "print(f\"MAE:  {mae_dummy:.4f}\")\n",
+        "print(f\"RMSE: {rmse_dummy:.4f}\")"
+      ],
+      "id": "ed930cd1",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Estos valores constituyen una **baseline** muy sencilla.\n",
+        "\n",
+        "Nuestro Gradient Boosting debería ser capaz de mejorar claramente esta referencia.\n",
+        "\n",
+        "## Nuestro primer Gradient Boosting\n",
+        "\n",
+        "Construyamos ahora un modelo de Gradient Boosting.\n",
+        "\n",
+        "Comenzaremos con una configuración sencilla:"
+      ],
+      "id": "627f6d68"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gbr = GradientBoostingRegressor(\n",
+        "    n_estimators=100,\n",
+        "    learning_rate=0.1,\n",
+        "    max_depth=2,\n",
+        "    random_state=42\n",
+        ")"
+      ],
+      "id": "2f95d36c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Recordemos el significado de estos tres hiperparámetros:\n",
+        "\n",
+        "| Hiperparámetro | Interpretación |\n",
+        "|---|---|\n",
+        "| `n_estimators` | Número de árboles construidos secuencialmente |\n",
+        "| `learning_rate` | Magnitud de la contribución de cada nuevo árbol |\n",
+        "| `max_depth` | Profundidad máxima de cada árbol |\n",
+        "\n",
+        "Entrenamos el modelo."
+      ],
+      "id": "53b2170b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gbr.fit(X_train, y_train)"
+      ],
+      "id": "ba08b5cb",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Y obtenemos las predicciones."
+      ],
+      "id": "b867c312"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "y_pred_train = gbr.predict(X_train)"
+      ],
+      "id": "3359985f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Calculamos nuevamente MAE y RMSE."
+      ],
+      "id": "baa8bf8b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "mae_gbr = mean_absolute_error(y_train, y_pred_train)\n",
+        "\n",
+        "rmse_gbr = np.sqrt(\n",
+        "    mean_squared_error(y_train, y_pred_train)\n",
+        ")\n",
+        "\n",
+        "print(f\"MAE:  {mae_gbr:.4f}\")\n",
+        "print(f\"RMSE: {rmse_gbr:.4f}\")"
+      ],
+      "id": "9d590056",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Comparemos con nuestra baseline."
+      ],
+      "id": "ef9e235d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "resultados = pd.DataFrame({\n",
+        "    \"Modelo\": [\"Dummy\", \"Gradient Boosting\"],\n",
+        "    \"MAE\": [mae_dummy, mae_gbr],\n",
+        "    \"RMSE\": [rmse_dummy, rmse_gbr]\n",
+        "})\n",
+        "\n",
+        "resultados"
+      ],
+      "id": "d6b4651f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.callout-note}\n",
+        "## Cuidado con la interpretación\n",
+        "\n",
+        "Por ahora estamos comparando el desempeño sobre los **datos de entrenamiento**.\n",
+        "\n",
+        "Un menor error de entrenamiento no garantiza que el modelo generalice mejor.\n",
+        "\n",
+        "En la siguiente clase utilizaremos Cross-Validation para realizar una comparación mucho más adecuada.\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "## ¿Cómo aprende el ensamble?\n",
+        "\n",
+        "Una ventaja de `GradientBoostingRegressor` es que podemos observar las predicciones después de cada etapa del ensamble.\n",
+        "\n",
+        "Nuestro modelo contiene $100$ árboles:"
+      ],
+      "id": "3a4c71bf"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gbr.n_estimators"
+      ],
+      "id": "539c6008",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Con `staged_predict()` podemos obtener las predicciones después de utilizar:\n",
+        "\n",
+        "$$\n",
+        "1,2,3,\\ldots,100\n",
+        "$$\n",
+        "\n",
+        "árboles.\n",
+        "\n",
+        "Calcularemos el RMSE después de cada etapa."
+      ],
+      "id": "3f848600"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "errores_train = []\n",
+        "\n",
+        "for y_pred in gbr.staged_predict(X_train):\n",
+        "    rmse = np.sqrt(\n",
+        "        mean_squared_error(y_train, y_pred)\n",
+        "    )\n",
+        "    errores_train.append(rmse)"
+      ],
+      "id": "f7ed2128",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora graficamos el error."
+      ],
+      "id": "099ee8d4"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(8, 5))\n",
+        "\n",
+        "plt.plot(\n",
+        "    range(1, len(errores_train) + 1),\n",
+        "    errores_train\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Número de árboles\")\n",
+        "plt.ylabel(\"RMSE de entrenamiento\")\n",
+        "plt.title(\"Evolución del error durante Gradient Boosting\")\n",
+        "plt.show()"
+      ],
+      "id": "22221adc",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "¿Qué observamos?\n",
+        "\n",
+        "A medida que agregamos árboles, el ensamble intenta corregir los errores de los modelos anteriores.\n",
+        "\n",
+        "En términos generales, el modelo después de $m$ iteraciones tiene la forma\n",
+        "\n",
+        "$$\n",
+        "F_m(\\mathbf{x})\n",
+        "=\n",
+        "F_{m-1}(\\mathbf{x})\n",
+        "+\n",
+        "\\eta h_m(\\mathbf{x}),\n",
+        "$$\n",
+        "\n",
+        "donde $h_m(\\mathbf{x})$ representa la corrección aprendida por el nuevo árbol y $\\eta$ es el *learning rate*.\n",
+        "\n",
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿El error de entrenamiento aumenta o disminuye al agregar árboles? ¿Significa esto que siempre debemos utilizar tantos árboles como sea posible?\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Solución\n",
+        "\n",
+        "\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "\n",
+        "La segunda pregunta es especialmente importante. El comportamiento sobre entrenamiento no es suficiente para decidir cuántos árboles necesitamos.\n",
+        "\n",
+        "## Learning rate\n",
+        "\n",
+        "El hiperparámetro `learning_rate` controla cuánto contribuye cada nuevo árbol al ensamble.\n",
+        "\n",
+        "La actualización es\n",
+        "\n",
+        "$$\n",
+        "F_m(\\mathbf{x})\n",
+        "=\n",
+        "F_{m-1}(\\mathbf{x})\n",
+        "+\n",
+        "\\eta h_m(\\mathbf{x}).\n",
+        "$$\n",
+        "\n",
+        "Si $\\eta$ es grande, cada árbol puede producir una corrección importante.\n",
+        "\n",
+        "Si $\\eta$ es pequeño, las correcciones son más conservadoras.\n",
+        "\n",
+        "Comparemos tres valores:\n",
+        "\n",
+        "$$\n",
+        "\\eta\\in\\{1,\\;0.1,\\;0.01\\}.\n",
+        "$$\n",
+        "\n",
+        "Mantendremos inicialmente el mismo número de árboles."
+      ],
+      "id": "c675f53b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "learning_rates = [1.0, 0.1, 0.01]\n",
+        "\n",
+        "modelos_lr = {}\n",
+        "\n",
+        "for lr in learning_rates:\n",
+        "    \n",
+        "    modelo = GradientBoostingRegressor(\n",
+        "        n_estimators=100,\n",
+        "        learning_rate=lr,\n",
+        "        max_depth=2,\n",
+        "        random_state=42\n",
+        "    )\n",
+        "    \n",
+        "    modelo.fit(X_train, y_train)\n",
+        "    \n",
+        "    modelos_lr[lr] = modelo"
+      ],
+      "id": "710d05a6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Calculemos el RMSE de entrenamiento."
+      ],
+      "id": "02278f25"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "resultados_lr = []\n",
+        "\n",
+        "for lr, modelo in modelos_lr.items():\n",
+        "    \n",
+        "    pred = modelo.predict(X_train)\n",
+        "    \n",
+        "    rmse = np.sqrt(\n",
+        "        mean_squared_error(y_train, pred)\n",
+        "    )\n",
+        "    \n",
+        "    resultados_lr.append({\n",
+        "        \"learning_rate\": lr,\n",
+        "        \"RMSE_train\": rmse\n",
+        "    })\n",
+        "\n",
+        "pd.DataFrame(resultados_lr)"
+      ],
+      "id": "10170951",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Pero resulta más interesante observar cómo evoluciona el error."
+      ],
+      "id": "d83bf768"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(8, 5))\n",
+        "\n",
+        "for lr, modelo in modelos_lr.items():\n",
+        "    \n",
+        "    errores = []\n",
+        "    \n",
+        "    for pred in modelo.staged_predict(X_train):\n",
+        "        rmse = np.sqrt(\n",
+        "            mean_squared_error(y_train, pred)\n",
+        "        )\n",
+        "        errores.append(rmse)\n",
+        "    \n",
+        "    plt.plot(\n",
+        "        range(1, len(errores) + 1),\n",
+        "        errores,\n",
+        "        label=f\"learning_rate = {lr}\"\n",
+        "    )\n",
+        "\n",
+        "plt.xlabel(\"Número de árboles\")\n",
+        "plt.ylabel(\"RMSE de entrenamiento\")\n",
+        "plt.title(\"Efecto del learning rate\")\n",
+        "plt.legend()\n",
+        "plt.show()"
+      ],
+      "id": "a7f1ae72",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.callout-tip}\n",
+        "## Learning rate y número de árboles\n",
+        "\n",
+        "Un `learning_rate` pequeño no significa necesariamente un peor modelo.\n",
+        "\n",
+        "Significa que cada árbol contribuye menos y, por lo tanto, generalmente necesitaremos **más árboles**.\n",
+        "\n",
+        "Podemos pensar en la relación\n",
+        "\n",
+        "$$\n",
+        "\\text{learning rate pequeño}\n",
+        "\\quad\\longrightarrow\\quad\n",
+        "\\text{más árboles}.\n",
+        "$$\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "## Interacción entre learning rate y número de árboles\n",
+        "\n",
+        "Hasta ahora fijamos\n",
+        "\n",
+        "```text\n",
+        "n_estimators = 100\n",
+        "```\n",
+        "\n",
+        "para todos los modelos.\n",
+        "\n",
+        "Esto puede ser injusto para un modelo con `learning_rate=0.01`, ya que sus correcciones son mucho más pequeñas.\n",
+        "\n",
+        "Comparemos diferentes combinaciones."
+      ],
+      "id": "774bcd83"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "configuraciones = [\n",
+        "    (1.0, 50),\n",
+        "    (0.1, 100),\n",
+        "    (0.05, 200),\n",
+        "    (0.01, 500)\n",
+        "]\n",
+        "\n",
+        "resultados = []\n",
+        "\n",
+        "for lr, n_arboles in configuraciones:\n",
+        "    \n",
+        "    modelo = GradientBoostingRegressor(\n",
+        "        n_estimators=n_arboles,\n",
+        "        learning_rate=lr,\n",
+        "        max_depth=2,\n",
+        "        random_state=42\n",
+        "    )\n",
+        "    \n",
+        "    modelo.fit(X_train, y_train)\n",
+        "    \n",
+        "    pred = modelo.predict(X_train)\n",
+        "    \n",
+        "    rmse = np.sqrt(\n",
+        "        mean_squared_error(y_train, pred)\n",
+        "    )\n",
+        "    \n",
+        "    resultados.append({\n",
+        "        \"learning_rate\": lr,\n",
+        "        \"n_estimators\": n_arboles,\n",
+        "        \"RMSE_train\": rmse\n",
+        "    })\n",
+        "\n",
+        "pd.DataFrame(resultados)"
+      ],
+      "id": "fd5028bc",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Esto muestra una característica importante de los hiperparámetros:\n",
+        "\n",
+        "::: {.callout-important}\n",
+        "## Los hiperparámetros interactúan\n",
+        "\n",
+        "No tiene mucho sentido buscar el ``mejor `learning_rate`'' de manera completamente independiente del número de árboles.\n",
+        "\n",
+        "Los hiperparámetros pueden **interactuar entre sí**.\n",
+        "\n",
+        "Esta observación será fundamental cuando estudiemos Grid Search y Random Search.\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "\n",
+        "## Complejidad de los árboles\n",
+        "\n",
+        "También podemos modificar la complejidad de cada árbol.\n",
+        "\n",
+        "En este caso utilizaremos `max_depth`.\n",
+        "\n",
+        "Comparemos:\n",
+        "\n",
+        "$$\n",
+        "\\texttt{max\\_depth}\\in\\{1,2,3,5\\}.\n",
+        "$$"
+      ],
+      "id": "859e1555"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "profundidades = [1, 2, 3, 5]\n",
+        "\n",
+        "resultados_depth = []\n",
+        "\n",
+        "for depth in profundidades:\n",
+        "    \n",
+        "    modelo = GradientBoostingRegressor(\n",
+        "        n_estimators=100,\n",
+        "        learning_rate=0.1,\n",
+        "        max_depth=depth,\n",
+        "        random_state=42\n",
+        "    )\n",
+        "    \n",
+        "    modelo.fit(X_train, y_train)\n",
+        "    \n",
+        "    pred = modelo.predict(X_train)\n",
+        "    \n",
+        "    rmse = np.sqrt(\n",
+        "        mean_squared_error(y_train, pred)\n",
+        "    )\n",
+        "    \n",
+        "    resultados_depth.append({\n",
+        "        \"max_depth\": depth,\n",
+        "        \"RMSE_train\": rmse\n",
+        "    })\n",
+        "\n",
+        "pd.DataFrame(resultados_depth)"
+      ],
+      "id": "a3381922",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos visualizar los resultados."
+      ],
+      "id": "cab3b1d9"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "df_depth = pd.DataFrame(resultados_depth)\n",
+        "\n",
+        "plt.figure(figsize=(7, 4))\n",
+        "\n",
+        "plt.plot(\n",
+        "    df_depth[\"max_depth\"],\n",
+        "    df_depth[\"RMSE_train\"],\n",
+        "    marker=\"o\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"max_depth\")\n",
+        "plt.ylabel(\"RMSE de entrenamiento\")\n",
+        "plt.title(\"Complejidad de los árboles\")\n",
+        "plt.show()"
+      ],
+      "id": "11dd8b3c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿Qué ocurre con el error de entrenamiento cuando aumentamos `max_depth`?\n",
+        "¿Podemos concluir a partir de esta gráfica que debemos utilizar el árbol más profundo?\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Solución\n",
+        "\n",
+        "\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "Nuevamente, la respuesta es **no**.\n",
+        "\n",
+        "Un modelo más complejo puede disminuir el error de entrenamiento simplemente porque tiene mayor capacidad para ajustarse a los datos.\n",
+        "\n",
+        "Para decidir si esa complejidad realmente mejora la capacidad de generalización necesitamos evaluar el modelo sobre observaciones que no hayan participado en su entrenamiento.\n",
+        "\n",
+        "\n",
+        "\n",
+        "Hasta ahora, hemos construido un modelo de Gradient Boosting y modificado manualmente tres de sus hiperparámetros principales:\n",
+        "\n",
+        "$$\n",
+        "\\boxed{\n",
+        "\\texttt{learning\\_rate},\n",
+        "\\qquad\n",
+        "\\texttt{n\\_estimators},\n",
+        "\\qquad\n",
+        "\\texttt{max\\_depth}\n",
+        "}\n",
+        "$$\n",
+        "\n",
+        "Observamos que:\n",
+        "\n",
+        "1. agregar árboles permite realizar correcciones sucesivas;\n",
+        "2. el `learning_rate` controla la magnitud de estas correcciones;\n",
+        "3. un `learning_rate` pequeño suele requerir un mayor número de árboles;\n",
+        "4. árboles más profundos aumentan la capacidad del modelo;\n",
+        "5. los hiperparámetros interactúan entre sí;\n",
+        "6. el error de entrenamiento no es suficiente para decidir qué configuración utilizar.\n",
+        "\n",
+        "Esto nos deja con dos preguntas:\n",
+        "\n",
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "1) ¿Cómo sabemos cuándo dejar de agregar árboles?\n",
+        "\n",
+        "2) ¿Cómo sabemos si una configuración realmente generaliza mejor?\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Solución\n",
+        "\n",
+        "\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "\n",
+        "\n",
+        "Vamos a ver ahora **early stopping** y utilizaremos un conjunto de validación para observar qué ocurre con el error fuera de los datos utilizados para entrenar.\n",
+        "\n",
+        "\n",
+        "## Entrenamiento y validación\n",
+        "\n",
+        "Hasta ahora hemos evaluado las diferentes configuraciones utilizando el error de entrenamiento.\n",
+        "\n",
+        "Esto nos permitió estudiar cómo cambia la capacidad del modelo, pero no nos permite responder una pregunta fundamental:\n",
+        "\n",
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "¿Agregar más árboles realmente mejora las predicciones sobre datos que el modelo no utilizó para entrenarse?\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Solución\n",
+        "\n",
+        "\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "\n",
+        "Para explorar esta pregunta dividiremos **temporalmente** nuestro conjunto de entrenamiento en dos partes:\n",
+        "\n",
+        "- un conjunto para entrenar los modelos;\n",
+        "- un conjunto de validación para observar su comportamiento sobre datos no utilizados durante el ajuste.\n",
+        "\n",
+        "El conjunto `X_test` que separamos al inicio continuará reservado."
+      ],
+      "id": "dd85fdb5"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "X_train_gb, X_val, y_train_gb, y_val = train_test_split(\n",
+        "    X_train,\n",
+        "    y_train,\n",
+        "    test_size=0.20,\n",
+        "    random_state=42\n",
+        ")\n",
+        "\n",
+        "print(\"Entrenamiento:\", X_train_gb.shape)\n",
+        "print(\"Validación:   \", X_val.shape)\n",
+        "print(\"Test:         \", X_test.shape)"
+      ],
+      "id": "722387fe",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Por ahora nuestro esquema es\n",
+        "\n",
+        "$$\n",
+        "\\text{Datos}\n",
+        "\\longrightarrow\n",
+        "\\begin{cases}\n",
+        "\\text{Train} \\\\\n",
+        "\\text{Test reservado}\n",
+        "\\end{cases}\n",
+        "$$\n",
+        "\n",
+        "y dentro del conjunto de entrenamiento hemos creado\n",
+        "\n",
+        "$$\n",
+        "\\text{Train}\n",
+        "\\longrightarrow\n",
+        "\\begin{cases}\n",
+        "\\text{Train GB}\\\\\n",
+        "\\text{Validation}\n",
+        "\\end{cases}.\n",
+        "$$\n",
+        "\n",
+        "::: {.callout-note}\n",
+        "## ¿Por qué hacemos otra división?\n",
+        "\n",
+        "Esta división nos servirá únicamente para introducir la idea de validación y estudiar el número de árboles.\n",
+        "\n",
+        "Después veremos una estrategia más robusta: **Cross-Validation**, donde no dependeremos de una única partición train--validation.\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "## Error de entrenamiento vs. error de validación\n",
+        "\n",
+        "Entrenemos ahora un Gradient Boosting con un número relativamente grande de árboles."
+      ],
+      "id": "e2da2138"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gbr_long = GradientBoostingRegressor(\n",
+        "    n_estimators=500,\n",
+        "    learning_rate=0.1,\n",
+        "    max_depth=2,\n",
+        "    random_state=42\n",
+        ")\n",
+        "\n",
+        "gbr_long.fit(X_train_gb, y_train_gb)"
+      ],
+      "id": "d5b497ed",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Utilizaremos `staged_predict()` para calcular las predicciones después de cada árbol.\n",
+        "\n",
+        "Primero calculamos el RMSE sobre entrenamiento y validación."
+      ],
+      "id": "4aeb1cea"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "rmse_train = []\n",
+        "rmse_val = []\n",
+        "\n",
+        "for pred_train, pred_val in zip(\n",
+        "    gbr_long.staged_predict(X_train_gb),\n",
+        "    gbr_long.staged_predict(X_val)\n",
+        "):\n",
+        "    \n",
+        "    rmse_train.append(\n",
+        "        np.sqrt(\n",
+        "            mean_squared_error(y_train_gb, pred_train)\n",
+        "        )\n",
+        "    )\n",
+        "    \n",
+        "    rmse_val.append(\n",
+        "        np.sqrt(\n",
+        "            mean_squared_error(y_val, pred_val)\n",
+        "        )\n",
+        "    )"
+      ],
+      "id": "5b3b0e6e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora podemos visualizar ambas curvas."
+      ],
+      "id": "791ef1ce"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 5))\n",
+        "\n",
+        "plt.plot(\n",
+        "    range(1, len(rmse_train) + 1),\n",
+        "    rmse_train,\n",
+        "    label=\"Entrenamiento\"\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    range(1, len(rmse_val) + 1),\n",
+        "    rmse_val,\n",
+        "    label=\"Validación\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Número de árboles\")\n",
+        "plt.ylabel(\"RMSE\")\n",
+        "plt.title(\"Error de entrenamiento y validación\")\n",
+        "plt.legend()\n",
+        "plt.show()"
+      ],
+      "id": "7ba18c4d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Esta gráfica contiene mucha más información que la curva de entrenamiento que observamos anteriormente.\n",
+        "\n",
+        "El error de entrenamiento puede continuar disminuyendo conforme aumenta el número de árboles. Sin embargo, el error de validación no necesariamente seguirá el mismo comportamiento.\n",
+        "\n",
+        ":::: {.callout-warning icon=\"false\"}\n",
+        "## 🧠 Pregunta\n",
+        "\n",
+        "Observenm la gráfica:\n",
+        "\n",
+        "1. ¿El RMSE de entrenamiento continúa disminuyendo?\n",
+        "\n",
+        "2. ¿El RMSE de validación se comporta de la misma manera?\n",
+        "\n",
+        "3. ¿Existe un punto a partir del cual agregar árboles produce mejoras muy pequeñas?\n",
+        "\n",
+        "4. ¿Observas evidencia de sobreajuste?\n",
+        "\n",
+        "\n",
+        "::: {.callout-tip collapse=\"true\" icon=\"false\"}\n",
+        "## Solución\n",
+        "\n",
+        "\n",
+        ":::\n",
+        "::::\n",
+        "\n",
+        "\n",
+        "## ¿Cuál fue el mejor número de árboles?\n",
+        "\n",
+        "Podemos encontrar la etapa que produjo el menor RMSE de validación."
+      ],
+      "id": "562aabfb"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "best_n_estimators = np.argmin(rmse_val) + 1\n",
+        "best_rmse_val = np.min(rmse_val)\n",
+        "\n",
+        "print(\"Mejor número de árboles:\", best_n_estimators)\n",
+        "print(f\"Mejor RMSE de validación: {best_rmse_val:.4f}\")"
+      ],
+      "id": "5919e94c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "¿Por qué agregamos `+1`?\n",
+        "\n",
+        "`np.argmin()` devuelve la posición del valor mínimo comenzando desde cero.\n",
+        "\n",
+        "Por ejemplo, si\n",
+        "\n",
+        "```text\n",
+        "np.argmin(rmse_val) = 137\n",
+        "```\n",
+        "\n",
+        "el valor corresponde al árbol\n",
+        "\n",
+        "$$\n",
+        "137+1=138.\n",
+        "$$\n",
+        "\n",
+        "Podemos marcar este punto en la gráfica."
+      ],
+      "id": "058046cd"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(9, 5))\n",
+        "\n",
+        "plt.plot(\n",
+        "    range(1, len(rmse_train) + 1),\n",
+        "    rmse_train,\n",
+        "    label=\"Entrenamiento\"\n",
+        ")\n",
+        "\n",
+        "plt.plot(\n",
+        "    range(1, len(rmse_val) + 1),\n",
+        "    rmse_val,\n",
+        "    label=\"Validación\"\n",
+        ")\n",
+        "\n",
+        "plt.axvline(\n",
+        "    best_n_estimators,\n",
+        "    linestyle=\"--\",\n",
+        "    label=f\"Mejor iteración = {best_n_estimators}\"\n",
+        ")\n",
+        "\n",
+        "plt.xlabel(\"Número de árboles\")\n",
+        "plt.ylabel(\"RMSE\")\n",
+        "plt.title(\"Selección del número de árboles\")\n",
+        "plt.legend()\n",
+        "plt.show()"
+      ],
+      "id": "3c81a2db",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "El número\n",
+        "\n",
+        "$$\n",
+        "m^*\n",
+        "=\n",
+        "\\arg\\min_m\n",
+        "\\operatorname{RMSE}_{val}(m)\n",
+        "$$\n",
+        "\n",
+        "nos proporciona una posible elección del número de árboles.\n",
+        "\n",
+        "::: {.callout-important}\n",
+        "## Una diferencia fundamental\n",
+        "\n",
+        "El número de árboles que minimiza el **error de entrenamiento** no es necesariamente el que produce el mejor comportamiento sobre datos nuevos.\n",
+        "\n",
+        "Por esta razón necesitamos alguna forma de validación.\n",
+        ":::\n",
+        "\n",
+        "## Early stopping\n",
+        "\n",
+        "La idea anterior conduce al concepto de **early stopping**.\n",
+        "\n",
+        "En lugar de continuar agregando árboles indefinidamente, podemos detener el entrenamiento cuando el desempeño sobre validación deja de mejorar.\n",
+        "\n",
+        "Conceptualmente buscamos una iteración $m^*$ tal que\n",
+        "\n",
+        "$$\n",
+        "m^*\n",
+        "=\n",
+        "\\arg\\min_m\n",
+        "L_{\\mathrm{val}}(F_m).\n",
+        "$$\n",
+        "\n",
+        "Una forma sencilla de hacerlo es:\n",
+        "\n",
+        "1. entrenar un número grande de árboles;\n",
+        "2. observar el desempeño de validación en cada etapa;\n",
+        "3. identificar el número adecuado de árboles;\n",
+        "4. entrenar el modelo final utilizando ese número.\n",
+        "\n",
+        "Por ejemplo:"
+      ],
+      "id": "447084cd"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gbr_early = GradientBoostingRegressor(\n",
+        "    n_estimators=best_n_estimators,\n",
+        "    learning_rate=0.1,\n",
+        "    max_depth=2,\n",
+        "    random_state=42\n",
+        ")\n",
+        "\n",
+        "gbr_early.fit(X_train_gb, y_train_gb)"
+      ],
+      "id": "8059968d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Evaluamos sobre validación:"
+      ],
+      "id": "1112741d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pred_val = gbr_early.predict(X_val)\n",
+        "\n",
+        "rmse_early = np.sqrt(\n",
+        "    mean_squared_error(y_val, pred_val)\n",
+        ")\n",
+        "\n",
+        "print(f\"RMSE de validación: {rmse_early:.4f}\")"
+      ],
+      "id": "3fe2dc6a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.callout-tip}\n",
+        "## Early stopping\n",
+        "\n",
+        "La idea no es que exista un número universal de árboles adecuado.\n",
+        "\n",
+        "El objetivo es evitar seguir aumentando la complejidad del ensamble cuando las nuevas iteraciones ya no producen una mejora útil sobre datos de validación.\n",
+        ":::\n",
+        "\n",
+        "### Early stopping automático en Scikit-Learn\n",
+        "\n",
+        "`GradientBoostingRegressor` también permite utilizar una fracción de los datos de entrenamiento para detener automáticamente el proceso.\n",
+        "\n",
+        "Por ejemplo:"
+      ],
+      "id": "4243680d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gbr_auto = GradientBoostingRegressor(\n",
+        "    n_estimators=1000,\n",
+        "    learning_rate=0.1,\n",
+        "    max_depth=2,\n",
+        "    validation_fraction=0.1,\n",
+        "    n_iter_no_change=10,\n",
+        "    tol=1e-4,\n",
+        "    random_state=42\n",
+        ")\n",
+        "\n",
+        "gbr_auto.fit(X_train, y_train)"
+      ],
+      "id": "fb25dc5c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos consultar cuántos árboles fueron construidos realmente:"
+      ],
+      "id": "3b36ceae"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gbr_auto.n_estimators_"
+      ],
+      "id": "371cd170",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Aquí:\n",
+        "\n",
+        "- `validation_fraction=0.1` reserva una fracción de los datos para validación;\n",
+        "- `n_iter_no_change=10` permite detener el entrenamiento si no se observa una mejora suficiente durante varias iteraciones consecutivas;\n",
+        "- `tol=1e-4` establece la tolerancia utilizada para determinar si existe una mejora.\n",
+        "\n",
+        "::: {.callout-note}\n",
+        "Primero construimos el procedimiento manual porque permite **visualizar qué significa early stopping**.\n",
+        "\n",
+        "En aplicaciones reales podemos utilizar mecanismos automáticos cuando estén disponibles.\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "## Stochastic Gradient Boosting\n",
+        "\n",
+        "Hasta ahora cada árbol ha utilizado todas las observaciones disponibles para su entrenamiento.\n",
+        "\n",
+        "También podemos hacer que cada árbol utilice solamente una fracción aleatoria de los datos mediante el hiperparámetro `subsample`.\n",
+        "\n",
+        "Por ejemplo:"
+      ],
+      "id": "58a8a9a7"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gbr_stochastic = GradientBoostingRegressor(\n",
+        "    n_estimators=200,\n",
+        "    learning_rate=0.1,\n",
+        "    max_depth=2,\n",
+        "    subsample=0.8,\n",
+        "    random_state=42\n",
+        ")\n",
+        "\n",
+        "gbr_stochastic.fit(X_train_gb, y_train_gb)"
+      ],
+      "id": "dd1e8dca",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Con\n",
+        "\n",
+        "$$\n",
+        "\\texttt{subsample}=0.8,\n",
+        "$$\n",
+        "\n",
+        "cada árbol utiliza una muestra que contiene aproximadamente el $80\\%$ de las observaciones disponibles para esa iteración.\n",
+        "\n",
+        "Esta variante se conoce como **Stochastic Gradient Boosting**.\n",
+        "\n",
+        "La introducción de aleatoriedad puede funcionar como una forma adicional de regularización.\n",
+        "\n",
+        "::: {.callout-note}\n",
+        "No exploraremos exhaustivamente `subsample` en esta práctica.\n",
+        "\n",
+        "Nuestro objetivo es reconocer que también constituye un hiperparámetro del modelo y que, al igual que `learning_rate`, `n_estimators` y `max_depth`, puede afectar su desempeño.\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "\n",
+        "## De Gradient Boosting a XGBoost\n",
+        "\n",
+        "Hasta ahora hemos utilizado la implementación clásica de Gradient Boosting disponible en `scikit-learn`.\n",
+        "\n",
+        "Ahora veremos una implementación moderna: **XGBoost**.\n",
+        "\n",
+        "XGBoost conserva la idea fundamental de construir árboles secuencialmente para mejorar el ensamble, pero incorpora mecanismos adicionales de regularización y optimizaciones computacionales.\n",
+        "\n",
+        "Ya vimos que su función objetivo puede representarse esquemáticamente como\n",
+        "\n",
+        "$$\n",
+        "\\mathcal{J}\n",
+        "=\n",
+        "\\sum_{i=1}^{n}\n",
+        "L(y_i,\\widehat y_i)\n",
+        "+\n",
+        "\\sum_{m=1}^{M}\\Omega(h_m),\n",
+        "$$\n",
+        "\n",
+        "donde el primer término mide el error de predicción y $\\Omega(h_m)$ penaliza la complejidad de los árboles.\n",
+        "\n",
+        "\n",
+        "### Instalación\n",
+        "\n",
+        "XGBoost no forma parte directamente de `scikit-learn`, por lo que puede ser necesario instalarlo.\n",
+        "\n",
+        "Desde una terminal podemos utilizar:\n",
+        "\n",
+        "```bash\n",
+        "pip install xgboost\n",
+        "```\n",
+        "\n",
+        "\n",
+        "\n",
+        "::: {.callout-important}\n",
+        "## Antes de instalar\n",
+        "\n",
+        "\n",
+        "Podemos verificar la instalación:"
+      ],
+      "id": "01cd757a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import xgboost\n",
+        "\n",
+        "print(xgboost.__version__)"
+      ],
+      "id": "68aa7f38",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        ":::\n",
+        "\n",
+        "\n",
+        "## Nuestro primer modelo con XGBoost\n",
+        "\n",
+        "Importamos `XGBRegressor`."
+      ],
+      "id": "3cc9304e"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "from xgboost import XGBRegressor"
+      ],
+      "id": "f9b04c88",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Construiremos primero un modelo sencillo con hiperparámetros similares a los utilizados en Gradient Boosting."
+      ],
+      "id": "7bf65fa0"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "xgb = XGBRegressor(\n",
+        "    n_estimators=200,\n",
+        "    learning_rate=0.1,\n",
+        "    max_depth=2,\n",
+        "    objective=\"reg:squarederror\",\n",
+        "    random_state=42,\n",
+        "    n_jobs=-1\n",
+        ")"
+      ],
+      "id": "c4ad82e3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Los hiperparámetros\n",
+        "\n",
+        "```text\n",
+        "n_estimators\n",
+        "learning_rate\n",
+        "max_depth\n",
+        "```\n",
+        "\n",
+        "tienen una interpretación semejante a la que ya conocemos.\n",
+        "\n",
+        "Entrenamos el modelo:"
+      ],
+      "id": "62e31828"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "xgb.fit(X_train_gb, y_train_gb)"
+      ],
+      "id": "7fd5c3d2",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Realizamos predicciones sobre validación:"
+      ],
+      "id": "e82e95d8"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pred_xgb = xgb.predict(X_val)"
+      ],
+      "id": "f05572a3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "y calculamos el error."
+      ],
+      "id": "8696fa58"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "mae_xgb = mean_absolute_error(y_val, pred_xgb)\n",
+        "\n",
+        "rmse_xgb = np.sqrt(\n",
+        "    mean_squared_error(y_val, pred_xgb)\n",
+        ")\n",
+        "\n",
+        "print(f\"MAE:  {mae_xgb:.4f}\")\n",
+        "print(f\"RMSE: {rmse_xgb:.4f}\")"
+      ],
+      "id": "b111e469",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Comparación inicial\n",
+        "\n",
+        "Comparemos nuestro Gradient Boosting con XGBoost.\n",
+        "\n",
+        "Para realizar una comparación razonable, entrenaremos ambos utilizando los mismos datos y los evaluaremos sobre el mismo conjunto de validación."
+      ],
+      "id": "acadee57"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "gbr_compare = GradientBoostingRegressor(\n",
+        "    n_estimators=200,\n",
+        "    learning_rate=0.1,\n",
+        "    max_depth=2,\n",
+        "    random_state=42\n",
+        ")\n",
+        "\n",
+        "gbr_compare.fit(X_train_gb, y_train_gb)\n",
+        "\n",
+        "pred_gbr = gbr_compare.predict(X_val)"
+      ],
+      "id": "47ef2141",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Calculamos las métricas."
+      ],
+      "id": "d451df37"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "resultados_comparacion = pd.DataFrame({\n",
+        "    \"Modelo\": [\n",
+        "        \"Gradient Boosting\",\n",
+        "        \"XGBoost\"\n",
+        "    ],\n",
+        "    \"MAE\": [\n",
+        "        mean_absolute_error(y_val, pred_gbr),\n",
+        "        mean_absolute_error(y_val, pred_xgb)\n",
+        "    ],\n",
+        "    \"RMSE\": [\n",
+        "        np.sqrt(mean_squared_error(y_val, pred_gbr)),\n",
+        "        np.sqrt(mean_squared_error(y_val, pred_xgb))\n",
+        "    ]\n",
+        "})\n",
+        "\n",
+        "resultados_comparacion"
+      ],
+      "id": "243bd011",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "::: {.callout-warning}\n",
+        "## Esta todavía no es nuestra comparación final\n",
+        "\n",
+        "No debemos concluir que un algoritmo es mejor en general simplemente porque obtuvo un RMSE menor en esta partición.\n",
+        "\n",
+        "Además:\n",
+        "\n",
+        "- sólo estamos utilizando una partición de validación;\n",
+        "- prácticamente no hemos ajustado los hiperparámetros;\n",
+        "- distintas configuraciones pueden producir resultados diferentes.\n",
+        "\n",
+        "Utilizaremos después **Cross-Validation** para realizar comparaciones más robustas.\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "## Más hiperparámetros de XGBoost\n",
+        "\n",
+        "XGBoost incorpora varios mecanismos adicionales para controlar la complejidad del modelo.\n",
+        "\n",
+        "Algunos hiperparámetros importantes son:\n",
+        "\n",
+        "| Hiperparámetro | Función |\n",
+        "|---|---|\n",
+        "| `n_estimators` | Número de árboles |\n",
+        "| `learning_rate` | Contribución de cada árbol |\n",
+        "| `max_depth` | Profundidad máxima |\n",
+        "| `subsample` | Fracción de observaciones utilizadas por árbol |\n",
+        "| `colsample_bytree` | Fracción de características utilizadas por árbol |\n",
+        "| `reg_alpha` | Regularización tipo $L_1$ |\n",
+        "| `reg_lambda` | Regularización tipo $L_2$ |\n",
+        "\n",
+        "Por ejemplo:"
+      ],
+      "id": "53f9473f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "xgb_reg = XGBRegressor(\n",
+        "    n_estimators=300,\n",
+        "    learning_rate=0.05,\n",
+        "    max_depth=3,\n",
+        "    subsample=0.8,\n",
+        "    colsample_bytree=0.8,\n",
+        "    reg_alpha=0.1,\n",
+        "    reg_lambda=1.0,\n",
+        "    objective=\"reg:squarederror\",\n",
+        "    random_state=42,\n",
+        "    n_jobs=-1\n",
+        ")\n",
+        "\n",
+        "xgb_reg.fit(X_train_gb, y_train_gb)"
+      ],
+      "id": "feabaadb",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Podemos calcular su RMSE:"
+      ],
+      "id": "daa3a218"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pred_xgb_reg = xgb_reg.predict(X_val)\n",
+        "\n",
+        "rmse_xgb_reg = np.sqrt(\n",
+        "    mean_squared_error(y_val, pred_xgb_reg)\n",
+        ")\n",
+        "\n",
+        "print(f\"RMSE: {rmse_xgb_reg:.4f}\")"
+      ],
+      "id": "dd82cfa4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Ahora aparece un problema evidente.\n",
+        "\n",
+        "Tenemos que decidir valores para:\n",
+        "\n",
+        "$$\n",
+        "\\texttt{learning\\_rate},\n",
+        "$$\n",
+        "\n",
+        "$$\n",
+        "\\texttt{n\\_estimators},\n",
+        "$$\n",
+        "\n",
+        "$$\n",
+        "\\texttt{max\\_depth},\n",
+        "$$\n",
+        "\n",
+        "$$\n",
+        "\\texttt{subsample},\n",
+        "$$\n",
+        "\n",
+        "$$\n",
+        "\\texttt{colsample\\_bytree},\n",
+        "$$\n",
+        "\n",
+        "$$\n",
+        "\\texttt{reg\\_alpha},\n",
+        "$$\n",
+        "\n",
+        "$$\n",
+        "\\texttt{reg\\_lambda}.\n",
+        "$$\n",
+        "\n",
+        "Probar manualmente todas las posibilidades rápidamente se vuelve poco práctico.\n",
+        "\n",
+        "::: {.callout-tip}\n",
+        "\n",
+        "Hasta ahora hemos seleccionado hiperparámetros de forma manual.\n",
+        "\n",
+        "La siguiente pregunta es:\n",
+        "\n",
+        "> **¿Cómo podemos buscar buenas combinaciones de hiperparámetros de manera sistemática?**\n",
+        "\n",
+        "Para responderla utilizaremos **Cross-Validation, Grid Search y Random Search**.\n",
+        ":::\n",
+        "\n",
+        "\n",
+        "## Ejercicio\n",
+        "\n",
+        "Vamos a experimentar con el modelo `GradientBoostingRegressor` con los mismos datos.\n",
+        "\n",
+        "Considera las siguientes configuraciones:\n",
+        "\n",
+        "| Modelo | `learning_rate` | `n_estimators` | `max_depth` |\n",
+        "|---|---:|---:|---:|\n",
+        "| A | 0.1 | 100 | 2 |\n",
+        "| B | 0.05 | 200 | 2 |\n",
+        "| C | 0.01 | 500 | 2 |\n",
+        "| D | 0.1 | 100 | 4 |\n",
+        "\n",
+        "### Parte 1\n",
+        "\n",
+        "Entrena los cuatro modelos utilizando `X_train_gb` y `y_train_gb`.\n",
+        "\n",
+        "Completa el siguiente código."
+      ],
+      "id": "c2ddb5dd"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "configuraciones = [\n",
+        "    # (\"A\", ..., ..., ...),\n",
+        "    # (\"B\", ..., ..., ...),\n",
+        "    # (\"C\", ..., ..., ...),\n",
+        "    # (\"D\", ..., ..., ...)\n",
+        "]"
+      ],
+      "id": "64adab4a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Para cada configuración:\n",
+        "\n",
+        "1. entrena un `GradientBoostingRegressor`;\n",
+        "2. calcula el RMSE de entrenamiento;\n",
+        "3. calcula el RMSE de validación;\n",
+        "4. guarda los resultados en un `DataFrame`.\n",
+        "\n",
+        "Tu tabla debe tener una estructura similar a:\n",
+        "\n",
+        "| Modelo | learning rate | n estimators | max depth | RMSE train | RMSE validation |\n",
+        "|---|---:|---:|---:|---:|---:|\n",
+        "| A | | | | | |\n",
+        "| B | | | | | |\n",
+        "| C | | | | | |\n",
+        "| D | | | | | |\n",
+        "\n",
+        "\n",
+        "### Parte 2\n",
+        "\n",
+        "Responde brevemente:\n",
+        "\n",
+        "1. ¿Cuál configuración obtiene el menor error de entrenamiento?\n",
+        "2. ¿Coincide con la configuración que obtiene el menor error de validación?\n",
+        "3. Compara A, B y C. ¿Qué observas sobre la relación entre `learning_rate` y `n_estimators`?\n",
+        "4. ¿Qué efecto observas al aumentar `max_depth` de 2 a 4?\n",
+        "5. ¿Por qué no deberíamos utilizar `X_test` para decidir cuál de estas cuatro configuraciones conservar?\n",
+        "\n",
+        "::: {.callout-important}\n",
+        "## No utilices el conjunto de prueba\n",
+        "\n",
+        "Para este ejercicio debes trabajar únicamente con\n",
+        "\n",
+        "```text\n",
+        "X_train_gb\n",
+        "y_train_gb\n",
+        "X_val\n",
+        "y_val\n",
+        "```\n",
+        "\n",
+        "No utilices `X_test` ni `y_test`.\n",
+        "\n",
+        "Los reservaremos para la evaluación final más adelante.\n",
+        ":::\n"
+      ],
+      "id": "a355f63b"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "C:\\Users\\HaydeePeruyero\\AppData\\Local\\Python\\pythoncore-3.14-64\\share\\jupyter\\kernels\\python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
