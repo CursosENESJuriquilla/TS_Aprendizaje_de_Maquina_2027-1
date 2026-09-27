@@ -1,0 +1,1180 @@
+# Clasificadores de soporte vectorial
+
+En la sección anterior estudiamos el clasificador de margen máximo bajo una condición muy restrictiva: las clases debían ser linealmente separables.
+
+En esta práctica relajaremos esa condición mediante el **clasificador de soporte vectorial** o *Support Vector Classifier*.
+
+Veremos como:
+
+- explicar por qué el margen máximo puede ser demasiado restrictivo;
+- interpretar el concepto de margen suave;
+- reconocer observaciones que violan el margen;
+- interpretar el parámetro $C$ utilizado por `SVC` en `scikit-learn`;
+- analizar cómo cambia la frontera al modificar $C$;
+- relacionar $C$ con el número de vectores de soporte;
+- distinguir desempeño en entrenamiento de desempeño en prueba;
+- explicar por qué el escalamiento de las variables es importante para una SVM;
+- utilizar `StandardScaler` y `Pipeline` para realizar correctamente el preprocesamiento.
+
+
+
+## Antes de comenzar
+
+Recuperemos algunas ideas de la práctica anterior.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Qué es un vector de soporte?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Los vectores de soporte son las observaciones que determinan la posición del margen y de la frontera de decisión.
+
+En el caso del clasificador de margen máximo, corresponden a las observaciones más cercanas a la frontera y se encuentran sobre los bordes del margen.
+
+:::
+::::
+
+
+
+
+
+
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Qué condición importante necesitábamos para utilizar un clasificador de margen máximo?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Necesitábamos que las clases fueran linealmente separables.
+
+Es decir, debía existir al menos un hiperplano capaz de separar perfectamente las observaciones de ambas clases.
+
+:::
+::::
+
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Supongamos que las clases son separables, pero una sola observación se encuentra muy cerca de la clase contraria.
+
+¿Podría ser conveniente permitir una pequeña violación en lugar de modificar drásticamente la frontera para clasificarla perfectamente?
+
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Sí.
+
+Exigir una clasificación perfecta puede hacer que la frontera dependa demasiado de unas pocas observaciones.
+
+Permitir ciertas violaciones puede producir un margen más amplio y un clasificador menos sensible a las particularidades del conjunto de entrenamiento.
+
+Esta es la idea del **margen suave**.
+
+:::
+::::
+
+
+
+
+
+## Preparación
+
+Importamos las bibliotecas que utilizaremos.
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import make_blobs
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+from sklearn.svm import SVC
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+```
+
+Construiremos nuevamente una función para visualizar:
+
+- la frontera de decisión;
+- los bordes del margen;
+- los vectores de soporte.
+
+```{python}
+def graficar_svm_lineal(
+    modelo,
+    X,
+    y,
+    titulo="Clasificador de soporte vectorial"
+):
+    
+    plt.figure(figsize=(8, 6))
+    
+    for clase in np.unique(y):
+        plt.scatter(
+            X[y == clase, 0],
+            X[y == clase, 1],
+            label=f"Clase {clase}",
+            s=70
+        )
+    
+    x_min = X[:, 0].min() - 1
+    x_max = X[:, 0].max() + 1
+    
+    y_min = X[:, 1].min() - 1
+    y_max = X[:, 1].max() + 1
+    
+    xx = np.linspace(x_min, x_max, 300)
+    yy = np.linspace(y_min, y_max, 300)
+    
+    YY, XX = np.meshgrid(yy, xx)
+    
+    grid = np.c_[XX.ravel(), YY.ravel()]
+    
+    Z = modelo.decision_function(grid)
+    Z = Z.reshape(XX.shape)
+    
+    plt.contour(
+        XX,
+        YY,
+        Z,
+        levels=[-1, 0, 1],
+        linestyles=["--", "-", "--"]
+    )
+    
+    plt.scatter(
+        modelo.support_vectors_[:, 0],
+        modelo.support_vectors_[:, 1],
+        s=180,
+        facecolors="none",
+        edgecolors="black",
+        linewidths=1.5,
+        label="Vectores de soporte"
+    )
+    
+    plt.xlabel("$X_1$")
+    plt.ylabel("$X_2$")
+    plt.title(titulo)
+    plt.legend()
+    plt.show()
+```
+
+## Datos con traslape
+
+En la práctica anterior construimos dos grupos claramente separables.
+
+Ahora queremos una situación más realista: dos clases que presenten cierto grado de traslape.
+
+```{python}
+X, y = make_blobs(
+    n_samples=120,
+    centers=[
+        [-1.5, -1.0],
+        [1.5, 1.0]
+    ],
+    cluster_std=1.25,
+    random_state=42
+)
+```
+
+`make_blobs()` utiliza originalmente las etiquetas $0$ y $1$.
+
+Para mantener la notación utilizada en la teoría, las transformaremos a
+
+$$
+Y\in\{-1,+1\}.
+$$
+
+```{python}
+y = np.where(y == 0, -1, 1)
+```
+
+Visualizamos los datos.
+
+```{python}
+plt.figure(figsize=(8, 6))
+
+for clase in np.unique(y):
+    plt.scatter(
+        X[y == clase, 0],
+        X[y == clase, 1],
+        label=f"Clase {clase}",
+        s=60
+    )
+
+plt.xlabel("$X_1$")
+plt.ylabel("$X_2$")
+plt.title("Datos con traslape entre las clases")
+plt.legend()
+plt.show()
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Para pensar
+
+Observa la gráfica.
+
+1. ¿Las clases son perfectamente separables?
+2. ¿Parece posible encontrar una recta que clasifique correctamente todas las observaciones?
+3. ¿Qué ocurriría si exigiéramos una separación perfecta?
+
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Las clases presentan traslape.
+
+Por tanto, no parece posible encontrar una recta que clasifique correctamente todas las observaciones.
+
+Exigir una separación perfecta ya no es una condición razonable.
+
+Necesitamos permitir que algunas observaciones:
+
+- estén dentro del margen;
+- estén sobre la frontera;
+- o incluso queden del lado incorrecto.
+
+:::
+::::
+
+
+
+
+## Del margen duro al margen suave
+
+En el clasificador de margen máximo exigíamos, después de fijar la escala de los coeficientes,
+
+$$
+y_i f(x_i)\geq 1.
+$$
+
+Ahora permitimos violaciones mediante variables de holgura $\epsilon_i$:
+
+$$
+y_i f(x_i)\geq 1-\epsilon_i,
+$$
+
+con
+
+$$
+\epsilon_i\geq 0.
+$$
+
+Recordemos su interpretación:
+
+$$
+\epsilon_i=0
+$$
+
+indica que la observación no necesita violar el margen;
+
+$$
+0<\epsilon_i<1
+$$
+
+permite que esté correctamente clasificada pero dentro del margen;
+
+mientras que
+
+$$
+\epsilon_i>1
+$$
+
+puede corresponder a una observación mal clasificada.
+
+En la implementación que utilizaremos, estas violaciones son penalizadas mediante un parámetro $C$.
+
+## El parámetro `C` en `scikit-learn`
+
+`SVC` utiliza una formulación equivalente al problema
+
+$$
+\min_{\beta_0,\beta,\epsilon}
+\left\{
+\frac{1}{2}\|\beta\|^2
++
+C\sum_{i=1}^{n}\epsilon_i
+\right\}.
+$$
+
+El primer término favorece un margen amplio:
+
+$$
+\frac{1}{2}\|\beta\|^2.
+$$
+
+El segundo penaliza las violaciones:
+
+$$
+C\sum_{i=1}^{n}\epsilon_i.
+$$
+
+Por tanto, en esta parametrización:
+
+$$
+\boxed{
+C\text{ pequeño}
+\Rightarrow
+\text{menor penalización de las violaciones}
+}
+$$
+
+y
+
+$$
+\boxed{
+C\text{ grande}
+\Rightarrow
+\text{mayor penalización de las violaciones}.
+}
+$$
+
+Otra forma de decirlo es:
+
+$$
+C\downarrow
+\Rightarrow
+\text{mayor regularización},
+$$
+
+mientras que
+
+$$
+C\uparrow
+\Rightarrow
+\text{menor regularización}.
+$$
+
+::: {.callout-warning}
+## Cuidado con la notación
+
+En algunas formulaciones teóricas, $C$ representa directamente un presupuesto permitido de violaciones.
+
+En `scikit-learn`, `C` funciona como una **penalización de las violaciones**.
+
+Por ello, siempre debemos identificar qué formulación estamos utilizando antes de interpretar $C$.
+:::
+
+## Primer clasificador de margen suave
+
+Comencemos con
+
+$$
+C=1.
+$$
+
+```{python}
+modelo_C1 = SVC(
+    kernel="linear",
+    C=1
+)
+
+modelo_C1.fit(X, y)
+```
+
+Visualizamos la solución.
+
+```{python}
+graficar_svm_lineal(
+    modelo_C1,
+    X,
+    y,
+    titulo="$C=1$"
+)
+```
+
+A diferencia de la práctica anterior, ahora podemos encontrar observaciones:
+
+- dentro del margen;
+- sobre el margen;
+- e incluso mal clasificadas.
+
+Esto no significa necesariamente que el modelo haya fallado.
+
+Las violaciones forman parte del problema de optimización.
+
+## Identificando la posición de las observaciones
+
+Podemos calcular
+
+$$
+f(x_i)
+$$
+
+mediante:
+
+```{python}
+decision = modelo_C1.decision_function(X)
+```
+
+Y después calcular
+
+$$
+y_i f(x_i).
+$$
+
+```{python}
+margen_funcional = y * decision
+```
+
+Construimos una tabla.
+
+```{python}
+resultados = pd.DataFrame({
+    "X1": X[:, 0],
+    "X2": X[:, 1],
+    "Clase": y,
+    "Decision": decision,
+    "y_f(x)": margen_funcional
+})
+
+resultados.head(10)
+```
+
+La cantidad
+
+$$
+y_if(x_i)
+$$
+
+nos permite clasificar geométricamente las observaciones.
+
+Podemos crear una función sencilla:
+
+```{python}
+def posicion_margen(valor):
+    
+    if valor < 0:
+        return "Mal clasificada"
+    
+    elif valor < 1:
+        return "Dentro del margen"
+    
+    else:
+        return "Sobre o fuera del margen"
+```
+
+Aplicamos la función.
+
+```{python}
+resultados["Posicion"] = (
+    resultados["y_f(x)"]
+    .apply(posicion_margen)
+)
+
+resultados.head(10)
+```
+
+Podemos contar cuántas observaciones aparecen en cada situación.
+
+```{python}
+resultados["Posicion"].value_counts()
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Qué significa encontrar una observación con
+
+$$
+0<y_if(x_i)<1?
+$$
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+La observación está correctamente clasificada porque
+
+$$
+y_if(x_i)>0,
+$$
+
+pero se encuentra dentro del margen porque
+
+$$
+y_if(x_i)<1.
+$$
+
+Por tanto, clasificar correctamente una observación no significa necesariamente que esté fuera del margen.
+
+:::
+::::
+
+
+## ¿Qué ocurre cuando cambiamos `C`?
+
+Ahora realizaremos el experimento principal de esta práctica.
+
+Ajustaremos varios clasificadores utilizando:
+
+$$
+C\in
+\{0.01,\;0.1,\;1,\;10,\;100\}.
+$$
+
+```{python}
+valores_C = [
+    0.01,
+    0.1,
+    1,
+    10,
+    100
+]
+```
+
+Primero observaremos cada modelo individualmente.
+
+```{python}
+for C in valores_C:
+    
+    modelo = SVC(
+        kernel="linear",
+        C=C
+    )
+    
+    modelo.fit(X, y)
+    
+    graficar_svm_lineal(
+        modelo,
+        X,
+        y,
+        titulo=f"Clasificador lineal: C = {C}"
+    )
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Para pensar
+
+Antes de calcular cualquier métrica, compara las gráficas.
+
+1. ¿Qué ocurre con el margen cuando $C$ es pequeño?
+2. ¿Qué ocurre cuando $C$ aumenta?
+3. ¿Qué ocurre con las observaciones que quedan dentro del margen?
+4. ¿Parece cambiar el número de vectores de soporte?
+
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Cuando $C$ es pequeño, las violaciones tienen un costo relativamente bajo.
+
+El modelo puede aceptar más observaciones dentro del margen con el objetivo de obtener una solución más regularizada.
+
+Cuando $C$ aumenta, las violaciones son penalizadas más fuertemente y el modelo intenta ajustarse más estrechamente a las observaciones de entrenamiento.
+
+También suele cambiar el número de vectores de soporte.
+
+En general, valores pequeños de $C$ pueden producir más vectores de soporte porque más observaciones quedan sobre o dentro del margen.
+
+Sin embargo, esto debe interpretarse como un comportamiento típico y no como una regla que necesariamente se cumpla de forma estrictamente monótona para cualquier conjunto de datos.
+
+:::
+::::
+
+
+
+
+
+
+## Construyamos una tabla comparativa
+
+En lugar de depender únicamente de las gráficas, calculemos algunas cantidades para cada valor de $C$.
+
+Para cada modelo registraremos:
+
+- exactitud sobre los datos utilizados para el ajuste;
+- número total de vectores de soporte;
+- número de observaciones dentro del margen o mal clasificadas.
+
+```{python}
+comparacion = []
+
+for C in valores_C:
+    
+    modelo = SVC(
+        kernel="linear",
+        C=C
+    )
+    
+    modelo.fit(X, y)
+    
+    pred = modelo.predict(X)
+    decision = modelo.decision_function(X)
+    
+    y_f = y * decision
+    
+    comparacion.append({
+        "C": C,
+        "Accuracy": accuracy_score(y, pred),
+        "Vectores_soporte": len(modelo.support_),
+        "Dentro_o_violan_margen": np.sum(y_f < 1)
+    })
+
+comparacion = pd.DataFrame(comparacion)
+
+comparacion
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Para pensar
+
+Examina la tabla.
+
+¿El modelo con mayor $C$ necesariamente tiene una exactitud de entrenamiento mucho mayor?
+
+¿El número de vectores de soporte permanece constante?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No necesariamente.
+
+Una vez que los datos tienen cierto grado de traslape, aumentar $C$ no puede hacer que una frontera lineal resuelva mágicamente un problema que no es perfectamente separable.
+
+Además, modificar $C$ cambia qué observaciones determinan la solución y, por tanto, puede modificar el número de vectores de soporte.
+
+:::
+::::
+
+
+## Entrenamiento no es generalización
+
+Hasta ahora hemos utilizado las mismas observaciones para ajustar y evaluar los modelos.
+
+Eso es útil para estudiar su geometría, pero no es suficiente para seleccionar $C$.
+
+Dividamos los datos.
+
+```{python}
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.30,
+    random_state=42,
+    stratify=y
+)
+```
+
+Ahora ajustaremos cada modelo utilizando exclusivamente entrenamiento.
+
+```{python}
+comparacion_test = []
+
+for C in valores_C:
+    
+    modelo = SVC(
+        kernel="linear",
+        C=C
+    )
+    
+    modelo.fit(
+        X_train,
+        y_train
+    )
+    
+    pred_train = modelo.predict(X_train)
+    pred_test = modelo.predict(X_test)
+    
+    comparacion_test.append({
+        "C": C,
+        "Accuracy_train": accuracy_score(
+            y_train,
+            pred_train
+        ),
+        "Accuracy_test": accuracy_score(
+            y_test,
+            pred_test
+        ),
+        "Vectores_soporte": len(
+            modelo.support_
+        )
+    })
+
+comparacion_test = pd.DataFrame(
+    comparacion_test
+)
+
+comparacion_test
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Deberíamos seleccionar $C$ simplemente buscando el valor que maximiza la exactitud de entrenamiento?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+
+No.
+
+$C$ es un hiperparámetro.
+
+Seleccionarlo utilizando únicamente el desempeño de entrenamiento puede favorecer modelos que se adapten demasiado a esos datos.
+
+Tampoco debemos probar muchos valores de $C$ y elegir el que produzca el mejor resultado sobre el conjunto de prueba, porque entonces estaríamos utilizando el conjunto de prueba para ajustar indirectamente el modelo.
+
+Más adelante utilizaremos **validación cruzada** para seleccionar hiperparámetros.
+
+
+:::
+::::
+
+
+
+
+
+::: {.callout-note}
+## Por ahora
+
+En esta práctica no estamos intentando encontrar el ``mejor'' valor de $C$.
+
+Nuestro objetivo es comprender **qué cambia en el clasificador cuando modificamos $C$**.
+
+La selección sistemática de hiperparámetros se realizará posteriormente mediante validación cruzada.
+:::
+
+## SVM y escala de las variables
+
+Hasta ahora $X_1$ y $X_2$ tienen escalas similares.
+
+Pero imaginemos que medimos exactamente la misma información utilizando unidades diferentes.
+
+Crearemos una copia de los datos y multiplicaremos la segunda variable por $1000$:
+
+$$
+X_2^\ast=1000X_2.
+$$
+
+```{python}
+X_desescalado = X.copy()
+
+X_desescalado[:, 1] = (
+    1000 * X_desescalado[:, 1]
+)
+```
+
+Observemos los rangos.
+
+```{python}
+pd.DataFrame(
+    X_desescalado,
+    columns=["X1", "X2"]
+).describe()
+```
+
+Ahora:
+
+- $X_1$ tiene una escala relativamente pequeña;
+- $X_2$ tiene valores cientos o miles de veces mayores.
+
+
+## Ajuste sin escalamiento
+
+Ajustemos directamente una SVM lineal.
+
+```{python}
+modelo_sin_escalar = SVC(
+    kernel="linear",
+    C=1
+)
+
+modelo_sin_escalar.fit(
+    X_desescalado,
+    y
+)
+```
+
+Podemos inspeccionar sus coeficientes.
+
+```{python}
+modelo_sin_escalar.coef_
+```
+
+Pero debemos ser cuidadosos al interpretarlos: las variables se encuentran ahora en unidades completamente diferentes.
+
+::: {.callout-note}
+## ¿Por qué importa la escala?
+
+La geometría de las SVM depende de distancias y productos internos en el espacio de características.
+
+Si una variable presenta una escala mucho mayor que otra, puede influir de manera desproporcionada en esa geometría.
+
+Por ello, en la práctica es habitual colocar las variables numéricas en escalas comparables antes de ajustar una SVM.
+:::
+
+## Estandarización
+
+Una transformación común es
+
+$$
+Z_j
+=
+\frac{X_j-\overline X_j}{s_j}.
+$$
+
+Después de estandarizar, cada variable tendrá aproximadamente
+
+$$
+\text{media}=0
+$$
+
+y
+
+$$
+\text{desviación estándar}=1.
+$$
+
+Utilizaremos:
+
+```{python}
+scaler = StandardScaler()
+```
+
+Ajustamos el transformador:
+
+```{python}
+X_escalado = scaler.fit_transform(
+    X_desescalado
+)
+```
+
+Comprobemos el resultado.
+
+```{python}
+pd.DataFrame(
+    X_escalado,
+    columns=["X1", "X2"]
+).describe()
+```
+
+Las medias serán aproximadamente cero y las desviaciones estándar estarán alrededor de uno.
+
+## Ajuste después del escalamiento
+
+Ahora ajustamos nuevamente la SVM.
+
+```{python}
+modelo_escalado = SVC(
+    kernel="linear",
+    C=1
+)
+
+modelo_escalado.fit(
+    X_escalado,
+    y
+)
+```
+
+Visualizamos los datos transformados.
+
+```{python}
+graficar_svm_lineal(
+    modelo_escalado,
+    X_escalado,
+    y,
+    titulo="SVM después de estandarizar"
+)
+```
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Para pensar
+
+¿Por qué no sería correcto concluir que $X_2$ es automáticamente más importante simplemente porque originalmente tenía valores mucho mayores?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+La magnitud numérica depende de las unidades de medición.
+
+Por ejemplo, medir una longitud en metros o milímetros cambia sus valores numéricos sin cambiar la información que contiene.
+
+Por ello, diferencias de escala pueden alterar artificialmente la geometría utilizada por la SVM.
+
+El escalamiento permite colocar las variables en escalas comparables.
+
+:::
+::::
+
+
+
+
+
+
+## Un problema importante: fuga de información
+
+En el ejemplo anterior utilizamos:
+
+```{python}
+scaler.fit_transform(X_desescalado)
+```
+
+sobre todos los datos únicamente para ilustrar la transformación.
+
+Sin embargo, **esto no es lo que debemos hacer cuando evaluamos un modelo**.
+
+Si tenemos entrenamiento y prueba, los parámetros del escalamiento deben estimarse utilizando únicamente el conjunto de entrenamiento.
+
+Es decir, debemos calcular
+
+$$
+\overline X_j
+$$
+
+y
+
+$$
+s_j
+$$
+
+usando entrenamiento.
+
+Después utilizamos esos mismos valores para transformar el conjunto de prueba.
+
+No debemos calcular nuevamente la media y desviación estándar sobre test.
+
+## Forma correcta con entrenamiento y prueba
+
+Dividamos los datos antes de realizar el escalamiento.
+
+```{python}
+X_train, X_test, y_train, y_test = train_test_split(
+    X_desescalado,
+    y,
+    test_size=0.30,
+    random_state=42,
+    stratify=y
+)
+```
+
+Ajustamos el escalador únicamente con entrenamiento:
+
+```{python}
+scaler = StandardScaler()
+
+X_train_scaled = scaler.fit_transform(
+    X_train
+)
+
+X_test_scaled = scaler.transform(
+    X_test
+)
+```
+
+Observa la diferencia:
+
+```{python}
+scaler.fit_transform(X_train)
+```
+
+estima los parámetros y transforma los datos.
+
+En cambio,
+
+```{python}
+scaler.transform(X_test)
+```
+
+utiliza los parámetros previamente estimados.
+
+::: {.callout-warning}
+## Regla importante
+
+Nunca debemos utilizar información del conjunto de prueba para estimar los parámetros del preprocesamiento.
+
+El conjunto de prueba debe permanecer fuera del proceso de ajuste.
+:::
+
+## `Pipeline`: una forma más segura
+
+Podemos simplificar el procedimiento utilizando un `Pipeline`.
+
+```{python}
+modelo_pipeline = Pipeline([
+    (
+        "scaler",
+        StandardScaler()
+    ),
+    (
+        "svc",
+        SVC(
+            kernel="linear",
+            C=1
+        )
+    )
+])
+```
+
+Ahora ajustamos:
+
+```{python}
+modelo_pipeline.fit(
+    X_train,
+    y_train
+)
+```
+
+El `Pipeline` realiza en orden:
+
+$$
+X
+\longrightarrow
+\text{StandardScaler}
+\longrightarrow
+\text{SVC}.
+$$
+
+Primero estima el escalamiento utilizando los datos proporcionados a `fit()`.
+
+Después transforma esos datos y ajusta la SVM.
+
+Para predecir:
+
+```{python}
+pred_train = modelo_pipeline.predict(
+    X_train
+)
+
+pred_test = modelo_pipeline.predict(
+    X_test
+)
+```
+
+Calculamos las exactitudes.
+
+```{python}
+print(
+    "Accuracy entrenamiento:",
+    accuracy_score(
+        y_train,
+        pred_train
+    )
+)
+
+print(
+    "Accuracy prueba:",
+    accuracy_score(
+        y_test,
+        pred_test
+    )
+)
+```
+
+El uso de `Pipeline` será especialmente importante más adelante cuando utilicemos validación cruzada y optimización de hiperparámetros.
+
+## ¿Qué hemos aprendido sobre `C`?
+
+Conviene detenernos antes de continuar.
+
+En `scikit-learn`, un valor pequeño de $C$ significa que las violaciones del margen tienen una penalización menor.
+
+Por tanto, el modelo puede aceptar más violaciones.
+
+Esquemáticamente:
+
+$$
+\boxed{
+C\downarrow
+\Rightarrow
+\text{mayor regularización}
+}
+$$
+
+y
+
+$$
+\boxed{
+C\uparrow
+\Rightarrow
+\text{menor regularización}.
+}
+$$
+
+Sin embargo, esto **no significa** que:
+
+$$
+C\text{ pequeño siempre sea mejor}
+$$
+
+ni que
+
+$$
+C\text{ grande siempre sea mejor}.
+$$
+
+$C$ es un hiperparámetro cuyo valor apropiado depende de los datos.
+
+## Ejercicios
+
+### Ejercicio 1. Observaciones y margen
+
+Utilizando `modelo_C1`, calcula
+
+$$
+y_if(x_i)
+$$
+
+para todas las observaciones.
+
+Encuentra:
+
+1. cuántas están mal clasificadas;
+2. cuántas están correctamente clasificadas pero dentro del margen;
+3. cuántas están sobre o fuera del margen.
+
+### Ejercicio 2. Efecto de un valor extremo de `C`
+
+Ajusta dos modelos:
+
+$$
+C=0.001
+$$
+
+y
+
+$$
+C=1000.
+$$
+
+Compara:
+
+- frontera;
+- margen;
+- número de vectores de soporte;
+- exactitud de entrenamiento.
+
+No selecciones un modelo únicamente a partir de estas cantidades. El objetivo es interpretar cómo cambia el ajuste.
+
+### Ejercicio 3. Cambiar artificialmente la escala
+
+A partir de `X`, crea un nuevo conjunto donde
+
+$$
+X_1^\ast=100X_1
+$$
+
+mientras que $X_2$ permanece sin cambios.
+
+Ajusta:
+
+1. una SVM sin escalamiento;
+2. una SVM dentro de un `Pipeline` con `StandardScaler`.
+
+Compara los resultados.

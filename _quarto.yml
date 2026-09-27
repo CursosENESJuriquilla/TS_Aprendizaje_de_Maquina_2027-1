@@ -45,13 +45,17 @@ book:
           - parte11.qmd # Evaluación y comparación de modelos
     - part: "**Máquinas de Soporte Vectorial**"
       chapters:
-          - parte12.qmd
+          - parte12.qmd # clasificador de margen máximo
+          - parte13.qmd # clasificadores de soporte vectorial
+          - parte14.qmd # MSV
+          - parte15.qmd # MSV con más de dos clases
+          - parte16.qmd # Relación con regresión logística
     - part: "**Aprendizaje no supervisado**"
       chapters:
-          - parte12.qmd
+          - parte17.qmd
     - part: "**Interpretabilidad y explicabilidad de modelos**"
       chapters:
-          - parte12.qmd  
+          - parte17.qmd  
     
   # Information
   repo-url: https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1 # link de Github

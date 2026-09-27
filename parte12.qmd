@@ -1,1 +1,950 @@
-# pendiente
+# Clasificador de margen máximo
+
+
+En esta primera práctica estudiaremos la interpretación geométrica del clasificador de margen máximo.
+
+Lo que queremos es:
+
+- identificar una frontera de decisión lineal;
+- interpretar el signo de una función de decisión;
+- reconocer que pueden existir múltiples hiperplanos que separen correctamente dos clases;
+- interpretar geométricamente el margen;
+- identificar los vectores de soporte;
+- relacionar el margen con la capacidad de generalización del clasificador;
+- reconocer algunas limitaciones del clasificador de margen máximo.
+
+En esta primera parte trabajaremos con datos sintéticos en dos dimensiones. Esto nos permitirá visualizar directamente la geometría del problema.
+
+
+## Antes de comenzar
+
+Antes de utilizar una implementación de máquinas de soporte vectorial, recuperemos algunas ideas.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Supongamos que tenemos dos variables predictoras, $X_1$ y $X_2$.
+
+¿Qué objeto geométrico representa la ecuación
+
+$$
+\beta_0+\beta_1X_1+\beta_2X_2=0?
+$$
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+En $\mathbb{R}^2$, esta ecuación representa una **recta**.
+
+En general,
+
+$$
+\beta_0+\beta_1X_1+\cdots+\beta_pX_p=0
+$$
+
+define un hiperplano de dimensión $p-1$ en $\mathbb{R}^p$.
+
+Por ejemplo:
+
+- en $\mathbb{R}$, un hiperplano es un punto;
+- en $\mathbb{R}^2$, es una recta;
+- en $\mathbb{R}^3$, es un plano.
+
+:::
+::::
+
+
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Consideremos
+
+$$
+f(x)=\beta_0+\beta^Tx.
+$$
+
+¿Qué información proporciona el signo de $f(x)$?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+El signo indica de qué lado del hiperplano se encuentra la observación.
+
+Si
+
+$$
+f(x)>0,
+$$
+
+la observación está de un lado de la frontera, mientras que si
+
+$$
+f(x)<0,
+$$
+
+se encuentra del otro.
+
+Por ello podemos construir una regla de clasificación como
+
+$$
+\widehat y(x)=\operatorname{sign}(f(x)).
+$$
+
+:::
+::::
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Si encontramos una recta que separa perfectamente dos clases, ¿necesariamente es la única recta que puede hacerlo?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No.
+
+Cuando los datos son linealmente separables generalmente existen muchas fronteras que pueden clasificar correctamente todas las observaciones.
+
+El clasificador de margen máximo proporciona un criterio para seleccionar una de ellas: elegir la frontera que maximiza la distancia respecto de las observaciones más cercanas.
+
+:::
+::::
+
+
+## Preparación
+
+Comenzamos importando las bibliotecas que utilizaremos.
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+```
+
+En esta práctica utilizaremos `SVC` de `scikit-learn`.
+
+Aunque `SVC` permite construir máquinas de soporte vectorial mucho más generales, por ahora utilizaremos únicamente un **kernel lineal**.
+
+
+
+## Construcción de un conjunto de datos
+
+Para comenzar utilizaremos un conjunto pequeño de datos sintéticos.
+
+Queremos que las dos clases sean claramente separables para poder visualizar la idea del margen máximo.
+
+```{python}
+X = np.array([
+    [1.0, 1.0],
+    [1.5, 1.8],
+    [2.0, 1.3],
+    [2.2, 2.0],
+    [2.8, 2.4],
+    
+    [4.5, 4.8],
+    [5.0, 4.2],
+    [5.3, 5.1],
+    [5.8, 4.7],
+    [6.2, 5.5]
+])
+
+y = np.array([-1, -1, -1, -1, -1,
+               1,  1,  1,  1,  1])
+```
+
+Tenemos dos variables predictoras:
+
+$$
+X_1,\qquad X_2,
+$$
+
+y una respuesta binaria:
+
+$$
+Y\in\{-1,+1\}.
+$$
+
+Podemos colocar los datos en un `DataFrame` para inspeccionarlos.
+
+```{python}
+datos = pd.DataFrame(
+    X,
+    columns=["X1", "X2"]
+)
+
+datos["Clase"] = y
+
+datos
+```
+
+## Visualización de los datos
+
+Antes de ajustar cualquier modelo, visualicemos las observaciones.
+
+```{python}
+plt.figure(figsize=(7, 6))
+
+for clase in np.unique(y):
+    plt.scatter(
+        X[y == clase, 0],
+        X[y == clase, 1],
+        label=f"Clase {clase}",
+        s=70
+    )
+
+plt.xlabel("$X_1$")
+plt.ylabel("$X_2$")
+plt.title("Datos de clasificación")
+plt.legend()
+plt.show()
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Para pensar
+
+Observando únicamente la gráfica:
+
+1. ¿Las clases parecen linealmente separables?
+2. ¿Podrías dibujar mentalmente una recta que las separe?
+3. ¿Existe una sola recta posible?
+
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+1. Sí. Las dos clases son linealmente separables.
+2. Podemos colocar una recta entre ambos grupos.
+3. No. Existen muchas rectas capaces de separar correctamente estas observaciones.
+
+Esto plantea el problema que motiva al clasificador de margen máximo:
+
+> Si muchas fronteras producen cero errores de entrenamiento, ¿cuál deberíamos elegir?
+
+:::
+::::
+
+
+## No toda frontera que clasifica perfectamente es igual
+
+Construyamos algunas rectas que separan las dos clases.
+
+Una recta puede escribirse como
+
+$$
+x_2=mx_1+b,
+$$
+
+donde $m$ representa la pendiente y $b$ la intersección con el eje vertical.
+
+```{python}
+x_grid = np.linspace(0.5, 6.5, 200)
+
+recta_1 = -0.2 * x_grid + 3.6
+recta_2 = -0.5 * x_grid + 4.5
+recta_3 = -0.8 * x_grid + 5.5
+```
+
+Visualicemos estas posibles fronteras.
+
+```{python}
+plt.figure(figsize=(8, 6))
+
+for clase in np.unique(y):
+    plt.scatter(
+        X[y == clase, 0],
+        X[y == clase, 1],
+        label=f"Clase {clase}",
+        s=70
+    )
+
+plt.plot(x_grid, recta_1, label="Frontera 1")
+plt.plot(x_grid, recta_2, label="Frontera 2")
+plt.plot(x_grid, recta_3, label="Frontera 3")
+
+plt.xlabel("$X_1$")
+plt.ylabel("$X_2$")
+plt.title("Distintas fronteras de separación")
+plt.legend()
+plt.show()
+```
+
+::: {.callout-note}
+## Observación
+
+El hecho de que una frontera clasifique correctamente todas las observaciones de entrenamiento no significa que sea la única frontera posible ni que necesariamente sea la más conveniente para clasificar nuevas observaciones.
+:::
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Qué criterio podríamos utilizar para seleccionar una frontera entre todas las que separan correctamente las clases?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Una posibilidad es elegir la frontera que se encuentre lo más alejada posible de las observaciones más cercanas de ambas clases.
+
+Esta es precisamente la idea del **clasificador de margen máximo**.
+
+:::
+::::
+
+## Ajuste de un clasificador lineal
+
+Ahora utilizaremos `SVC` con un kernel lineal.
+
+Para aproximarnos al comportamiento de un clasificador de margen duro utilizaremos un valor grande de `C`.
+
+```{python}
+modelo = SVC(
+    kernel="linear",
+    C=1e6
+)
+
+modelo.fit(X, y)
+```
+
+::: {.callout-warning}
+## Nota
+
+`SVC` implementa un clasificador de soporte vectorial de margen suave. Utilizar un valor muy grande de `C` hace que las violaciones sean penalizadas fuertemente y, para estos datos separables, nos permite aproximarnos al comportamiento del clasificador de margen máximo.
+
+No debemos interpretar `C=1e6` como una elección recomendada en general.
+
+Más adelante estudiaremos cuidadosamente el papel de `C`.
+:::
+
+Podemos obtener las predicciones sobre las observaciones de entrenamiento.
+
+```{python}
+y_pred = modelo.predict(X)
+
+y_pred
+```
+
+Y calcular la exactitud:
+
+```{python}
+accuracy_score(y, y_pred)
+```
+
+En este conjunto de datos esperamos obtener una clasificación perfecta.
+
+Sin embargo, nuestro interés principal no es todavía la exactitud.
+
+Queremos estudiar la **geometría de la solución**.
+
+## La función de decisión
+
+El modelo ajustado construye una función de la forma
+
+$$
+f(x)
+=
+\beta_0+\beta_1x_1+\beta_2x_2.
+$$
+
+Podemos obtener los coeficientes mediante:
+
+```{python}
+modelo.coef_
+```
+
+y el término independiente mediante:
+
+```{python}
+modelo.intercept_
+```
+
+Guardemos estos valores.
+
+```{python}
+beta = modelo.coef_[0]
+beta_0 = modelo.intercept_[0]
+
+print("beta_0 =", beta_0)
+print("beta =", beta)
+```
+
+Por tanto, nuestra función de decisión tiene la forma
+
+$$
+f(x)
+=
+\beta_0+\beta_1x_1+\beta_2x_2.
+$$
+
+La frontera de decisión está formada por los puntos que satisfacen
+
+$$
+f(x)=0.
+$$
+
+Es decir,
+
+$$
+\beta_0+\beta_1x_1+\beta_2x_2=0.
+$$
+
+## ¿Qué significa el valor de la función de decisión?
+
+Podemos calcular
+
+$$
+f(x_i)
+$$
+
+para cada observación mediante `decision_function`.
+
+```{python}
+decision = modelo.decision_function(X)
+
+decision
+```
+
+Agreguemos estos valores a nuestra tabla.
+
+```{python}
+datos["Decision"] = decision
+datos["Prediccion"] = y_pred
+
+datos
+```
+
+El signo de `Decision` determina de qué lado de la frontera se encuentra cada observación.
+
+En términos generales,
+
+$$
+f(x)>0
+$$
+
+corresponde a una clase y
+
+$$
+f(x)<0
+$$
+
+a la otra.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Qué esperarías observar al comparar `Decision` con `Clase`?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+
+Como las clases están codificadas mediante $-1$ y $+1$, esperamos que las observaciones de la clase $+1$ tengan valores positivos de la función de decisión y que las observaciones de la clase $-1$ tengan valores negativos.
+
+Por tanto, para observaciones correctamente clasificadas,
+
+$$
+y_i f(x_i)>0.
+$$
+
+:::
+::::
+
+## Frontera de decisión, margen y vectores de soporte
+
+Construiremos una función que nos permita visualizar:
+
+- las observaciones;
+- la frontera de decisión;
+- los bordes del margen;
+- los vectores de soporte.
+
+La reutilizaremos posteriormente en otras partes de la unidad.
+
+```{python}
+def graficar_svm_lineal(modelo, X, y, titulo="Clasificador lineal"):
+    
+    plt.figure(figsize=(8, 6))
+    
+    for clase in np.unique(y):
+        plt.scatter(
+            X[y == clase, 0],
+            X[y == clase, 1],
+            label=f"Clase {clase}",
+            s=70
+        )
+    
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    
+    xx = np.linspace(x_min, x_max, 300)
+    yy = np.linspace(y_min, y_max, 300)
+    
+    YY, XX = np.meshgrid(yy, xx)
+    
+    grid = np.c_[XX.ravel(), YY.ravel()]
+    Z = modelo.decision_function(grid)
+    Z = Z.reshape(XX.shape)
+    
+    plt.contour(
+        XX,
+        YY,
+        Z,
+        levels=[-1, 0, 1],
+        linestyles=["--", "-", "--"]
+    )
+    
+    plt.scatter(
+        modelo.support_vectors_[:, 0],
+        modelo.support_vectors_[:, 1],
+        s=180,
+        facecolors="none",
+        edgecolors="black",
+        linewidths=1.5,
+        label="Vectores de soporte"
+    )
+    
+    plt.xlabel("$X_1$")
+    plt.ylabel("$X_2$")
+    plt.title(titulo)
+    plt.legend()
+    plt.show()
+```
+
+Ahora utilizamos la función.
+
+```{python}
+graficar_svm_lineal(
+    modelo,
+    X,
+    y,
+    titulo="Frontera, margen y vectores de soporte"
+)
+```
+
+En la gráfica aparecen tres líneas.
+
+La línea central corresponde a
+
+$$
+f(x)=0.
+$$
+
+Esta es la **frontera de decisión**.
+
+Las otras dos corresponden a
+
+$$
+f(x)=1
+$$
+
+y
+
+$$
+f(x)=-1.
+$$
+
+Estas líneas delimitan el margen.
+
+## Los vectores de soporte
+
+Podemos consultar directamente cuáles observaciones fueron identificadas como vectores de soporte.
+
+```{python}
+modelo.support_vectors_
+```
+
+También podemos obtener sus índices dentro del conjunto de entrenamiento.
+
+```{python}
+modelo.support_
+```
+
+Y el número de vectores de soporte correspondiente a cada clase:
+
+```{python}
+modelo.n_support_
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Observa nuevamente la gráfica.
+
+¿Dónde se encuentran los vectores de soporte respecto de la frontera de decisión?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Son las observaciones más cercanas a la frontera.
+
+En el caso separable y con una aproximación al margen duro, se encuentran sobre los bordes del margen.
+
+Estas observaciones son especialmente importantes porque determinan la posición de la frontera de decisión.
+
+:::
+::::
+
+
+## ¿Todas las observaciones tienen la misma importancia?
+
+Consideremos una observación que se encuentra muy lejos del margen.
+
+Podemos modificar ligeramente su posición y volver a ajustar el modelo.
+
+Primero identificaremos visualmente una observación alejada de la frontera.
+
+Crearemos una copia de los datos.
+
+```{python}
+X_modificado = X.copy()
+```
+
+Moveremos una observación de la clase $-1$ todavía más hacia la región correspondiente a su propia clase.
+
+```{python}
+X_modificado[0] = [0.5, 0.5]
+```
+
+Ajustamos nuevamente el modelo.
+
+```{python}
+modelo_modificado = SVC(
+    kernel="linear",
+    C=1e6
+)
+
+modelo_modificado.fit(X_modificado, y)
+```
+
+Visualizamos.
+
+```{python}
+graficar_svm_lineal(
+    modelo_modificado,
+    X_modificado,
+    y,
+    titulo="Modificación de una observación alejada del margen"
+)
+```
+
+Comparemos los coeficientes.
+
+```{python}
+print("Modelo original")
+print(modelo.coef_)
+print(modelo.intercept_)
+
+print("\nModelo modificado")
+print(modelo_modificado.coef_)
+print(modelo_modificado.intercept_)
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Para pensar
+
+¿La modificación de esta observación produjo un cambio importante en la frontera?
+
+¿Por qué?
+
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Esperamos que el cambio sea pequeño o incluso prácticamente nulo si la observación modificada no es un vector de soporte.
+
+Las observaciones suficientemente alejadas del margen no determinan directamente la posición de la frontera.
+
+Esto es una propiedad fundamental de los clasificadores de soporte vectorial.
+
+:::
+::::
+
+
+## Ahora modifiquemos una observación importante
+
+Hagamos el experimento contrario.
+
+Primero consultemos los índices de los vectores de soporte.
+
+```{python}
+modelo.support_
+```
+
+Seleccionaremos uno de ellos y lo moveremos ligeramente.
+
+```{python}
+indice_soporte = modelo.support_[0]
+
+X_soporte_modificado = X.copy()
+
+X_soporte_modificado[indice_soporte] = (
+    X_soporte_modificado[indice_soporte]
+    + np.array([0.5, 0.5])
+)
+```
+
+Ajustamos nuevamente el modelo.
+
+```{python}
+modelo_soporte_modificado = SVC(
+    kernel="linear",
+    C=1e6
+)
+
+modelo_soporte_modificado.fit(
+    X_soporte_modificado,
+    y
+)
+```
+
+Y visualizamos el resultado.
+
+```{python}
+graficar_svm_lineal(
+    modelo_soporte_modificado,
+    X_soporte_modificado,
+    y,
+    titulo="Modificación de un vector de soporte"
+)
+```
+
+Comparemos nuevamente los coeficientes.
+
+```{python}
+print("Modelo original")
+print(modelo.coef_)
+print(modelo.intercept_)
+
+print("\nModelo después de modificar un vector de soporte")
+print(modelo_soporte_modificado.coef_)
+print(modelo_soporte_modificado.intercept_)
+```
+
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Compara este resultado con el experimento anterior.
+
+¿Por qué modificar un vector de soporte puede tener un efecto mucho mayor sobre la frontera?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Los vectores de soporte son las observaciones que determinan la posición del margen y, por tanto, de la frontera de decisión.
+
+Modificar una observación alejada del margen puede no afectar la solución.
+
+En cambio, modificar un vector de soporte puede cambiar:
+
+- la orientación de la frontera;
+- la posición de la frontera;
+- el ancho del margen;
+- e incluso qué observaciones se convierten en nuevos vectores de soporte.
+
+:::
+::::
+
+## ¿Un ajuste perfecto garantiza una buena clasificación futura?
+
+Hasta ahora hemos utilizado todos los datos para ajustar y visualizar el modelo.
+
+Sin embargo, en aprendizaje supervisado nuestro objetivo no es únicamente clasificar correctamente las observaciones conocidas.
+
+Queremos que el modelo funcione bien sobre **nuevas observaciones**.
+
+Para recordar esta idea, construiremos un conjunto ligeramente mayor.
+
+```{python}
+rng = np.random.default_rng(123)
+
+X_neg = rng.normal(
+    loc=[2, 2],
+    scale=0.55,
+    size=(50, 2)
+)
+
+X_pos = rng.normal(
+    loc=[5, 5],
+    scale=0.55,
+    size=(50, 2)
+)
+
+X_grande = np.vstack([X_neg, X_pos])
+
+y_grande = np.array(
+    [-1] * len(X_neg) +
+    [1] * len(X_pos)
+)
+```
+
+Dividimos los datos en entrenamiento y prueba.
+
+```{python}
+X_train, X_test, y_train, y_test = train_test_split(
+    X_grande,
+    y_grande,
+    test_size=0.30,
+    random_state=42,
+    stratify=y_grande
+)
+```
+
+Ajustamos el modelo utilizando únicamente entrenamiento.
+
+```{python}
+modelo_train = SVC(
+    kernel="linear",
+    C=1e6
+)
+
+modelo_train.fit(X_train, y_train)
+```
+
+Calculamos la exactitud en ambos conjuntos.
+
+```{python}
+acc_train = accuracy_score(
+    y_train,
+    modelo_train.predict(X_train)
+)
+
+acc_test = accuracy_score(
+    y_test,
+    modelo_train.predict(X_test)
+)
+
+print("Accuracy entrenamiento:", acc_train)
+print("Accuracy prueba:", acc_test)
+```
+
+::: {.callout-note}
+## Importante
+
+Nuestro objetivo no es maximizar únicamente el desempeño sobre las observaciones utilizadas para ajustar el modelo.
+
+El desempeño sobre entrenamiento describe qué tan bien se ajustó el modelo a datos conocidos. La evaluación sobre observaciones que no participaron en el ajuste nos proporciona información sobre su capacidad de generalización.
+:::
+
+## Limitación del margen máximo
+
+El conjunto de datos con el que comenzamos tenía una propiedad muy especial:
+
+$$
+\text{las clases eran linealmente separables}.
+$$
+
+Pero en datos reales esto no siempre ocurre.
+
+¿Qué sucedería si una observación de una clase apareciera dentro de la región ocupada por la otra?
+
+Por ejemplo:
+
+```{python}
+X_no_separable = np.vstack([
+    X,
+    [4.8, 4.6]
+])
+
+y_no_separable = np.append(
+    y,
+    -1
+)
+```
+
+Visualicemos.
+
+```{python}
+plt.figure(figsize=(7, 6))
+
+for clase in np.unique(y_no_separable):
+    plt.scatter(
+        X_no_separable[y_no_separable == clase, 0],
+        X_no_separable[y_no_separable == clase, 1],
+        label=f"Clase {clase}",
+        s=70
+    )
+
+plt.xlabel("$X_1$")
+plt.ylabel("$X_2$")
+plt.title("Datos que ya no son linealmente separables")
+plt.legend()
+plt.show()
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Para pensar
+
+1. ¿Existe ahora una recta que clasifique correctamente todas las observaciones?
+2. ¿Qué problema tendría exigir una separación perfecta?
+3. ¿Sería razonable permitir que alguna observación quedara dentro del margen o incluso fuera del lado correcto?
+
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+1. No. La nueva observación de la clase $-1$ se encuentra dentro de la región ocupada por la clase $+1$.
+2. No podemos construir una frontera lineal que separe perfectamente todas las observaciones.
+3. Sí. Podemos relajar la exigencia de separación perfecta y permitir ciertas violaciones.
+
+Esta es precisamente la motivación del **clasificador de soporte vectorial de margen suave**, que estudiaremos en la siguiente práctica.
+
+:::
+::::
+
+
+
+
+
+## Ejercicios
+
+### Ejercicio 1
+
+Utiliza el conjunto de datos original `X` y `y`.
+
+Identifica:
+
+1. los índices de los vectores de soporte;
+2. las coordenadas de los vectores de soporte;
+3. el número de vectores de soporte de cada clase.
+
+Interpreta los resultados utilizando la gráfica.
+
+### Ejercicio 2
+
+Calcula manualmente el valor de la función de decisión para la primera observación:
+
+$$
+x_1.
+$$
+
+Utiliza los valores almacenados en `beta_0` y `beta`.
+
+Después compara tu resultado con:
+
+```{python}
+modelo.decision_function(X[[0]])
+```
+
+
+
+### Ejercicio 3
+
+Selecciona una observación que **no** sea un vector de soporte y modifica ligeramente sus coordenadas.
+
+Vuelve a ajustar el modelo y compara:
+
+- los coeficientes;
+- el término independiente;
+- los vectores de soporte;
+- la frontera de decisión.
+
+¿Qué observas?
+
+
