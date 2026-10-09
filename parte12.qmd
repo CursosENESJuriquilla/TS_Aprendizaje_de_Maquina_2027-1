@@ -1,7 +1,6 @@
 # Clasificador de margen máximo
 
-
-En esta primera práctica estudiaremos la interpretación geométrica del clasificador de margen máximo.
+En esta primera sección estudiaremos la interpretación geométrica del clasificador de margen máximo.
 
 Lo que queremos es:
 
@@ -16,6 +15,17 @@ Lo que queremos es:
 En esta primera parte trabajaremos con datos sintéticos en dos dimensiones. Esto nos permitirá visualizar directamente la geometría del problema.
 
 
+::: {.diapositivas}
+::: {.diapositivas-title}
+📝 **Diapositivas**
+:::
+
+::: {.diapositivas-body}
+[Ver diapositivas Clasificador de Margen Máximo](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/4.1-Clasificador_de_Margen_Maximo.pdf)
+:::
+:::
+
+
 ## Antes de comenzar
 
 Antes de utilizar una implementación de máquinas de soporte vectorial, recuperemos algunas ideas.
@@ -27,9 +37,7 @@ Supongamos que tenemos dos variables predictoras, $X_1$ y $X_2$.
 
 ¿Qué objeto geométrico representa la ecuación
 
-$$
-\beta_0+\beta_1X_1+\beta_2X_2=0?
-$$
+$$\beta_0+\beta_1X_1+\beta_2X_2=0?$$
 
 ::: {.callout-tip collapse="true" icon="false"}
 ## Solución
@@ -38,9 +46,7 @@ En $\mathbb{R}^2$, esta ecuación representa una **recta**.
 
 En general,
 
-$$
-\beta_0+\beta_1X_1+\cdots+\beta_pX_p=0
-$$
+$$\beta_0+\beta_1X_1+\cdots+\beta_pX_p=0$$
 
 define un hiperplano de dimensión $p-1$ en $\mathbb{R}^p$.
 
@@ -49,21 +55,15 @@ Por ejemplo:
 - en $\mathbb{R}$, un hiperplano es un punto;
 - en $\mathbb{R}^2$, es una recta;
 - en $\mathbb{R}^3$, es un plano.
-
 :::
 ::::
-
-
-
 
 :::: {.callout-warning icon="false"}
 ## 🧠 Pregunta
 
 Consideremos
 
-$$
-f(x)=\beta_0+\beta^Tx.
-$$
+$$f(x)=\beta_0+\beta^Tx.$$
 
 ¿Qué información proporciona el signo de $f(x)$?
 
@@ -74,27 +74,19 @@ El signo indica de qué lado del hiperplano se encuentra la observación.
 
 Si
 
-$$
-f(x)>0,
-$$
+$$f(x)>0,$$
 
 la observación está de un lado de la frontera, mientras que si
 
-$$
-f(x)<0,
-$$
+$$f(x)<0,$$
 
 se encuentra del otro.
 
 Por ello podemos construir una regla de clasificación como
 
-$$
-\widehat y(x)=\operatorname{sign}(f(x)).
-$$
-
+$$\widehat y(x)=\operatorname{sign}(f(x)).$$
 :::
 ::::
-
 
 :::: {.callout-warning icon="false"}
 ## 🧠 Pregunta
@@ -109,10 +101,8 @@ No.
 Cuando los datos son linealmente separables generalmente existen muchas fronteras que pueden clasificar correctamente todas las observaciones.
 
 El clasificador de margen máximo proporciona un criterio para seleccionar una de ellas: elegir la frontera que maximiza la distancia respecto de las observaciones más cercanas.
-
 :::
 ::::
-
 
 ## Preparación
 
@@ -131,8 +121,6 @@ from sklearn.metrics import accuracy_score
 En esta práctica utilizaremos `SVC` de `scikit-learn`.
 
 Aunque `SVC` permite construir máquinas de soporte vectorial mucho más generales, por ahora utilizaremos únicamente un **kernel lineal**.
-
-
 
 ## Construcción de un conjunto de datos
 
@@ -161,15 +149,11 @@ y = np.array([-1, -1, -1, -1, -1,
 
 Tenemos dos variables predictoras:
 
-$$
-X_1,\qquad X_2,
-$$
+$$X_1,\qquad X_2,$$
 
 y una respuesta binaria:
 
-$$
-Y\in\{-1,+1\}.
-$$
+$$Y\in\{-1,+1\}.$$
 
 Podemos colocar los datos en un `DataFrame` para inspeccionarlos.
 
@@ -211,25 +195,22 @@ plt.show()
 
 Observando únicamente la gráfica:
 
-1. ¿Las clases parecen linealmente separables?
-2. ¿Podrías dibujar mentalmente una recta que las separe?
-3. ¿Existe una sola recta posible?
-
+1.  ¿Las clases parecen linealmente separables?
+2.  ¿Podrías dibujar mentalmente una recta que las separe?
+3.  ¿Existe una sola recta posible?
 
 ::: {.callout-tip collapse="true" icon="false"}
 ## Solución
 
-1. Sí. Las dos clases son linealmente separables.
-2. Podemos colocar una recta entre ambos grupos.
-3. No. Existen muchas rectas capaces de separar correctamente estas observaciones.
+1.  Sí. Las dos clases son linealmente separables.
+2.  Podemos colocar una recta entre ambos grupos.
+3.  No. Existen muchas rectas capaces de separar correctamente estas observaciones.
 
 Esto plantea el problema que motiva al clasificador de margen máximo:
 
 > Si muchas fronteras producen cero errores de entrenamiento, ¿cuál deberíamos elegir?
-
 :::
 ::::
-
 
 ## No toda frontera que clasifica perfectamente es igual
 
@@ -237,9 +218,7 @@ Construyamos algunas rectas que separan las dos clases.
 
 Una recta puede escribirse como
 
-$$
-x_2=mx_1+b,
-$$
+$$x_2=mx_1+b,$$
 
 donde $m$ representa la pendiente y $b$ la intersección con el eje vertical.
 
@@ -275,12 +254,11 @@ plt.legend()
 plt.show()
 ```
 
-::: {.callout-note}
+::: callout-note
 ## Observación
 
 El hecho de que una frontera clasifique correctamente todas las observaciones de entrenamiento no significa que sea la única frontera posible ni que necesariamente sea la más conveniente para clasificar nuevas observaciones.
 :::
-
 
 :::: {.callout-warning icon="false"}
 ## 🧠 Pregunta
@@ -293,15 +271,29 @@ El hecho de que una frontera clasifique correctamente todas las observaciones de
 Una posibilidad es elegir la frontera que se encuentre lo más alejada posible de las observaciones más cercanas de ambas clases.
 
 Esta es precisamente la idea del **clasificador de margen máximo**.
-
 :::
 ::::
 
-## Ajuste de un clasificador lineal
+## Ajuste del clasificador de margen máximo
 
-Ahora utilizaremos `SVC` con un kernel lineal.
+En la parte teórica estudiamos el **clasificador de margen máximo**, que busca un hiperplano separador de la forma
 
-Para aproximarnos al comportamiento de un clasificador de margen duro utilizaremos un valor grande de `C`.
+$$
+\beta_0+\boldsymbol{\beta}^{T}\mathbf{x}=0
+$$
+
+que maximice la distancia a las observaciones más cercanas.
+
+Recordemos que este clasificador requiere que los datos sean **linealmente separables**.
+
+### ¿Cómo lo implementamos en Python?
+
+Utilizaremos `SVC` de `scikit-learn`, que implementa una versión más general del clasificador que acabamos de estudiar.
+
+Por ahora necesitamos indicar dos cosas:
+
+- `kernel="linear"`: queremos una frontera de decisión lineal, es decir, un hiperplano.
+- `C=1e6`: es una configuración que, para nuestros datos separables, permite aproximarnos al clasificador de margen máximo.
 
 ```{python}
 modelo = SVC(
@@ -312,14 +304,16 @@ modelo = SVC(
 modelo.fit(X, y)
 ```
 
-::: {.callout-warning}
-## Nota
+::: {.callout-note}
+## ¿Por qué aparece el parámetro `C`?
 
-`SVC` implementa un clasificador de soporte vectorial de margen suave. Utilizar un valor muy grande de `C` hace que las violaciones sean penalizadas fuertemente y, para estos datos separables, nos permite aproximarnos al comportamiento del clasificador de margen máximo.
+El clasificador de margen máximo que estudiamos en las diapositivas **no tiene un parámetro `C`**.
 
-No debemos interpretar `C=1e6` como una elección recomendada en general.
+Este parámetro aparece porque estamos utilizando `SVC`, una implementación más general que permite trabajar también con datos que no son perfectamente separables.
 
-Más adelante estudiaremos cuidadosamente el papel de `C`.
+En este primer ejemplo utilizamos un valor muy grande de `C` únicamente para reproducir el comportamiento del clasificador de margen máximo sobre nuestros datos separables.
+
+**Por ahora no necesitamos modificar ni interpretar `C`.** En la siguiente sección estudiaremos su significado y cómo influye en la frontera de decisión.
 :::
 
 Podemos obtener las predicciones sobre las observaciones de entrenamiento.
@@ -346,11 +340,9 @@ Queremos estudiar la **geometría de la solución**.
 
 El modelo ajustado construye una función de la forma
 
-$$
-f(x)
+$$f(x)
 =
-\beta_0+\beta_1x_1+\beta_2x_2.
-$$
+\beta_0+\beta_1x_1+\beta_2x_2.$$
 
 Podemos obtener los coeficientes mediante:
 
@@ -376,31 +368,23 @@ print("beta =", beta)
 
 Por tanto, nuestra función de decisión tiene la forma
 
-$$
-f(x)
+$$f(x)
 =
-\beta_0+\beta_1x_1+\beta_2x_2.
-$$
+\beta_0+\beta_1x_1+\beta_2x_2.$$
 
 La frontera de decisión está formada por los puntos que satisfacen
 
-$$
-f(x)=0.
-$$
+$$f(x)=0.$$
 
 Es decir,
 
-$$
-\beta_0+\beta_1x_1+\beta_2x_2=0.
-$$
+$$\beta_0+\beta_1x_1+\beta_2x_2=0.$$
 
 ## ¿Qué significa el valor de la función de decisión?
 
 Podemos calcular
 
-$$
-f(x_i)
-$$
+$$f(x_i)$$
 
 para cada observación mediante `decision_function`.
 
@@ -423,15 +407,11 @@ El signo de `Decision` determina de qué lado de la frontera se encuentra cada o
 
 En términos generales,
 
-$$
-f(x)>0
-$$
+$$f(x)>0$$
 
 corresponde a una clase y
 
-$$
-f(x)<0
-$$
+$$f(x)<0$$
 
 a la otra.
 
@@ -443,15 +423,11 @@ a la otra.
 ::: {.callout-tip collapse="true" icon="false"}
 ## Solución
 
-
 Como las clases están codificadas mediante $-1$ y $+1$, esperamos que las observaciones de la clase $+1$ tengan valores positivos de la función de decisión y que las observaciones de la clase $-1$ tengan valores negativos.
 
 Por tanto, para observaciones correctamente clasificadas,
 
-$$
-y_i f(x_i)>0.
-$$
-
+$$y_i f(x_i)>0.$$
 :::
 ::::
 
@@ -531,23 +507,17 @@ En la gráfica aparecen tres líneas.
 
 La línea central corresponde a
 
-$$
-f(x)=0.
-$$
+$$f(x)=0.$$
 
 Esta es la **frontera de decisión**.
 
 Las otras dos corresponden a
 
-$$
-f(x)=1
-$$
+$$f(x)=1$$
 
 y
 
-$$
-f(x)=-1.
-$$
+$$f(x)=-1.$$
 
 Estas líneas delimitan el margen.
 
@@ -586,10 +556,8 @@ Son las observaciones más cercanas a la frontera.
 En el caso separable y con una aproximación al margen duro, se encuentran sobre los bordes del margen.
 
 Estas observaciones son especialmente importantes porque determinan la posición de la frontera de decisión.
-
 :::
 ::::
-
 
 ## ¿Todas las observaciones tienen la misma importancia?
 
@@ -652,7 +620,6 @@ print(modelo_modificado.intercept_)
 
 ¿Por qué?
 
-
 ::: {.callout-tip collapse="true" icon="false"}
 ## Solución
 
@@ -661,10 +628,8 @@ Esperamos que el cambio sea pequeño o incluso prácticamente nulo si la observa
 Las observaciones suficientemente alejadas del margen no determinan directamente la posición de la frontera.
 
 Esto es una propiedad fundamental de los clasificadores de soporte vectorial.
-
 :::
 ::::
-
 
 ## Ahora modifiquemos una observación importante
 
@@ -726,7 +691,6 @@ print(modelo_soporte_modificado.coef_)
 print(modelo_soporte_modificado.intercept_)
 ```
 
-
 :::: {.callout-warning icon="false"}
 ## 🧠 Pregunta
 
@@ -747,7 +711,6 @@ En cambio, modificar un vector de soporte puede cambiar:
 - la posición de la frontera;
 - el ancho del margen;
 - e incluso qué observaciones se convierten en nuevos vectores de soporte.
-
 :::
 ::::
 
@@ -824,7 +787,7 @@ print("Accuracy entrenamiento:", acc_train)
 print("Accuracy prueba:", acc_test)
 ```
 
-::: {.callout-note}
+::: callout-note
 ## Importante
 
 Nuestro objetivo no es maximizar únicamente el desempeño sobre las observaciones utilizadas para ajustar el modelo.
@@ -836,9 +799,7 @@ El desempeño sobre entrenamiento describe qué tan bien se ajustó el modelo a 
 
 El conjunto de datos con el que comenzamos tenía una propiedad muy especial:
 
-$$
-\text{las clases eran linealmente separables}.
-$$
+$$\text{las clases eran linealmente separables}.$$
 
 Pero en datos reales esto no siempre ocurre.
 
@@ -881,26 +842,20 @@ plt.show()
 :::: {.callout-warning icon="false"}
 ## 🧠 Para pensar
 
-1. ¿Existe ahora una recta que clasifique correctamente todas las observaciones?
-2. ¿Qué problema tendría exigir una separación perfecta?
-3. ¿Sería razonable permitir que alguna observación quedara dentro del margen o incluso fuera del lado correcto?
-
+1.  ¿Existe ahora una recta que clasifique correctamente todas las observaciones?
+2.  ¿Qué problema tendría exigir una separación perfecta?
+3.  ¿Sería razonable permitir que alguna observación quedara dentro del margen o incluso fuera del lado correcto?
 
 ::: {.callout-tip collapse="true" icon="false"}
 ## Solución
 
-1. No. La nueva observación de la clase $-1$ se encuentra dentro de la región ocupada por la clase $+1$.
-2. No podemos construir una frontera lineal que separe perfectamente todas las observaciones.
-3. Sí. Podemos relajar la exigencia de separación perfecta y permitir ciertas violaciones.
+1.  No. La nueva observación de la clase $-1$ se encuentra dentro de la región ocupada por la clase $+1$.
+2.  No podemos construir una frontera lineal que separe perfectamente todas las observaciones.
+3.  Sí. Podemos relajar la exigencia de separación perfecta y permitir ciertas violaciones.
 
 Esta es precisamente la motivación del **clasificador de soporte vectorial de margen suave**, que estudiaremos en la siguiente práctica.
-
 :::
 ::::
-
-
-
-
 
 ## Ejercicios
 
@@ -910,9 +865,9 @@ Utiliza el conjunto de datos original `X` y `y`.
 
 Identifica:
 
-1. los índices de los vectores de soporte;
-2. las coordenadas de los vectores de soporte;
-3. el número de vectores de soporte de cada clase.
+1.  los índices de los vectores de soporte;
+2.  las coordenadas de los vectores de soporte;
+3.  el número de vectores de soporte de cada clase.
 
 Interpreta los resultados utilizando la gráfica.
 
@@ -920,9 +875,7 @@ Interpreta los resultados utilizando la gráfica.
 
 Calcula manualmente el valor de la función de decisión para la primera observación:
 
-$$
-x_1.
-$$
+$$x_1.$$
 
 Utiliza los valores almacenados en `beta_0` y `beta`.
 
@@ -931,8 +884,6 @@ Después compara tu resultado con:
 ```{python}
 modelo.decision_function(X[[0]])
 ```
-
-
 
 ### Ejercicio 3
 
@@ -946,5 +897,3 @@ Vuelve a ajustar el modelo y compara:
 - la frontera de decisión.
 
 ¿Qué observas?
-
-

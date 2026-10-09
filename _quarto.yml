@@ -47,9 +47,9 @@ book:
       chapters:
           - parte12.qmd # clasificador de margen máximo
           - parte13.qmd # clasificadores de soporte vectorial
-          - parte14.qmd # MSV
-          - parte15.qmd # MSV con más de dos clases
-          - parte16.qmd # Relación con regresión logística
+          - parte17.qmd # MSV
+          - parte17.qmd # MSV con más de dos clases
+          - parte17.qmd # Relación con regresión logística
     - part: "**Aprendizaje no supervisado**"
       chapters:
           - parte17.qmd

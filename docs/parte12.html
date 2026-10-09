@@ -346,20 +346,20 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte14.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Máquinas de soporte vectorial</span></span></a>
+  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte15.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Máquinas de soporte vectorial con más de dos clases</span></span></a>
+  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte16.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Relación con la regresión logística</span></span></a>
+  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -376,7 +376,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte17.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -393,7 +393,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte17.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -413,7 +413,10 @@ window.Quarto = {
   <li><a href="#construcción-de-un-conjunto-de-datos" id="toc-construcción-de-un-conjunto-de-datos" class="nav-link" data-scroll-target="#construcción-de-un-conjunto-de-datos"><span class="header-section-number">12.3</span> Construcción de un conjunto de datos</a></li>
   <li><a href="#visualización-de-los-datos" id="toc-visualización-de-los-datos" class="nav-link" data-scroll-target="#visualización-de-los-datos"><span class="header-section-number">12.4</span> Visualización de los datos</a></li>
   <li><a href="#no-toda-frontera-que-clasifica-perfectamente-es-igual" id="toc-no-toda-frontera-que-clasifica-perfectamente-es-igual" class="nav-link" data-scroll-target="#no-toda-frontera-que-clasifica-perfectamente-es-igual"><span class="header-section-number">12.5</span> No toda frontera que clasifica perfectamente es igual</a></li>
-  <li><a href="#ajuste-de-un-clasificador-lineal" id="toc-ajuste-de-un-clasificador-lineal" class="nav-link" data-scroll-target="#ajuste-de-un-clasificador-lineal"><span class="header-section-number">12.6</span> Ajuste de un clasificador lineal</a></li>
+  <li><a href="#ajuste-del-clasificador-de-margen-máximo" id="toc-ajuste-del-clasificador-de-margen-máximo" class="nav-link" data-scroll-target="#ajuste-del-clasificador-de-margen-máximo"><span class="header-section-number">12.6</span> Ajuste del clasificador de margen máximo</a>
+  <ul>
+  <li><a href="#cómo-lo-implementamos-en-python" id="toc-cómo-lo-implementamos-en-python" class="nav-link" data-scroll-target="#cómo-lo-implementamos-en-python"><span class="header-section-number">12.6.1</span> ¿Cómo lo implementamos en Python?</a></li>
+  </ul></li>
   <li><a href="#la-función-de-decisión" id="toc-la-función-de-decisión" class="nav-link" data-scroll-target="#la-función-de-decisión"><span class="header-section-number">12.7</span> La función de decisión</a></li>
   <li><a href="#qué-significa-el-valor-de-la-función-de-decisión" id="toc-qué-significa-el-valor-de-la-función-de-decisión" class="nav-link" data-scroll-target="#qué-significa-el-valor-de-la-función-de-decisión"><span class="header-section-number">12.8</span> ¿Qué significa el valor de la función de decisión?</a></li>
   <li><a href="#frontera-de-decisión-margen-y-vectores-de-soporte" id="toc-frontera-de-decisión-margen-y-vectores-de-soporte" class="nav-link" data-scroll-target="#frontera-de-decisión-margen-y-vectores-de-soporte"><span class="header-section-number">12.9</span> Frontera de decisión, margen y vectores de soporte</a></li>
@@ -453,7 +456,7 @@ window.Quarto = {
 </header>
 
 
-<p>En esta primera práctica estudiaremos la interpretación geométrica del clasificador de margen máximo.</p>
+<p>En esta primera sección estudiaremos la interpretación geométrica del clasificador de margen máximo.</p>
 <p>Lo que queremos es:</p>
 <ul>
 <li>identificar una frontera de decisión lineal;</li>
@@ -465,6 +468,14 @@ window.Quarto = {
 <li>reconocer algunas limitaciones del clasificador de margen máximo.</li>
 </ul>
 <p>En esta primera parte trabajaremos con datos sintéticos en dos dimensiones. Esto nos permitirá visualizar directamente la geometría del problema.</p>
+<div class="diapositivas">
+<div class="diapositivas-title">
+<p>📝 <strong>Diapositivas</strong></p>
+</div>
+<div class="diapositivas-body">
+<p><a href="https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/4.1-Clasificador_de_Margen_Maximo.pdf">Ver diapositivas Clasificador de Margen Máximo</a></p>
+</div>
+</div>
 <section id="antes-de-comenzar" class="level2" data-number="12.1">
 <h2 data-number="12.1" class="anchored" data-anchor-id="antes-de-comenzar"><span class="header-section-number">12.1</span> Antes de comenzar</h2>
 <p>Antes de utilizar una implementación de máquinas de soporte vectorial, recuperemos algunas ideas.</p>
@@ -480,9 +491,7 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <p>Supongamos que tenemos dos variables predictoras, <span class="math inline">\(X_1\)</span> y <span class="math inline">\(X_2\)</span>.</p>
 <p>¿Qué objeto geométrico representa la ecuación</p>
-<p><span class="math display">\[
-\beta_0+\beta_1X_1+\beta_2X_2=0?
-\]</span></p>
+<p><span class="math display">\[\beta_0+\beta_1X_1+\beta_2X_2=0?\]</span></p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -497,9 +506,7 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <p>En <span class="math inline">\(\mathbb{R}^2\)</span>, esta ecuación representa una <strong>recta</strong>.</p>
 <p>En general,</p>
-<p><span class="math display">\[
-\beta_0+\beta_1X_1+\cdots+\beta_pX_p=0
-\]</span></p>
+<p><span class="math display">\[\beta_0+\beta_1X_1+\cdots+\beta_pX_p=0\]</span></p>
 <p>define un hiperplano de dimensión <span class="math inline">\(p-1\)</span> en <span class="math inline">\(\mathbb{R}^p\)</span>.</p>
 <p>Por ejemplo:</p>
 <ul>
@@ -523,9 +530,7 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <p>Consideremos</p>
-<p><span class="math display">\[
-f(x)=\beta_0+\beta^Tx.
-\]</span></p>
+<p><span class="math display">\[f(x)=\beta_0+\beta^Tx.\]</span></p>
 <p>¿Qué información proporciona el signo de <span class="math inline">\(f(x)\)</span>?</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
@@ -541,18 +546,12 @@ f(x)=\beta_0+\beta^Tx.
 <div class="callout-body-container callout-body">
 <p>El signo indica de qué lado del hiperplano se encuentra la observación.</p>
 <p>Si</p>
-<p><span class="math display">\[
-f(x)&gt;0,
-\]</span></p>
+<p><span class="math display">\[f(x)&gt;0,\]</span></p>
 <p>la observación está de un lado de la frontera, mientras que si</p>
-<p><span class="math display">\[
-f(x)&lt;0,
-\]</span></p>
+<p><span class="math display">\[f(x)&lt;0,\]</span></p>
 <p>se encuentra del otro.</p>
 <p>Por ello podemos construir una regla de clasificación como</p>
-<p><span class="math display">\[
-\widehat y(x)=\operatorname{sign}(f(x)).
-\]</span></p>
+<p><span class="math display">\[\widehat y(x)=\operatorname{sign}(f(x)).\]</span></p>
 </div>
 </div>
 </div>
@@ -593,7 +592,7 @@ f(x)&lt;0,
 <section id="preparación" class="level2" data-number="12.2">
 <h2 data-number="12.2" class="anchored" data-anchor-id="preparación"><span class="header-section-number">12.2</span> Preparación</h2>
 <p>Comenzamos importando las bibliotecas que utilizaremos.</p>
-<div id="4e63d17a" class="cell" data-execution_count="1">
+<div id="253de7fd" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -612,7 +611,7 @@ f(x)&lt;0,
 <h2 data-number="12.3" class="anchored" data-anchor-id="construcción-de-un-conjunto-de-datos"><span class="header-section-number">12.3</span> Construcción de un conjunto de datos</h2>
 <p>Para comenzar utilizaremos un conjunto pequeño de datos sintéticos.</p>
 <p>Queremos que las dos clases sean claramente separables para poder visualizar la idea del margen máximo.</p>
-<div id="415578e8" class="cell" data-execution_count="2">
+<div id="55978afa" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([</span>
@@ -634,15 +633,11 @@ f(x)&lt;0,
 </details>
 </div>
 <p>Tenemos dos variables predictoras:</p>
-<p><span class="math display">\[
-X_1,\qquad X_2,
-\]</span></p>
+<p><span class="math display">\[X_1,\qquad X_2,\]</span></p>
 <p>y una respuesta binaria:</p>
-<p><span class="math display">\[
-Y\in\{-1,+1\}.
-\]</span></p>
+<p><span class="math display">\[Y\in\{-1,+1\}.\]</span></p>
 <p>Podemos colocar los datos en un <code>DataFrame</code> para inspeccionarlos.</p>
-<div id="9dfa6ab7" class="cell" data-execution_count="3">
+<div id="aa02ca95" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>datos <span class="op">=</span> pd.DataFrame(</span>
@@ -738,7 +733,7 @@ Y\in\{-1,+1\}.
 <section id="visualización-de-los-datos" class="level2" data-number="12.4">
 <h2 data-number="12.4" class="anchored" data-anchor-id="visualización-de-los-datos"><span class="header-section-number">12.4</span> Visualización de los datos</h2>
 <p>Antes de ajustar cualquier modelo, visualicemos las observaciones.</p>
-<div id="43ab00ae" class="cell" data-execution_count="4">
+<div id="2c72bb65" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">6</span>))</span>
@@ -812,11 +807,9 @@ Y\in\{-1,+1\}.
 <h2 data-number="12.5" class="anchored" data-anchor-id="no-toda-frontera-que-clasifica-perfectamente-es-igual"><span class="header-section-number">12.5</span> No toda frontera que clasifica perfectamente es igual</h2>
 <p>Construyamos algunas rectas que separan las dos clases.</p>
 <p>Una recta puede escribirse como</p>
-<p><span class="math display">\[
-x_2=mx_1+b,
-\]</span></p>
+<p><span class="math display">\[x_2=mx_1+b,\]</span></p>
 <p>donde <span class="math inline">\(m\)</span> representa la pendiente y <span class="math inline">\(b\)</span> la intersección con el eje vertical.</p>
-<div id="43ccfa83" class="cell" data-execution_count="5">
+<div id="e451a649" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>x_grid <span class="op">=</span> np.linspace(<span class="fl">0.5</span>, <span class="fl">6.5</span>, <span class="dv">200</span>)</span>
@@ -827,7 +820,7 @@ x_2=mx_1+b,
 </details>
 </div>
 <p>Visualicemos estas posibles fronteras.</p>
-<div id="ed2f967a" class="cell" data-execution_count="6">
+<div id="3e1fb223" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
@@ -902,11 +895,23 @@ x_2=mx_1+b,
 </div>
 </div>
 </section>
-<section id="ajuste-de-un-clasificador-lineal" class="level2" data-number="12.6">
-<h2 data-number="12.6" class="anchored" data-anchor-id="ajuste-de-un-clasificador-lineal"><span class="header-section-number">12.6</span> Ajuste de un clasificador lineal</h2>
-<p>Ahora utilizaremos <code>SVC</code> con un kernel lineal.</p>
-<p>Para aproximarnos al comportamiento de un clasificador de margen duro utilizaremos un valor grande de <code>C</code>.</p>
-<div id="c5f4356c" class="cell" data-execution_count="7">
+<section id="ajuste-del-clasificador-de-margen-máximo" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="ajuste-del-clasificador-de-margen-máximo"><span class="header-section-number">12.6</span> Ajuste del clasificador de margen máximo</h2>
+<p>En la parte teórica estudiamos el <strong>clasificador de margen máximo</strong>, que busca un hiperplano separador de la forma</p>
+<p><span class="math display">\[
+\beta_0+\boldsymbol{\beta}^{T}\mathbf{x}=0
+\]</span></p>
+<p>que maximice la distancia a las observaciones más cercanas.</p>
+<p>Recordemos que este clasificador requiere que los datos sean <strong>linealmente separables</strong>.</p>
+<section id="cómo-lo-implementamos-en-python" class="level3" data-number="12.6.1">
+<h3 data-number="12.6.1" class="anchored" data-anchor-id="cómo-lo-implementamos-en-python"><span class="header-section-number">12.6.1</span> ¿Cómo lo implementamos en Python?</h3>
+<p>Utilizaremos <code>SVC</code> de <code>scikit-learn</code>, que implementa una versión más general del clasificador que acabamos de estudiar.</p>
+<p>Por ahora necesitamos indicar dos cosas:</p>
+<ul>
+<li><code>kernel="linear"</code>: queremos una frontera de decisión lineal, es decir, un hiperplano.</li>
+<li><code>C=1e6</code>: es una configuración que, para nuestros datos separables, permite aproximarnos al clasificador de margen máximo.</li>
+</ul>
+<div id="ac983ad6" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> SVC(</span>
@@ -2122,23 +2127,24 @@ function forceTheme(elementId) {
 forceTheme('sk-container-id-1');</script>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Advertencia</span>Nota
+<span class="screen-reader-only">Nota</span>¿Por qué aparece el parámetro <code>C</code>?
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><code>SVC</code> implementa un clasificador de soporte vectorial de margen suave. Utilizar un valor muy grande de <code>C</code> hace que las violaciones sean penalizadas fuertemente y, para estos datos separables, nos permite aproximarnos al comportamiento del clasificador de margen máximo.</p>
-<p>No debemos interpretar <code>C=1e6</code> como una elección recomendada en general.</p>
-<p>Más adelante estudiaremos cuidadosamente el papel de <code>C</code>.</p>
+<p>El clasificador de margen máximo que estudiamos en las diapositivas <strong>no tiene un parámetro <code>C</code></strong>.</p>
+<p>Este parámetro aparece porque estamos utilizando <code>SVC</code>, una implementación más general que permite trabajar también con datos que no son perfectamente separables.</p>
+<p>En este primer ejemplo utilizamos un valor muy grande de <code>C</code> únicamente para reproducir el comportamiento del clasificador de margen máximo sobre nuestros datos separables.</p>
+<p><strong>Por ahora no necesitamos modificar ni interpretar <code>C</code>.</strong> En la siguiente sección estudiaremos su significado y cómo influye en la frontera de decisión.</p>
 </div>
 </div>
 <p>Podemos obtener las predicciones sobre las observaciones de entrenamiento.</p>
-<div id="8963538b" class="cell" data-execution_count="8">
+<div id="aafe033a" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> modelo.predict(X)</span>
@@ -2150,7 +2156,7 @@ forceTheme('sk-container-id-1');</script>
 </div>
 </div>
 <p>Y calcular la exactitud:</p>
-<div id="928d4b22" class="cell" data-execution_count="9">
+<div id="9840ff96" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>accuracy_score(y, y_pred)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2163,16 +2169,15 @@ forceTheme('sk-container-id-1');</script>
 <p>Sin embargo, nuestro interés principal no es todavía la exactitud.</p>
 <p>Queremos estudiar la <strong>geometría de la solución</strong>.</p>
 </section>
+</section>
 <section id="la-función-de-decisión" class="level2" data-number="12.7">
 <h2 data-number="12.7" class="anchored" data-anchor-id="la-función-de-decisión"><span class="header-section-number">12.7</span> La función de decisión</h2>
 <p>El modelo ajustado construye una función de la forma</p>
-<p><span class="math display">\[
-f(x)
+<p><span class="math display">\[f(x)
 =
-\beta_0+\beta_1x_1+\beta_2x_2.
-\]</span></p>
+\beta_0+\beta_1x_1+\beta_2x_2.\]</span></p>
 <p>Podemos obtener los coeficientes mediante:</p>
-<div id="a8f8030f" class="cell" data-execution_count="10">
+<div id="c81bd1e3" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>modelo.coef_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2182,7 +2187,7 @@ f(x)
 </div>
 </div>
 <p>y el término independiente mediante:</p>
-<div id="89c2a2a4" class="cell" data-execution_count="11">
+<div id="5f9e0f27" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>modelo.intercept_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2192,7 +2197,7 @@ f(x)
 </div>
 </div>
 <p>Guardemos estos valores.</p>
-<div id="83553686" class="cell" data-execution_count="12">
+<div id="d70f9cb5" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>beta <span class="op">=</span> modelo.coef_[<span class="dv">0</span>]</span>
@@ -2207,28 +2212,20 @@ beta = [0.54086945 0.45021752]</code></pre>
 </div>
 </div>
 <p>Por tanto, nuestra función de decisión tiene la forma</p>
-<p><span class="math display">\[
-f(x)
+<p><span class="math display">\[f(x)
 =
-\beta_0+\beta_1x_1+\beta_2x_2.
-\]</span></p>
+\beta_0+\beta_1x_1+\beta_2x_2.\]</span></p>
 <p>La frontera de decisión está formada por los puntos que satisfacen</p>
-<p><span class="math display">\[
-f(x)=0.
-\]</span></p>
+<p><span class="math display">\[f(x)=0.\]</span></p>
 <p>Es decir,</p>
-<p><span class="math display">\[
-\beta_0+\beta_1x_1+\beta_2x_2=0.
-\]</span></p>
+<p><span class="math display">\[\beta_0+\beta_1x_1+\beta_2x_2=0.\]</span></p>
 </section>
 <section id="qué-significa-el-valor-de-la-función-de-decisión" class="level2" data-number="12.8">
 <h2 data-number="12.8" class="anchored" data-anchor-id="qué-significa-el-valor-de-la-función-de-decisión"><span class="header-section-number">12.8</span> ¿Qué significa el valor de la función de decisión?</h2>
 <p>Podemos calcular</p>
-<p><span class="math display">\[
-f(x_i)
-\]</span></p>
+<p><span class="math display">\[f(x_i)\]</span></p>
 <p>para cada observación mediante <code>decision_function</code>.</p>
-<div id="c4964892" class="cell" data-execution_count="13">
+<div id="ce756dd5" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>decision <span class="op">=</span> modelo.decision_function(X)</span>
@@ -2241,7 +2238,7 @@ f(x_i)
 </div>
 </div>
 <p>Agreguemos estos valores a nuestra tabla.</p>
-<div id="081359df" class="cell" data-execution_count="14">
+<div id="e1e98b9f" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>datos[<span class="st">"Decision"</span>] <span class="op">=</span> decision</span>
@@ -2353,13 +2350,9 @@ f(x_i)
 </div>
 <p>El signo de <code>Decision</code> determina de qué lado de la frontera se encuentra cada observación.</p>
 <p>En términos generales,</p>
-<p><span class="math display">\[
-f(x)&gt;0
-\]</span></p>
+<p><span class="math display">\[f(x)&gt;0\]</span></p>
 <p>corresponde a una clase y</p>
-<p><span class="math display">\[
-f(x)&lt;0
-\]</span></p>
+<p><span class="math display">\[f(x)&lt;0\]</span></p>
 <p>a la otra.</p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -2386,9 +2379,7 @@ f(x)&lt;0
 <div class="callout-body-container callout-body">
 <p>Como las clases están codificadas mediante <span class="math inline">\(-1\)</span> y <span class="math inline">\(+1\)</span>, esperamos que las observaciones de la clase <span class="math inline">\(+1\)</span> tengan valores positivos de la función de decisión y que las observaciones de la clase <span class="math inline">\(-1\)</span> tengan valores negativos.</p>
 <p>Por tanto, para observaciones correctamente clasificadas,</p>
-<p><span class="math display">\[
-y_i f(x_i)&gt;0.
-\]</span></p>
+<p><span class="math display">\[y_i f(x_i)&gt;0.\]</span></p>
 </div>
 </div>
 </div>
@@ -2405,7 +2396,7 @@ y_i f(x_i)&gt;0.
 <li>los vectores de soporte.</li>
 </ul>
 <p>La reutilizaremos posteriormente en otras partes de la unidad.</p>
-<div id="f82e1f98" class="cell" data-execution_count="15">
+<div id="b372ba03" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> graficar_svm_lineal(modelo, X, y, titulo<span class="op">=</span><span class="st">"Clasificador lineal"</span>):</span>
@@ -2458,7 +2449,7 @@ y_i f(x_i)&gt;0.
 </details>
 </div>
 <p>Ahora utilizamos la función.</p>
-<div id="709cbff1" class="cell" data-execution_count="16">
+<div id="9bd20a77" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>graficar_svm_lineal(</span>
@@ -2478,24 +2469,18 @@ y_i f(x_i)&gt;0.
 </div>
 <p>En la gráfica aparecen tres líneas.</p>
 <p>La línea central corresponde a</p>
-<p><span class="math display">\[
-f(x)=0.
-\]</span></p>
+<p><span class="math display">\[f(x)=0.\]</span></p>
 <p>Esta es la <strong>frontera de decisión</strong>.</p>
 <p>Las otras dos corresponden a</p>
-<p><span class="math display">\[
-f(x)=1
-\]</span></p>
+<p><span class="math display">\[f(x)=1\]</span></p>
 <p>y</p>
-<p><span class="math display">\[
-f(x)=-1.
-\]</span></p>
+<p><span class="math display">\[f(x)=-1.\]</span></p>
 <p>Estas líneas delimitan el margen.</p>
 </section>
 <section id="los-vectores-de-soporte" class="level2" data-number="12.10">
 <h2 data-number="12.10" class="anchored" data-anchor-id="los-vectores-de-soporte"><span class="header-section-number">12.10</span> Los vectores de soporte</h2>
 <p>Podemos consultar directamente cuáles observaciones fueron identificadas como vectores de soporte.</p>
-<div id="e4bec10c" class="cell" data-execution_count="17">
+<div id="7748715c" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>modelo.support_vectors_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2507,7 +2492,7 @@ f(x)=-1.
 </div>
 </div>
 <p>También podemos obtener sus índices dentro del conjunto de entrenamiento.</p>
-<div id="b8a89bcc" class="cell" data-execution_count="18">
+<div id="cef732b2" class="cell" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>modelo.support_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2517,7 +2502,7 @@ f(x)=-1.
 </div>
 </div>
 <p>Y el número de vectores de soporte correspondiente a cada clase:</p>
-<div id="3805e619" class="cell" data-execution_count="19">
+<div id="bbde58ab" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>modelo.n_support_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2565,21 +2550,21 @@ f(x)=-1.
 <p>Podemos modificar ligeramente su posición y volver a ajustar el modelo.</p>
 <p>Primero identificaremos visualmente una observación alejada de la frontera.</p>
 <p>Crearemos una copia de los datos.</p>
-<div id="fe0077e8" class="cell" data-execution_count="20">
+<div id="624e41c2" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>X_modificado <span class="op">=</span> X.copy()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Moveremos una observación de la clase <span class="math inline">\(-1\)</span> todavía más hacia la región correspondiente a su propia clase.</p>
-<div id="aeaa111b" class="cell" data-execution_count="21">
+<div id="f9656745" class="cell" data-execution_count="21">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>X_modificado[<span class="dv">0</span>] <span class="op">=</span> [<span class="fl">0.5</span>, <span class="fl">0.5</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Ajustamos nuevamente el modelo.</p>
-<div id="b06a7942" class="cell" data-execution_count="22">
+<div id="b895afda" class="cell" data-execution_count="22">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>modelo_modificado <span class="op">=</span> SVC(</span>
@@ -3796,7 +3781,7 @@ forceTheme('sk-container-id-2');</script>
 </div>
 </div>
 <p>Visualizamos.</p>
-<div id="b86c7191" class="cell" data-execution_count="23">
+<div id="ce3fbf2c" class="cell" data-execution_count="23">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>graficar_svm_lineal(</span>
@@ -3815,7 +3800,7 @@ forceTheme('sk-container-id-2');</script>
 </div>
 </div>
 <p>Comparemos los coeficientes.</p>
-<div id="be81d1f2" class="cell" data-execution_count="24">
+<div id="078ca9e6" class="cell" data-execution_count="24">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Modelo original"</span>)</span>
@@ -3873,7 +3858,7 @@ Modelo modificado
 <h2 data-number="12.12" class="anchored" data-anchor-id="ahora-modifiquemos-una-observación-importante"><span class="header-section-number">12.12</span> Ahora modifiquemos una observación importante</h2>
 <p>Hagamos el experimento contrario.</p>
 <p>Primero consultemos los índices de los vectores de soporte.</p>
-<div id="e6af1de3" class="cell" data-execution_count="25">
+<div id="426d3ed1" class="cell" data-execution_count="25">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>modelo.support_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -3883,7 +3868,7 @@ Modelo modificado
 </div>
 </div>
 <p>Seleccionaremos uno de ellos y lo moveremos ligeramente.</p>
-<div id="c69598f9" class="cell" data-execution_count="26">
+<div id="a9307a49" class="cell" data-execution_count="26">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>indice_soporte <span class="op">=</span> modelo.support_[<span class="dv">0</span>]</span>
@@ -3897,7 +3882,7 @@ Modelo modificado
 </details>
 </div>
 <p>Ajustamos nuevamente el modelo.</p>
-<div id="c7ae75c9" class="cell" data-execution_count="27">
+<div id="cb703d63" class="cell" data-execution_count="27">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>modelo_soporte_modificado <span class="op">=</span> SVC(</span>
@@ -5117,7 +5102,7 @@ forceTheme('sk-container-id-3');</script>
 </div>
 </div>
 <p>Y visualizamos el resultado.</p>
-<div id="b3f33644" class="cell" data-execution_count="28">
+<div id="fc0d24ce" class="cell" data-execution_count="28">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>graficar_svm_lineal(</span>
@@ -5136,7 +5121,7 @@ forceTheme('sk-container-id-3');</script>
 </div>
 </div>
 <p>Comparemos nuevamente los coeficientes.</p>
-<div id="76d24260" class="cell" data-execution_count="29">
+<div id="c51a1c5f" class="cell" data-execution_count="29">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Modelo original"</span>)</span>
@@ -5202,7 +5187,7 @@ Modelo después de modificar un vector de soporte
 <p>Sin embargo, en aprendizaje supervisado nuestro objetivo no es únicamente clasificar correctamente las observaciones conocidas.</p>
 <p>Queremos que el modelo funcione bien sobre <strong>nuevas observaciones</strong>.</p>
 <p>Para recordar esta idea, construiremos un conjunto ligeramente mayor.</p>
-<div id="9a10672e" class="cell" data-execution_count="30">
+<div id="1d0172fb" class="cell" data-execution_count="30">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">123</span>)</span>
@@ -5228,7 +5213,7 @@ Modelo después de modificar un vector de soporte
 </details>
 </div>
 <p>Dividimos los datos en entrenamiento y prueba.</p>
-<div id="e30de8f0" class="cell" data-execution_count="31">
+<div id="36cba78a" class="cell" data-execution_count="31">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
@@ -5241,7 +5226,7 @@ Modelo después de modificar un vector de soporte
 </details>
 </div>
 <p>Ajustamos el modelo utilizando únicamente entrenamiento.</p>
-<div id="f8446dc1" class="cell" data-execution_count="32">
+<div id="e06a0291" class="cell" data-execution_count="32">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>modelo_train <span class="op">=</span> SVC(</span>
@@ -6458,7 +6443,7 @@ forceTheme('sk-container-id-4');</script>
 </div>
 </div>
 <p>Calculamos la exactitud en ambos conjuntos.</p>
-<div id="b0d20863" class="cell" data-execution_count="33">
+<div id="da29c279" class="cell" data-execution_count="33">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>acc_train <span class="op">=</span> accuracy_score(</span>
@@ -6497,13 +6482,11 @@ Accuracy prueba: 1.0</code></pre>
 <section id="limitación-del-margen-máximo" class="level2" data-number="12.14">
 <h2 data-number="12.14" class="anchored" data-anchor-id="limitación-del-margen-máximo"><span class="header-section-number">12.14</span> Limitación del margen máximo</h2>
 <p>El conjunto de datos con el que comenzamos tenía una propiedad muy especial:</p>
-<p><span class="math display">\[
-\text{las clases eran linealmente separables}.
-\]</span></p>
+<p><span class="math display">\[\text{las clases eran linealmente separables}.\]</span></p>
 <p>Pero en datos reales esto no siempre ocurre.</p>
 <p>¿Qué sucedería si una observación de una clase apareciera dentro de la región ocupada por la otra?</p>
 <p>Por ejemplo:</p>
-<div id="34f6582a" class="cell" data-execution_count="34">
+<div id="28bede4c" class="cell" data-execution_count="34">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>X_no_separable <span class="op">=</span> np.vstack([</span>
@@ -6518,7 +6501,7 @@ Accuracy prueba: 1.0</code></pre>
 </details>
 </div>
 <p>Visualicemos.</p>
-<div id="6a107507" class="cell" data-execution_count="35">
+<div id="8eaf9d1f" class="cell" data-execution_count="35">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">6</span>))</span>
@@ -6600,12 +6583,10 @@ Accuracy prueba: 1.0</code></pre>
 <section id="ejercicio-2" class="level3" data-number="12.15.2">
 <h3 data-number="12.15.2" class="anchored" data-anchor-id="ejercicio-2"><span class="header-section-number">12.15.2</span> Ejercicio 2</h3>
 <p>Calcula manualmente el valor de la función de decisión para la primera observación:</p>
-<p><span class="math display">\[
-x_1.
-\]</span></p>
+<p><span class="math display">\[x_1.\]</span></p>
 <p>Utiliza los valores almacenados en <code>beta_0</code> y <code>beta</code>.</p>
 <p>Después compara tu resultado con:</p>
-<div id="c669decf" class="cell" data-execution_count="36">
+<div id="6459aa74" class="cell" data-execution_count="36">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>modelo.decision_function(X[[<span class="dv">0</span>]])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>

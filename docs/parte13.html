@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./parte14.html" rel="next">
+<link href="./parte17.html" rel="next">
 <link href="./parte12.html" rel="prev">
 <link href="./figures/favicon.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
@@ -346,20 +346,20 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte14.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Máquinas de soporte vectorial</span></span></a>
+  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte15.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Máquinas de soporte vectorial con más de dos clases</span></span></a>
+  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte16.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Relación con la regresión logística</span></span></a>
+  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -376,7 +376,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte17.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -393,7 +393,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte17.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -471,6 +471,14 @@ window.Quarto = {
 <li>explicar por qué el escalamiento de las variables es importante para una SVM;</li>
 <li>utilizar <code>StandardScaler</code> y <code>Pipeline</code> para realizar correctamente el preprocesamiento.</li>
 </ul>
+<div class="diapositivas">
+<div class="diapositivas-title">
+<p>📝 <strong>Diapositivas</strong></p>
+</div>
+<div class="diapositivas-body">
+<p><a href="https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/4.2-Clasificador_de_Soporte_Vectorial.pdf">Ver diapositivas Clasificador de Soporte Vectorial</a></p>
+</div>
+</div>
 <section id="antes-de-comenzar" class="level2" data-number="13.1">
 <h2 data-number="13.1" class="anchored" data-anchor-id="antes-de-comenzar"><span class="header-section-number">13.1</span> Antes de comenzar</h2>
 <p>Recuperemos algunas ideas de la práctica anterior.</p>
@@ -571,7 +579,7 @@ window.Quarto = {
 <section id="preparación" class="level2" data-number="13.2">
 <h2 data-number="13.2" class="anchored" data-anchor-id="preparación"><span class="header-section-number">13.2</span> Preparación</h2>
 <p>Importamos las bibliotecas que utilizaremos.</p>
-<div id="397f0f3f" class="cell" data-execution_count="1">
+<div id="eac4e257" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -594,7 +602,7 @@ window.Quarto = {
 <li>los bordes del margen;</li>
 <li>los vectores de soporte.</li>
 </ul>
-<div id="8a6620f4" class="cell" data-execution_count="2">
+<div id="a640f2e9" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> graficar_svm_lineal(</span>
@@ -660,7 +668,7 @@ window.Quarto = {
 <h2 data-number="13.3" class="anchored" data-anchor-id="datos-con-traslape"><span class="header-section-number">13.3</span> Datos con traslape</h2>
 <p>En la práctica anterior construimos dos grupos claramente separables.</p>
 <p>Ahora queremos una situación más realista: dos clases que presenten cierto grado de traslape.</p>
-<div id="ecdaaeda" class="cell" data-execution_count="3">
+<div id="dee89781" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> make_blobs(</span>
@@ -676,17 +684,15 @@ window.Quarto = {
 </div>
 <p><code>make_blobs()</code> utiliza originalmente las etiquetas <span class="math inline">\(0\)</span> y <span class="math inline">\(1\)</span>.</p>
 <p>Para mantener la notación utilizada en la teoría, las transformaremos a</p>
-<p><span class="math display">\[
-Y\in\{-1,+1\}.
-\]</span></p>
-<div id="c9e1970b" class="cell" data-execution_count="4">
+<p><span class="math display">\[Y\in\{-1,+1\}.\]</span></p>
+<div id="5285d751" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.where(y <span class="op">==</span> <span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Visualizamos los datos.</p>
-<div id="704768c9" class="cell" data-execution_count="5">
+<div id="9aa4c0c1" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
@@ -759,80 +765,54 @@ Y\in\{-1,+1\}.
 <section id="del-margen-duro-al-margen-suave" class="level2" data-number="13.4">
 <h2 data-number="13.4" class="anchored" data-anchor-id="del-margen-duro-al-margen-suave"><span class="header-section-number">13.4</span> Del margen duro al margen suave</h2>
 <p>En el clasificador de margen máximo exigíamos, después de fijar la escala de los coeficientes,</p>
-<p><span class="math display">\[
-y_i f(x_i)\geq 1.
-\]</span></p>
+<p><span class="math display">\[y_i f(x_i)\geq 1.\]</span></p>
 <p>Ahora permitimos violaciones mediante variables de holgura <span class="math inline">\(\epsilon_i\)</span>:</p>
-<p><span class="math display">\[
-y_i f(x_i)\geq 1-\epsilon_i,
-\]</span></p>
+<p><span class="math display">\[y_i f(x_i)\geq 1-\epsilon_i,\]</span></p>
 <p>con</p>
-<p><span class="math display">\[
-\epsilon_i\geq 0.
-\]</span></p>
+<p><span class="math display">\[\epsilon_i\geq 0.\]</span></p>
 <p>Recordemos su interpretación:</p>
-<p><span class="math display">\[
-\epsilon_i=0
-\]</span></p>
+<p><span class="math display">\[\epsilon_i=0\]</span></p>
 <p>indica que la observación no necesita violar el margen;</p>
-<p><span class="math display">\[
-0&lt;\epsilon_i&lt;1
-\]</span></p>
+<p><span class="math display">\[0&lt;\epsilon_i&lt;1\]</span></p>
 <p>permite que esté correctamente clasificada pero dentro del margen;</p>
 <p>mientras que</p>
-<p><span class="math display">\[
-\epsilon_i&gt;1
-\]</span></p>
+<p><span class="math display">\[\epsilon_i&gt;1\]</span></p>
 <p>puede corresponder a una observación mal clasificada.</p>
 <p>En la implementación que utilizaremos, estas violaciones son penalizadas mediante un parámetro <span class="math inline">\(C\)</span>.</p>
 </section>
 <section id="el-parámetro-c-en-scikit-learn" class="level2" data-number="13.5">
 <h2 data-number="13.5" class="anchored" data-anchor-id="el-parámetro-c-en-scikit-learn"><span class="header-section-number">13.5</span> El parámetro <code>C</code> en <code>scikit-learn</code></h2>
 <p><code>SVC</code> utiliza una formulación equivalente al problema</p>
-<p><span class="math display">\[
-\min_{\beta_0,\beta,\epsilon}
+<p><span class="math display">\[\min_{\beta_0,\beta,\epsilon}
 \left\{
 \frac{1}{2}\|\beta\|^2
 +
 C\sum_{i=1}^{n}\epsilon_i
-\right\}.
-\]</span></p>
+\right\}.\]</span></p>
 <p>El primer término favorece un margen amplio:</p>
-<p><span class="math display">\[
-\frac{1}{2}\|\beta\|^2.
-\]</span></p>
+<p><span class="math display">\[\frac{1}{2}\|\beta\|^2.\]</span></p>
 <p>El segundo penaliza las violaciones:</p>
-<p><span class="math display">\[
-C\sum_{i=1}^{n}\epsilon_i.
-\]</span></p>
+<p><span class="math display">\[C\sum_{i=1}^{n}\epsilon_i.\]</span></p>
 <p>Por tanto, en esta parametrización:</p>
-<p><span class="math display">\[
-\boxed{
+<p><span class="math display">\[\boxed{
 C\text{ pequeño}
 \Rightarrow
 \text{menor penalización de las violaciones}
-}
-\]</span></p>
+}\]</span></p>
 <p>y</p>
-<p><span class="math display">\[
-\boxed{
+<p><span class="math display">\[\boxed{
 C\text{ grande}
 \Rightarrow
 \text{mayor penalización de las violaciones}.
-}
-\]</span></p>
+}\]</span></p>
 <p>Otra forma de decirlo es:</p>
-<p><span class="math display">\[
-C\downarrow
+<p><span class="math display">\[C\downarrow
 \Rightarrow
-\text{mayor regularización},
-\]</span></p>
+\text{mayor regularización},\]</span></p>
 <p>mientras que</p>
-<p><span class="math display">\[
-C\uparrow
+<p><span class="math display">\[C\uparrow
 \Rightarrow
-\text{menor regularización}.
-\]</span></p>
+\text{menor regularización}.\]</span></p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -852,10 +832,8 @@ C\uparrow
 <section id="primer-clasificador-de-margen-suave" class="level2" data-number="13.6">
 <h2 data-number="13.6" class="anchored" data-anchor-id="primer-clasificador-de-margen-suave"><span class="header-section-number">13.6</span> Primer clasificador de margen suave</h2>
 <p>Comencemos con</p>
-<p><span class="math display">\[
-C=1.
-\]</span></p>
-<div id="d6e0dae9" class="cell" data-execution_count="6">
+<p><span class="math display">\[C=1.\]</span></p>
+<div id="06eab6d3" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>modelo_C1 <span class="op">=</span> SVC(</span>
@@ -2072,7 +2050,7 @@ forceTheme('sk-container-id-1');</script>
 </div>
 </div>
 <p>Visualizamos la solución.</p>
-<div id="23b937e3" class="cell" data-execution_count="7">
+<div id="e8151c78" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>graficar_svm_lineal(</span>
@@ -2102,28 +2080,24 @@ forceTheme('sk-container-id-1');</script>
 <section id="identificando-la-posición-de-las-observaciones" class="level2" data-number="13.7">
 <h2 data-number="13.7" class="anchored" data-anchor-id="identificando-la-posición-de-las-observaciones"><span class="header-section-number">13.7</span> Identificando la posición de las observaciones</h2>
 <p>Podemos calcular</p>
-<p><span class="math display">\[
-f(x_i)
-\]</span></p>
+<p><span class="math display">\[f(x_i)\]</span></p>
 <p>mediante:</p>
-<div id="8bdc9c7b" class="cell" data-execution_count="8">
+<div id="96873294" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>decision <span class="op">=</span> modelo_C1.decision_function(X)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Y después calcular</p>
-<p><span class="math display">\[
-y_i f(x_i).
-\]</span></p>
-<div id="0d5bf29f" class="cell" data-execution_count="9">
+<p><span class="math display">\[y_i f(x_i).\]</span></p>
+<div id="b2087951" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>margen_funcional <span class="op">=</span> y <span class="op">*</span> decision</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Construimos una tabla.</p>
-<div id="cd5bebd6" class="cell" data-execution_count="10">
+<div id="c9248bec" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>resultados <span class="op">=</span> pd.DataFrame({</span>
@@ -2239,12 +2213,10 @@ y_i f(x_i).
 </div>
 </div>
 <p>La cantidad</p>
-<p><span class="math display">\[
-y_if(x_i)
-\]</span></p>
+<p><span class="math display">\[y_if(x_i)\]</span></p>
 <p>nos permite clasificar geométricamente las observaciones.</p>
 <p>Podemos crear una función sencilla:</p>
-<div id="88026be6" class="cell" data-execution_count="11">
+<div id="dbfc7c0a" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> posicion_margen(valor):</span>
@@ -2260,7 +2232,7 @@ y_if(x_i)
 </details>
 </div>
 <p>Aplicamos la función.</p>
-<div id="19886ad6" class="cell" data-execution_count="12">
+<div id="647aba95" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>resultados[<span class="st">"Posicion"</span>] <span class="op">=</span> (</span>
@@ -2384,7 +2356,7 @@ y_if(x_i)
 </div>
 </div>
 <p>Podemos contar cuántas observaciones aparecen en cada situación.</p>
-<div id="27e05fbe" class="cell" data-execution_count="13">
+<div id="5cb2ddfe" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>resultados[<span class="st">"Posicion"</span>].value_counts()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2408,9 +2380,7 @@ Name: count, dtype: int64</code></pre>
 </div>
 <div class="callout-body-container callout-body">
 <p>¿Qué significa encontrar una observación con</p>
-<p><span class="math display">\[
-0&lt;y_if(x_i)&lt;1?
-\]</span></p>
+<p><span class="math display">\[0&lt;y_if(x_i)&lt;1?\]</span></p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -2424,13 +2394,9 @@ Name: count, dtype: int64</code></pre>
 <div id="callout-10" class="callout-10-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>La observación está correctamente clasificada porque</p>
-<p><span class="math display">\[
-y_if(x_i)&gt;0,
-\]</span></p>
+<p><span class="math display">\[y_if(x_i)&gt;0,\]</span></p>
 <p>pero se encuentra dentro del margen porque</p>
-<p><span class="math display">\[
-y_if(x_i)&lt;1.
-\]</span></p>
+<p><span class="math display">\[y_if(x_i)&lt;1.\]</span></p>
 <p>Por tanto, clasificar correctamente una observación no significa necesariamente que esté fuera del margen.</p>
 </div>
 </div>
@@ -2442,11 +2408,9 @@ y_if(x_i)&lt;1.
 <h2 data-number="13.8" class="anchored" data-anchor-id="qué-ocurre-cuando-cambiamos-c"><span class="header-section-number">13.8</span> ¿Qué ocurre cuando cambiamos <code>C</code>?</h2>
 <p>Ahora realizaremos el experimento principal de esta práctica.</p>
 <p>Ajustaremos varios clasificadores utilizando:</p>
-<p><span class="math display">\[
-C\in
-\{0.01,\;0.1,\;1,\;10,\;100\}.
-\]</span></p>
-<div id="037f0370" class="cell" data-execution_count="14">
+<p><span class="math display">\[C\in
+\{0.01,\;0.1,\;1,\;10,\;100\}.\]</span></p>
+<div id="29dd211e" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>valores_C <span class="op">=</span> [</span>
@@ -2459,7 +2423,7 @@ C\in
 </details>
 </div>
 <p>Primero observaremos cada modelo individualmente.</p>
-<div id="0b67cc9a" class="cell" data-execution_count="15">
+<div id="daf65284" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> C <span class="kw">in</span> valores_C:</span>
@@ -2564,7 +2528,7 @@ C\in
 <li>número total de vectores de soporte;</li>
 <li>número de observaciones dentro del margen o mal clasificadas.</li>
 </ul>
-<div id="c1c3fb2f" class="cell" data-execution_count="16">
+<div id="14bf3855" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>comparacion <span class="op">=</span> []</span>
@@ -2690,7 +2654,7 @@ C\in
 <p>Hasta ahora hemos utilizado las mismas observaciones para ajustar y evaluar los modelos.</p>
 <p>Eso es útil para estudiar su geometría, pero no es suficiente para seleccionar <span class="math inline">\(C\)</span>.</p>
 <p>Dividamos los datos.</p>
-<div id="316d2c9a" class="cell" data-execution_count="17">
+<div id="c8df0f2a" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
@@ -2703,7 +2667,7 @@ C\in
 </details>
 </div>
 <p>Ahora ajustaremos cada modelo utilizando exclusivamente entrenamiento.</p>
-<div id="e1051dcf" class="cell" data-execution_count="18">
+<div id="2ff61f4f" class="cell" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>comparacion_test <span class="op">=</span> []</span>
@@ -2844,7 +2808,7 @@ C\in
 </div>
 <div class="callout-body-container callout-body">
 <p>En esta práctica no estamos intentando encontrar el ``mejor’’ valor de <span class="math inline">\(C\)</span>.</p>
-<p>Nuestro objetivo es comprender <strong>qué cambia en el clasificador cuando modificamos <span class="math inline">\(C\)</span></strong>.</p>
+<p>Nuestro objetivo es comprender <strong>qué cambia en el clasificador cuando modificamos</strong> <span class="math inline">\(C\)</span>.</p>
 <p>La selección sistemática de hiperparámetros se realizará posteriormente mediante validación cruzada.</p>
 </div>
 </div>
@@ -2854,10 +2818,8 @@ C\in
 <p>Hasta ahora <span class="math inline">\(X_1\)</span> y <span class="math inline">\(X_2\)</span> tienen escalas similares.</p>
 <p>Pero imaginemos que medimos exactamente la misma información utilizando unidades diferentes.</p>
 <p>Crearemos una copia de los datos y multiplicaremos la segunda variable por <span class="math inline">\(1000\)</span>:</p>
-<p><span class="math display">\[
-X_2^\ast=1000X_2.
-\]</span></p>
-<div id="1f2b1e65" class="cell" data-execution_count="19">
+<p><span class="math display">\[X_2^\ast=1000X_2.\]</span></p>
+<div id="37d53eb1" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>X_desescalado <span class="op">=</span> X.copy()</span>
@@ -2868,7 +2830,7 @@ X_2^\ast=1000X_2.
 </details>
 </div>
 <p>Observemos los rangos.</p>
-<div id="5692b456" class="cell" data-execution_count="20">
+<div id="7cbbf25c" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(</span>
@@ -2944,7 +2906,7 @@ X_2^\ast=1000X_2.
 <section id="ajuste-sin-escalamiento" class="level2" data-number="13.12">
 <h2 data-number="13.12" class="anchored" data-anchor-id="ajuste-sin-escalamiento"><span class="header-section-number">13.12</span> Ajuste sin escalamiento</h2>
 <p>Ajustemos directamente una SVM lineal.</p>
-<div id="23a5e463" class="cell" data-execution_count="21">
+<div id="b00e419f" class="cell" data-execution_count="21">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>modelo_sin_escalar <span class="op">=</span> SVC(</span>
@@ -4164,7 +4126,7 @@ forceTheme('sk-container-id-2');</script>
 </div>
 </div>
 <p>Podemos inspeccionar sus coeficientes.</p>
-<div id="4530e02a" class="cell" data-execution_count="22">
+<div id="fd0e9d74" class="cell" data-execution_count="22">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>modelo_sin_escalar.coef_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -4193,28 +4155,22 @@ forceTheme('sk-container-id-2');</script>
 <section id="estandarización" class="level2" data-number="13.13">
 <h2 data-number="13.13" class="anchored" data-anchor-id="estandarización"><span class="header-section-number">13.13</span> Estandarización</h2>
 <p>Una transformación común es</p>
-<p><span class="math display">\[
-Z_j
+<p><span class="math display">\[Z_j
 =
-\frac{X_j-\overline X_j}{s_j}.
-\]</span></p>
+\frac{X_j-\overline X_j}{s_j}.\]</span></p>
 <p>Después de estandarizar, cada variable tendrá aproximadamente</p>
-<p><span class="math display">\[
-\text{media}=0
-\]</span></p>
+<p><span class="math display">\[\text{media}=0\]</span></p>
 <p>y</p>
-<p><span class="math display">\[
-\text{desviación estándar}=1.
-\]</span></p>
+<p><span class="math display">\[\text{desviación estándar}=1.\]</span></p>
 <p>Utilizaremos:</p>
-<div id="990f92c5" class="cell" data-execution_count="23">
+<div id="9873a5e9" class="cell" data-execution_count="23">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Ajustamos el transformador:</p>
-<div id="9c9efa05" class="cell" data-execution_count="24">
+<div id="3b3bb50c" class="cell" data-execution_count="24">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>X_escalado <span class="op">=</span> scaler.fit_transform(</span>
@@ -4223,7 +4179,7 @@ Z_j
 </details>
 </div>
 <p>Comprobemos el resultado.</p>
-<div id="d6c64060" class="cell" data-execution_count="25">
+<div id="81931403" class="cell" data-execution_count="25">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(</span>
@@ -4295,7 +4251,7 @@ Z_j
 <section id="ajuste-después-del-escalamiento" class="level2" data-number="13.14">
 <h2 data-number="13.14" class="anchored" data-anchor-id="ajuste-después-del-escalamiento"><span class="header-section-number">13.14</span> Ajuste después del escalamiento</h2>
 <p>Ahora ajustamos nuevamente la SVM.</p>
-<div id="a597e79d" class="cell" data-execution_count="26">
+<div id="8c0a1251" class="cell" data-execution_count="26">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>modelo_escalado <span class="op">=</span> SVC(</span>
@@ -5515,7 +5471,7 @@ forceTheme('sk-container-id-3');</script>
 </div>
 </div>
 <p>Visualizamos los datos transformados.</p>
-<div id="98289237" class="cell" data-execution_count="27">
+<div id="3307acdd" class="cell" data-execution_count="27">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>graficar_svm_lineal(</span>
@@ -5570,7 +5526,7 @@ forceTheme('sk-container-id-3');</script>
 <section id="un-problema-importante-fuga-de-información" class="level2" data-number="13.15">
 <h2 data-number="13.15" class="anchored" data-anchor-id="un-problema-importante-fuga-de-información"><span class="header-section-number">13.15</span> Un problema importante: fuga de información</h2>
 <p>En el ejemplo anterior utilizamos:</p>
-<div id="6b8156fb" class="cell" data-execution_count="28">
+<div id="37b776aa" class="cell" data-execution_count="28">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>scaler.fit_transform(X_desescalado)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -5702,13 +5658,9 @@ forceTheme('sk-container-id-3');</script>
 <p>Sin embargo, <strong>esto no es lo que debemos hacer cuando evaluamos un modelo</strong>.</p>
 <p>Si tenemos entrenamiento y prueba, los parámetros del escalamiento deben estimarse utilizando únicamente el conjunto de entrenamiento.</p>
 <p>Es decir, debemos calcular</p>
-<p><span class="math display">\[
-\overline X_j
-\]</span></p>
+<p><span class="math display">\[\overline X_j\]</span></p>
 <p>y</p>
-<p><span class="math display">\[
-s_j
-\]</span></p>
+<p><span class="math display">\[s_j\]</span></p>
 <p>usando entrenamiento.</p>
 <p>Después utilizamos esos mismos valores para transformar el conjunto de prueba.</p>
 <p>No debemos calcular nuevamente la media y desviación estándar sobre test.</p>
@@ -5716,7 +5668,7 @@ s_j
 <section id="forma-correcta-con-entrenamiento-y-prueba" class="level2" data-number="13.16">
 <h2 data-number="13.16" class="anchored" data-anchor-id="forma-correcta-con-entrenamiento-y-prueba"><span class="header-section-number">13.16</span> Forma correcta con entrenamiento y prueba</h2>
 <p>Dividamos los datos antes de realizar el escalamiento.</p>
-<div id="baf74e84" class="cell" data-execution_count="29">
+<div id="8caee04a" class="cell" data-execution_count="29">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
@@ -5729,7 +5681,7 @@ s_j
 </details>
 </div>
 <p>Ajustamos el escalador únicamente con entrenamiento:</p>
-<div id="9696b217" class="cell" data-execution_count="30">
+<div id="60524610" class="cell" data-execution_count="30">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
@@ -5744,7 +5696,7 @@ s_j
 </details>
 </div>
 <p>Observa la diferencia:</p>
-<div id="9c3b1869" class="cell" data-execution_count="31">
+<div id="085e9d3b" class="cell" data-execution_count="31">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>scaler.fit_transform(X_train)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -5838,7 +5790,7 @@ s_j
 </div>
 <p>estima los parámetros y transforma los datos.</p>
 <p>En cambio,</p>
-<div id="46c1f860" class="cell" data-execution_count="32">
+<div id="990a06c3" class="cell" data-execution_count="32">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>scaler.transform(X_test)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -5901,7 +5853,7 @@ s_j
 <section id="pipeline-una-forma-más-segura" class="level2" data-number="13.17">
 <h2 data-number="13.17" class="anchored" data-anchor-id="pipeline-una-forma-más-segura"><span class="header-section-number">13.17</span> <code>Pipeline</code>: una forma más segura</h2>
 <p>Podemos simplificar el procedimiento utilizando un <code>Pipeline</code>.</p>
-<div id="82cc90ce" class="cell" data-execution_count="33">
+<div id="4b33ecf4" class="cell" data-execution_count="33">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>modelo_pipeline <span class="op">=</span> Pipeline([</span>
@@ -5920,7 +5872,7 @@ s_j
 </details>
 </div>
 <p>Ahora ajustamos:</p>
-<div id="ac5cc558" class="cell" data-execution_count="34">
+<div id="d25ff3e2" class="cell" data-execution_count="34">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>modelo_pipeline.fit(</span>
@@ -7398,17 +7350,15 @@ forceTheme('sk-container-id-4');</script>
 </div>
 </div>
 <p>El <code>Pipeline</code> realiza en orden:</p>
-<p><span class="math display">\[
-X
+<p><span class="math display">\[X
 \longrightarrow
 \text{StandardScaler}
 \longrightarrow
-\text{SVC}.
-\]</span></p>
+\text{SVC}.\]</span></p>
 <p>Primero estima el escalamiento utilizando los datos proporcionados a <code>fit()</code>.</p>
 <p>Después transforma esos datos y ajusta la SVM.</p>
 <p>Para predecir:</p>
-<div id="80f312c8" class="cell" data-execution_count="35">
+<div id="19f1dcf9" class="cell" data-execution_count="35">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>pred_train <span class="op">=</span> modelo_pipeline.predict(</span>
@@ -7421,7 +7371,7 @@ X
 </details>
 </div>
 <p>Calculamos las exactitudes.</p>
-<div id="521ae4dd" class="cell" data-execution_count="36">
+<div id="8c2e2669" class="cell" data-execution_count="36">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -7453,29 +7403,21 @@ Accuracy prueba: 0.8888888888888888</code></pre>
 <p>En <code>scikit-learn</code>, un valor pequeño de <span class="math inline">\(C\)</span> significa que las violaciones del margen tienen una penalización menor.</p>
 <p>Por tanto, el modelo puede aceptar más violaciones.</p>
 <p>Esquemáticamente:</p>
-<p><span class="math display">\[
-\boxed{
+<p><span class="math display">\[\boxed{
 C\downarrow
 \Rightarrow
 \text{mayor regularización}
-}
-\]</span></p>
+}\]</span></p>
 <p>y</p>
-<p><span class="math display">\[
-\boxed{
+<p><span class="math display">\[\boxed{
 C\uparrow
 \Rightarrow
 \text{menor regularización}.
-}
-\]</span></p>
+}\]</span></p>
 <p>Sin embargo, esto <strong>no significa</strong> que:</p>
-<p><span class="math display">\[
-C\text{ pequeño siempre sea mejor}
-\]</span></p>
+<p><span class="math display">\[C\text{ pequeño siempre sea mejor}\]</span></p>
 <p>ni que</p>
-<p><span class="math display">\[
-C\text{ grande siempre sea mejor}.
-\]</span></p>
+<p><span class="math display">\[C\text{ grande siempre sea mejor}.\]</span></p>
 <p><span class="math inline">\(C\)</span> es un hiperparámetro cuyo valor apropiado depende de los datos.</p>
 </section>
 <section id="ejercicios" class="level2" data-number="13.19">
@@ -7483,9 +7425,7 @@ C\text{ grande siempre sea mejor}.
 <section id="ejercicio-1.-observaciones-y-margen" class="level3" data-number="13.19.1">
 <h3 data-number="13.19.1" class="anchored" data-anchor-id="ejercicio-1.-observaciones-y-margen"><span class="header-section-number">13.19.1</span> Ejercicio 1. Observaciones y margen</h3>
 <p>Utilizando <code>modelo_C1</code>, calcula</p>
-<p><span class="math display">\[
-y_if(x_i)
-\]</span></p>
+<p><span class="math display">\[y_if(x_i)\]</span></p>
 <p>para todas las observaciones.</p>
 <p>Encuentra:</p>
 <ol type="1">
@@ -7497,13 +7437,9 @@ y_if(x_i)
 <section id="ejercicio-2.-efecto-de-un-valor-extremo-de-c" class="level3" data-number="13.19.2">
 <h3 data-number="13.19.2" class="anchored" data-anchor-id="ejercicio-2.-efecto-de-un-valor-extremo-de-c"><span class="header-section-number">13.19.2</span> Ejercicio 2. Efecto de un valor extremo de <code>C</code></h3>
 <p>Ajusta dos modelos:</p>
-<p><span class="math display">\[
-C=0.001
-\]</span></p>
+<p><span class="math display">\[C=0.001\]</span></p>
 <p>y</p>
-<p><span class="math display">\[
-C=1000.
-\]</span></p>
+<p><span class="math display">\[C=1000.\]</span></p>
 <p>Compara:</p>
 <ul>
 <li>frontera;</li>
@@ -7516,9 +7452,7 @@ C=1000.
 <section id="ejercicio-3.-cambiar-artificialmente-la-escala" class="level3" data-number="13.19.3">
 <h3 data-number="13.19.3" class="anchored" data-anchor-id="ejercicio-3.-cambiar-artificialmente-la-escala"><span class="header-section-number">13.19.3</span> Ejercicio 3. Cambiar artificialmente la escala</h3>
 <p>A partir de <code>X</code>, crea un nuevo conjunto donde</p>
-<p><span class="math display">\[
-X_1^\ast=100X_1
-\]</span></p>
+<p><span class="math display">\[X_1^\ast=100X_1\]</span></p>
 <p>mientras que <span class="math inline">\(X_2\)</span> permanece sin cambios.</p>
 <p>Ajusta:</p>
 <ol type="1">
@@ -7978,8 +7912,8 @@ X_1^\ast=100X_1
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./parte14.html" class="pagination-link" aria-label="Máquinas de soporte vectorial">
-        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Máquinas de soporte vectorial</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./parte17.html" class="pagination-link" aria-label="pendiente">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

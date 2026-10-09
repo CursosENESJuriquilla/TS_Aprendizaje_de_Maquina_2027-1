@@ -16,7 +16,15 @@ Veremos como:
 - explicar por qué el escalamiento de las variables es importante para una SVM;
 - utilizar `StandardScaler` y `Pipeline` para realizar correctamente el preprocesamiento.
 
+::: {.diapositivas}
+::: {.diapositivas-title}
+📝 **Diapositivas**
+:::
 
+::: {.diapositivas-body}
+[Ver diapositivas Clasificador de Soporte Vectorial](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/4.2-Clasificador_de_Soporte_Vectorial.pdf)
+:::
+:::
 
 ## Antes de comenzar
 
@@ -33,16 +41,8 @@ Recuperemos algunas ideas de la práctica anterior.
 Los vectores de soporte son las observaciones que determinan la posición del margen y de la frontera de decisión.
 
 En el caso del clasificador de margen máximo, corresponden a las observaciones más cercanas a la frontera y se encuentran sobre los bordes del margen.
-
 :::
 ::::
-
-
-
-
-
-
-
 
 :::: {.callout-warning icon="false"}
 ## 🧠 Pregunta
@@ -55,11 +55,8 @@ En el caso del clasificador de margen máximo, corresponden a las observaciones 
 Necesitábamos que las clases fueran linealmente separables.
 
 Es decir, debía existir al menos un hiperplano capaz de separar perfectamente las observaciones de ambas clases.
-
 :::
 ::::
-
-
 
 :::: {.callout-warning icon="false"}
 ## 🧠 Pregunta
@@ -67,7 +64,6 @@ Es decir, debía existir al menos un hiperplano capaz de separar perfectamente l
 Supongamos que las clases son separables, pero una sola observación se encuentra muy cerca de la clase contraria.
 
 ¿Podría ser conveniente permitir una pequeña violación en lugar de modificar drásticamente la frontera para clasificarla perfectamente?
-
 
 ::: {.callout-tip collapse="true" icon="false"}
 ## Solución
@@ -79,13 +75,8 @@ Exigir una clasificación perfecta puede hacer que la frontera dependa demasiado
 Permitir ciertas violaciones puede producir un margen más amplio y un clasificador menos sensible a las particularidades del conjunto de entrenamiento.
 
 Esta es la idea del **margen suave**.
-
 :::
 ::::
-
-
-
-
 
 ## Preparación
 
@@ -193,9 +184,7 @@ X, y = make_blobs(
 
 Para mantener la notación utilizada en la teoría, las transformaremos a
 
-$$
-Y\in\{-1,+1\}.
-$$
+$$Y\in\{-1,+1\}.$$
 
 ```{python}
 y = np.where(y == 0, -1, 1)
@@ -226,10 +215,9 @@ plt.show()
 
 Observa la gráfica.
 
-1. ¿Las clases son perfectamente separables?
-2. ¿Parece posible encontrar una recta que clasifique correctamente todas las observaciones?
-3. ¿Qué ocurriría si exigiéramos una separación perfecta?
-
+1.  ¿Las clases son perfectamente separables?
+2.  ¿Parece posible encontrar una recta que clasifique correctamente todas las observaciones?
+3.  ¿Qué ocurriría si exigiéramos una separación perfecta?
 
 ::: {.callout-tip collapse="true" icon="false"}
 ## Solución
@@ -245,52 +233,36 @@ Necesitamos permitir que algunas observaciones:
 - estén dentro del margen;
 - estén sobre la frontera;
 - o incluso queden del lado incorrecto.
-
 :::
 ::::
-
-
-
 
 ## Del margen duro al margen suave
 
 En el clasificador de margen máximo exigíamos, después de fijar la escala de los coeficientes,
 
-$$
-y_i f(x_i)\geq 1.
-$$
+$$y_i f(x_i)\geq 1.$$
 
 Ahora permitimos violaciones mediante variables de holgura $\epsilon_i$:
 
-$$
-y_i f(x_i)\geq 1-\epsilon_i,
-$$
+$$y_i f(x_i)\geq 1-\epsilon_i,$$
 
 con
 
-$$
-\epsilon_i\geq 0.
-$$
+$$\epsilon_i\geq 0.$$
 
 Recordemos su interpretación:
 
-$$
-\epsilon_i=0
-$$
+$$\epsilon_i=0$$
 
 indica que la observación no necesita violar el margen;
 
-$$
-0<\epsilon_i<1
-$$
+$$0<\epsilon_i<1$$
 
 permite que esté correctamente clasificada pero dentro del margen;
 
 mientras que
 
-$$
-\epsilon_i>1
-$$
+$$\epsilon_i>1$$
 
 puede corresponder a una observación mal clasificada.
 
@@ -300,64 +272,50 @@ En la implementación que utilizaremos, estas violaciones son penalizadas median
 
 `SVC` utiliza una formulación equivalente al problema
 
-$$
-\min_{\beta_0,\beta,\epsilon}
+$$\min_{\beta_0,\beta,\epsilon}
 \left\{
 \frac{1}{2}\|\beta\|^2
 +
 C\sum_{i=1}^{n}\epsilon_i
-\right\}.
-$$
+\right\}.$$
 
 El primer término favorece un margen amplio:
 
-$$
-\frac{1}{2}\|\beta\|^2.
-$$
+$$\frac{1}{2}\|\beta\|^2.$$
 
 El segundo penaliza las violaciones:
 
-$$
-C\sum_{i=1}^{n}\epsilon_i.
-$$
+$$C\sum_{i=1}^{n}\epsilon_i.$$
 
 Por tanto, en esta parametrización:
 
-$$
-\boxed{
+$$\boxed{
 C\text{ pequeño}
 \Rightarrow
 \text{menor penalización de las violaciones}
-}
-$$
+}$$
 
 y
 
-$$
-\boxed{
+$$\boxed{
 C\text{ grande}
 \Rightarrow
 \text{mayor penalización de las violaciones}.
-}
-$$
+}$$
 
 Otra forma de decirlo es:
 
-$$
-C\downarrow
+$$C\downarrow
 \Rightarrow
-\text{mayor regularización},
-$$
+\text{mayor regularización},$$
 
 mientras que
 
-$$
-C\uparrow
+$$C\uparrow
 \Rightarrow
-\text{menor regularización}.
-$$
+\text{menor regularización}.$$
 
-::: {.callout-warning}
+::: callout-warning
 ## Cuidado con la notación
 
 En algunas formulaciones teóricas, $C$ representa directamente un presupuesto permitido de violaciones.
@@ -371,9 +329,7 @@ Por ello, siempre debemos identificar qué formulación estamos utilizando antes
 
 Comencemos con
 
-$$
-C=1.
-$$
+$$C=1.$$
 
 ```{python}
 modelo_C1 = SVC(
@@ -409,9 +365,7 @@ Las violaciones forman parte del problema de optimización.
 
 Podemos calcular
 
-$$
-f(x_i)
-$$
+$$f(x_i)$$
 
 mediante:
 
@@ -421,9 +375,7 @@ decision = modelo_C1.decision_function(X)
 
 Y después calcular
 
-$$
-y_i f(x_i).
-$$
+$$y_i f(x_i).$$
 
 ```{python}
 margen_funcional = y * decision
@@ -445,9 +397,7 @@ resultados.head(10)
 
 La cantidad
 
-$$
-y_if(x_i)
-$$
+$$y_if(x_i)$$
 
 nos permite clasificar geométricamente las observaciones.
 
@@ -488,30 +438,22 @@ resultados["Posicion"].value_counts()
 
 ¿Qué significa encontrar una observación con
 
-$$
-0<y_if(x_i)<1?
-$$
+$$0<y_if(x_i)<1?$$
 
 ::: {.callout-tip collapse="true" icon="false"}
 ## Solución
 
 La observación está correctamente clasificada porque
 
-$$
-y_if(x_i)>0,
-$$
+$$y_if(x_i)>0,$$
 
 pero se encuentra dentro del margen porque
 
-$$
-y_if(x_i)<1.
-$$
+$$y_if(x_i)<1.$$
 
 Por tanto, clasificar correctamente una observación no significa necesariamente que esté fuera del margen.
-
 :::
 ::::
-
 
 ## ¿Qué ocurre cuando cambiamos `C`?
 
@@ -519,10 +461,8 @@ Ahora realizaremos el experimento principal de esta práctica.
 
 Ajustaremos varios clasificadores utilizando:
 
-$$
-C\in
-\{0.01,\;0.1,\;1,\;10,\;100\}.
-$$
+$$C\in
+\{0.01,\;0.1,\;1,\;10,\;100\}.$$
 
 ```{python}
 valores_C = [
@@ -559,11 +499,10 @@ for C in valores_C:
 
 Antes de calcular cualquier métrica, compara las gráficas.
 
-1. ¿Qué ocurre con el margen cuando $C$ es pequeño?
-2. ¿Qué ocurre cuando $C$ aumenta?
-3. ¿Qué ocurre con las observaciones que quedan dentro del margen?
-4. ¿Parece cambiar el número de vectores de soporte?
-
+1.  ¿Qué ocurre con el margen cuando $C$ es pequeño?
+2.  ¿Qué ocurre cuando $C$ aumenta?
+3.  ¿Qué ocurre con las observaciones que quedan dentro del margen?
+4.  ¿Parece cambiar el número de vectores de soporte?
 
 ::: {.callout-tip collapse="true" icon="false"}
 ## Solución
@@ -579,14 +518,8 @@ También suele cambiar el número de vectores de soporte.
 En general, valores pequeños de $C$ pueden producir más vectores de soporte porque más observaciones quedan sobre o dentro del margen.
 
 Sin embargo, esto debe interpretarse como un comportamiento típico y no como una regla que necesariamente se cumpla de forma estrictamente monótona para cualquier conjunto de datos.
-
 :::
 ::::
-
-
-
-
-
 
 ## Construyamos una tabla comparativa
 
@@ -646,10 +579,8 @@ No necesariamente.
 Una vez que los datos tienen cierto grado de traslape, aumentar $C$ no puede hacer que una frontera lineal resuelva mágicamente un problema que no es perfectamente separable.
 
 Además, modificar $C$ cambia qué observaciones determinan la solución y, por tanto, puede modificar el número de vectores de soporte.
-
 :::
 ::::
-
 
 ## Entrenamiento no es generalización
 
@@ -719,7 +650,6 @@ comparacion_test
 ::: {.callout-tip collapse="true" icon="false"}
 ## Solución
 
-
 No.
 
 $C$ es un hiperparámetro.
@@ -729,21 +659,15 @@ Seleccionarlo utilizando únicamente el desempeño de entrenamiento puede favore
 Tampoco debemos probar muchos valores de $C$ y elegir el que produzca el mejor resultado sobre el conjunto de prueba, porque entonces estaríamos utilizando el conjunto de prueba para ajustar indirectamente el modelo.
 
 Más adelante utilizaremos **validación cruzada** para seleccionar hiperparámetros.
-
-
 :::
 ::::
 
-
-
-
-
-::: {.callout-note}
+::: callout-note
 ## Por ahora
 
-En esta práctica no estamos intentando encontrar el ``mejor'' valor de $C$.
+En esta práctica no estamos intentando encontrar el \`\`mejor'' valor de $C$.
 
-Nuestro objetivo es comprender **qué cambia en el clasificador cuando modificamos $C$**.
+Nuestro objetivo es comprender **qué cambia en el clasificador cuando modificamos** $C$.
 
 La selección sistemática de hiperparámetros se realizará posteriormente mediante validación cruzada.
 :::
@@ -756,9 +680,7 @@ Pero imaginemos que medimos exactamente la misma información utilizando unidade
 
 Crearemos una copia de los datos y multiplicaremos la segunda variable por $1000$:
 
-$$
-X_2^\ast=1000X_2.
-$$
+$$X_2^\ast=1000X_2.$$
 
 ```{python}
 X_desescalado = X.copy()
@@ -781,7 +703,6 @@ Ahora:
 
 - $X_1$ tiene una escala relativamente pequeña;
 - $X_2$ tiene valores cientos o miles de veces mayores.
-
 
 ## Ajuste sin escalamiento
 
@@ -807,7 +728,7 @@ modelo_sin_escalar.coef_
 
 Pero debemos ser cuidadosos al interpretarlos: las variables se encuentran ahora en unidades completamente diferentes.
 
-::: {.callout-note}
+::: callout-note
 ## ¿Por qué importa la escala?
 
 La geometría de las SVM depende de distancias y productos internos en el espacio de características.
@@ -821,23 +742,17 @@ Por ello, en la práctica es habitual colocar las variables numéricas en escala
 
 Una transformación común es
 
-$$
-Z_j
+$$Z_j
 =
-\frac{X_j-\overline X_j}{s_j}.
-$$
+\frac{X_j-\overline X_j}{s_j}.$$
 
 Después de estandarizar, cada variable tendrá aproximadamente
 
-$$
-\text{media}=0
-$$
+$$\text{media}=0$$
 
 y
 
-$$
-\text{desviación estándar}=1.
-$$
+$$\text{desviación estándar}=1.$$
 
 Utilizaremos:
 
@@ -891,7 +806,6 @@ graficar_svm_lineal(
 )
 ```
 
-
 :::: {.callout-warning icon="false"}
 ## 🧠 Pregunta
 
@@ -909,14 +823,8 @@ Por ejemplo, medir una longitud en metros o milímetros cambia sus valores numé
 Por ello, diferencias de escala pueden alterar artificialmente la geometría utilizada por la SVM.
 
 El escalamiento permite colocar las variables en escalas comparables.
-
 :::
 ::::
-
-
-
-
-
 
 ## Un problema importante: fuga de información
 
@@ -934,15 +842,11 @@ Si tenemos entrenamiento y prueba, los parámetros del escalamiento deben estima
 
 Es decir, debemos calcular
 
-$$
-\overline X_j
-$$
+$$\overline X_j$$
 
 y
 
-$$
-s_j
-$$
+$$s_j$$
 
 usando entrenamiento.
 
@@ -994,7 +898,7 @@ scaler.transform(X_test)
 
 utiliza los parámetros previamente estimados.
 
-::: {.callout-warning}
+::: callout-warning
 ## Regla importante
 
 Nunca debemos utilizar información del conjunto de prueba para estimar los parámetros del preprocesamiento.
@@ -1033,13 +937,11 @@ modelo_pipeline.fit(
 
 El `Pipeline` realiza en orden:
 
-$$
-X
+$$X
 \longrightarrow
 \text{StandardScaler}
 \longrightarrow
-\text{SVC}.
-$$
+\text{SVC}.$$
 
 Primero estima el escalamiento utilizando los datos proporcionados a `fit()`.
 
@@ -1089,35 +991,27 @@ Por tanto, el modelo puede aceptar más violaciones.
 
 Esquemáticamente:
 
-$$
-\boxed{
+$$\boxed{
 C\downarrow
 \Rightarrow
 \text{mayor regularización}
-}
-$$
+}$$
 
 y
 
-$$
-\boxed{
+$$\boxed{
 C\uparrow
 \Rightarrow
 \text{menor regularización}.
-}
-$$
+}$$
 
 Sin embargo, esto **no significa** que:
 
-$$
-C\text{ pequeño siempre sea mejor}
-$$
+$$C\text{ pequeño siempre sea mejor}$$
 
 ni que
 
-$$
-C\text{ grande siempre sea mejor}.
-$$
+$$C\text{ grande siempre sea mejor}.$$
 
 $C$ es un hiperparámetro cuyo valor apropiado depende de los datos.
 
@@ -1127,31 +1021,25 @@ $C$ es un hiperparámetro cuyo valor apropiado depende de los datos.
 
 Utilizando `modelo_C1`, calcula
 
-$$
-y_if(x_i)
-$$
+$$y_if(x_i)$$
 
 para todas las observaciones.
 
 Encuentra:
 
-1. cuántas están mal clasificadas;
-2. cuántas están correctamente clasificadas pero dentro del margen;
-3. cuántas están sobre o fuera del margen.
+1.  cuántas están mal clasificadas;
+2.  cuántas están correctamente clasificadas pero dentro del margen;
+3.  cuántas están sobre o fuera del margen.
 
 ### Ejercicio 2. Efecto de un valor extremo de `C`
 
 Ajusta dos modelos:
 
-$$
-C=0.001
-$$
+$$C=0.001$$
 
 y
 
-$$
-C=1000.
-$$
+$$C=1000.$$
 
 Compara:
 
@@ -1166,15 +1054,13 @@ No selecciones un modelo únicamente a partir de estas cantidades. El objetivo e
 
 A partir de `X`, crea un nuevo conjunto donde
 
-$$
-X_1^\ast=100X_1
-$$
+$$X_1^\ast=100X_1$$
 
 mientras que $X_2$ permanece sin cambios.
 
 Ajusta:
 
-1. una SVM sin escalamiento;
-2. una SVM dentro de un `Pipeline` con `StandardScaler`.
+1.  una SVM sin escalamiento;
+2.  una SVM dentro de un `Pipeline` con `StandardScaler`.
 
 Compara los resultados.
