@@ -335,7 +335,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte12.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Clasificador de margen máximo</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Clasificadores de soporte vectorial</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -351,8 +375,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte12.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -368,8 +392,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte12.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -415,6 +439,7 @@ window.Quarto = {
   </ul></li>
   <li><a href="#ejercicio-integrador" id="toc-ejercicio-integrador" class="nav-link" data-scroll-target="#ejercicio-integrador"><span class="header-section-number">11.23</span> Ejercicio integrador</a></li>
   <li><a href="#reto-adicional-clasificación" id="toc-reto-adicional-clasificación" class="nav-link" data-scroll-target="#reto-adicional-clasificación"><span class="header-section-number">11.24</span> Reto adicional: clasificación</a></li>
+  <li><a href="#nota-sobre-normalidad-en-residuos" id="toc-nota-sobre-normalidad-en-residuos" class="nav-link" data-scroll-target="#nota-sobre-normalidad-en-residuos"><span class="header-section-number">11.25</span> Nota sobre normalidad en residuos</a></li>
   </ul>
 </nav>
     </div>
@@ -453,8 +478,7 @@ window.Quarto = {
 <li>analizar predicciones y residuos.</li>
 </ul>
 <p>Nuestro flujo de trabajo será:</p>
-<p><span class="math display">\[
-\boxed{\text{Datos}}
+<p><span class="math display">\[\boxed{\text{Datos}}
 \longrightarrow
 \boxed{\text{Train/Test}}
 \longrightarrow
@@ -466,8 +490,7 @@ window.Quarto = {
 \longrightarrow
 \boxed{\text{Refit}}
 \longrightarrow
-\boxed{\text{Evaluación final}}.
-\]</span></p>
+\boxed{\text{Evaluación final}}.\]</span></p>
 <div class="diapositivas">
 <div class="diapositivas-title">
 <p>📝 <strong>Diapositivas</strong></p>
@@ -479,7 +502,7 @@ window.Quarto = {
 <section id="preparación" class="level2" data-number="11.1">
 <h2 data-number="11.1" class="anchored" data-anchor-id="preparación"><span class="header-section-number">11.1</span> Preparación</h2>
 <p>Importamos las bibliotecas necesarias.</p>
-<div id="cd4290a0" class="cell" data-execution_count="1">
+<div id="db58a447" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -513,7 +536,7 @@ window.Quarto = {
 </details>
 </div>
 <p>Cargamos nuevamente California Housing.</p>
-<div id="853db3c2" class="cell" data-execution_count="2">
+<div id="556d50a6" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>housing <span class="op">=</span> fetch_california_housing(as_frame<span class="op">=</span><span class="va">True</span>)</span>
@@ -523,7 +546,7 @@ window.Quarto = {
 </details>
 </div>
 <p>Realizamos la misma partición que utilizamos en las prácticas anteriores.</p>
-<div id="4e0591bb" class="cell" data-execution_count="3">
+<div id="53ce5ba9" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
@@ -534,7 +557,7 @@ window.Quarto = {
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="b83da558" class="cell" data-execution_count="4">
+<div id="696ab04f" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Train:"</span>, X_train.shape)</span>
@@ -565,7 +588,7 @@ Test:  (4128, 8)</code></pre>
 <h2 data-number="11.2" class="anchored" data-anchor-id="contra-qué-debemos-comparar"><span class="header-section-number">11.2</span> ¿Contra qué debemos comparar?</h2>
 <p>Antes de construir modelos complejos necesitamos una referencia sencilla.</p>
 <p>Para ello utilizaremos <code>DummyRegressor</code>.</p>
-<div id="1017d2ed" class="cell" data-execution_count="5">
+<div id="f9ce155a" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>baseline <span class="op">=</span> DummyRegressor(</span>
@@ -593,7 +616,7 @@ Test:  (4128, 8)</code></pre>
 <section id="modelos-que-compararemos" class="level2" data-number="11.3">
 <h2 data-number="11.3" class="anchored" data-anchor-id="modelos-que-compararemos"><span class="header-section-number">11.3</span> Modelos que compararemos</h2>
 <p>Consideraremos cinco modelos:</p>
-<div id="1c9cc9dd" class="cell" data-execution_count="6">
+<div id="10e50793" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>modelos <span class="op">=</span> {</span>
@@ -643,7 +666,7 @@ Test:  (4128, 8)</code></pre>
 <section id="una-estrategia-común-de-cross-validation" class="level2" data-number="11.4">
 <h2 data-number="11.4" class="anchored" data-anchor-id="una-estrategia-común-de-cross-validation"><span class="header-section-number">11.4</span> Una estrategia común de Cross-Validation</h2>
 <p>Utilizaremos exactamente los mismos folds para todos los modelos.</p>
-<div id="23e845b8" class="cell" data-execution_count="7">
+<div id="beb158bf" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> KFold(</span>
@@ -655,15 +678,13 @@ Test:  (4128, 8)</code></pre>
 </div>
 <p>Esto significa que cada modelo será entrenado y evaluado sobre las mismas particiones.</p>
 <p>Conceptualmente queremos:</p>
-<p><span class="math display">\[
-\boxed{
+<p><span class="math display">\[\boxed{
 \text{mismos datos}
 +
 \text{mismos folds}
 +
 \text{mismas métricas}
-}.
-\]</span></p>
+}.\]</span></p>
 </section>
 <section id="evaluaremos-más-de-una-métrica" class="level2" data-number="11.5">
 <h2 data-number="11.5" class="anchored" data-anchor-id="evaluaremos-más-de-una-métrica"><span class="header-section-number">11.5</span> Evaluaremos más de una métrica</h2>
@@ -675,7 +696,7 @@ Test:  (4128, 8)</code></pre>
 <li><span class="math inline">\(R^2\)</span>.</li>
 </ul>
 <p>Definimos las métricas:</p>
-<div id="5676974f" class="cell" data-execution_count="8">
+<div id="84f732f4" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>scoring <span class="op">=</span> {</span>
@@ -687,18 +708,16 @@ Test:  (4128, 8)</code></pre>
 </div>
 <p>Recordemos que <code>scikit-learn</code> devuelve MAE y RMSE negativos cuando se utilizan como <em>scores</em>.</p>
 <p>Esto permite mantener la convención</p>
-<p><span class="math display">\[
-\text{score mayor}
+<p><span class="math display">\[\text{score mayor}
 \quad\Longrightarrow\quad
-\text{mejor}.
-\]</span></p>
+\text{mejor}.\]</span></p>
 <p>Después cambiaremos el signo para recuperar los errores en su interpretación habitual.</p>
 </section>
 <section id="comparación-mediante-cross-validation" class="level2" data-number="11.6">
 <h2 data-number="11.6" class="anchored" data-anchor-id="comparación-mediante-cross-validation"><span class="header-section-number">11.6</span> Comparación mediante Cross-Validation</h2>
 <p>Utilizaremos <code>cross_validate()</code>.</p>
 <p>A diferencia de <code>cross_val_score()</code>, esta función nos permite calcular varias métricas simultáneamente y registrar tiempos de entrenamiento.</p>
-<div id="edc38755" class="cell" data-execution_count="9">
+<div id="5e09f682" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>resultados <span class="op">=</span> []</span>
@@ -741,7 +760,7 @@ Test:  (4128, 8)</code></pre>
 </details>
 </div>
 <p>Construimos una tabla.</p>
-<div id="7ffa60e4" class="cell" data-execution_count="10">
+<div id="c823ddf5" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df_resultados <span class="op">=</span> pd.DataFrame(resultados)</span>
@@ -776,7 +795,7 @@ Test:  (4128, 8)</code></pre>
 <td>0.012163</td>
 <td>-0.000215</td>
 <td>0.000213</td>
-<td>0.005357</td>
+<td>0.022102</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
@@ -787,7 +806,7 @@ Test:  (4128, 8)</code></pre>
 <td>0.013895</td>
 <td>0.611457</td>
 <td>0.012359</td>
-<td>0.002153</td>
+<td>0.002552</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
@@ -798,7 +817,7 @@ Test:  (4128, 8)</code></pre>
 <td>0.026927</td>
 <td>0.597422</td>
 <td>0.028399</td>
-<td>0.082880</td>
+<td>0.077626</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
@@ -809,7 +828,7 @@ Test:  (4128, 8)</code></pre>
 <td>0.012328</td>
 <td>0.805590</td>
 <td>0.006514</td>
-<td>10.256716</td>
+<td>9.499258</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
@@ -820,7 +839,7 @@ Test:  (4128, 8)</code></pre>
 <td>0.014558</td>
 <td>0.754431</td>
 <td>0.010070</td>
-<td>2.690172</td>
+<td>2.569546</td>
 </tr>
 </tbody>
 </table>
@@ -829,7 +848,7 @@ Test:  (4128, 8)</code></pre>
 </div>
 </div>
 <p>Para facilitar la lectura podemos ordenar por RMSE.</p>
-<div id="aeb376c5" class="cell" data-execution_count="11">
+<div id="ddfc520e" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df_resultados.sort_values(<span class="st">"RMSE_CV"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -862,7 +881,7 @@ Test:  (4128, 8)</code></pre>
 <td>0.012328</td>
 <td>0.805590</td>
 <td>0.006514</td>
-<td>10.256716</td>
+<td>9.499258</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">4</th>
@@ -873,7 +892,7 @@ Test:  (4128, 8)</code></pre>
 <td>0.014558</td>
 <td>0.754431</td>
 <td>0.010070</td>
-<td>2.690172</td>
+<td>2.569546</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">1</th>
@@ -884,7 +903,7 @@ Test:  (4128, 8)</code></pre>
 <td>0.013895</td>
 <td>0.611457</td>
 <td>0.012359</td>
-<td>0.002153</td>
+<td>0.002552</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">2</th>
@@ -895,7 +914,7 @@ Test:  (4128, 8)</code></pre>
 <td>0.026927</td>
 <td>0.597422</td>
 <td>0.028399</td>
-<td>0.082880</td>
+<td>0.077626</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
@@ -906,7 +925,7 @@ Test:  (4128, 8)</code></pre>
 <td>0.012163</td>
 <td>-0.000215</td>
 <td>0.000213</td>
-<td>0.005357</td>
+<td>0.022102</td>
 </tr>
 </tbody>
 </table>
@@ -918,23 +937,15 @@ Test:  (4128, 8)</code></pre>
 <section id="cómo-interpretamos-la-tabla" class="level2" data-number="11.7">
 <h2 data-number="11.7" class="anchored" data-anchor-id="cómo-interpretamos-la-tabla"><span class="header-section-number">11.7</span> ¿Cómo interpretamos la tabla?</h2>
 <p>Tenemos ahora información sobre tres aspectos:</p>
-<p><span class="math display">\[
-\boxed{\text{desempeño promedio}}
-\]</span></p>
-<p><span class="math display">\[
-\boxed{\text{variabilidad entre folds}}
-\]</span></p>
-<p><span class="math display">\[
-\boxed{\text{costo computacional}}.
-\]</span></p>
+<p><span class="math display">\[\boxed{\text{desempeño promedio}}\]</span></p>
+<p><span class="math display">\[\boxed{\text{variabilidad entre folds}}\]</span></p>
+<p><span class="math display">\[\boxed{\text{costo computacional}}.\]</span></p>
 <p>Por ejemplo, el RMSE promedio se calcula como</p>
-<p><span class="math display">\[
-\overline{\operatorname{RMSE}}
+<p><span class="math display">\[\overline{\operatorname{RMSE}}
 =
 \frac{1}{k}
 \sum_{j=1}^{k}
-\operatorname{RMSE}_j.
-\]</span></p>
+\operatorname{RMSE}_j.\]</span></p>
 <p>Mientras que <code>RMSE_SD</code> resume cuánto varían esos resultados entre folds.</p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -959,7 +970,7 @@ Test:  (4128, 8)</code></pre>
 <section id="visualización-de-la-comparación" class="level2" data-number="11.8">
 <h2 data-number="11.8" class="anchored" data-anchor-id="visualización-de-la-comparación"><span class="header-section-number">11.8</span> Visualización de la comparación</h2>
 <p>Representemos el RMSE promedio y su desviación estándar.</p>
-<div id="5770b061" class="cell" data-execution_count="12">
+<div id="dc718756" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df_plot <span class="op">=</span> df_resultados.sort_values(</span>
@@ -1009,7 +1020,7 @@ Test:  (4128, 8)</code></pre>
 <h2 data-number="11.9" class="anchored" data-anchor-id="observar-los-resultados-fold-por-fold"><span class="header-section-number">11.9</span> Observar los resultados fold por fold</h2>
 <p>La media puede ocultar información.</p>
 <p>Comparemos, por ejemplo, Random Forest y Gradient Boosting.</p>
-<div id="b669107f" class="cell" data-execution_count="13">
+<div id="075056f9" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>modelos_comparar <span class="op">=</span> {</span>
@@ -1125,7 +1136,7 @@ Test:  (4128, 8)</code></pre>
 </div>
 </div>
 <p>Visualizamos:</p>
-<div id="681572ba" class="cell" data-execution_count="14">
+<div id="7f24af93" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nombre <span class="kw">in</span> df_folds[<span class="st">"Modelo"</span>].unique():</span>
@@ -1174,32 +1185,28 @@ Test:  (4128, 8)</code></pre>
 <h2 data-number="11.10" class="anchored" data-anchor-id="comparar-modelos-no-termina-aquí"><span class="header-section-number">11.10</span> Comparar modelos no termina aquí</h2>
 <p>Hasta ahora hemos utilizado configuraciones razonables, pero no necesariamente optimizadas.</p>
 <p>Por ejemplo, Gradient Boosting depende de</p>
-<p><span class="math display">\[
-\texttt{learning\_rate},
+<p><span class="math display">\[\texttt{learning\_rate},
 \qquad
 \texttt{n\_estimators},
 \qquad
 \texttt{max\_depth},
 \qquad
-\texttt{subsample}.
-\]</span></p>
+\texttt{subsample}.\]</span></p>
 <p>Random Forest también posee hiperparámetros como</p>
-<p><span class="math display">\[
-\texttt{n\_estimators},
+<p><span class="math display">\[\texttt{n\_estimators},
 \qquad
 \texttt{max\_depth},
 \qquad
 \texttt{max\_features},
 \qquad
-\texttt{min\_samples\_leaf}.
-\]</span></p>
+\texttt{min\_samples\_leaf}.\]</span></p>
 <p>Por ello, una comparación más completa puede incluir un procedimiento de tuning.</p>
 <p>Para mantener razonable el tiempo de cómputo realizaremos una búsqueda pequeña sobre estos dos modelos.</p>
 </section>
 <section id="tuning-de-random-forest" class="level2" data-number="11.11">
 <h2 data-number="11.11" class="anchored" data-anchor-id="tuning-de-random-forest"><span class="header-section-number">11.11</span> Tuning de Random Forest</h2>
 <p>Definimos un espacio de búsqueda.</p>
-<div id="a0dad7bf" class="cell" data-execution_count="15">
+<div id="32145fe8" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>param_rf <span class="op">=</span> {</span>
@@ -1211,7 +1218,7 @@ Test:  (4128, 8)</code></pre>
 </details>
 </div>
 <p>Utilizaremos <code>RandomizedSearchCV</code>.</p>
-<div id="6a7354cd" class="cell" data-execution_count="16">
+<div id="a75f9d23" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>search_rf <span class="op">=</span> RandomizedSearchCV(</span>
@@ -1229,7 +1236,7 @@ Test:  (4128, 8)</code></pre>
 </details>
 </div>
 <p>Ejecutamos:</p>
-<div id="ca5cd379" class="cell" data-execution_count="17">
+<div id="7b10e1c2" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>inicio <span class="op">=</span> perf_counter()</span>
@@ -1240,7 +1247,7 @@ Test:  (4128, 8)</code></pre>
 </details>
 </div>
 <p>Consultamos los hiperparámetros seleccionados:</p>
-<div id="415c7cab" class="cell" data-execution_count="18">
+<div id="753be4b6" class="cell" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>search_rf.best_params_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1253,7 +1260,7 @@ Test:  (4128, 8)</code></pre>
 </div>
 </div>
 <p>y el RMSE:</p>
-<div id="27c383d3" class="cell" data-execution_count="19">
+<div id="836a9d4a" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -1268,7 +1275,7 @@ Test:  (4128, 8)</code></pre>
 <section id="tuning-de-gradient-boosting" class="level2" data-number="11.12">
 <h2 data-number="11.12" class="anchored" data-anchor-id="tuning-de-gradient-boosting"><span class="header-section-number">11.12</span> Tuning de Gradient Boosting</h2>
 <p>Definimos ahora:</p>
-<div id="e1497ae1" class="cell" data-execution_count="20">
+<div id="2577a38e" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>param_gb <span class="op">=</span> {</span>
@@ -1280,7 +1287,7 @@ Test:  (4128, 8)</code></pre>
 </details>
 </div>
 <p>Construimos la búsqueda.</p>
-<div id="13ccd559" class="cell" data-execution_count="21">
+<div id="cfe6fedd" class="cell" data-execution_count="21">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>search_gb <span class="op">=</span> RandomizedSearchCV(</span>
@@ -1297,7 +1304,7 @@ Test:  (4128, 8)</code></pre>
 </details>
 </div>
 <p>Ejecutamos:</p>
-<div id="263fda8c" class="cell" data-execution_count="22">
+<div id="0fd98c75" class="cell" data-execution_count="22">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>inicio <span class="op">=</span> perf_counter()</span>
@@ -1308,7 +1315,7 @@ Test:  (4128, 8)</code></pre>
 </details>
 </div>
 <p>Consultamos:</p>
-<div id="7c665537" class="cell" data-execution_count="23">
+<div id="64e939b3" class="cell" data-execution_count="23">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>search_gb.best_params_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1318,7 +1325,7 @@ Test:  (4128, 8)</code></pre>
 </div>
 </div>
 <p>y:</p>
-<div id="2edafc5d" class="cell" data-execution_count="24">
+<div id="2670bc46" class="cell" data-execution_count="24">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -1333,7 +1340,7 @@ Test:  (4128, 8)</code></pre>
 <section id="comparación-después-del-tuning" class="level2" data-number="11.13">
 <h2 data-number="11.13" class="anchored" data-anchor-id="comparación-después-del-tuning"><span class="header-section-number">11.13</span> Comparación después del tuning</h2>
 <p>Construimos una tabla pequeña con los dos procedimientos ajustados.</p>
-<div id="23247f05" class="cell" data-execution_count="25">
+<div id="2e2da6bf" class="cell" data-execution_count="25">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>df_tuning <span class="op">=</span> pd.DataFrame({</span>
@@ -1371,13 +1378,13 @@ Test:  (4128, 8)</code></pre>
 <th data-quarto-table-cell-role="th">0</th>
 <td>Random Forest</td>
 <td>0.498638</td>
-<td>536.236901</td>
+<td>506.810820</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
 <td>Gradient Boosting</td>
 <td>0.492318</td>
-<td>231.249613</td>
+<td>219.826839</td>
 </tr>
 </tbody>
 </table>
@@ -1386,7 +1393,7 @@ Test:  (4128, 8)</code></pre>
 </div>
 </div>
 <p>Ahora podemos comparar estos resultados con los obtenidos antes del tuning.</p>
-<div id="019fb5f6" class="cell" data-execution_count="26">
+<div id="1f3516a7" class="cell" data-execution_count="26">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>df_resultados[</span>
@@ -1450,7 +1457,7 @@ Test:  (4128, 8)</code></pre>
 <pre class="text"><code>refit=True</code></pre>
 <p>Después de seleccionar los hiperparámetros, vuelve a entrenar la configuración seleccionada utilizando <strong>todo el conjunto <code>X_train</code></strong>.</p>
 <p>Por ello tenemos disponibles:</p>
-<div id="fb992e7d" class="cell" data-execution_count="27">
+<div id="435e4854" class="cell" data-execution_count="27">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>modelo_rf_final <span class="op">=</span> search_rf.best_estimator_</span>
@@ -1475,8 +1482,7 @@ y_test</code></pre>
 </ul>
 <p>El conjunto de prueba no participó en ninguna de estas decisiones.</p>
 <p>Nuestro esquema es:</p>
-<p><span class="math display">\[
-\boxed{
+<p><span class="math display">\[\boxed{
 X_{\text{train}}
 }
 \longrightarrow
@@ -1486,12 +1492,9 @@ X_{\text{train}}
 \longrightarrow
 \boxed{
 \text{modelo ajustado}
-}.
-\]</span></p>
+}.\]</span></p>
 <p>Ahora sí podemos utilizar</p>
-<p><span class="math display">\[
-X_{\text{test}}
-\]</span></p>
+<p><span class="math display">\[X_{\text{test}}\]</span></p>
 <p>para obtener una evaluación final.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1512,7 +1515,7 @@ X_{\text{test}}
 <h2 data-number="11.16" class="anchored" data-anchor-id="evaluación-final"><span class="header-section-number">11.16</span> Evaluación final</h2>
 <p>En este ejemplo evaluaremos los dos procedimientos ajustados para observar su comportamiento sobre datos no utilizados durante el desarrollo.</p>
 <p>Generamos predicciones:</p>
-<div id="8ef7f5b3" class="cell" data-execution_count="28">
+<div id="6d9acbf2" class="cell" data-execution_count="28">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>pred_rf_test <span class="op">=</span> modelo_rf_final.predict(</span>
@@ -1525,7 +1528,7 @@ X_{\text{test}}
 </details>
 </div>
 <p>Crearemos una función para calcular las métricas.</p>
-<div id="5db77e5c" class="cell" data-execution_count="29">
+<div id="32ec3ec0" class="cell" data-execution_count="29">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> metricas_regresion(y_real, y_pred):</span>
@@ -1551,7 +1554,7 @@ X_{\text{test}}
 </details>
 </div>
 <p>Calculamos:</p>
-<div id="b5c25212" class="cell" data-execution_count="30">
+<div id="c2846588" class="cell" data-execution_count="30">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>mae_rf, rmse_rf, r2_rf <span class="op">=</span> metricas_regresion(</span>
@@ -1566,7 +1569,7 @@ X_{\text{test}}
 </details>
 </div>
 <p>Construimos la tabla final.</p>
-<div id="1ff4a72b" class="cell" data-execution_count="31">
+<div id="45504793" class="cell" data-execution_count="31">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>resultados_test <span class="op">=</span> pd.DataFrame({</span>
@@ -1632,7 +1635,7 @@ X_{\text{test}}
 <section id="cv-vs.-test" class="level2" data-number="11.17">
 <h2 data-number="11.17" class="anchored" data-anchor-id="cv-vs.-test"><span class="header-section-number">11.17</span> CV vs.&nbsp;test</h2>
 <p>Comparemos el RMSE estimado durante Cross-Validation con el observado finalmente en test.</p>
-<div id="10c18333" class="cell" data-execution_count="32">
+<div id="11c489a1" class="cell" data-execution_count="32">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>comparacion_final <span class="op">=</span> pd.DataFrame({</span>
@@ -1687,11 +1690,9 @@ X_{\text{test}}
 </div>
 </div>
 <p>No esperamos que</p>
-<p><span class="math display">\[
-\operatorname{RMSE}_{CV}
+<p><span class="math display">\[\operatorname{RMSE}_{CV}
 =
-\operatorname{RMSE}_{test}
-\]</span></p>
+\operatorname{RMSE}_{test}\]</span></p>
 <p>exactamente.</p>
 <p>Son estimaciones obtenidas con observaciones y procedimientos diferentes.</p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -1714,7 +1715,7 @@ X_{\text{test}}
 <p>Una métrica resume el desempeño en un único número.</p>
 <p>Pero también debemos observar las predicciones.</p>
 <p>Tomemos uno de los modelos finales para ilustrar el diagnóstico. Por ejemplo, Gradient Boosting:</p>
-<div id="108d8228" class="cell" data-execution_count="33">
+<div id="5dc9781c" class="cell" data-execution_count="33">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
@@ -1750,9 +1751,7 @@ X_{\text{test}}
 </div>
 </div>
 <p>La línea punteada representa</p>
-<p><span class="math display">\[
-\widehat y=y.
-\]</span></p>
+<p><span class="math display">\[\widehat y=y.\]</span></p>
 <p>Predicciones perfectas caerían exactamente sobre esta línea.</p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1772,20 +1771,18 @@ X_{\text{test}}
 <section id="residuos" class="level2" data-number="11.19">
 <h2 data-number="11.19" class="anchored" data-anchor-id="residuos"><span class="header-section-number">11.19</span> Residuos</h2>
 <p>Definimos los residuos como</p>
-<p><span class="math display">\[
-e_i
+<p><span class="math display">\[e_i
 =
-y_i-\widehat y_i.
-\]</span></p>
+y_i-\widehat y_i.\]</span></p>
 <p>Calculamos:</p>
-<div id="edfe8d35" class="cell" data-execution_count="34">
+<div id="61272d88" class="cell" data-execution_count="34">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>residuos <span class="op">=</span> y_test <span class="op">-</span> pred_gb_test</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Veamos su distribución.</p>
-<div id="20bafdc8" class="cell" data-execution_count="35">
+<div id="b6e19004" class="cell" data-execution_count="35">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">4</span>))</span>
@@ -1809,7 +1806,7 @@ y_i-\widehat y_i.
 </div>
 </div>
 <p>También podemos representar residuos contra predicciones.</p>
-<div id="6e94fa27" class="cell" data-execution_count="36">
+<div id="55aff0ec" class="cell" data-execution_count="36">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
@@ -1857,7 +1854,7 @@ y_i-\widehat y_i.
 <section id="dónde-se-equivoca-más-el-modelo" class="level2" data-number="11.20">
 <h2 data-number="11.20" class="anchored" data-anchor-id="dónde-se-equivoca-más-el-modelo"><span class="header-section-number">11.20</span> ¿Dónde se equivoca más el modelo?</h2>
 <p>Podemos construir una tabla con las predicciones y sus errores.</p>
-<div id="a37dc1f9" class="cell" data-execution_count="37">
+<div id="67cf8150" class="cell" data-execution_count="37">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>diagnostico <span class="op">=</span> X_test.copy()</span>
@@ -1875,7 +1872,7 @@ y_i-\widehat y_i.
 </details>
 </div>
 <p>Observemos las predicciones con mayor error absoluto.</p>
-<div id="ab5b4477" class="cell" data-execution_count="38">
+<div id="a9622bbf" class="cell" data-execution_count="38">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>diagnostico.sort_values(</span>
@@ -2074,7 +2071,7 @@ y_i-\widehat y_i.
 <section id="error-y-localización-geográfica" class="level2" data-number="11.21">
 <h2 data-number="11.21" class="anchored" data-anchor-id="error-y-localización-geográfica"><span class="header-section-number">11.21</span> Error y localización geográfica</h2>
 <p>Como California Housing contiene coordenadas geográficas, podemos explorar espacialmente el error.</p>
-<div id="7ae3afe6" class="cell" data-execution_count="39">
+<div id="6241cf14" class="cell" data-execution_count="39">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
@@ -2121,8 +2118,7 @@ y_i-\widehat y_i.
 <p>Ya podemos representar todo el procedimiento realizado durante las tres prácticas.</p>
 <section id="paso-1-separar-los-datos" class="level3" data-number="11.22.1">
 <h3 data-number="11.22.1" class="anchored" data-anchor-id="paso-1-separar-los-datos"><span class="header-section-number">11.22.1</span> Paso 1: separar los datos</h3>
-<p><span class="math display">\[
-\mathcal{D}
+<p><span class="math display">\[\mathcal{D}
 \longrightarrow
 \boxed{
 \mathcal{D}_{\text{train}}
@@ -2130,51 +2126,40 @@ y_i-\widehat y_i.
 +
 \boxed{
 \mathcal{D}_{\text{test}}
-}.
-\]</span></p>
+}.\]</span></p>
 </section>
 <section id="paso-2-trabajar-solamente-con-train" class="level3" data-number="11.22.2">
 <h3 data-number="11.22.2" class="anchored" data-anchor-id="paso-2-trabajar-solamente-con-train"><span class="header-section-number">11.22.2</span> Paso 2: trabajar solamente con train</h3>
 <p>Dentro de <span class="math inline">\(\mathcal{D}_{\text{train}}\)</span> realizamos:</p>
-<p><span class="math display">\[
-\text{Cross-Validation}
+<p><span class="math display">\[\text{Cross-Validation}
 \longrightarrow
 \text{comparación}
 \longrightarrow
-\text{tuning}.
-\]</span></p>
+\text{tuning}.\]</span></p>
 </section>
 <section id="paso-3-seleccionar-hiperparámetros" class="level3" data-number="11.22.3">
 <h3 data-number="11.22.3" class="anchored" data-anchor-id="paso-3-seleccionar-hiperparámetros"><span class="header-section-number">11.22.3</span> Paso 3: seleccionar hiperparámetros</h3>
 <p>Por ejemplo:</p>
-<p><span class="math display">\[
-\boldsymbol{\lambda}^{*}
+<p><span class="math display">\[\boldsymbol{\lambda}^{*}
 =
 \arg\min_{\boldsymbol{\lambda}}
-\operatorname{RMSE}_{CV}(\boldsymbol{\lambda}).
-\]</span></p>
+\operatorname{RMSE}_{CV}(\boldsymbol{\lambda}).\]</span></p>
 </section>
 <section id="paso-4-refit" class="level3" data-number="11.22.4">
 <h3 data-number="11.22.4" class="anchored" data-anchor-id="paso-4-refit"><span class="header-section-number">11.22.4</span> Paso 4: refit</h3>
 <p>El procedimiento seleccionado se vuelve a entrenar utilizando todo</p>
-<p><span class="math display">\[
-\mathcal{D}_{\text{train}}.
-\]</span></p>
+<p><span class="math display">\[\mathcal{D}_{\text{train}}.\]</span></p>
 </section>
 <section id="paso-5-evaluación-final" class="level3" data-number="11.22.5">
 <h3 data-number="11.22.5" class="anchored" data-anchor-id="paso-5-evaluación-final"><span class="header-section-number">11.22.5</span> Paso 5: evaluación final</h3>
 <p>Finalmente:</p>
-<p><span class="math display">\[
-\widehat f^{*}(X_{\text{test}})
-\]</span></p>
+<p><span class="math display">\[\widehat f^{*}(X_{\text{test}})\]</span></p>
 <p>permite calcular</p>
-<p><span class="math display">\[
-\operatorname{MAE}_{test},
+<p><span class="math display">\[\operatorname{MAE}_{test},
 \qquad
 \operatorname{RMSE}_{test},
 \qquad
-R^2_{\text{test}}.
-\]</span></p>
+R^2_{\text{test}}.\]</span></p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2211,13 +2196,9 @@ R^2_{\text{test}}.
 <span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"colsample_bytree"</span>: [<span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.0</span>]</span>
 <span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Realiza un <code>RandomizedSearchCV</code> con:</p>
-<p><span class="math display">\[
-\texttt{n\_iter}=15
-\]</span></p>
+<p><span class="math display">\[\texttt{n\_iter}=15\]</span></p>
 <p>y</p>
-<p><span class="math display">\[
-5\text{-fold Cross-Validation}.
-\]</span></p>
+<p><span class="math display">\[5\text{-fold Cross-Validation}.\]</span></p>
 <p>Utiliza como métrica principal:</p>
 <pre class="text"><code>neg_root_mean_squared_error</code></pre>
 <p>Reporta:</p>
@@ -2255,8 +2236,7 @@ R^2_{\text{test}}.
 <p>Por ejemplo, en lugar de <code>KFold</code> puede ser conveniente utilizar:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> StratifiedKFold</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>y nuestras métricas pueden incluir:</p>
-<p><span class="math display">\[
-\text{accuracy},
+<p><span class="math display">\[\text{accuracy},
 \qquad
 \text{precision},
 \qquad
@@ -2264,8 +2244,7 @@ R^2_{\text{test}}.
 \qquad
 F_1,
 \qquad
-\text{ROC-AUC}.
-\]</span></p>
+\text{ROC-AUC}.\]</span></p>
 <p><strong>Pregunta</strong></p>
 <p>¿Cómo modificarías el flujo utilizado en California Housing para resolver este problema de clasificación?</p>
 <p>No es necesario implementar toda la búsqueda.</p>
@@ -2277,6 +2256,44 @@ F_1,
 <li>qué modelos compararías;</li>
 <li>qué información reservarías hasta la evaluación final.</li>
 </ol>
+</section>
+<section id="nota-sobre-normalidad-en-residuos" class="level2" data-number="11.25">
+<h2 data-number="11.25" class="anchored" data-anchor-id="nota-sobre-normalidad-en-residuos"><span class="header-section-number">11.25</span> Nota sobre normalidad en residuos</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>¿Por qué revisamos la normalidad de los residuos?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En el modelo de regresión lineal</p>
+<p><span class="math display">\[
+Y_i = \beta_0 + \beta_1 X_i + \varepsilon_i,
+\]</span></p>
+<p>frecuentemente suponemos que los <strong>errores</strong> siguen una distribución normal:</p>
+<p><span class="math display">\[
+\varepsilon_i \overset{iid}{\sim} N(0,\sigma^2).
+\]</span></p>
+<p>Este supuesto <strong>no es necesario para estimar los coeficientes mediante mínimos cuadrados</strong>, pero permite justificar pruebas de hipótesis (<span class="math inline">\(t\)</span> y <span class="math inline">\(F\)</span>) e intervalos de confianza exactos en muestras finitas, bajo los demás supuestos del modelo clásico.</p>
+<p>Como los errores verdaderos <span class="math inline">\(\varepsilon_i\)</span> no son observables, utilizamos los <strong>residuos</strong></p>
+<p><span class="math display">\[
+e_i = y_i - \hat{y}_i
+\]</span></p>
+<p>para evaluar si el supuesto de normalidad es razonable.</p>
+<p>Para ello, podemos utilizar histogramas y gráficos Q-Q de los residuos (preferentemente estandarizados o studentizados).</p>
+<p><strong>Es importante recordar que:</strong></p>
+<ul>
+<li>No necesitamos que los residuos sean perfectamente normales para que la regresión lineal sea útil.</li>
+<li>La falta de normalidad no implica necesariamente que las estimaciones de los coeficientes sean incorrectas.</li>
+<li>En muestras grandes, bajo ciertas condiciones, podemos realizar inferencia utilizando resultados asintóticos sin exigir normalidad.</li>
+<li>El supuesto de normalidad corresponde a los <strong>errores</strong>, no a las variables predictoras ni a la distribución marginal de la variable respuesta.</li>
+</ul>
+<p><strong>En resumen:</strong> revisamos la normalidad de los residuos principalmente para evaluar si son razonables los supuestos que justifican nuestros procedimientos de inferencia estadística, no para determinar por sí sola si el modelo es bueno.</p>
+</div>
+</div>
 
 
 </section>
@@ -2728,8 +2745,8 @@ F_1,
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./parte12.html" class="pagination-link" aria-label="pendiente">
-        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">pendiente</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./parte12.html" class="pagination-link" aria-label="Clasificador de margen máximo">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Clasificador de margen máximo</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

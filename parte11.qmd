@@ -1,6 +1,5 @@
 # Evaluación y comparación de modelos
 
-
 En las secciones anteriores construimos modelos de Gradient Boosting y aprendimos a utilizar Cross-Validation para seleccionar hiperparámetros.
 
 Ahora integraremos estos elementos dentro de un flujo completo de aprendizaje automático.
@@ -17,8 +16,7 @@ Al finalizar esta práctica seremos capaces de:
 
 Nuestro flujo de trabajo será:
 
-$$
-\boxed{\text{Datos}}
+$$\boxed{\text{Datos}}
 \longrightarrow
 \boxed{\text{Train/Test}}
 \longrightarrow
@@ -30,19 +28,17 @@ $$
 \longrightarrow
 \boxed{\text{Refit}}
 \longrightarrow
-\boxed{\text{Evaluación final}}.
-$$
+\boxed{\text{Evaluación final}}.$$
 
-::: {.diapositivas}
-::: {.diapositivas-title}
+::::: diapositivas
+::: diapositivas-title
 📝 **Diapositivas**
 :::
 
-::: {.diapositivas-body}
+::: diapositivas-body
 [Ver diapositivas](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/3.6_ComparacionDeModelos.pdf)
 :::
-:::
-
+:::::
 
 ## Preparación
 
@@ -104,7 +100,7 @@ print("Train:", X_train.shape)
 print("Test: ", X_test.shape)
 ```
 
-::: {.callout-important}
+::: callout-important
 ## Última práctica: el test sigue cerrado
 
 Todavía no utilizaremos `X_test` ni `y_test`.
@@ -113,7 +109,6 @@ Primero realizaremos toda la comparación y selección utilizando exclusivamente
 
 Abriremos el test solamente al final.
 :::
-
 
 ## ¿Contra qué debemos comparar?
 
@@ -133,13 +128,11 @@ Por sí mismo no pretende ser un buen modelo.
 
 Su función es responder una pregunta mucho más importante:
 
-
-:::: {.callout-warning icon="false"}
+::: {.callout-warning icon="false"}
 ## 🧠 Pregunta
 
- ¿Nuestros modelos realmente están aprendiendo estructura útil en los datos?
-
-::::
+¿Nuestros modelos realmente están aprendiendo estructura útil en los datos?
+:::
 
 ## Modelos que compararemos
 
@@ -176,7 +169,7 @@ Observen que estamos comparando modelos con características muy diferentes.
 
 Tenemos desde una baseline extremadamente sencilla hasta métodos de ensamble.
 
-::: {.callout-note}
+::: callout-note
 ## Primera comparación
 
 En esta primera etapa no intentaremos optimizar exhaustivamente todos los modelos.
@@ -202,16 +195,13 @@ Esto significa que cada modelo será entrenado y evaluado sobre las mismas parti
 
 Conceptualmente queremos:
 
-$$
-\boxed{
+$$\boxed{
 \text{mismos datos}
 +
 \text{mismos folds}
 +
 \text{mismas métricas}
-}.
-$$
-
+}.$$
 
 ## Evaluaremos más de una métrica
 
@@ -237,14 +227,11 @@ Recordemos que `scikit-learn` devuelve MAE y RMSE negativos cuando se utilizan c
 
 Esto permite mantener la convención
 
-$$
-\text{score mayor}
+$$\text{score mayor}
 \quad\Longrightarrow\quad
-\text{mejor}.
-$$
+\text{mejor}.$$
 
 Después cambiaremos el signo para recuperar los errores en su interpretación habitual.
-
 
 ## Comparación mediante Cross-Validation
 
@@ -310,42 +297,31 @@ df_resultados.sort_values("RMSE_CV")
 
 Tenemos ahora información sobre tres aspectos:
 
-$$
-\boxed{\text{desempeño promedio}}
-$$
+$$\boxed{\text{desempeño promedio}}$$
 
-$$
-\boxed{\text{variabilidad entre folds}}
-$$
+$$\boxed{\text{variabilidad entre folds}}$$
 
-$$
-\boxed{\text{costo computacional}}.
-$$
+$$\boxed{\text{costo computacional}}.$$
 
 Por ejemplo, el RMSE promedio se calcula como
 
-$$
-\overline{\operatorname{RMSE}}
+$$\overline{\operatorname{RMSE}}
 =
 \frac{1}{k}
 \sum_{j=1}^{k}
-\operatorname{RMSE}_j.
-$$
+\operatorname{RMSE}_j.$$
 
 Mientras que `RMSE_SD` resume cuánto varían esos resultados entre folds.
 
-:::: {.callout-warning icon="false"}
+::: {.callout-warning icon="false"}
 ## 🧠 Discusión
 
-1. ¿Todos los modelos mejoran la baseline?
-2. ¿Los modelos con menor RMSE también presentan mayor $R^2$?
-3. ¿Cuál presenta mayor variabilidad entre folds?
-4. ¿Existen diferencias importantes en tiempo de entrenamiento?
-5. ¿Una diferencia pequeña en RMSE sería suficiente por sí sola para afirmar que dos procedimientos se comportan de manera sustancialmente distinta?
-
-
-::::
-
+1.  ¿Todos los modelos mejoran la baseline?
+2.  ¿Los modelos con menor RMSE también presentan mayor $R^2$?
+3.  ¿Cuál presenta mayor variabilidad entre folds?
+4.  ¿Existen diferencias importantes en tiempo de entrenamiento?
+5.  ¿Una diferencia pequeña en RMSE sería suficiente por sí sola para afirmar que dos procedimientos se comportan de manera sustancialmente distinta?
+:::
 
 ## Visualización de la comparación
 
@@ -373,14 +349,13 @@ plt.title("Comparación de modelos")
 plt.show()
 ```
 
-::: {.callout-note}
+::: callout-note
 ## Las barras no son intervalos de confianza
 
 En esta gráfica las barras representan simplemente la desviación estándar de los resultados obtenidos entre folds.
 
 No deben interpretarse automáticamente como intervalos de confianza.
 :::
-
 
 ## Observar los resultados fold por fold
 
@@ -446,15 +421,11 @@ plt.legend()
 plt.show()
 ```
 
-
-:::: {.callout-warning icon="false"}
+::: {.callout-warning icon="false"}
 ## 🧠 Pregunta
 
-¿Uno de los modelos presenta menor RMSE en todos los folds?
-¿O las diferencias dependen también de la partición?
-
-::::
-
+¿Uno de los modelos presenta menor RMSE en todos los folds? ¿O las diferencias dependen también de la partición?
+:::
 
 ## Comparar modelos no termina aquí
 
@@ -462,27 +433,23 @@ Hasta ahora hemos utilizado configuraciones razonables, pero no necesariamente o
 
 Por ejemplo, Gradient Boosting depende de
 
-$$
-\texttt{learning\_rate},
+$$\texttt{learning\_rate},
 \qquad
 \texttt{n\_estimators},
 \qquad
 \texttt{max\_depth},
 \qquad
-\texttt{subsample}.
-$$
+\texttt{subsample}.$$
 
 Random Forest también posee hiperparámetros como
 
-$$
-\texttt{n\_estimators},
+$$\texttt{n\_estimators},
 \qquad
 \texttt{max\_depth},
 \qquad
 \texttt{max\_features},
 \qquad
-\texttt{min\_samples\_leaf}.
-$$
+\texttt{min\_samples\_leaf}.$$
 
 Por ello, una comparación más completa puede incluir un procedimiento de tuning.
 
@@ -542,7 +509,6 @@ print(
 )
 ```
 
-
 ## Tuning de Gradient Boosting
 
 Definimos ahora:
@@ -596,8 +562,6 @@ print(
 )
 ```
 
-
-
 ## Comparación después del tuning
 
 Construimos una tabla pequeña con los dos procedimientos ajustados.
@@ -633,7 +597,7 @@ df_resultados[
 ]
 ```
 
-::: {.callout-tip}
+::: callout-tip
 ## Tuning no garantiza una mejora enorme
 
 La optimización de hiperparámetros puede mejorar el desempeño, pero no debemos esperar necesariamente cambios espectaculares.
@@ -641,12 +605,11 @@ La optimización de hiperparámetros puede mejorar el desempeño, pero no debemo
 Si una configuración inicial ya era razonable, la mejora puede ser relativamente pequeña.
 :::
 
-
 ## El refit ya ocurrió
 
 Recordemos que `RandomizedSearchCV` utiliza por defecto
 
-```text
+``` text
 refit=True
 ```
 
@@ -663,13 +626,12 @@ Estos modelos ya fueron reajustados con todos los datos de entrenamiento.
 
 Hasta este momento:
 
-```text
+``` text
 X_test
 y_test
 ```
 
 siguen sin participar en ninguna decisión.
-
 
 ## Antes de abrir el test
 
@@ -686,8 +648,7 @@ El conjunto de prueba no participó en ninguna de estas decisiones.
 
 Nuestro esquema es:
 
-$$
-\boxed{
+$$\boxed{
 X_{\text{train}}
 }
 \longrightarrow
@@ -697,26 +658,21 @@ X_{\text{train}}
 \longrightarrow
 \boxed{
 \text{modelo ajustado}
-}.
-$$
+}.$$
 
 Ahora sí podemos utilizar
 
-$$
-X_{\text{test}}
-$$
+$$X_{\text{test}}$$
 
 para obtener una evaluación final.
 
-::: {.callout-important}
+::: callout-important
 ## Una vez abierto el test
 
 No utilizaremos el resultado de test para volver a modificar repetidamente los hiperparámetros.
 
 Si lo hiciéramos, el test comenzaría a funcionar como un nuevo conjunto de validación.
 :::
-
-
 
 ## Evaluación final
 
@@ -801,7 +757,6 @@ resultados_test = pd.DataFrame({
 resultados_test
 ```
 
-
 ## CV vs. test
 
 Comparemos el RMSE estimado durante Cross-Validation con el observado finalmente en test.
@@ -829,28 +784,21 @@ comparacion_final
 
 No esperamos que
 
-$$
-\operatorname{RMSE}_{CV}
+$$\operatorname{RMSE}_{CV}
 =
-\operatorname{RMSE}_{test}
-$$
+\operatorname{RMSE}_{test}$$
 
 exactamente.
 
 Son estimaciones obtenidas con observaciones y procedimientos diferentes.
 
-:::: {.callout-warning icon="false"}
+::: {.callout-warning icon="false"}
 ## 🧠 Discusión
 
 ¿El desempeño en test es razonablemente consistente con lo observado durante Cross-Validation?
 
 ¿Qué significaría encontrar una diferencia muy grande entre ambos?
-
-
-
-::::
-
-
+:::
 
 ## Predicho vs. observado
 
@@ -888,36 +836,25 @@ plt.show()
 
 La línea punteada representa
 
-$$
-\widehat y=y.
-$$
+$$\widehat y=y.$$
 
 Predicciones perfectas caerían exactamente sobre esta línea.
 
-
-:::: {.callout-warning icon="false"}
+::: {.callout-warning icon="false"}
 ## 🧠 Observa
 
 ¿Las predicciones se distribuyen aproximadamente alrededor de la diagonal?
 
 ¿En qué regiones parecen existir mayores errores?
-
-
-::::
-
-
-
-
+:::
 
 ## Residuos
 
 Definimos los residuos como
 
-$$
-e_i
+$$e_i
 =
-y_i-\widehat y_i.
-$$
+y_i-\widehat y_i.$$
 
 Calculamos:
 
@@ -965,7 +902,7 @@ plt.show()
 
 Una gráfica de residuos puede revelar patrones que una métrica agregada no muestra.
 
-::: {.callout-note}
+::: callout-note
 ## Las métricas no sustituyen el diagnóstico
 
 Dos modelos pueden tener valores similares de RMSE y, sin embargo, cometer errores de maneras diferentes.
@@ -1031,16 +968,11 @@ plt.colorbar(label="Error absoluto")
 plt.show()
 ```
 
-
-:::: {.callout-warning icon="false"}
+::: {.callout-warning icon="false"}
 ## 🧠 Pregunta
 
-¿Los errores parecen distribuirse uniformemente?
-¿Observas regiones donde el modelo parece tener mayores dificultades?
-
-::::
-
-
+¿Los errores parecen distribuirse uniformemente? ¿Observas regiones donde el modelo parece tener mayores dificultades?
+:::
 
 Este tipo de análisis puede revelar estructura que una única métrica no muestra.
 
@@ -1050,8 +982,7 @@ Ya podemos representar todo el procedimiento realizado durante las tres práctic
 
 ### Paso 1: separar los datos
 
-$$
-\mathcal{D}
+$$\mathcal{D}
 \longrightarrow
 \boxed{
 \mathcal{D}_{\text{train}}
@@ -1059,59 +990,48 @@ $$
 +
 \boxed{
 \mathcal{D}_{\text{test}}
-}.
-$$
+}.$$
 
 ### Paso 2: trabajar solamente con train
 
 Dentro de $\mathcal{D}_{\text{train}}$ realizamos:
 
-$$
-\text{Cross-Validation}
+$$\text{Cross-Validation}
 \longrightarrow
 \text{comparación}
 \longrightarrow
-\text{tuning}.
-$$
+\text{tuning}.$$
 
 ### Paso 3: seleccionar hiperparámetros
 
 Por ejemplo:
 
-$$
-\boldsymbol{\lambda}^{*}
+$$\boldsymbol{\lambda}^{*}
 =
 \arg\min_{\boldsymbol{\lambda}}
-\operatorname{RMSE}_{CV}(\boldsymbol{\lambda}).
-$$
+\operatorname{RMSE}_{CV}(\boldsymbol{\lambda}).$$
 
 ### Paso 4: refit
 
 El procedimiento seleccionado se vuelve a entrenar utilizando todo
 
-$$
-\mathcal{D}_{\text{train}}.
-$$
+$$\mathcal{D}_{\text{train}}.$$
 
 ### Paso 5: evaluación final
 
 Finalmente:
 
-$$
-\widehat f^{*}(X_{\text{test}})
-$$
+$$\widehat f^{*}(X_{\text{test}})$$
 
 permite calcular
 
-$$
-\operatorname{MAE}_{test},
+$$\operatorname{MAE}_{test},
 \qquad
 \operatorname{RMSE}_{test},
 \qquad
-R^2_{\text{test}}.
-$$
+R^2_{\text{test}}.$$
 
-::: {.callout-tip}
+::: callout-tip
 ## La idea central de la unidad
 
 El objetivo no es encontrar el modelo que produzca el número más pequeño en una tabla.
@@ -1125,13 +1045,13 @@ Ahora realizarás el mismo flujo utilizando **XGBoost**.
 
 Importa:
 
-```python
+``` python
 from xgboost import XGBRegressor
 ```
 
 Define inicialmente:
 
-```python
+``` python
 xgb = XGBRegressor(
     objective="reg:squarederror",
     random_state=42,
@@ -1141,7 +1061,7 @@ xgb = XGBRegressor(
 
 Utiliza el siguiente espacio:
 
-```python
+``` python
 param_xgb = {
     "n_estimators": [100, 200, 300, 500],
     "learning_rate": [0.01, 0.03, 0.05, 0.1],
@@ -1153,37 +1073,32 @@ param_xgb = {
 
 Realiza un `RandomizedSearchCV` con:
 
-$$
-\texttt{n\_iter}=15
-$$
+$$\texttt{n\_iter}=15$$
 
 y
 
-$$
-5\text{-fold Cross-Validation}.
-$$
+$$5\text{-fold Cross-Validation}.$$
 
 Utiliza como métrica principal:
 
-```text
+``` text
 neg_root_mean_squared_error
 ```
 
 Reporta:
 
-1. los hiperparámetros seleccionados;
-2. el RMSE promedio de Cross-Validation;
-3. el tiempo utilizado por la búsqueda;
-4. MAE, RMSE y $R^2$ sobre test;
-5. una gráfica observado vs. predicho;
-6. una gráfica de residuos.
+1.  los hiperparámetros seleccionados;
+2.  el RMSE promedio de Cross-Validation;
+3.  el tiempo utilizado por la búsqueda;
+4.  MAE, RMSE y $R^2$ sobre test;
+5.  una gráfica observado vs. predicho;
+6.  una gráfica de residuos.
 
 Finalmente responde:
 
 > ¿El desempeño sobre test fue consistente con el estimado mediante Cross-Validation?
 
 > ¿Qué información adicional obtuviste al observar los residuos que no era visible únicamente con RMSE?
-
 
 ## Reto adicional: clasificación
 
@@ -1195,7 +1110,7 @@ Sin embargo, el procedimiento general también puede utilizarse en clasificació
 
 Puedes cargarlo mediante:
 
-```python
+``` python
 from sklearn.datasets import load_breast_cancer
 
 cancer = load_breast_cancer(
@@ -1210,14 +1125,13 @@ En clasificación debemos reconsiderar algunos elementos.
 
 Por ejemplo, en lugar de `KFold` puede ser conveniente utilizar:
 
-```python
+``` python
 from sklearn.model_selection import StratifiedKFold
 ```
 
 y nuestras métricas pueden incluir:
 
-$$
-\text{accuracy},
+$$\text{accuracy},
 \qquad
 \text{precision},
 \qquad
@@ -1225,8 +1139,7 @@ $$
 \qquad
 F_1,
 \qquad
-\text{ROC-AUC}.
-$$
+\text{ROC-AUC}.$$
 
 **Pregunta**
 
@@ -1236,10 +1149,53 @@ No es necesario implementar toda la búsqueda.
 
 Identifica al menos:
 
-1. qué modelo utilizarías como baseline;
-2. qué estrategia de Cross-Validation utilizarías;
-3. qué métricas reportarías;
-4. qué modelos compararías;
-5. qué información reservarías hasta la evaluación final.
+1.  qué modelo utilizarías como baseline;
+2.  qué estrategia de Cross-Validation utilizarías;
+3.  qué métricas reportarías;
+4.  qué modelos compararías;
+5.  qué información reservarías hasta la evaluación final.
 
+
+
+
+## Nota sobre normalidad en residuos
+
+
+
+::: {.callout-note}
+## ¿Por qué revisamos la normalidad de los residuos?
+
+En el modelo de regresión lineal
+
+$$
+Y_i = \beta_0 + \beta_1 X_i + \varepsilon_i,
+$$
+
+frecuentemente suponemos que los **errores** siguen una distribución normal:
+
+$$
+\varepsilon_i \overset{iid}{\sim} N(0,\sigma^2).
+$$
+
+Este supuesto **no es necesario para estimar los coeficientes mediante mínimos cuadrados**, pero permite justificar pruebas de hipótesis ($t$ y $F$) e intervalos de confianza exactos en muestras finitas, bajo los demás supuestos del modelo clásico.
+
+Como los errores verdaderos $\varepsilon_i$ no son observables, utilizamos los **residuos**
+
+$$
+e_i = y_i - \hat{y}_i
+$$
+
+para evaluar si el supuesto de normalidad es razonable.
+
+Para ello, podemos utilizar histogramas y gráficos Q-Q de los residuos (preferentemente estandarizados o studentizados).
+
+**Es importante recordar que:**
+
+- No necesitamos que los residuos sean perfectamente normales para que la regresión lineal sea útil.
+- La falta de normalidad no implica necesariamente que las estimaciones de los coeficientes sean incorrectas.
+- En muestras grandes, bajo ciertas condiciones, podemos realizar inferencia utilizando resultados asintóticos sin exigir normalidad.
+- El supuesto de normalidad corresponde a los **errores**, no a las variables predictoras ni a la distribución marginal de la variable respuesta.
+
+**En resumen:** revisamos la normalidad de los residuos principalmente para evaluar si son razonables los supuestos que justifican nuestros procedimientos de inferencia estadística, no para determinar por sí sola si el modelo es bueno.
+:::
 

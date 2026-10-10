@@ -45,7 +45,7 @@
         "\n",
         "Comenzamos importando las bibliotecas necesarias."
       ],
-      "id": "22ffa0e4"
+      "id": "04563287"
     },
     {
       "cell_type": "code",
@@ -58,7 +58,7 @@
         "from ISLP import load_data\n",
         "from pygam import LinearGAM, s"
       ],
-      "id": "767b08e2",
+      "id": "a5dbc9e7",
       "execution_count": null,
       "outputs": []
     },
@@ -76,7 +76,7 @@
         "\n",
         "Utilizaremos nuevamente el conjunto de datos `Wage`."
       ],
-      "id": "b042da60"
+      "id": "b45852b8"
     },
     {
       "cell_type": "code",
@@ -86,7 +86,7 @@
         "\n",
         "Wage.head()"
       ],
-      "id": "606a6e8c",
+      "id": "cac6216f",
       "execution_count": null,
       "outputs": []
     },
@@ -101,7 +101,7 @@
         "\n",
         "Extraemos estas dos variables."
       ],
-      "id": "016783a3"
+      "id": "f7a84e72"
     },
     {
       "cell_type": "code",
@@ -110,7 +110,7 @@
         "age = Wage[\"age\"]\n",
         "y = Wage[\"wage\"]"
       ],
-      "id": "676fd6d2",
+      "id": "0afa2c85",
       "execution_count": null,
       "outputs": []
     },
@@ -120,7 +120,7 @@
       "source": [
         "Podemos visualizar los datos originales."
       ],
-      "id": "31917175"
+      "id": "504c2884"
     },
     {
       "cell_type": "code",
@@ -140,7 +140,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "64c75a54",
+      "id": "fd1f1f69",
       "execution_count": null,
       "outputs": []
     },
@@ -158,7 +158,7 @@
         "\n",
         "Actualmente `age` es un vector:"
       ],
-      "id": "38a071e1"
+      "id": "1def684e"
     },
     {
       "cell_type": "code",
@@ -166,7 +166,7 @@
       "source": [
         "np.asarray(age).shape"
       ],
-      "id": "b95c3419",
+      "id": "2ba39641",
       "execution_count": null,
       "outputs": []
     },
@@ -176,7 +176,7 @@
       "source": [
         "Lo transformamos en una matriz con una sola columna."
       ],
-      "id": "386a5fd3"
+      "id": "6643633b"
     },
     {
       "cell_type": "code",
@@ -184,7 +184,7 @@
       "source": [
         "X_age = np.asarray(age).reshape(-1, 1)"
       ],
-      "id": "44234055",
+      "id": "7329f3a9",
       "execution_count": null,
       "outputs": []
     },
@@ -194,7 +194,7 @@
       "source": [
         "Ahora podemos revisar sus dimensiones."
       ],
-      "id": "a111d572"
+      "id": "62153b1d"
     },
     {
       "cell_type": "code",
@@ -202,7 +202,7 @@
       "source": [
         "X_age.shape"
       ],
-      "id": "b398465b",
+      "id": "255124af",
       "execution_count": null,
       "outputs": []
     },
@@ -240,7 +240,7 @@
         "\n",
         "Construiremos un primer modelo."
       ],
-      "id": "7362e8a7"
+      "id": "1d9d00ee"
     },
     {
       "cell_type": "code",
@@ -252,7 +252,7 @@
         "\n",
         "gam.fit(X_age, y)"
       ],
-      "id": "26e8bd7c",
+      "id": "a7df7526",
       "execution_count": null,
       "outputs": []
     },
@@ -306,7 +306,7 @@
         "\n",
         "Construiremos una secuencia de edades desde la edad mínima hasta la máxima."
       ],
-      "id": "3b332853"
+      "id": "37002f72"
     },
     {
       "cell_type": "code",
@@ -318,7 +318,7 @@
         "    500\n",
         ")"
       ],
-      "id": "cd031211",
+      "id": "cc24cbf8",
       "execution_count": null,
       "outputs": []
     },
@@ -328,7 +328,7 @@
       "source": [
         "Para utilizar estos valores con `pygam`, también debemos convertirlos en una matriz."
       ],
-      "id": "39b50421"
+      "id": "e32fbf3c"
     },
     {
       "cell_type": "code",
@@ -336,7 +336,7 @@
       "source": [
         "age_grid_matrix = age_grid.reshape(-1, 1)"
       ],
-      "id": "8e42616d",
+      "id": "398294d9",
       "execution_count": null,
       "outputs": []
     },
@@ -346,7 +346,7 @@
       "source": [
         "Ahora calculamos las predicciones."
       ],
-      "id": "0eb8b74d"
+      "id": "34b2a5f6"
     },
     {
       "cell_type": "code",
@@ -354,7 +354,7 @@
       "source": [
         "pred = gam.predict(age_grid_matrix)"
       ],
-      "id": "c033b238",
+      "id": "7878cd9a",
       "execution_count": null,
       "outputs": []
     },
@@ -366,7 +366,7 @@
         "\n",
         "Podemos representar simultáneamente los datos y la curva estimada."
       ],
-      "id": "0609d989"
+      "id": "8ffa5a1b"
     },
     {
       "cell_type": "code",
@@ -392,7 +392,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "6a24f765",
+      "id": "ea3b7067",
       "execution_count": null,
       "outputs": []
     },
@@ -447,7 +447,7 @@
         "\n",
         "$$10^6.$$"
       ],
-      "id": "7275243b"
+      "id": "f0cca46f"
     },
     {
       "cell_type": "code",
@@ -457,7 +457,7 @@
         "\n",
         "lambdas"
       ],
-      "id": "7b41fe73",
+      "id": "ae1c884c",
       "execution_count": null,
       "outputs": []
     },
@@ -473,7 +473,7 @@
         "\n",
         "Ajustaremos un spline diferente para cada valor de $\\lambda$."
       ],
-      "id": "b702b06c"
+      "id": "6b73702e"
     },
     {
       "cell_type": "code",
@@ -511,7 +511,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "a5e656de",
+      "id": "f0f489f0",
       "execution_count": null,
       "outputs": []
     },
@@ -584,7 +584,7 @@
         "\n",
         "Primero definimos una colección de posibles valores."
       ],
-      "id": "fd6bf7c4"
+      "id": "09ed4a85"
     },
     {
       "cell_type": "code",
@@ -592,7 +592,7 @@
       "source": [
         "lam_grid = np.logspace(-3, 5, 30)"
       ],
-      "id": "fd1cae6e",
+      "id": "ed2656f8",
       "execution_count": null,
       "outputs": []
     },
@@ -602,7 +602,7 @@
       "source": [
         "Ahora realizamos la búsqueda."
       ],
-      "id": "2bde15cf"
+      "id": "4d2736b1"
     },
     {
       "cell_type": "code",
@@ -619,7 +619,7 @@
         "    progress=False\n",
         ")"
       ],
-      "id": "51e03de7",
+      "id": "da489450",
       "execution_count": null,
       "outputs": []
     },
@@ -631,7 +631,7 @@
         "\n",
         "Podemos consultar el valor seleccionado."
       ],
-      "id": "84d8865d"
+      "id": "ef949620"
     },
     {
       "cell_type": "code",
@@ -639,7 +639,7 @@
       "source": [
         "gam_opt.lam"
       ],
-      "id": "31a4110d",
+      "id": "0fbb6ab1",
       "execution_count": null,
       "outputs": []
     },
@@ -660,7 +660,7 @@
         "\n",
         "con el modelo obtenido mediante la búsqueda."
       ],
-      "id": "5493792c"
+      "id": "f33bc9e6"
     },
     {
       "cell_type": "code",
@@ -698,7 +698,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "d34cb75a",
+      "id": "791eead1",
       "execution_count": null,
       "outputs": []
     },
@@ -728,7 +728,7 @@
         "\n",
         "Podemos inspeccionarla mediante:"
       ],
-      "id": "d0255f19"
+      "id": "6b92911c"
     },
     {
       "cell_type": "code",
@@ -736,7 +736,7 @@
       "source": [
         "gam_opt.statistics_[\"edof\"]"
       ],
-      "id": "62ab2c44",
+      "id": "7a5a16bf",
       "execution_count": null,
       "outputs": []
     },
@@ -746,7 +746,7 @@
       "source": [
         "Comparemos ahora varios valores de $\\lambda$."
       ],
-      "id": "0732eb0e"
+      "id": "a2d032da"
     },
     {
       "cell_type": "code",
@@ -769,7 +769,7 @@
         "\n",
         "df_lambda"
       ],
-      "id": "bd5c879d",
+      "id": "af669fe2",
       "execution_count": null,
       "outputs": []
     },
@@ -779,7 +779,7 @@
       "source": [
         "Ahora podemos visualizar la relación."
       ],
-      "id": "c91eb630"
+      "id": "fa360861"
     },
     {
       "cell_type": "code",
@@ -801,7 +801,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "d8c588df",
+      "id": "76e2836e",
       "execution_count": null,
       "outputs": []
     },
@@ -851,7 +851,7 @@
         "\n",
         "Primero ajustamos la regresión lineal."
       ],
-      "id": "a83e265c"
+      "id": "eeee4bfc"
     },
     {
       "cell_type": "code",
@@ -868,7 +868,7 @@
         "    age_grid\n",
         ")"
       ],
-      "id": "819af969",
+      "id": "cc315a13",
       "execution_count": null,
       "outputs": []
     },
@@ -878,7 +878,7 @@
       "source": [
         "Ahora ajustamos un spline con una penalización muy grande."
       ],
-      "id": "533dc792"
+      "id": "16b5bcfe"
     },
     {
       "cell_type": "code",
@@ -894,7 +894,7 @@
         "    age_grid_matrix\n",
         ")"
       ],
-      "id": "08d2dfb8",
+      "id": "530dcaba",
       "execution_count": null,
       "outputs": []
     },
@@ -904,7 +904,7 @@
       "source": [
         "Comparamos ambos ajustes."
       ],
-      "id": "342c7079"
+      "id": "158b2712"
     },
     {
       "cell_type": "code",
@@ -940,7 +940,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "2a0a9e74",
+      "id": "02435387",
       "execution_count": null,
       "outputs": []
     },
@@ -1124,7 +1124,7 @@
         "- interpretabilidad;\n",
         "- riesgo de sobreajuste."
       ],
-      "id": "3523c02a"
+      "id": "6bed2ce5"
     }
   ],
   "metadata": {
