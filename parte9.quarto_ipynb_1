@@ -37,7 +37,7 @@
         "\n",
         "Importamos primero las bibliotecas necesarias."
       ],
-      "id": "45da22d0"
+      "id": "f64ed233"
     },
     {
       "cell_type": "code",
@@ -53,7 +53,7 @@
         "from sklearn.ensemble import GradientBoostingRegressor\n",
         "from sklearn.dummy import DummyRegressor"
       ],
-      "id": "acbac7c1",
+      "id": "353abb07",
       "execution_count": null,
       "outputs": []
     },
@@ -63,7 +63,7 @@
       "source": [
         "Cargamos los datos utilizando la opción `as_frame=True` para obtener directamente objetos de `pandas`."
       ],
-      "id": "2987726a"
+      "id": "a17556b4"
     },
     {
       "cell_type": "code",
@@ -74,7 +74,7 @@
         "X = housing.data\n",
         "y = housing.target"
       ],
-      "id": "3825341c",
+      "id": "45cffcbd",
       "execution_count": null,
       "outputs": []
     },
@@ -84,7 +84,7 @@
       "source": [
         "Veamos las primeras observaciones."
       ],
-      "id": "bb962415"
+      "id": "c00589bb"
     },
     {
       "cell_type": "code",
@@ -92,7 +92,7 @@
       "source": [
         "X.head()"
       ],
-      "id": "49b4c3fc",
+      "id": "26be24ce",
       "execution_count": null,
       "outputs": []
     },
@@ -102,7 +102,7 @@
       "source": [
         "La matriz de características contiene las siguientes variables:"
       ],
-      "id": "1dde260f"
+      "id": "dc7a51fe"
     },
     {
       "cell_type": "code",
@@ -110,7 +110,7 @@
       "source": [
         "X.columns"
       ],
-      "id": "980482b4",
+      "id": "2849f0cb",
       "execution_count": null,
       "outputs": []
     },
@@ -120,7 +120,7 @@
       "source": [
         "Podemos consultar también la descripción incluida en `scikit-learn`."
       ],
-      "id": "b20033fd"
+      "id": "f47977dd"
     },
     {
       "cell_type": "code",
@@ -128,7 +128,7 @@
       "source": [
         "print(housing.DESCR)"
       ],
-      "id": "ebbffc81",
+      "id": "820efe09",
       "execution_count": null,
       "outputs": []
     },
@@ -143,7 +143,7 @@
         "\n",
         "Antes de construir cualquier modelo, revisemos el tamaño de nuestros datos."
       ],
-      "id": "0e0574a6"
+      "id": "97832521"
     },
     {
       "cell_type": "code",
@@ -152,7 +152,7 @@
         "print(\"Número de observaciones:\", X.shape[0])\n",
         "print(\"Número de características:\", X.shape[1])"
       ],
-      "id": "1dea23eb",
+      "id": "722d912f",
       "execution_count": null,
       "outputs": []
     },
@@ -162,7 +162,7 @@
       "source": [
         "También podemos revisar si existen valores faltantes."
       ],
-      "id": "3851b4fc"
+      "id": "8eab1ebc"
     },
     {
       "cell_type": "code",
@@ -170,7 +170,7 @@
       "source": [
         "X.isna().sum()"
       ],
-      "id": "24d5b06e",
+      "id": "c69ac5b4",
       "execution_count": null,
       "outputs": []
     },
@@ -182,7 +182,7 @@
         "\n",
         "Veamos algunos estadísticos descriptivos."
       ],
-      "id": "fba72d08"
+      "id": "186431e8"
     },
     {
       "cell_type": "code",
@@ -190,7 +190,7 @@
       "source": [
         "X.describe().T"
       ],
-      "id": "0690ce41",
+      "id": "9a7e0976",
       "execution_count": null,
       "outputs": []
     },
@@ -200,7 +200,7 @@
       "source": [
         "También podemos examinar la distribución de la variable respuesta."
       ],
-      "id": "5a6951c4"
+      "id": "394cb7f7"
     },
     {
       "cell_type": "code",
@@ -213,7 +213,7 @@
         "plt.title(\"Distribución de la variable respuesta\")\n",
         "plt.show()"
       ],
-      "id": "6913688b",
+      "id": "8a9def6c",
       "execution_count": null,
       "outputs": []
     },
@@ -243,7 +243,7 @@
         "\n",
         "que permiten visualizar aproximadamente la distribución espacial de las observaciones.\n"
       ],
-      "id": "af1d2a6a"
+      "id": "95b5dcee"
     },
     {
       "cell_type": "code",
@@ -265,7 +265,7 @@
         "plt.colorbar(label=\"Valor mediano de la vivienda\")\n",
         "plt.show()"
       ],
-      "id": "b7d94fa4",
+      "id": "5ea1e91e",
       "execution_count": null,
       "outputs": []
     },
@@ -282,7 +282,7 @@
         "\n",
         "Utilizaremos $80\\%$ de las observaciones para entrenamiento y reservaremos el $20\\%$ restante para prueba."
       ],
-      "id": "a7282fe3"
+      "id": "0e70fd9c"
     },
     {
       "cell_type": "code",
@@ -295,7 +295,7 @@
         "    random_state=42\n",
         ")"
       ],
-      "id": "c964ce5c",
+      "id": "a7ab622f",
       "execution_count": null,
       "outputs": []
     },
@@ -305,7 +305,7 @@
       "source": [
         "Revisemos las dimensiones."
       ],
-      "id": "b2603498"
+      "id": "148378f0"
     },
     {
       "cell_type": "code",
@@ -314,7 +314,7 @@
         "print(\"X_train:\", X_train.shape)\n",
         "print(\"X_test: \", X_test.shape)"
       ],
-      "id": "55ee16b3",
+      "id": "f7bfd8a5",
       "execution_count": null,
       "outputs": []
     },
@@ -340,7 +340,7 @@
         "\n",
         "Utilizaremos `DummyRegressor`, que puede predecir siempre la media de la variable respuesta."
       ],
-      "id": "8a2e728c"
+      "id": "2d8d005a"
     },
     {
       "cell_type": "code",
@@ -350,7 +350,7 @@
         "\n",
         "dummy.fit(X_train, y_train)"
       ],
-      "id": "b93ef235",
+      "id": "c9dcc458",
       "execution_count": null,
       "outputs": []
     },
@@ -360,7 +360,7 @@
       "source": [
         "Generamos las predicciones sobre el conjunto de entrenamiento."
       ],
-      "id": "edc1c394"
+      "id": "e4e7e707"
     },
     {
       "cell_type": "code",
@@ -368,7 +368,7 @@
       "source": [
         "y_pred_dummy = dummy.predict(X_train)"
       ],
-      "id": "827a5271",
+      "id": "191038d7",
       "execution_count": null,
       "outputs": []
     },
@@ -400,7 +400,7 @@
         "}.\n",
         "$$"
       ],
-      "id": "229fdc6a"
+      "id": "b6e6e837"
     },
     {
       "cell_type": "code",
@@ -414,7 +414,7 @@
         "print(f\"MAE:  {mae_dummy:.4f}\")\n",
         "print(f\"RMSE: {rmse_dummy:.4f}\")"
       ],
-      "id": "a3019dca",
+      "id": "cb4494f3",
       "execution_count": null,
       "outputs": []
     },
@@ -432,7 +432,7 @@
         "\n",
         "Comenzaremos con una configuración sencilla:"
       ],
-      "id": "8c545719"
+      "id": "1966f31c"
     },
     {
       "cell_type": "code",
@@ -445,7 +445,7 @@
         "    random_state=42\n",
         ")"
       ],
-      "id": "80b63ec5",
+      "id": "1b746391",
       "execution_count": null,
       "outputs": []
     },
@@ -463,7 +463,7 @@
         "\n",
         "Entrenamos el modelo."
       ],
-      "id": "22a13610"
+      "id": "1055dca6"
     },
     {
       "cell_type": "code",
@@ -471,7 +471,7 @@
       "source": [
         "gbr.fit(X_train, y_train)"
       ],
-      "id": "7ef94b56",
+      "id": "8d26f80f",
       "execution_count": null,
       "outputs": []
     },
@@ -481,7 +481,7 @@
       "source": [
         "Y obtenemos las predicciones."
       ],
-      "id": "ffe8286f"
+      "id": "b7493a35"
     },
     {
       "cell_type": "code",
@@ -489,7 +489,7 @@
       "source": [
         "y_pred_train = gbr.predict(X_train)"
       ],
-      "id": "e839f95e",
+      "id": "fc77e179",
       "execution_count": null,
       "outputs": []
     },
@@ -499,7 +499,7 @@
       "source": [
         "Calculamos nuevamente MAE y RMSE."
       ],
-      "id": "c16714fc"
+      "id": "787c192e"
     },
     {
       "cell_type": "code",
@@ -514,7 +514,7 @@
         "print(f\"MAE:  {mae_gbr:.4f}\")\n",
         "print(f\"RMSE: {rmse_gbr:.4f}\")"
       ],
-      "id": "8de2bd73",
+      "id": "b2bdb544",
       "execution_count": null,
       "outputs": []
     },
@@ -524,7 +524,7 @@
       "source": [
         "Comparemos con nuestra baseline."
       ],
-      "id": "d72421e7"
+      "id": "42933718"
     },
     {
       "cell_type": "code",
@@ -538,7 +538,7 @@
         "\n",
         "resultados"
       ],
-      "id": "0a3a9f11",
+      "id": "5d5d1e64",
       "execution_count": null,
       "outputs": []
     },
@@ -563,7 +563,7 @@
         "\n",
         "Nuestro modelo contiene $100$ árboles:"
       ],
-      "id": "e99425ac"
+      "id": "d3600b32"
     },
     {
       "cell_type": "code",
@@ -571,7 +571,7 @@
       "source": [
         "gbr.n_estimators"
       ],
-      "id": "ac5cc179",
+      "id": "a738e605",
       "execution_count": null,
       "outputs": []
     },
@@ -589,7 +589,7 @@
         "\n",
         "Calcularemos el RMSE después de cada etapa."
       ],
-      "id": "67bb8976"
+      "id": "c5702b0e"
     },
     {
       "cell_type": "code",
@@ -603,7 +603,7 @@
         "    )\n",
         "    errores_train.append(rmse)"
       ],
-      "id": "9f75bb9e",
+      "id": "1084abe9",
       "execution_count": null,
       "outputs": []
     },
@@ -613,7 +613,7 @@
       "source": [
         "Ahora graficamos el error."
       ],
-      "id": "6b1dd828"
+      "id": "fd3daba0"
     },
     {
       "cell_type": "code",
@@ -631,7 +631,7 @@
         "plt.title(\"Evolución del error durante Gradient Boosting\")\n",
         "plt.show()"
       ],
-      "id": "f99c3bf3",
+      "id": "83f8424b",
       "execution_count": null,
       "outputs": []
     },
@@ -696,7 +696,7 @@
         "\n",
         "Mantendremos inicialmente el mismo número de árboles."
       ],
-      "id": "cf5f360a"
+      "id": "f2139035"
     },
     {
       "cell_type": "code",
@@ -719,7 +719,7 @@
         "    \n",
         "    modelos_lr[lr] = modelo"
       ],
-      "id": "483470c0",
+      "id": "2a145261",
       "execution_count": null,
       "outputs": []
     },
@@ -729,7 +729,7 @@
       "source": [
         "Calculemos el RMSE de entrenamiento."
       ],
-      "id": "7cb206c3"
+      "id": "d83daed8"
     },
     {
       "cell_type": "code",
@@ -752,7 +752,7 @@
         "\n",
         "pd.DataFrame(resultados_lr)"
       ],
-      "id": "f1c4ff92",
+      "id": "8cfc2c35",
       "execution_count": null,
       "outputs": []
     },
@@ -762,7 +762,7 @@
       "source": [
         "Pero resulta más interesante observar cómo evoluciona el error."
       ],
-      "id": "40bb02a9"
+      "id": "6f08e56c"
     },
     {
       "cell_type": "code",
@@ -792,7 +792,7 @@
         "plt.legend()\n",
         "plt.show()"
       ],
-      "id": "533855e4",
+      "id": "c46ea963",
       "execution_count": null,
       "outputs": []
     },
@@ -831,7 +831,7 @@
         "\n",
         "Comparemos diferentes combinaciones."
       ],
-      "id": "cfc60858"
+      "id": "3119b90a"
     },
     {
       "cell_type": "code",
@@ -871,7 +871,7 @@
         "\n",
         "pd.DataFrame(resultados)"
       ],
-      "id": "57229505",
+      "id": "949c201a",
       "execution_count": null,
       "outputs": []
     },
@@ -905,7 +905,7 @@
         "\\texttt{max\\_depth}\\in\\{1,2,3,5\\}.\n",
         "$$"
       ],
-      "id": "6142fed8"
+      "id": "b9414fa3"
     },
     {
       "cell_type": "code",
@@ -939,7 +939,7 @@
         "\n",
         "pd.DataFrame(resultados_depth)"
       ],
-      "id": "e05483d2",
+      "id": "d19f4606",
       "execution_count": null,
       "outputs": []
     },
@@ -949,7 +949,7 @@
       "source": [
         "Podemos visualizar los resultados."
       ],
-      "id": "ea501c29"
+      "id": "16b4d58c"
     },
     {
       "cell_type": "code",
@@ -970,7 +970,7 @@
         "plt.title(\"Complejidad de los árboles\")\n",
         "plt.show()"
       ],
-      "id": "9bec3f6a",
+      "id": "169a52cb",
       "execution_count": null,
       "outputs": []
     },
@@ -1070,7 +1070,7 @@
         "\n",
         "El conjunto `X_test` que separamos al inicio continuará reservado."
       ],
-      "id": "3266de01"
+      "id": "bcd9fb91"
     },
     {
       "cell_type": "code",
@@ -1087,7 +1087,7 @@
         "print(\"Validación:   \", X_val.shape)\n",
         "print(\"Test:         \", X_test.shape)"
       ],
-      "id": "b12c7581",
+      "id": "d55c6e12",
       "execution_count": null,
       "outputs": []
     },
@@ -1130,7 +1130,7 @@
         "\n",
         "Entrenemos ahora un Gradient Boosting con un número relativamente grande de árboles."
       ],
-      "id": "679a8edd"
+      "id": "b3074d08"
     },
     {
       "cell_type": "code",
@@ -1145,7 +1145,7 @@
         "\n",
         "gbr_long.fit(X_train_gb, y_train_gb)"
       ],
-      "id": "00741b60",
+      "id": "d65580c8",
       "execution_count": null,
       "outputs": []
     },
@@ -1157,7 +1157,7 @@
         "\n",
         "Primero calculamos el RMSE sobre entrenamiento y validación."
       ],
-      "id": "74f5cf0c"
+      "id": "0437199b"
     },
     {
       "cell_type": "code",
@@ -1183,7 +1183,7 @@
         "        )\n",
         "    )"
       ],
-      "id": "939ff644",
+      "id": "2271238b",
       "execution_count": null,
       "outputs": []
     },
@@ -1193,7 +1193,7 @@
       "source": [
         "Ahora podemos visualizar ambas curvas."
       ],
-      "id": "e5ade9de"
+      "id": "736946dd"
     },
     {
       "cell_type": "code",
@@ -1219,7 +1219,7 @@
         "plt.legend()\n",
         "plt.show()"
       ],
-      "id": "9efaf52a",
+      "id": "1adab728",
       "execution_count": null,
       "outputs": []
     },
@@ -1257,7 +1257,7 @@
         "\n",
         "Podemos encontrar la etapa que produjo el menor RMSE de validación."
       ],
-      "id": "e429961d"
+      "id": "c7cdf097"
     },
     {
       "cell_type": "code",
@@ -1269,7 +1269,7 @@
         "print(\"Mejor número de árboles:\", best_n_estimators)\n",
         "print(f\"Mejor RMSE de validación: {best_rmse_val:.4f}\")"
       ],
-      "id": "1fb92fba",
+      "id": "880a2cb9",
       "execution_count": null,
       "outputs": []
     },
@@ -1295,7 +1295,7 @@
         "\n",
         "Podemos marcar este punto en la gráfica."
       ],
-      "id": "34daee95"
+      "id": "9f8eb811"
     },
     {
       "cell_type": "code",
@@ -1327,7 +1327,7 @@
         "plt.legend()\n",
         "plt.show()"
       ],
-      "id": "5a3761bf",
+      "id": "85f4b122",
       "execution_count": null,
       "outputs": []
     },
@@ -1378,7 +1378,7 @@
         "\n",
         "Por ejemplo:"
       ],
-      "id": "6373a15e"
+      "id": "a9fa822e"
     },
     {
       "cell_type": "code",
@@ -1393,7 +1393,7 @@
         "\n",
         "gbr_early.fit(X_train_gb, y_train_gb)"
       ],
-      "id": "b76d4ad1",
+      "id": "d49c80dc",
       "execution_count": null,
       "outputs": []
     },
@@ -1403,7 +1403,7 @@
       "source": [
         "Evaluamos sobre validación:"
       ],
-      "id": "4717a0cf"
+      "id": "1a0d7f2d"
     },
     {
       "cell_type": "code",
@@ -1417,7 +1417,7 @@
         "\n",
         "print(f\"RMSE de validación: {rmse_early:.4f}\")"
       ],
-      "id": "120ac9a0",
+      "id": "c87af0a8",
       "execution_count": null,
       "outputs": []
     },
@@ -1439,7 +1439,7 @@
         "\n",
         "Por ejemplo:"
       ],
-      "id": "b0020362"
+      "id": "30d99d2e"
     },
     {
       "cell_type": "code",
@@ -1457,7 +1457,7 @@
         "\n",
         "gbr_auto.fit(X_train, y_train)"
       ],
-      "id": "99f2c2fb",
+      "id": "5268aa7a",
       "execution_count": null,
       "outputs": []
     },
@@ -1467,7 +1467,7 @@
       "source": [
         "Podemos consultar cuántos árboles fueron construidos realmente:"
       ],
-      "id": "45ea6322"
+      "id": "1677b979"
     },
     {
       "cell_type": "code",
@@ -1475,7 +1475,7 @@
       "source": [
         "gbr_auto.n_estimators_"
       ],
-      "id": "82a7dab9",
+      "id": "7a93c58e",
       "execution_count": null,
       "outputs": []
     },
@@ -1504,7 +1504,7 @@
         "\n",
         "Por ejemplo:"
       ],
-      "id": "72fa280d"
+      "id": "76f7e15b"
     },
     {
       "cell_type": "code",
@@ -1520,7 +1520,7 @@
         "\n",
         "gbr_stochastic.fit(X_train_gb, y_train_gb)"
       ],
-      "id": "3a7e2d04",
+      "id": "0e4e7543",
       "execution_count": null,
       "outputs": []
     },
@@ -1588,7 +1588,7 @@
         "\n",
         "Podemos verificar la instalación:"
       ],
-      "id": "1e7c20d8"
+      "id": "e5f54fc4"
     },
     {
       "cell_type": "code",
@@ -1598,7 +1598,7 @@
         "\n",
         "print(xgboost.__version__)"
       ],
-      "id": "496668ec",
+      "id": "4e882794",
       "execution_count": null,
       "outputs": []
     },
@@ -1613,7 +1613,7 @@
         "\n",
         "Importamos `XGBRegressor`."
       ],
-      "id": "a639f057"
+      "id": "c2b8453c"
     },
     {
       "cell_type": "code",
@@ -1621,7 +1621,7 @@
       "source": [
         "from xgboost import XGBRegressor"
       ],
-      "id": "1b551ef7",
+      "id": "7f5a913b",
       "execution_count": null,
       "outputs": []
     },
@@ -1631,7 +1631,7 @@
       "source": [
         "Construiremos primero un modelo sencillo con hiperparámetros similares a los utilizados en Gradient Boosting."
       ],
-      "id": "d1fd4cca"
+      "id": "dea860ed"
     },
     {
       "cell_type": "code",
@@ -1646,7 +1646,7 @@
         "    n_jobs=-1\n",
         ")"
       ],
-      "id": "890f159b",
+      "id": "87ebf124",
       "execution_count": null,
       "outputs": []
     },
@@ -1666,7 +1666,7 @@
         "\n",
         "Entrenamos el modelo:"
       ],
-      "id": "6a3d7326"
+      "id": "3dc2bdce"
     },
     {
       "cell_type": "code",
@@ -1674,7 +1674,7 @@
       "source": [
         "xgb.fit(X_train_gb, y_train_gb)"
       ],
-      "id": "b147ae15",
+      "id": "90d3cbc0",
       "execution_count": null,
       "outputs": []
     },
@@ -1684,7 +1684,7 @@
       "source": [
         "Realizamos predicciones sobre validación:"
       ],
-      "id": "ca38e288"
+      "id": "71aa25b9"
     },
     {
       "cell_type": "code",
@@ -1692,7 +1692,7 @@
       "source": [
         "pred_xgb = xgb.predict(X_val)"
       ],
-      "id": "2b2b2a7d",
+      "id": "ffb78934",
       "execution_count": null,
       "outputs": []
     },
@@ -1702,7 +1702,7 @@
       "source": [
         "y calculamos el error."
       ],
-      "id": "c757c3e1"
+      "id": "c3cc6dde"
     },
     {
       "cell_type": "code",
@@ -1717,7 +1717,7 @@
         "print(f\"MAE:  {mae_xgb:.4f}\")\n",
         "print(f\"RMSE: {rmse_xgb:.4f}\")"
       ],
-      "id": "e6d405b2",
+      "id": "63ad3c5b",
       "execution_count": null,
       "outputs": []
     },
@@ -1731,7 +1731,7 @@
         "\n",
         "Para realizar una comparación razonable, entrenaremos ambos utilizando los mismos datos y los evaluaremos sobre el mismo conjunto de validación."
       ],
-      "id": "b06fde2e"
+      "id": "3e8e16c2"
     },
     {
       "cell_type": "code",
@@ -1748,7 +1748,7 @@
         "\n",
         "pred_gbr = gbr_compare.predict(X_val)"
       ],
-      "id": "264239e6",
+      "id": "b9447887",
       "execution_count": null,
       "outputs": []
     },
@@ -1758,7 +1758,7 @@
       "source": [
         "Calculamos las métricas."
       ],
-      "id": "cd7c0cb4"
+      "id": "3f5a30b1"
     },
     {
       "cell_type": "code",
@@ -1781,7 +1781,7 @@
         "\n",
         "resultados_comparacion"
       ],
-      "id": "cb7673ed",
+      "id": "1ff92dd1",
       "execution_count": null,
       "outputs": []
     },
@@ -1822,7 +1822,7 @@
         "\n",
         "Por ejemplo:"
       ],
-      "id": "eec23487"
+      "id": "58f5a624"
     },
     {
       "cell_type": "code",
@@ -1843,7 +1843,7 @@
         "\n",
         "xgb_reg.fit(X_train_gb, y_train_gb)"
       ],
-      "id": "3ceb493d",
+      "id": "5f4a12f7",
       "execution_count": null,
       "outputs": []
     },
@@ -1853,7 +1853,7 @@
       "source": [
         "Podemos calcular su RMSE:"
       ],
-      "id": "f415dff3"
+      "id": "9369c9c4"
     },
     {
       "cell_type": "code",
@@ -1867,7 +1867,7 @@
         "\n",
         "print(f\"RMSE: {rmse_xgb_reg:.4f}\")"
       ],
-      "id": "99fd6f36",
+      "id": "4339ce5f",
       "execution_count": null,
       "outputs": []
     },
@@ -1940,7 +1940,7 @@
         "\n",
         "Completa el siguiente código."
       ],
-      "id": "6efe469f"
+      "id": "7ba1678b"
     },
     {
       "cell_type": "code",
@@ -1953,7 +1953,7 @@
         "    # (\"D\", ..., ..., ...)\n",
         "]"
       ],
-      "id": "2d561282",
+      "id": "d8decf0b",
       "execution_count": null,
       "outputs": []
     },
@@ -2005,7 +2005,7 @@
         "Los reservaremos para la evaluación final más adelante.\n",
         ":::\n"
       ],
-      "id": "c473cd29"
+      "id": "1e7a1a60"
     }
   ],
   "metadata": {

@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./parte16.html" rel="next">
+<link href="./parte17.html" rel="next">
 <link href="./parte14.html" rel="prev">
 <link href="./figures/favicon.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
@@ -358,8 +358,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte16.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Relación con la regresión logística</span></span></a>
+  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -376,7 +376,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte17.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -393,7 +393,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte17.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -438,6 +438,14 @@ window.Quarto = {
   <li><a href="#ejercicio-2.-una-cuadrícula-más-pequeña" id="toc-ejercicio-2.-una-cuadrícula-más-pequeña" class="nav-link" data-scroll-target="#ejercicio-2.-una-cuadrícula-más-pequeña"><span class="header-section-number">15.25.2</span> Ejercicio 2. Una cuadrícula más pequeña</a></li>
   <li><a href="#ejercicio-3.-investigar-sobreajuste" id="toc-ejercicio-3.-investigar-sobreajuste" class="nav-link" data-scroll-target="#ejercicio-3.-investigar-sobreajuste"><span class="header-section-number">15.25.3</span> Ejercicio 3. Investigar sobreajuste</a></li>
   <li><a href="#ejercicio-4.-ovo-y-número-de-clases" id="toc-ejercicio-4.-ovo-y-número-de-clases" class="nav-link" data-scroll-target="#ejercicio-4.-ovo-y-número-de-clases"><span class="header-section-number">15.25.4</span> Ejercicio 4. OvO y número de clases</a></li>
+  <li><a href="#reto-adicional.-reconocimiento-de-dígitos-escritos-a-mano-mediante-svm" id="toc-reto-adicional.-reconocimiento-de-dígitos-escritos-a-mano-mediante-svm" class="nav-link" data-scroll-target="#reto-adicional.-reconocimiento-de-dígitos-escritos-a-mano-mediante-svm"><span class="header-section-number">15.25.5</span> Reto adicional. Reconocimiento de dígitos escritos a mano mediante SVM</a>
+  <ul class="collapse">
+  <li><a href="#parte-1.-exploración-de-los-datos" id="toc-parte-1.-exploración-de-los-datos" class="nav-link" data-scroll-target="#parte-1.-exploración-de-los-datos">Parte 1. Exploración de los datos</a></li>
+  <li><a href="#parte-2.-entrenamiento-de-una-svm-multiclase" id="toc-parte-2.-entrenamiento-de-una-svm-multiclase" class="nav-link" data-scroll-target="#parte-2.-entrenamiento-de-una-svm-multiclase">Parte 2. Entrenamiento de una SVM multiclase</a></li>
+  <li><a href="#parte-3.-comparación-con-un-kernel-rbf" id="toc-parte-3.-comparación-con-un-kernel-rbf" class="nav-link" data-scroll-target="#parte-3.-comparación-con-un-kernel-rbf">Parte 3. Comparación con un kernel RBF</a></li>
+  <li><a href="#parte-4.-selección-de-hiperparámetros" id="toc-parte-4.-selección-de-hiperparámetros" class="nav-link" data-scroll-target="#parte-4.-selección-de-hiperparámetros">Parte 4. Selección de hiperparámetros</a></li>
+  <li><a href="#parte-5.-qué-dígitos-son-más-difíciles-de-clasificar" id="toc-parte-5.-qué-dígitos-son-más-difíciles-de-clasificar" class="nav-link" data-scroll-target="#parte-5.-qué-dígitos-son-más-difíciles-de-clasificar">Parte 5. ¿Qué dígitos son más difíciles de clasificar?</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -484,6 +492,14 @@ window.Quarto = {
 <li>interpretar <code>best_params_</code> y <code>best_score_</code>;</li>
 <li>mantener separado el conjunto de prueba durante la selección del modelo.</li>
 </ul>
+<div class="diapositivas">
+<div class="diapositivas-title">
+<p>📝 <strong>Diapositivas</strong></p>
+</div>
+<div class="diapositivas-body">
+<p><a href="https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/4.4-MSV_con_mas_clases.pdf">Ver diapositivas SVM con más de dos clases</a></p>
+</div>
+</div>
 <section id="antes-de-comenzar" class="level2" data-number="15.1">
 <h2 data-number="15.1" class="anchored" data-anchor-id="antes-de-comenzar"><span class="header-section-number">15.1</span> Antes de comenzar</h2>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
@@ -512,17 +528,13 @@ window.Quarto = {
 <p>Los dos hiperparámetros afectan el comportamiento del clasificador, pero no representan lo mismo.</p>
 <p>En <code>scikit-learn</code>, <span class="math inline">\(C\)</span> controla la penalización de las violaciones del margen.</p>
 <p>De manera esquemática:</p>
-<p><span class="math display">\[
-C\downarrow
+<p><span class="math display">\[C\downarrow
 \quad\Longrightarrow\quad
-\text{mayor regularización}.
-\]</span></p>
+\text{mayor regularización}.\]</span></p>
 <p>Por otro lado, <span class="math inline">\(\gamma\)</span> controla el alcance de la influencia de las observaciones en el kernel RBF:</p>
-<p><span class="math display">\[
-K(x,z)
+<p><span class="math display">\[K(x,z)
 =
-\exp\left(-\gamma\|x-z\|^2\right).
-\]</span></p>
+\exp\left(-\gamma\|x-z\|^2\right).\]</span></p>
 <p>Un <span class="math inline">\(\gamma\)</span> pequeño produce una influencia más global, mientras que un <span class="math inline">\(\gamma\)</span> grande produce una influencia más local.</p>
 </div>
 </div>
@@ -598,7 +610,7 @@ K(x,z)
 <section id="preparación" class="level2" data-number="15.2">
 <h2 data-number="15.2" class="anchored" data-anchor-id="preparación"><span class="header-section-number">15.2</span> Preparación</h2>
 <p>Importamos las bibliotecas necesarias.</p>
-<div id="17d64230" class="cell" data-execution_count="1">
+<div id="07ae5b9e" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -628,7 +640,7 @@ K(x,z)
 <p>Utilizaremos el conjunto de datos <code>Wine</code>, disponible directamente en <code>scikit-learn</code>.</p>
 <p>Este conjunto contiene mediciones químicas de vinos pertenecientes a tres clases.</p>
 <p>Cargamos los datos:</p>
-<div id="8ee580c2" class="cell" data-execution_count="2">
+<div id="59f663d8" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>wine <span class="op">=</span> load_wine()</span>
@@ -638,7 +650,7 @@ K(x,z)
 </details>
 </div>
 <p>Podemos consultar los nombres de las variables:</p>
-<div id="14f3233c" class="cell" data-execution_count="3">
+<div id="30347278" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>wine.feature_names</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -660,7 +672,7 @@ K(x,z)
 </div>
 </div>
 <p>Y los nombres de las clases:</p>
-<div id="9bd9f02c" class="cell" data-execution_count="4">
+<div id="6b5249a6" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>wine.target_names</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -670,7 +682,7 @@ K(x,z)
 </div>
 </div>
 <p>Veamos las dimensiones:</p>
-<div id="120a8b37" class="cell" data-execution_count="5">
+<div id="a90c68b7" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>X.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -686,7 +698,7 @@ K(x,z)
 <section id="exploración-inicial" class="level2" data-number="15.4">
 <h2 data-number="15.4" class="anchored" data-anchor-id="exploración-inicial"><span class="header-section-number">15.4</span> Exploración inicial</h2>
 <p>Construimos un <code>DataFrame</code>.</p>
-<div id="d975ef9b" class="cell" data-execution_count="6">
+<div id="152374bc" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>datos <span class="op">=</span> pd.DataFrame(</span>
@@ -815,7 +827,7 @@ K(x,z)
 </div>
 </div>
 <p>Observemos la distribución de las clases.</p>
-<div id="8d5cd183" class="cell" data-execution_count="7">
+<div id="21798ee5" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>datos[<span class="st">"Clase"</span>].value_counts().sort_index()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -829,7 +841,7 @@ Name: count, dtype: int64</code></pre>
 </div>
 </div>
 <p>Podemos mostrar también los nombres.</p>
-<div id="84240c55" class="cell" data-execution_count="8">
+<div id="80d6b5f8" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>distribucion <span class="op">=</span> (</span>
@@ -920,7 +932,7 @@ Name: count, dtype: int64</code></pre>
 <section id="las-variables-no-están-en-la-misma-escala" class="level2" data-number="15.5">
 <h2 data-number="15.5" class="anchored" data-anchor-id="las-variables-no-están-en-la-misma-escala"><span class="header-section-number">15.5</span> Las variables no están en la misma escala</h2>
 <p>Veamos algunos estadísticos descriptivos.</p>
-<div id="e2543dca" class="cell" data-execution_count="9">
+<div id="5e0f3bc0" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>datos.drop(columns<span class="op">=</span><span class="st">"Clase"</span>).describe().T</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1131,7 +1143,7 @@ Name: count, dtype: int64</code></pre>
 <section id="separación-en-entrenamiento-y-prueba" class="level2" data-number="15.6">
 <h2 data-number="15.6" class="anchored" data-anchor-id="separación-en-entrenamiento-y-prueba"><span class="header-section-number">15.6</span> Separación en entrenamiento y prueba</h2>
 <p>Antes de realizar cualquier selección de modelo, reservaremos una parte de los datos para la evaluación final.</p>
-<div id="aacb6751" class="cell" data-execution_count="10">
+<div id="5003ab75" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
@@ -1144,7 +1156,7 @@ Name: count, dtype: int64</code></pre>
 </details>
 </div>
 <p>Comprobamos las dimensiones.</p>
-<div id="090e6e1b" class="cell" data-execution_count="11">
+<div id="962c3f3c" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"X_train:"</span>, X_train.shape)</span>
@@ -1159,7 +1171,7 @@ X_test: (45, 13)</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>stratify<span class="op">=</span>y</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>para conservar aproximadamente la proporción de las clases en entrenamiento y prueba.</p>
 <p>Podemos verificarlo.</p>
-<div id="8c81dc99" class="cell" data-execution_count="12">
+<div id="15bc4c74" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -1180,7 +1192,7 @@ X_test: (45, 13)</code></pre>
 Name: proportion, dtype: float64</code></pre>
 </div>
 </div>
-<div id="dc092b18" class="cell" data-execution_count="13">
+<div id="ec0ca7b8" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -1225,44 +1237,26 @@ Name: proportion, dtype: float64</code></pre>
 <h2 data-number="15.7" class="anchored" data-anchor-id="cómo-utiliza-una-svm-más-de-dos-clases"><span class="header-section-number">15.7</span> ¿Cómo utiliza una SVM más de dos clases?</h2>
 <p>Hasta ahora nuestras SVM distinguían entre dos clases.</p>
 <p>Sin embargo, <code>Wine</code> contiene tres:</p>
-<p><span class="math display">\[
-K=3.
-\]</span></p>
+<p><span class="math display">\[K=3.\]</span></p>
 <p>Una estrategia consiste en construir clasificadores para cada par de clases.</p>
 <p>Esta estrategia se conoce como <strong>one-versus-one</strong> u OvO.</p>
 <p>Con <span class="math inline">\(K\)</span> clases necesitamos</p>
-<p><span class="math display">\[
-\frac{K(K-1)}{2}
-\]</span></p>
+<p><span class="math display">\[\frac{K(K-1)}{2}\]</span></p>
 <p>clasificadores.</p>
 <p>Para nuestro ejemplo:</p>
-<p><span class="math display">\[
-\frac{3(3-1)}{2}
+<p><span class="math display">\[\frac{3(3-1)}{2}
 =
-3.
-\]</span></p>
+3.\]</span></p>
 <p>Los problemas binarios serían:</p>
-<p><span class="math display">\[
-0\text{ vs. }1,
-\]</span></p>
-<p><span class="math display">\[
-0\text{ vs. }2,
-\]</span></p>
+<p><span class="math display">\[0\text{ vs. }1,\]</span></p>
+<p><span class="math display">\[0\text{ vs. }2,\]</span></p>
 <p>y</p>
-<p><span class="math display">\[
-1\text{ vs. }2.
-\]</span></p>
+<p><span class="math display">\[1\text{ vs. }2.\]</span></p>
 <p>Otra estrategia posible es <strong>one-versus-rest</strong> u OvR.</p>
 <p>En ese caso se construyen <span class="math inline">\(K\)</span> clasificadores:</p>
-<p><span class="math display">\[
-0\text{ vs. resto},
-\]</span></p>
-<p><span class="math display">\[
-1\text{ vs. resto},
-\]</span></p>
-<p><span class="math display">\[
-2\text{ vs. resto}.
-\]</span></p>
+<p><span class="math display">\[0\text{ vs. resto},\]</span></p>
+<p><span class="math display">\[1\text{ vs. resto},\]</span></p>
+<p><span class="math display">\[2\text{ vs. resto}.\]</span></p>
 <div class="callout callout-style-default callout-warning no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1287,17 +1281,13 @@ K=3.
 <div id="callout-12" class="callout-12-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Para OvO:</p>
-<p><span class="math display">\[
-\frac{K(K-1)}{2}
+<p><span class="math display">\[\frac{K(K-1)}{2}
 =
 \frac{10(9)}{2}
 =
-45.
-\]</span></p>
+45.\]</span></p>
 <p>Para OvR:</p>
-<p><span class="math display">\[
-K=10.
-\]</span></p>
+<p><span class="math display">\[K=10.\]</span></p>
 <p>Por tanto, OvO requiere 45 problemas binarios y OvR requiere 10.</p>
 </div>
 </div>
@@ -1309,7 +1299,7 @@ K=10.
 <h2 data-number="15.8" class="anchored" data-anchor-id="multiclase-en-svc"><span class="header-section-number">15.8</span> Multiclase en <code>SVC</code></h2>
 <p><code>SVC</code> utiliza internamente una estrategia <strong>one-versus-one</strong> para el entrenamiento multiclase.</p>
 <p>Podemos, por tanto, ajustar directamente:</p>
-<div id="21da70c7" class="cell" data-execution_count="14">
+<div id="8d796d92" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> Pipeline([</span>
@@ -1329,7 +1319,7 @@ K=10.
 </div>
 <p>No necesitamos separar manualmente las tres clases en problemas binarios.</p>
 <p>Ajustamos utilizando únicamente entrenamiento:</p>
-<div id="9faca620" class="cell" data-execution_count="15">
+<div id="127c9898" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>modelo.fit(</span>
@@ -2840,7 +2830,7 @@ forceTheme('sk-container-id-1');</script>
 </div>
 </div>
 <p>Podemos generar predicciones sobre entrenamiento:</p>
-<div id="67531104" class="cell" data-execution_count="16">
+<div id="3cab2c53" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>pred_train <span class="op">=</span> modelo.predict(</span>
@@ -2849,7 +2839,7 @@ forceTheme('sk-container-id-1');</script>
 </details>
 </div>
 <p>Y calcular la exactitud:</p>
-<div id="fcbe769c" class="cell" data-execution_count="17">
+<div id="57e114bd" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>accuracy_score(</span>
@@ -2863,17 +2853,39 @@ forceTheme('sk-container-id-1');</script>
 </div>
 <p>Por ahora no evaluaremos sobre test.</p>
 <p>Primero debemos seleccionar adecuadamente nuestro modelo.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>¿Ya resolvimos el problema?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Es posible que nuestra primera SVM lineal obtenga una exactitud de <span class="math inline">\(1\)</span>, es decir, que clasifique correctamente todas las observaciones del conjunto de entrenamiento.</p>
+<p>Esto no significa que debamos detenernos ni que el modelo tenga un desempeño perfecto sobre cualquier observación futura.</p>
+<p>El conjunto <code>Wine</code> es relativamente pequeño y sus clases pueden distinguirse bastante bien utilizando modelos lineales.</p>
+<p><strong>Nuestro objetivo en esta práctica no es necesariamente mejorar la exactitud</strong>, sino investigar cómo se utilizan las SVM en problemas con más de dos clases.</p>
+<p>En particular, estudiaremos:</p>
+<ul>
+<li>Cómo funciona la estrategia <em>One-versus-One</em> (OvO).</li>
+<li>Cómo construir una estrategia <em>One-versus-Rest</em> (OvR).</li>
+<li>Qué diferencias existen entre ambas estrategias.</li>
+<li>Si una frontera más flexible, como la obtenida con un kernel RBF, realmente ofrece alguna ventaja.</li>
+</ul>
+<p>Un modelo más complejo no necesariamente produce mejores resultados.</p>
+</div>
+</div>
 </section>
 <section id="por-qué-un-pipeline" class="level2" data-number="15.9">
 <h2 data-number="15.9" class="anchored" data-anchor-id="por-qué-un-pipeline"><span class="header-section-number">15.9</span> ¿Por qué un <code>Pipeline</code>?</h2>
 <p>Nuestro flujo tiene dos pasos:</p>
-<p><span class="math display">\[
-X
+<p><span class="math display">\[X
 \longrightarrow
 \text{StandardScaler}
 \longrightarrow
-\text{SVC}.
-\]</span></p>
+\text{SVC}.\]</span></p>
 <p>El <code>Pipeline</code> permite tratar ambos pasos como un solo estimador.</p>
 <p>Esto será especialmente importante durante la validación cruzada.</p>
 <p>En cada partición de validación cruzada queremos que:</p>
@@ -2897,7 +2909,7 @@ X
 <div class="callout-body-container callout-body">
 <p>¿Qué estaría mal en estandarizar todo <code>X_train</code> antes de realizar validación cruzada?</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -2906,7 +2918,7 @@ X
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Si calculamos previamente la media y desviación estándar utilizando todo <code>X_train</code>, las observaciones que posteriormente funcionarán como validación ya habrán participado en el preprocesamiento.</p>
 <p>Esto introduce fuga de información entre los pliegues.</p>
@@ -2921,7 +2933,7 @@ X
 <h2 data-number="15.10" class="anchored" data-anchor-id="validación-cruzada"><span class="header-section-number">15.10</span> Validación cruzada</h2>
 <p>Antes de realizar una búsqueda de hiperparámetros, recordemos cómo evaluar una configuración mediante validación cruzada.</p>
 <p>Utilizaremos validación cruzada estratificada.</p>
-<div id="5fda2083" class="cell" data-execution_count="18">
+<div id="6be0f5d1" class="cell" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> StratifiedKFold(</span>
@@ -2933,7 +2945,7 @@ X
 </div>
 <p>La estratificación busca conservar aproximadamente la distribución de las clases dentro de cada pliegue.</p>
 <p>Evaluamos el modelo lineal.</p>
-<div id="fa2bb4c1" class="cell" data-execution_count="19">
+<div id="489388ac" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> cross_val_score(</span>
@@ -2946,7 +2958,7 @@ X
 </details>
 </div>
 <p>Observamos los resultados.</p>
-<div id="7de3e6dc" class="cell" data-execution_count="20">
+<div id="6226eabb" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>scores</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2956,7 +2968,7 @@ X
 </div>
 </div>
 <p>Promedio:</p>
-<div id="a5d3941d" class="cell" data-execution_count="21">
+<div id="afdbab4a" class="cell" data-execution_count="21">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>scores.mean()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2966,7 +2978,7 @@ X
 </div>
 </div>
 <p>Desviación estándar:</p>
-<div id="a08beaae" class="cell" data-execution_count="22">
+<div id="6e8aab04" class="cell" data-execution_count="22">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>scores.std()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2976,7 +2988,7 @@ X
 </div>
 </div>
 <p>Podemos resumir:</p>
-<div id="060ef768" class="cell" data-execution_count="23">
+<div id="194a0065" class="cell" data-execution_count="23">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -3006,7 +3018,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 <div class="callout-body-container callout-body">
 <p>¿Por qué el promedio de validación cruzada es más informativo para seleccionar hiperparámetros que la exactitud obtenida sobre los mismos datos utilizados para ajustar el modelo?</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -3015,7 +3027,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>La exactitud de entrenamiento mide el desempeño sobre observaciones que el modelo ya utilizó para ajustarse.</p>
 <p>En validación cruzada, cada observación es evaluada en un momento en el que no fue utilizada para ajustar ese modelo particular.</p>
@@ -3030,7 +3042,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 <h2 data-number="15.11" class="anchored" data-anchor-id="selección-manual-de-c"><span class="header-section-number">15.11</span> Selección manual de <span class="math inline">\(C\)</span></h2>
 <p>Antes de utilizar <code>GridSearchCV</code>, veamos cómo podríamos comparar varios valores de <span class="math inline">\(C\)</span> mediante validación cruzada.</p>
 <p>Utilizaremos un kernel lineal.</p>
-<div id="4858d35f" class="cell" data-execution_count="24">
+<div id="d49baaef" class="cell" data-execution_count="24">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>valores_C <span class="op">=</span> [</span>
@@ -3043,7 +3055,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 <span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="b6417a52" class="cell" data-execution_count="25">
+<div id="7be889a3" class="cell" data-execution_count="25">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>resultados_C <span class="op">=</span> []</span>
@@ -3080,7 +3092,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 </details>
 </div>
 <p>Convertimos los resultados en una tabla.</p>
-<div id="6aa33744" class="cell" data-execution_count="26">
+<div id="87e63883" class="cell" data-execution_count="26">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>resultados_C <span class="op">=</span> pd.DataFrame(</span>
@@ -3146,7 +3158,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 </div>
 </div>
 <p>Podemos ordenarla según el promedio de validación cruzada.</p>
-<div id="47c175b9" class="cell" data-execution_count="27">
+<div id="188d3200" class="cell" data-execution_count="27">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>resultados_C.sort_values(</span>
@@ -3222,7 +3234,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 <div class="callout-body-container callout-body">
 <p>¿Por qué no necesitamos utilizar <code>X_test</code> para comparar estos valores de <span class="math inline">\(C\)</span>?</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -3231,7 +3243,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-18" class="callout-18-contents callout-collapse collapse">
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Porque la validación cruzada nos permite comparar las configuraciones utilizando únicamente los datos de entrenamiento.</p>
 <p>Así mantenemos el conjunto de prueba completamente independiente del proceso de selección.</p>
@@ -3246,7 +3258,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 <p>Cuando tenemos varios hiperparámetros, realizar manualmente todas las combinaciones se vuelve incómodo.</p>
 <p><code>GridSearchCV</code> automatiza este procedimiento.</p>
 <p>Primero construiremos un <code>Pipeline</code> general.</p>
-<div id="0fdc5256" class="cell" data-execution_count="28">
+<div id="e0d07ccf" class="cell" data-execution_count="28">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">=</span> Pipeline([</span>
@@ -3266,7 +3278,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 <section id="una-cuadrícula-sencilla" class="level2" data-number="15.13">
 <h2 data-number="15.13" class="anchored" data-anchor-id="una-cuadrícula-sencilla"><span class="header-section-number">15.13</span> Una cuadrícula sencilla</h2>
 <p>Comencemos únicamente con el kernel lineal.</p>
-<div id="b141f0ce" class="cell" data-execution_count="29">
+<div id="590d5beb" class="cell" data-execution_count="29">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>param_grid_lineal <span class="op">=</span> {</span>
@@ -3285,17 +3297,15 @@ Desviación estándar: 0.01838434849561446</code></pre>
 <p>Observa la notación:</p>
 <pre class="text"><code>svc__C</code></pre>
 <p>El doble guion bajo indica:</p>
-<p><span class="math display">\[
-\text{paso del Pipeline}
+<p><span class="math display">\[\text{paso del Pipeline}
 \; \_\_ \;
-\text{parámetro}.
-\]</span></p>
+\text{parámetro}.\]</span></p>
 <p>Como nuestro paso se llama</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">"svc"</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>el parámetro <code>C</code> se escribe:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>svc__C</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Creamos la búsqueda.</p>
-<div id="e9572be5" class="cell" data-execution_count="30">
+<div id="e7623c90" class="cell" data-execution_count="30">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>grid_lineal <span class="op">=</span> GridSearchCV(</span>
@@ -3308,7 +3318,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 </details>
 </div>
 <p>Ajustamos utilizando únicamente entrenamiento.</p>
-<div id="bf835139" class="cell" data-execution_count="31">
+<div id="46a052c4" class="cell" data-execution_count="31">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>grid_lineal.fit(</span>
@@ -4354,7 +4364,7 @@ available in the ``cv_results_`` dict at the keys ending with that<br>
 scorer's name (``'_&lt;scorer_name&gt;'``) instead of ``'_score'`` shown<br>
 above. ('split0_test_precision', 'mean_train_precision' etc.)</span></a></td>
 <td class="fitted-att-type">dict</td>
-<td>{'me...me': array([0.0014... 0.00130005]), 'me...me': array([0.0008... 0.00092797]), 'me...re': array([0.3985... 0.97749288]), 'pa..._C': masked_array(...l_value=1e+20), ...}</td>
+<td>{'me...me': array([0.0014... 0.00125546]), 'me...me': array([0.0008... 0.00065322]), 'me...re': array([0.3985... 0.97749288]), 'pa..._C': masked_array(...l_value=1e+20), ...}</td>
 </tr>
 <tr class="default even">
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=multimetric_,-bool" class="param-doc-link" style="anchor-name: --doc-link-multimetric_;" rel="noreferrer" target="_blank">multimetric_ <span class="param-doc-description" style="position-anchor: --doc-link-multimetric_;"> multimetric_: bool<br>
@@ -4391,7 +4401,7 @@ This is present only if ``refit`` is not False.<br>
 <br>
 .. versionadded:: 0.20</span></a></td>
 <td class="fitted-att-type">float</td>
-<td>0.001211</td>
+<td>0.001141</td>
 </tr>
 <tr class="default even">
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=scorer_,-function%20or%20a%20dict" class="param-doc-link" style="anchor-name: --doc-link-scorer_;" rel="noreferrer" target="_blank">scorer_ <span class="param-doc-description" style="position-anchor: --doc-link-scorer_;"> scorer_: function or a dict<br>
@@ -5105,7 +5115,7 @@ forceTheme('sk-container-id-2');</script>
 <section id="resultados-de-gridsearchcv" class="level2" data-number="15.14">
 <h2 data-number="15.14" class="anchored" data-anchor-id="resultados-de-gridsearchcv"><span class="header-section-number">15.14</span> Resultados de <code>GridSearchCV</code></h2>
 <p>Podemos consultar los mejores hiperparámetros:</p>
-<div id="873cc693" class="cell" data-execution_count="32">
+<div id="ade52928" class="cell" data-execution_count="32">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>grid_lineal.best_params_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -5115,7 +5125,7 @@ forceTheme('sk-container-id-2');</script>
 </div>
 </div>
 <p>Y el mejor promedio de validación cruzada:</p>
-<div id="8e21f27f" class="cell" data-execution_count="33">
+<div id="7168d49f" class="cell" data-execution_count="33">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>grid_lineal.best_score_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -5139,7 +5149,7 @@ forceTheme('sk-container-id-2');</script>
 </div>
 </div>
 <p>Podemos consultar todos los resultados:</p>
-<div id="d1dec926" class="cell" data-execution_count="34">
+<div id="df442fd1" class="cell" data-execution_count="34">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>resultados_grid_lineal <span class="op">=</span> pd.DataFrame(</span>
@@ -5227,15 +5237,11 @@ forceTheme('sk-container-id-2');</script>
 <section id="qué-ocurre-con-el-kernel-rbf" class="level2" data-number="15.15">
 <h2 data-number="15.15" class="anchored" data-anchor-id="qué-ocurre-con-el-kernel-rbf"><span class="header-section-number">15.15</span> ¿Qué ocurre con el kernel RBF?</h2>
 <p>Para el kernel RBF debemos seleccionar al menos dos hiperparámetros importantes:</p>
-<p><span class="math display">\[
-C
-\]</span></p>
+<p><span class="math display">\[C\]</span></p>
 <p>y</p>
-<p><span class="math display">\[
-\gamma.
-\]</span></p>
+<p><span class="math display">\[\gamma.\]</span></p>
 <p>Definimos:</p>
-<div id="cf1987cc" class="cell" data-execution_count="35">
+<div id="1df9d04c" class="cell" data-execution_count="35">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>param_grid_rbf <span class="op">=</span> {</span>
@@ -5258,16 +5264,14 @@ C
 </details>
 </div>
 <p>Número de combinaciones:</p>
-<p><span class="math display">\[
-5\times5=25.
-\]</span></p>
+<p><span class="math display">\[5\times5=25.\]</span></p>
 <p>Cada combinación será evaluada mediante validación cruzada de 5 pliegues.</p>
 <p>Por tanto, sólo para esta cuadrícula se realizarán múltiples ajustes del modelo.</p>
 </section>
 <section id="búsqueda-para-rbf" class="level2" data-number="15.16">
 <h2 data-number="15.16" class="anchored" data-anchor-id="búsqueda-para-rbf"><span class="header-section-number">15.16</span> Búsqueda para RBF</h2>
 <p>Creamos la búsqueda:</p>
-<div id="c9b56848" class="cell" data-execution_count="36">
+<div id="41924709" class="cell" data-execution_count="36">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>grid_rbf <span class="op">=</span> GridSearchCV(</span>
@@ -5280,7 +5284,7 @@ C
 </details>
 </div>
 <p>Ejecutamos:</p>
-<div id="fda4b9a8" class="cell" data-execution_count="37">
+<div id="45d8d6c4" class="cell" data-execution_count="37">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>grid_rbf.fit(</span>
@@ -6327,7 +6331,7 @@ available in the ``cv_results_`` dict at the keys ending with that<br>
 scorer's name (``'_&lt;scorer_name&gt;'``) instead of ``'_score'`` shown<br>
 above. ('split0_test_precision', 'mean_train_precision' etc.)</span></a></td>
 <td class="fitted-att-type">dict</td>
-<td>{'me...me': array([0.0013..., 0.00145388]), 'me...me': array([0.0007..., 0.00075493]), 'me...re': array([0.3985..., 0.3985755 ]), 'pa..._C': masked_array(...l_value=1e+20), ...}</td>
+<td>{'me...me': array([0.0016..., 0.00177646]), 'me...me': array([0.0008..., 0.00080991]), 'me...re': array([0.3985..., 0.3985755 ]), 'pa..._C': masked_array(...l_value=1e+20), ...}</td>
 </tr>
 <tr class="default even">
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=multimetric_,-bool" class="param-doc-link" style="anchor-name: --doc-link-multimetric_;" rel="noreferrer" target="_blank">multimetric_ <span class="param-doc-description" style="position-anchor: --doc-link-multimetric_;"> multimetric_: bool<br>
@@ -6364,7 +6368,7 @@ This is present only if ``refit`` is not False.<br>
 <br>
 .. versionadded:: 0.20</span></a></td>
 <td class="fitted-att-type">float</td>
-<td>0.00113</td>
+<td>0.001191</td>
 </tr>
 <tr class="default even">
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=scorer_,-function%20or%20a%20dict" class="param-doc-link" style="anchor-name: --doc-link-scorer_;" rel="noreferrer" target="_blank">scorer_ <span class="param-doc-description" style="position-anchor: --doc-link-scorer_;"> scorer_: function or a dict<br>
@@ -7064,7 +7068,7 @@ forceTheme('sk-container-id-3');</script>
 </div>
 </div>
 <p>Consultamos:</p>
-<div id="add5a485" class="cell" data-execution_count="38">
+<div id="2e12ddfd" class="cell" data-execution_count="38">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>grid_rbf.best_params_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -7073,7 +7077,7 @@ forceTheme('sk-container-id-3');</script>
 <pre><code>{'svc__C': 1, 'svc__gamma': 0.1, 'svc__kernel': 'rbf'}</code></pre>
 </div>
 </div>
-<div id="62c336ef" class="cell" data-execution_count="39">
+<div id="6af600c3" class="cell" data-execution_count="39">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>grid_rbf.best_score_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -7097,7 +7101,7 @@ forceTheme('sk-container-id-3');</script>
 gamma = 0.1</code></pre>
 <p>¿Podemos concluir que estos valores serán los mejores para cualquier conjunto de datos?</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -7106,7 +7110,7 @@ gamma = 0.1</code></pre>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-21" class="callout-21-contents callout-collapse collapse">
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>No.</p>
 <p>Los hiperparámetros seleccionados dependen de:</p>
@@ -7128,7 +7132,7 @@ gamma = 0.1</code></pre>
 <section id="visualizando-la-búsqueda-de-c-y-gamma" class="level2" data-number="15.17">
 <h2 data-number="15.17" class="anchored" data-anchor-id="visualizando-la-búsqueda-de-c-y-gamma"><span class="header-section-number">15.17</span> Visualizando la búsqueda de <span class="math inline">\(C\)</span> y <span class="math inline">\(\gamma\)</span></h2>
 <p>Los resultados de <code>GridSearchCV</code> pueden organizarse en una tabla.</p>
-<div id="ec91821c" class="cell" data-execution_count="40">
+<div id="b5d340c7" class="cell" data-execution_count="40">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>resultados_rbf <span class="op">=</span> pd.DataFrame(</span>
@@ -7137,7 +7141,7 @@ gamma = 0.1</code></pre>
 </details>
 </div>
 <p>Seleccionamos las columnas relevantes:</p>
-<div id="46c9b922" class="cell" data-execution_count="41">
+<div id="5dca3a6c" class="cell" data-execution_count="41">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>tabla_rbf <span class="op">=</span> resultados_rbf[</span>
@@ -7206,7 +7210,7 @@ gamma = 0.1</code></pre>
 <li>las columnas correspondan a <span class="math inline">\(\gamma\)</span>;</li>
 <li>cada celda contenga el promedio de validación cruzada.</li>
 </ul>
-<div id="f8cbd8a3" class="cell" data-execution_count="42">
+<div id="84fe7045" class="cell" data-execution_count="42">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>tabla_pivot <span class="op">=</span> tabla_rbf.pivot(</span>
@@ -7288,9 +7292,7 @@ gamma = 0.1</code></pre>
 </div>
 </div>
 <p>Esta tabla permite observar que el desempeño depende de la combinación</p>
-<p><span class="math display">\[
-(C,\gamma),
-\]</span></p>
+<p><span class="math display">\[(C,\gamma),\]</span></p>
 <p>no únicamente de cada parámetro de manera aislada.</p>
 </section>
 <section id="podemos-comparar-diferentes-kernels" class="level2" data-number="15.18">
@@ -7305,7 +7307,7 @@ gamma = 0.1</code></pre>
 </ul>
 <p>Por ello no conviene definir una sola cuadrícula donde todos los parámetros se apliquen indiscriminadamente a todos los kernels.</p>
 <p>Podemos utilizar una <strong>lista de diccionarios</strong>.</p>
-<div id="a8710ed6" class="cell" data-execution_count="43">
+<div id="e79376d6" class="cell" data-execution_count="43">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>param_grid <span class="op">=</span> [</span>
@@ -7362,7 +7364,7 @@ gamma = 0.1</code></pre>
 <section id="búsqueda-conjunta" class="level2" data-number="15.19">
 <h2 data-number="15.19" class="anchored" data-anchor-id="búsqueda-conjunta"><span class="header-section-number">15.19</span> Búsqueda conjunta</h2>
 <p>Creamos una nueva búsqueda.</p>
-<div id="021d9f2c" class="cell" data-execution_count="44">
+<div id="763d466f" class="cell" data-execution_count="44">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>grid <span class="op">=</span> GridSearchCV(</span>
@@ -7376,7 +7378,7 @@ gamma = 0.1</code></pre>
 </details>
 </div>
 <p>Ejecutamos:</p>
-<div id="9bfcffe0" class="cell" data-execution_count="45">
+<div id="0fa4a80f" class="cell" data-execution_count="45">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>grid.fit(</span>
@@ -8428,7 +8430,7 @@ available in the ``cv_results_`` dict at the keys ending with that<br>
 scorer's name (``'_&lt;scorer_name&gt;'``) instead of ``'_score'`` shown<br>
 above. ('split0_test_precision', 'mean_train_precision' etc.)</span></a></td>
 <td class="fitted-att-type">dict</td>
-<td>{'me...me': array([0.0013..., 0.0014101 ]), 'me...me': array([0.0008..., 0.00076876]), 'me...re': array([0.9851..., 0.98518519]), 'me...re': array([0.9849..., 1. ]), ...}</td>
+<td>{'me...me': array([0.0014..., 0.00154467]), 'me...me': array([0.0007..., 0.0007596 ]), 'me...re': array([0.9851..., 0.98518519]), 'me...re': array([0.9849..., 1. ]), ...}</td>
 </tr>
 <tr class="default even">
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=multimetric_,-bool" class="param-doc-link" style="anchor-name: --doc-link-multimetric_;" rel="noreferrer" target="_blank">multimetric_ <span class="param-doc-description" style="position-anchor: --doc-link-multimetric_;"> multimetric_: bool<br>
@@ -8465,7 +8467,7 @@ This is present only if ``refit`` is not False.<br>
 <br>
 .. versionadded:: 0.20</span></a></td>
 <td class="fitted-att-type">float</td>
-<td>0.001123</td>
+<td>0.003316</td>
 </tr>
 <tr class="default even">
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=scorer_,-function%20or%20a%20dict" class="param-doc-link" style="anchor-name: --doc-link-scorer_;" rel="noreferrer" target="_blank">scorer_ <span class="param-doc-description" style="position-anchor: --doc-link-scorer_;"> scorer_: function or a dict<br>
@@ -9165,7 +9167,7 @@ forceTheme('sk-container-id-4');</script>
 </div>
 </div>
 <p>Consultamos la configuración seleccionada:</p>
-<div id="c433c3be" class="cell" data-execution_count="46">
+<div id="9aa6ab50" class="cell" data-execution_count="46">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>grid.best_params_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -9175,7 +9177,7 @@ forceTheme('sk-container-id-4');</script>
 </div>
 </div>
 <p>Y su desempeño promedio durante validación cruzada:</p>
-<div id="7f3e4d27" class="cell" data-execution_count="47">
+<div id="d2237c4c" class="cell" data-execution_count="47">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>grid.best_score_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -9189,7 +9191,7 @@ forceTheme('sk-container-id-4');</script>
 <h2 data-number="15.20" class="anchored" data-anchor-id="el-mejor-estimador"><span class="header-section-number">15.20</span> El mejor estimador</h2>
 <p><code>GridSearchCV</code> vuelve a ajustar automáticamente la mejor configuración utilizando todos los datos de entrenamiento.</p>
 <p>Podemos acceder al modelo mediante:</p>
-<div id="a5231a1b" class="cell" data-execution_count="48">
+<div id="f5f746d5" class="cell" data-execution_count="48">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>mejor_modelo <span class="op">=</span> grid.best_estimator_</span>
@@ -10692,7 +10694,7 @@ forceTheme('sk-container-id-5');</script>
 <pre class="text"><code>SVC</code></pre>
 <p>con los hiperparámetros seleccionados.</p>
 <p>Podemos inspeccionar únicamente la SVM:</p>
-<div id="90225e1d" class="cell" data-execution_count="49">
+<div id="9fb7b627" class="cell" data-execution_count="49">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>mejor_svc <span class="op">=</span> (</span>
@@ -11898,7 +11900,7 @@ forceTheme('sk-container-id-6');</script>
 </div>
 </div>
 <p>Y consultar el número de vectores de soporte:</p>
-<div id="6a41a600" class="cell" data-execution_count="50">
+<div id="eef256f0" class="cell" data-execution_count="50">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>mejor_svc.n_support_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -11939,7 +11941,7 @@ y_test</code></pre>
 <div class="callout-body-container callout-body">
 <p>¿Por qué no evaluamos todavía <code>mejor_modelo</code> sobre <code>X_test</code>?</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-23-contents" aria-controls="callout-23" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-24-contents" aria-controls="callout-24" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -11948,7 +11950,7 @@ y_test</code></pre>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-23" class="callout-23-contents callout-collapse collapse">
+<div id="callout-24" class="callout-24-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Podríamos hacerlo si éste fuera el final del análisis.</p>
 <p>Sin embargo, en la siguiente práctica queremos comparar la SVM con regresión logística y realizar una evaluación final más completa.</p>
@@ -11963,7 +11965,7 @@ y_test</code></pre>
 <section id="inspeccionando-los-resultados-de-la-búsqueda" class="level2" data-number="15.22">
 <h2 data-number="15.22" class="anchored" data-anchor-id="inspeccionando-los-resultados-de-la-búsqueda"><span class="header-section-number">15.22</span> Inspeccionando los resultados de la búsqueda</h2>
 <p>Podemos convertir todos los resultados en un <code>DataFrame</code>.</p>
-<div id="eb5d5c79" class="cell" data-execution_count="51">
+<div id="fe3cfde4" class="cell" data-execution_count="51">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>resultados_grid <span class="op">=</span> pd.DataFrame(</span>
@@ -11972,7 +11974,7 @@ y_test</code></pre>
 </details>
 </div>
 <p>Seleccionamos algunas columnas.</p>
-<div id="1fed330e" class="cell" data-execution_count="52">
+<div id="d4956889" class="cell" data-execution_count="52">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>columnas <span class="op">=</span> [</span>
@@ -12196,7 +12198,7 @@ y_test</code></pre>
 <pre class="text"><code>mean_test_score</code></pre>
 <p>donde <code>mean_test_score</code> corresponde nuevamente al desempeño sobre los pliegues de validación.</p>
 <p>Veamos las configuraciones con mayor desempeño de entrenamiento.</p>
-<div id="aea4b31a" class="cell" data-execution_count="53">
+<div id="0a63be13" class="cell" data-execution_count="53">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>resultados_grid[</span>
@@ -12359,7 +12361,7 @@ mean_test_score  = 0.91</code></pre>
 mean_test_score  = 0.96</code></pre>
 <p>¿Deberíamos elegir automáticamente la primera porque clasifica perfectamente los datos de entrenamiento?</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-25-contents" aria-controls="callout-25" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-26-contents" aria-controls="callout-26" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -12368,7 +12370,7 @@ mean_test_score  = 0.96</code></pre>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-25" class="callout-25-contents callout-collapse collapse">
+<div id="callout-26" class="callout-26-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>No.</p>
 <p>El desempeño perfecto sobre entrenamiento no es nuestro objetivo principal.</p>
@@ -12385,14 +12387,14 @@ mean_test_score  = 0.96</code></pre>
 <p>Hasta ahora <code>SVC</code> ha utilizado internamente una estrategia OvO.</p>
 <p>También podemos construir explícitamente una estrategia OvR utilizando herramientas de <code>scikit-learn</code>.</p>
 <p>Importamos:</p>
-<div id="e74b3ce5" class="cell" data-execution_count="54">
+<div id="e8fbae0a" class="cell" data-execution_count="54">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.multiclass <span class="im">import</span> OneVsRestClassifier</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Construimos:</p>
-<div id="e73f7e76" class="cell" data-execution_count="55">
+<div id="49177224" class="cell" data-execution_count="55">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>modelo_ovr <span class="op">=</span> Pipeline([</span>
@@ -12413,7 +12415,7 @@ mean_test_score  = 0.96</code></pre>
 </details>
 </div>
 <p>Evaluamos mediante validación cruzada.</p>
-<div id="8520d6fd" class="cell" data-execution_count="56">
+<div id="2306f9b3" class="cell" data-execution_count="56">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>scores_ovr <span class="op">=</span> cross_val_score(</span>
@@ -12431,7 +12433,7 @@ mean_test_score  = 0.96</code></pre>
 </div>
 </div>
 <p>Promedio:</p>
-<div id="b0e33a28" class="cell" data-execution_count="57">
+<div id="efd90d48" class="cell" data-execution_count="57">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb91"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>scores_ovr.mean()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -12441,7 +12443,7 @@ mean_test_score  = 0.96</code></pre>
 </div>
 </div>
 <p>Comparemos con un <code>SVC</code> lineal que utiliza OvO internamente.</p>
-<div id="fe0ec54e" class="cell" data-execution_count="58">
+<div id="2c24d3c5" class="cell" data-execution_count="58">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb93"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>modelo_ovo <span class="op">=</span> Pipeline([</span>
@@ -12459,7 +12461,7 @@ mean_test_score  = 0.96</code></pre>
 <span id="cb93-13"><a href="#cb93-13" aria-hidden="true" tabindex="-1"></a>])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="416058cd" class="cell" data-execution_count="59">
+<div id="20a0a8c9" class="cell" data-execution_count="59">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>scores_ovo <span class="op">=</span> cross_val_score(</span>
@@ -12477,7 +12479,7 @@ mean_test_score  = 0.96</code></pre>
 </div>
 </div>
 <p>Construimos un resumen:</p>
-<div id="40128273" class="cell" data-execution_count="60">
+<div id="58a53ca6" class="cell" data-execution_count="60">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({</span>
@@ -12539,7 +12541,7 @@ mean_test_score  = 0.96</code></pre>
 <div class="callout-body-container callout-body">
 <p>Si OvO obtiene un promedio ligeramente mayor que OvR en esta partición de validación cruzada, ¿podemos concluir que OvO es siempre superior?</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-27-contents" aria-controls="callout-27" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-28-contents" aria-controls="callout-28" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -12548,7 +12550,7 @@ mean_test_score  = 0.96</code></pre>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-27" class="callout-27-contents callout-collapse collapse">
+<div id="callout-28" class="callout-28-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>No.</p>
 <p>El resultado corresponde a este conjunto de datos, esta configuración del modelo, esta métrica y estas particiones de validación cruzada.</p>
@@ -12564,19 +12566,23 @@ mean_test_score  = 0.96</code></pre>
 <h2 data-number="15.25" class="anchored" data-anchor-id="ejercicios"><span class="header-section-number">15.25</span> Ejercicios</h2>
 <section id="ejercicio-1.-cambiar-el-número-de-pliegues" class="level3" data-number="15.25.1">
 <h3 data-number="15.25.1" class="anchored" data-anchor-id="ejercicio-1.-cambiar-el-número-de-pliegues"><span class="header-section-number">15.25.1</span> Ejercicio 1. Cambiar el número de pliegues</h3>
-<p>Repite la evaluación del modelo lineal utilizando:</p>
-<p><span class="math display">\[
-k=3
-\]</span></p>
-<p>y</p>
-<p><span class="math display">\[
-k=10.
-\]</span></p>
-<p>Compara el promedio y la desviación estándar de <code>accuracy</code>.</p>
+<p>Repite la evaluación del modelo lineal utilizando validación cruzada estratificada (<code>StratifiedKFold</code>) con:</p>
+<ul>
+<li><span class="math inline">\(k=3\)</span> pliegues (<code>n_splits=3</code>).</li>
+<li><span class="math inline">\(k=10\)</span> pliegues (<code>n_splits=10</code>).</li>
+</ul>
+<p>Para cada caso, calcula el promedio y la desviación estándar de <code>accuracy</code>.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="1">
+<li>¿Qué porcentaje de los datos se utiliza para entrenamiento y validación en cada iteración?</li>
+<li>¿Cambian el promedio y la desviación estándar de <code>accuracy</code>?</li>
+<li>¿Obtener una desviación estándar menor significa necesariamente que el modelo es mejor? Justifica tu respuesta.</li>
+</ol>
 </section>
 <section id="ejercicio-2.-una-cuadrícula-más-pequeña" class="level3" data-number="15.25.2">
 <h3 data-number="15.25.2" class="anchored" data-anchor-id="ejercicio-2.-una-cuadrícula-más-pequeña"><span class="header-section-number">15.25.2</span> Ejercicio 2. Una cuadrícula más pequeña</h3>
-<p>Construye una búsqueda únicamente para RBF utilizando:</p>
+<p>Construye una búsqueda de hiperparámetros utilizando <code>GridSearchCV</code> exclusivamente para una SVM con kernel RBF.</p>
+<p>Considera los siguientes valores:</p>
 <p><span class="math display">\[
 C\in\{0.1,1,10\}
 \]</span></p>
@@ -12584,11 +12590,20 @@ C\in\{0.1,1,10\}
 <p><span class="math display">\[
 \gamma\in\{0.01,0.1,1\}.
 \]</span></p>
-<p>¿Cuántas combinaciones diferentes se evaluarán?</p>
+<p>Utiliza validación cruzada estratificada de 5 pliegues y la métrica <code>accuracy</code>.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="1">
+<li>¿Cuántas combinaciones diferentes de <span class="math inline">\(C\)</span> y <span class="math inline">\(\gamma\)</span> se evaluarán?</li>
+<li>Considerando los 5 pliegues de validación cruzada, ¿cuántos ajustes del modelo se realizarán en total durante la búsqueda?</li>
+<li>¿Qué combinación de <span class="math inline">\(C\)</span> y <span class="math inline">\(\gamma\)</span> obtuvo el mejor promedio de <code>accuracy</code> en validación cruzada?</li>
+<li>¿Cuál fue ese promedio de <code>accuracy</code>?</li>
+<li>¿La mejor combinación utiliza valores grandes o pequeños de <span class="math inline">\(C\)</span> y <span class="math inline">\(\gamma\)</span>? Explica brevemente qué implican esos valores para la regularización y la influencia local de las observaciones.</li>
+<li>Compara el mejor resultado de validación cruzada con el obtenido anteriormente para la SVM lineal. ¿Hay evidencia de que utilizar el kernel RBF mejore el desempeño en este conjunto de datos?</li>
+</ol>
 </section>
 <section id="ejercicio-3.-investigar-sobreajuste" class="level3" data-number="15.25.3">
 <h3 data-number="15.25.3" class="anchored" data-anchor-id="ejercicio-3.-investigar-sobreajuste"><span class="header-section-number">15.25.3</span> Ejercicio 3. Investigar sobreajuste</h3>
-<p>Ajusta una búsqueda RBF que incluya valores relativamente grandes:</p>
+<p>Realiza una nueva búsqueda de hiperparámetros para una SVM con kernel RBF, considerando valores relativamente grandes de <span class="math inline">\(C\)</span> y <span class="math inline">\(\gamma\)</span>:</p>
 <p><span class="math display">\[
 C\in\{1,10,100,1000\}
 \]</span></p>
@@ -12596,22 +12611,207 @@ C\in\{1,10,100,1000\}
 <p><span class="math display">\[
 \gamma\in\{0.1,1,10,100\}.
 \]</span></p>
-<p>Utiliza:</p>
+<p>Utiliza <code>GridSearchCV</code> con validación cruzada estratificada de 5 pliegues, la métrica <code>accuracy</code> y el argumento:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb97"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>return_train_score<span class="op">=</span><span class="va">True</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Identifica alguna configuración que presente una diferencia importante entre <code>mean_train_score</code> y <code>mean_test_score</code>.</p>
+<p>Este argumento permite recuperar tanto el desempeño promedio en los conjuntos de entrenamiento (<code>mean_train_score</code>) como en los conjuntos de validación (<code>mean_test_score</code>).</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="1">
+<li>¿Cuántas combinaciones de hiperparámetros se evaluaron? ¿Cuántos ajustes se realizaron durante la validación cruzada?</li>
+<li>Identifica la combinación de <span class="math inline">\(C\)</span> y <span class="math inline">\(\gamma\)</span> que obtuvo el mayor <code>mean_train_score</code>. ¿Cuál fue su correspondiente <code>mean_test_score</code>?</li>
+<li>Calcula la diferencia entre <code>mean_train_score</code> y <code>mean_test_score</code> para cada combinación. ¿Cuál presentó la mayor diferencia?</li>
+<li>¿Encontraste configuraciones con un desempeño muy alto en entrenamiento, pero considerablemente menor en validación? ¿Qué podría indicar este comportamiento?</li>
+<li>¿Qué ocurre con el desempeño de validación cuando <span class="math inline">\(\gamma\)</span> toma valores muy grandes? Relaciona tus observaciones con la influencia local de los vectores de soporte.</li>
+<li>¿La configuración con mayor exactitud en entrenamiento coincide necesariamente con la de mayor exactitud en validación? ¿Cuál seleccionarías y por qué?</li>
+</ol>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Para interpretar los resultados
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Una diferencia importante entre el desempeño en entrenamiento y validación puede ser una señal de <strong>sobreajuste</strong>, especialmente cuando la exactitud en entrenamiento es alta y disminuye considerablemente en validación.</p>
+<p>Sin embargo, una diferencia pequeña no garantiza que el modelo generalice bien. También debemos considerar el desempeño absoluto en validación.</p>
+<p>Recuerda que <code>mean_test_score</code> en <code>GridSearchCV</code> corresponde al promedio obtenido en los pliegues de <strong>validación cruzada</strong>, no al conjunto de prueba que reservamos al inicio.</p>
+</div>
+</div>
 </section>
 <section id="ejercicio-4.-ovo-y-número-de-clases" class="level3" data-number="15.25.4">
 <h3 data-number="15.25.4" class="anchored" data-anchor-id="ejercicio-4.-ovo-y-número-de-clases"><span class="header-section-number">15.25.4</span> Ejercicio 4. OvO y número de clases</h3>
-<p>Calcula cuántos clasificadores binarios necesita OvO para:</p>
+<p>Recordemos que las estrategias <em>One-versus-One</em> (OvO) y <em>One-versus-Rest</em> (OvR) permiten extender clasificadores binarios a problemas multiclase.</p>
+<p>El número de clasificadores binarios necesarios depende de la estrategia utilizada:</p>
+<p><span class="math display">\[
+N_{\mathrm{OvO}}=\frac{K(K-1)}{2},
+\]</span></p>
+<p>mientras que</p>
+<p><span class="math display">\[
+N_{\mathrm{OvR}}=K,
+\]</span></p>
+<p>donde <span class="math inline">\(K\)</span> representa el número de clases.</p>
+<p><strong>Actividades:</strong></p>
+<p>Calcula cuántos clasificadores binarios se necesitan con ambas estrategias para:</p>
 <ol type="1">
-<li><span class="math inline">\(K=3\)</span>;</li>
-<li><span class="math inline">\(K=5\)</span>;</li>
-<li><span class="math inline">\(K=10\)</span>;</li>
-<li><span class="math inline">\(K=20\)</span>.</li>
+<li><span class="math inline">\(K=3\)</span> clases.</li>
+<li><span class="math inline">\(K=5\)</span> clases.</li>
+<li><span class="math inline">\(K=10\)</span> clases.</li>
+<li><span class="math inline">\(K=20\)</span> clases.</li>
 </ol>
-<p>Compara con el número requerido por OvR.</p>
+<p>Organiza tus resultados en una tabla comparativa.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="1">
+<li>¿Para qué valores de <span class="math inline">\(K\)</span> ambas estrategias requieren el mismo número de clasificadores?</li>
+<li>¿Cómo cambia el número de clasificadores de OvO y OvR conforme aumenta <span class="math inline">\(K\)</span>? ¿Cuál crece más rápidamente?</li>
+<li>Si tenemos <span class="math inline">\(K=20\)</span> clases, ¿cuántos clasificadores adicionales necesita OvO respecto a OvR?</li>
+<li>En OvO, ¿qué observaciones se utilizan para entrenar cada clasificador binario? ¿Y en OvR?</li>
+<li>¿Podemos concluir que OvR siempre será computacionalmente más eficiente porque necesita menos clasificadores? Justifica tu respuesta considerando la cantidad de datos utilizada para entrenar cada uno.</li>
+<li>Si utilizamos <code>SVC</code> de <code>scikit-learn</code> con <span class="math inline">\(K=10\)</span> clases, ¿cuántos clasificadores binarios se entrenan internamente? ¿Cambiaría este número si especificamos <code>decision_function_shape="ovr"</code>?</li>
+</ol>
+</section>
+<section id="reto-adicional.-reconocimiento-de-dígitos-escritos-a-mano-mediante-svm" class="level3" data-number="15.25.5">
+<h3 data-number="15.25.5" class="anchored" data-anchor-id="reto-adicional.-reconocimiento-de-dígitos-escritos-a-mano-mediante-svm"><span class="header-section-number">15.25.5</span> Reto adicional. Reconocimiento de dígitos escritos a mano mediante SVM</h3>
+<p>En este reto utilizaremos el conjunto de datos <code>Digits</code> de <code>scikit-learn</code>, que contiene imágenes de dígitos escritos a mano.</p>
+<p>Cada imagen tiene una resolución de <span class="math inline">\(8\times 8\)</span> píxeles y representa uno de los diez dígitos:</p>
+<p><span class="math display">\[
+Y\in\{0,1,2,\ldots,9\}.
+\]</span></p>
+<p>Cada imagen se representa mediante un vector de <span class="math inline">\(64\)</span> características, correspondientes a las intensidades de sus píxeles.</p>
+<p>Nuestro objetivo será construir una <strong>SVM multiclase</strong> capaz de identificar el dígito representado en una imagen.</p>
+<section id="parte-1.-exploración-de-los-datos" class="level4">
+<h4 class="anchored" data-anchor-id="parte-1.-exploración-de-los-datos">Parte 1. Exploración de los datos</h4>
+<p>Carga el conjunto de datos utilizando:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb98"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_digits</span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a>digits <span class="op">=</span> load_digits()</span>
+<span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-5"><a href="#cb98-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> digits.data</span>
+<span id="cb98-6"><a href="#cb98-6" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> digits.target</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Explora las dimensiones del conjunto de datos y la distribución de las clases.</p>
+<p>Para visualizar algunas imágenes puedes utilizar:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb99"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">5</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb99-5"><a href="#cb99-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, ax <span class="kw">in</span> <span class="bu">enumerate</span>(axes.ravel()):</span>
+<span id="cb99-6"><a href="#cb99-6" aria-hidden="true" tabindex="-1"></a>    ax.imshow(</span>
+<span id="cb99-7"><a href="#cb99-7" aria-hidden="true" tabindex="-1"></a>        digits.images[i],</span>
+<span id="cb99-8"><a href="#cb99-8" aria-hidden="true" tabindex="-1"></a>        cmap<span class="op">=</span><span class="st">"gray_r"</span></span>
+<span id="cb99-9"><a href="#cb99-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb99-10"><a href="#cb99-10" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"Dígito: </span><span class="sc">{</span>y[i]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb99-11"><a href="#cb99-11" aria-hidden="true" tabindex="-1"></a>    ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb99-12"><a href="#cb99-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb99-13"><a href="#cb99-13" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb99-14"><a href="#cb99-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Preguntas:</strong></p>
+<ol type="1">
+<li>¿Cuántas observaciones y variables predictoras tiene el conjunto de datos?</li>
+<li>¿Cuántas clases diferentes existen?</li>
+<li>¿Por qué cada observación tiene 64 características si originalmente es una imagen?</li>
+<li>¿Las clases están aproximadamente balanceadas?</li>
+</ol>
+</section>
+<section id="parte-2.-entrenamiento-de-una-svm-multiclase" class="level4">
+<h4 class="anchored" data-anchor-id="parte-2.-entrenamiento-de-una-svm-multiclase">Parte 2. Entrenamiento de una SVM multiclase</h4>
+<p>Divide los datos en entrenamiento (70 %) y prueba (30 %), utilizando <code>stratify=y</code> y <code>random_state=42</code>.</p>
+<p>Construye un <code>Pipeline</code> que incluya:</p>
+<ul>
+<li><code>StandardScaler()</code>.</li>
+<li><code>SVC(kernel="linear", C=1)</code>.</li>
+</ul>
+<p>Entrena el modelo y evalúa su exactitud sobre los conjuntos de entrenamiento y prueba.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="1">
+<li>¿Qué exactitud obtuviste en entrenamiento y prueba?</li>
+<li>¿Cuántos clasificadores binarios entrena internamente <code>SVC</code> para este problema?</li>
+<li>¿Por qué no necesitamos construir manualmente un clasificador para cada par de dígitos?</li>
+</ol>
+</section>
+<section id="parte-3.-comparación-con-un-kernel-rbf" class="level4">
+<h4 class="anchored" data-anchor-id="parte-3.-comparación-con-un-kernel-rbf">Parte 3. Comparación con un kernel RBF</h4>
+<p>Construye una segunda SVM utilizando un kernel RBF.</p>
+<p>Utiliza inicialmente:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb100"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>SVC(</span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>    kernel<span class="op">=</span><span class="st">"rbf"</span>,</span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>    C<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a>    gamma<span class="op">=</span><span class="st">"scale"</span></span>
+<span id="cb100-5"><a href="#cb100-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Compara su desempeño con el modelo lineal.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="1">
+<li>¿Qué modelo obtuvo mayor exactitud en el conjunto de prueba?</li>
+<li>¿Existe una diferencia importante entre ambos resultados?</li>
+<li>¿Qué ventaja podría ofrecer un kernel RBF para reconocer dígitos escritos a mano?</li>
+<li>¿Podemos concluir que el modelo más complejo siempre será mejor?</li>
+</ol>
+</section>
+<section id="parte-4.-selección-de-hiperparámetros" class="level4">
+<h4 class="anchored" data-anchor-id="parte-4.-selección-de-hiperparámetros">Parte 4. Selección de hiperparámetros</h4>
+<p>Utiliza <code>GridSearchCV</code> para seleccionar los hiperparámetros de la SVM con kernel RBF.</p>
+<p>Considera:</p>
+<p><span class="math display">\[
+C\in\{0.1,1,10,100\}
+\]</span></p>
+<p>y</p>
+<p><span class="math display">\[
+\gamma\in\{0.001,0.01,0.1\}.
+\]</span></p>
+<p>Utiliza validación cruzada estratificada de 3 pliegues y <code>accuracy</code> como métrica de evaluación.</p>
+<p>Realiza la búsqueda únicamente sobre los datos de entrenamiento y utiliza <code>n_jobs=2</code> para limitar el paralelismo.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="1">
+<li>¿Cuántas combinaciones de hiperparámetros se evaluarán?</li>
+<li>¿Cuántos ajustes se realizarán durante la validación cruzada?</li>
+<li>¿Qué combinación de <span class="math inline">\(C\)</span> y <span class="math inline">\(\gamma\)</span> obtuvo el mejor desempeño promedio?</li>
+<li>¿La búsqueda mejoró el resultado obtenido inicialmente con el kernel RBF?</li>
+<li>¿El mejor modelo supera a la SVM lineal?</li>
+</ol>
+</section>
+<section id="parte-5.-qué-dígitos-son-más-difíciles-de-clasificar" class="level4">
+<h4 class="anchored" data-anchor-id="parte-5.-qué-dígitos-son-más-difíciles-de-clasificar">Parte 5. ¿Qué dígitos son más difíciles de clasificar?</h4>
+<p>Utiliza el mejor modelo obtenido y calcula la matriz de confusión sobre el conjunto de prueba.</p>
+<p>Puedes apoyarte en:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb101"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> ConfusionMatrixDisplay</span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a>ConfusionMatrixDisplay.from_estimator(</span>
+<span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a>    mejor_modelo,</span>
+<span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a>    X_test,</span>
+<span id="cb101-6"><a href="#cb101-6" aria-hidden="true" tabindex="-1"></a>    y_test,</span>
+<span id="cb101-7"><a href="#cb101-7" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">"Blues"</span></span>
+<span id="cb101-8"><a href="#cb101-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb101-9"><a href="#cb101-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb101-10"><a href="#cb101-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Preguntas:</strong></p>
+<ol type="1">
+<li>¿Qué dígitos se clasifican correctamente con mayor frecuencia?</li>
+<li>¿Qué pares de dígitos se confunden más?</li>
+<li>¿Por qué algunos dígitos podrían resultar más difíciles de distinguir?</li>
+<li>¿Qué información adicional proporciona la matriz de confusión que no podemos obtener únicamente con <code>accuracy</code>?</li>
+</ol>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Conclusiones
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En este reto utilizamos una SVM para resolver un problema con diez clases y 64 variables predictoras.</p>
+<p><strong>Redacta una conclusión breve</strong> que responda:</p>
+<ul>
+<li>¿Qué aprendiste sobre el uso de SVM en problemas multiclase?</li>
+<li>¿Fue necesario utilizar un kernel no lineal para obtener un buen desempeño?</li>
+<li>¿Qué modelo seleccionarías considerando tanto la exactitud como la complejidad?</li>
+</ul>
+<p>Justifica tus respuestas utilizando los resultados obtenidos.</p>
+</div>
+</div>
 
 
+</section>
 </section>
 </section>
 
@@ -13062,8 +13262,8 @@ C\in\{1,10,100,1000\}
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./parte16.html" class="pagination-link" aria-label="Relación con la regresión logística">
-        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Relación con la regresión logística</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./parte17.html" class="pagination-link" aria-label="pendiente">
+        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">pendiente</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

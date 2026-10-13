@@ -1,0 +1,1648 @@
+# Máquinas de soporte vectorial con más de dos clases
+
+Hasta ahora hemos trabajado principalmente con problemas de clasificación binaria y datos sintéticos que nos permitían visualizar directamente las fronteras de decisión.
+
+En esta práctica daremos un paso hacia un problema más realista.
+
+Trabajaremos con:
+
+- más de dos clases;
+- múltiples variables predictoras;
+- variables medidas en escalas diferentes;
+- selección de hiperparámetros mediante validación cruzada.
+
+Vamos a:
+
+- aplicar una SVM a un problema multiclase;
+- distinguir las estrategias *one-versus-one* y *one-versus-rest*;
+- construir un `Pipeline` que combine escalamiento y clasificación;
+- utilizar validación cruzada para evaluar configuraciones del modelo;
+- utilizar `GridSearchCV` para seleccionar hiperparámetros;
+- buscar conjuntamente $C$, $\gamma$ y el tipo de kernel;
+- interpretar `best_params_` y `best_score_`;
+- mantener separado el conjunto de prueba durante la selección del modelo.
+
+::: {.diapositivas}
+::: {.diapositivas-title}
+📝 **Diapositivas**
+:::
+
+::: {.diapositivas-body}
+[Ver diapositivas SVM con más de dos clases](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/4.4-MSV_con_mas_clases.pdf)
+:::
+:::
+
+## Antes de comenzar
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+En una SVM con kernel RBF, ¿qué funciones cumplen $C$ y $\gamma$?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Los dos hiperparámetros afectan el comportamiento del clasificador, pero no representan lo mismo.
+
+En `scikit-learn`, $C$ controla la penalización de las violaciones del margen.
+
+De manera esquemática:
+
+$$C\downarrow
+\quad\Longrightarrow\quad
+\text{mayor regularización}.$$
+
+Por otro lado, $\gamma$ controla el alcance de la influencia de las observaciones en el kernel RBF:
+
+$$K(x,z)
+=
+\exp\left(-\gamma\|x-z\|^2\right).$$
+
+Un $\gamma$ pequeño produce una influencia más global, mientras que un $\gamma$ grande produce una influencia más local.
+:::
+::::
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué utilizamos `StandardScaler` antes de ajustar una SVM?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Las SVM dependen de la geometría del espacio de características.
+
+Si una variable tiene una escala mucho mayor que otra, puede influir de manera desproporcionada en distancias y productos internos.
+
+El escalamiento coloca las variables en escalas comparables.
+
+Además, el escalamiento debe formar parte del `Pipeline` para que sus parámetros se estimen únicamente con los datos disponibles durante cada ajuste.
+:::
+::::
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué no debemos probar diferentes valores de $C$ y $\gamma$ sobre el conjunto de prueba y seleccionar la combinación que produzca el mejor resultado?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Porque entonces estaríamos utilizando información del conjunto de prueba para seleccionar el modelo.
+
+El conjunto de prueba dejaría de representar datos completamente nuevos.
+
+Los hiperparámetros deben seleccionarse utilizando únicamente los datos de entrenamiento.
+
+Para ello podemos utilizar validación cruzada.
+
+El conjunto de prueba se reserva para la evaluación final.
+:::
+::::
+
+## Preparación
+
+Importamos las bibliotecas necesarias.
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import load_wine
+
+from sklearn.model_selection import (
+    train_test_split,
+    cross_val_score,
+    StratifiedKFold,
+    GridSearchCV
+)
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+from sklearn.svm import SVC
+
+from sklearn.metrics import accuracy_score
+```
+
+## Un problema multiclase: Wine
+
+Utilizaremos el conjunto de datos `Wine`, disponible directamente en `scikit-learn`.
+
+Este conjunto contiene mediciones químicas de vinos pertenecientes a tres clases.
+
+Cargamos los datos:
+
+```{python}
+wine = load_wine()
+
+X = wine.data
+y = wine.target
+```
+
+Podemos consultar los nombres de las variables:
+
+```{python}
+wine.feature_names
+```
+
+Y los nombres de las clases:
+
+```{python}
+wine.target_names
+```
+
+Veamos las dimensiones:
+
+```{python}
+X.shape
+```
+
+Tenemos varias variables predictoras, por lo que ya no podemos visualizar directamente el problema mediante una gráfica bidimensional como hicimos en las prácticas anteriores.
+
+Este cambio es importante.
+
+En problemas reales, una SVM puede trabajar en espacios de muchas dimensiones aunque nosotros no podamos visualizar directamente la frontera de decisión.
+
+## Exploración inicial
+
+Construimos un `DataFrame`.
+
+```{python}
+datos = pd.DataFrame(
+    X,
+    columns=wine.feature_names
+)
+
+datos["Clase"] = y
+
+datos.head()
+```
+
+Observemos la distribución de las clases.
+
+```{python}
+datos["Clase"].value_counts().sort_index()
+```
+
+Podemos mostrar también los nombres.
+
+```{python}
+distribucion = (
+    datos["Clase"]
+    .value_counts()
+    .sort_index()
+    .rename_axis("Clase")
+    .reset_index(name="Frecuencia")
+)
+
+distribucion["Nombre"] = [
+    wine.target_names[i]
+    for i in distribucion["Clase"]
+]
+
+distribucion
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué conviene revisar la distribución de las clases antes de construir el modelo?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Porque el número de observaciones por clase puede afectar la forma en que interpretamos las métricas de clasificación.
+
+Si una clase fuera mucho más frecuente que las demás, una exactitud elevada podría ocultar un desempeño deficiente sobre las clases minoritarias.
+
+También es importante preservar aproximadamente estas proporciones al separar los datos y al realizar validación cruzada.
+:::
+::::
+
+## Las variables no están en la misma escala
+
+Veamos algunos estadísticos descriptivos.
+
+```{python}
+datos.drop(columns="Clase").describe().T
+```
+
+Observa especialmente las columnas `mean`, `std`, `min` y `max`.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Todas las variables se encuentran aproximadamente en la misma escala?
+
+¿Qué problema podría causar esto en una SVM?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No.
+
+Algunas variables presentan valores relativamente pequeños, mientras que otras pueden tomar valores mucho mayores.
+
+Como las SVM dependen de la geometría del espacio de características, las variables con escalas grandes podrían tener una influencia desproporcionada.
+
+Por ello utilizaremos `StandardScaler` como parte del flujo de modelado.
+:::
+::::
+
+## Separación en entrenamiento y prueba
+
+Antes de realizar cualquier selección de modelo, reservaremos una parte de los datos para la evaluación final.
+
+```{python}
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.25,
+    random_state=42,
+    stratify=y
+)
+```
+
+Comprobamos las dimensiones.
+
+```{python}
+print("X_train:", X_train.shape)
+print("X_test:", X_test.shape)
+```
+
+Utilizamos
+
+``` python
+stratify=y
+```
+
+para conservar aproximadamente la proporción de las clases en entrenamiento y prueba.
+
+Podemos verificarlo.
+
+```{python}
+print(
+    "Proporciones en entrenamiento:"
+)
+
+print(
+    pd.Series(y_train)
+    .value_counts(normalize=True)
+    .sort_index()
+)
+```
+
+```{python}
+print(
+    "Proporciones en prueba:"
+)
+
+print(
+    pd.Series(y_test)
+    .value_counts(normalize=True)
+    .sort_index()
+)
+```
+
+::: {.callout-warning icon="false"}
+## Importante
+
+A partir de este momento, `X_test` y `y_test` permanecerán fuera del proceso de selección del modelo.
+
+No los utilizaremos para decidir:
+
+- qué kernel utilizar;
+- qué valor de $C$ utilizar;
+- qué valor de $\gamma$ utilizar.
+:::
+
+## ¿Cómo utiliza una SVM más de dos clases?
+
+Hasta ahora nuestras SVM distinguían entre dos clases.
+
+Sin embargo, `Wine` contiene tres:
+
+$$K=3.$$
+
+Una estrategia consiste en construir clasificadores para cada par de clases.
+
+Esta estrategia se conoce como **one-versus-one** u OvO.
+
+Con $K$ clases necesitamos
+
+$$\frac{K(K-1)}{2}$$
+
+clasificadores.
+
+Para nuestro ejemplo:
+
+$$\frac{3(3-1)}{2}
+=
+3.$$
+
+Los problemas binarios serían:
+
+$$0\text{ vs. }1,$$
+
+$$0\text{ vs. }2,$$
+
+y
+
+$$1\text{ vs. }2.$$
+
+Otra estrategia posible es **one-versus-rest** u OvR.
+
+En ese caso se construyen $K$ clasificadores:
+
+$$0\text{ vs. resto},$$
+
+$$1\text{ vs. resto},$$
+
+$$2\text{ vs. resto}.$$
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Si tenemos $K=10$ clases, ¿cuántos clasificadores binarios requiere OvO y cuántos requiere OvR?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Para OvO:
+
+$$\frac{K(K-1)}{2}
+=
+\frac{10(9)}{2}
+=
+45.$$
+
+Para OvR:
+
+$$K=10.$$
+
+Por tanto, OvO requiere 45 problemas binarios y OvR requiere 10.
+:::
+::::
+
+## Multiclase en `SVC`
+
+`SVC` utiliza internamente una estrategia **one-versus-one** para el entrenamiento multiclase.
+
+Podemos, por tanto, ajustar directamente:
+
+```{python}
+modelo = Pipeline([
+    (
+        "scaler",
+        StandardScaler()
+    ),
+    (
+        "svc",
+        SVC(
+            kernel="linear",
+            C=1
+        )
+    )
+])
+```
+
+No necesitamos separar manualmente las tres clases en problemas binarios.
+
+Ajustamos utilizando únicamente entrenamiento:
+
+```{python}
+modelo.fit(
+    X_train,
+    y_train
+)
+```
+
+Podemos generar predicciones sobre entrenamiento:
+
+```{python}
+pred_train = modelo.predict(
+    X_train
+)
+```
+
+Y calcular la exactitud:
+
+```{python}
+accuracy_score(
+    y_train,
+    pred_train
+)
+```
+
+Por ahora no evaluaremos sobre test.
+
+Primero debemos seleccionar adecuadamente nuestro modelo.
+
+
+::: {.callout-note}
+## ¿Ya resolvimos el problema?
+
+Es posible que nuestra primera SVM lineal obtenga una exactitud de $1$, es decir, que clasifique correctamente todas las observaciones del conjunto de entrenamiento.
+
+Esto no significa que debamos detenernos ni que el modelo tenga un desempeño perfecto sobre cualquier observación futura.
+
+El conjunto `Wine` es relativamente pequeño y sus clases pueden distinguirse bastante bien utilizando modelos lineales.
+
+**Nuestro objetivo en esta práctica no es necesariamente mejorar la exactitud**, sino investigar cómo se utilizan las SVM en problemas con más de dos clases.
+
+En particular, estudiaremos:
+
+- Cómo funciona la estrategia *One-versus-One* (OvO).
+- Cómo construir una estrategia *One-versus-Rest* (OvR).
+- Qué diferencias existen entre ambas estrategias.
+- Si una frontera más flexible, como la obtenida con un kernel RBF, realmente ofrece alguna ventaja.
+
+Un modelo más complejo no necesariamente produce mejores resultados.
+:::
+
+
+## ¿Por qué un `Pipeline`?
+
+Nuestro flujo tiene dos pasos:
+
+$$X
+\longrightarrow
+\text{StandardScaler}
+\longrightarrow
+\text{SVC}.$$
+
+El `Pipeline` permite tratar ambos pasos como un solo estimador.
+
+Esto será especialmente importante durante la validación cruzada.
+
+En cada partición de validación cruzada queremos que:
+
+1.  `StandardScaler` se ajuste utilizando únicamente el subconjunto de entrenamiento;
+2.  esos datos se transformen;
+3.  la SVM se ajuste;
+4.  el subconjunto de validación se transforme utilizando el escalador obtenido en el paso 1;
+5.  el modelo se evalúe.
+
+El `Pipeline` realiza este procedimiento automáticamente.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Qué estaría mal en estandarizar todo `X_train` antes de realizar validación cruzada?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Si calculamos previamente la media y desviación estándar utilizando todo `X_train`, las observaciones que posteriormente funcionarán como validación ya habrán participado en el preprocesamiento.
+
+Esto introduce fuga de información entre los pliegues.
+
+Al incluir `StandardScaler` dentro del `Pipeline`, el escalamiento se vuelve a ajustar correctamente dentro de cada partición de validación cruzada.
+:::
+::::
+
+## Validación cruzada
+
+Antes de realizar una búsqueda de hiperparámetros, recordemos cómo evaluar una configuración mediante validación cruzada.
+
+Utilizaremos validación cruzada estratificada.
+
+```{python}
+cv = StratifiedKFold(
+    n_splits=5,
+    shuffle=True,
+    random_state=42
+)
+```
+
+La estratificación busca conservar aproximadamente la distribución de las clases dentro de cada pliegue.
+
+Evaluamos el modelo lineal.
+
+```{python}
+scores = cross_val_score(
+    modelo,
+    X_train,
+    y_train,
+    cv=cv,
+    scoring="accuracy"
+)
+```
+
+Observamos los resultados.
+
+```{python}
+scores
+```
+
+Promedio:
+
+```{python}
+scores.mean()
+```
+
+Desviación estándar:
+
+```{python}
+scores.std()
+```
+
+Podemos resumir:
+
+```{python}
+print(
+    "Accuracy CV:",
+    scores.mean()
+)
+
+print(
+    "Desviación estándar:",
+    scores.std()
+)
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué el promedio de validación cruzada es más informativo para seleccionar hiperparámetros que la exactitud obtenida sobre los mismos datos utilizados para ajustar el modelo?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+La exactitud de entrenamiento mide el desempeño sobre observaciones que el modelo ya utilizó para ajustarse.
+
+En validación cruzada, cada observación es evaluada en un momento en el que no fue utilizada para ajustar ese modelo particular.
+
+Esto proporciona una estimación más adecuada de la capacidad de generalización dentro del conjunto de entrenamiento.
+:::
+::::
+
+## Selección manual de $C$
+
+Antes de utilizar `GridSearchCV`, veamos cómo podríamos comparar varios valores de $C$ mediante validación cruzada.
+
+Utilizaremos un kernel lineal.
+
+```{python}
+valores_C = [
+    0.001,
+    0.01,
+    0.1,
+    1,
+    10,
+    100
+]
+```
+
+```{python}
+resultados_C = []
+
+for C in valores_C:
+    
+    modelo_C = Pipeline([
+        (
+            "scaler",
+            StandardScaler()
+        ),
+        (
+            "svc",
+            SVC(
+                kernel="linear",
+                C=C
+            )
+        )
+    ])
+    
+    scores = cross_val_score(
+        modelo_C,
+        X_train,
+        y_train,
+        cv=cv,
+        scoring="accuracy"
+    )
+    
+    resultados_C.append({
+        "C": C,
+        "Accuracy_CV": scores.mean(),
+        "SD_CV": scores.std()
+    })
+```
+
+Convertimos los resultados en una tabla.
+
+```{python}
+resultados_C = pd.DataFrame(
+    resultados_C
+)
+
+resultados_C
+```
+
+Podemos ordenarla según el promedio de validación cruzada.
+
+```{python}
+resultados_C.sort_values(
+    "Accuracy_CV",
+    ascending=False
+)
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué no necesitamos utilizar `X_test` para comparar estos valores de $C$?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Porque la validación cruzada nos permite comparar las configuraciones utilizando únicamente los datos de entrenamiento.
+
+Así mantenemos el conjunto de prueba completamente independiente del proceso de selección.
+:::
+::::
+
+## Automatizando la búsqueda con `GridSearchCV`
+
+Cuando tenemos varios hiperparámetros, realizar manualmente todas las combinaciones se vuelve incómodo.
+
+`GridSearchCV` automatiza este procedimiento.
+
+Primero construiremos un `Pipeline` general.
+
+```{python}
+pipeline = Pipeline([
+    (
+        "scaler",
+        StandardScaler()
+    ),
+    (
+        "svc",
+        SVC()
+    )
+])
+```
+
+Ahora necesitamos definir qué valores queremos explorar.
+
+## Una cuadrícula sencilla
+
+Comencemos únicamente con el kernel lineal.
+
+```{python}
+param_grid_lineal = {
+    "svc__kernel": ["linear"],
+    "svc__C": [
+        0.001,
+        0.01,
+        0.1,
+        1,
+        10,
+        100
+    ]
+}
+```
+
+Observa la notación:
+
+``` text
+svc__C
+```
+
+El doble guion bajo indica:
+
+$$\text{paso del Pipeline}
+\; \_\_ \;
+\text{parámetro}.$$
+
+Como nuestro paso se llama
+
+``` python
+"svc"
+```
+
+el parámetro `C` se escribe:
+
+``` python
+svc__C
+```
+
+Creamos la búsqueda.
+
+```{python}
+grid_lineal = GridSearchCV(
+    estimator=pipeline,
+    param_grid=param_grid_lineal,
+    cv=cv,
+    scoring="accuracy",
+    n_jobs=1
+)
+```
+
+Ajustamos utilizando únicamente entrenamiento.
+
+```{python}
+grid_lineal.fit(
+    X_train,
+    y_train
+)
+```
+
+## Resultados de `GridSearchCV`
+
+Podemos consultar los mejores hiperparámetros:
+
+```{python}
+grid_lineal.best_params_
+```
+
+Y el mejor promedio de validación cruzada:
+
+```{python}
+grid_lineal.best_score_
+```
+
+::: callout-note
+## Importante
+
+`best_score_` **no es el desempeño sobre test**.
+
+Es el mejor promedio obtenido durante la validación cruzada realizada sobre los datos de entrenamiento.
+:::
+
+Podemos consultar todos los resultados:
+
+```{python}
+resultados_grid_lineal = pd.DataFrame(
+    grid_lineal.cv_results_
+)
+
+resultados_grid_lineal[
+    [
+        "param_svc__C",
+        "mean_test_score",
+        "std_test_score",
+        "rank_test_score"
+    ]
+].sort_values(
+    "rank_test_score"
+)
+```
+
+El nombre `mean_test_score` puede resultar confuso.
+
+Aquí `test` se refiere a los **pliegues de validación** dentro de la validación cruzada.
+
+No se refiere a nuestro conjunto externo `X_test`.
+
+## ¿Qué ocurre con el kernel RBF?
+
+Para el kernel RBF debemos seleccionar al menos dos hiperparámetros importantes:
+
+$$C$$
+
+y
+
+$$\gamma.$$
+
+Definimos:
+
+```{python}
+param_grid_rbf = {
+    "svc__kernel": ["rbf"],
+    "svc__C": [
+        0.01,
+        0.1,
+        1,
+        10,
+        100
+    ],
+    "svc__gamma": [
+        0.001,
+        0.01,
+        0.1,
+        1,
+        10
+    ]
+}
+```
+
+Número de combinaciones:
+
+$$5\times5=25.$$
+
+Cada combinación será evaluada mediante validación cruzada de 5 pliegues.
+
+Por tanto, sólo para esta cuadrícula se realizarán múltiples ajustes del modelo.
+
+## Búsqueda para RBF
+
+Creamos la búsqueda:
+
+```{python}
+grid_rbf = GridSearchCV(
+    estimator=pipeline,
+    param_grid=param_grid_rbf,
+    cv=cv,
+    scoring="accuracy",
+    n_jobs=1
+)
+```
+
+Ejecutamos:
+
+```{python}
+grid_rbf.fit(
+    X_train,
+    y_train
+)
+```
+
+Consultamos:
+
+```{python}
+grid_rbf.best_params_
+```
+
+```{python}
+grid_rbf.best_score_
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Supongamos que la mejor combinación fuera
+
+``` text
+C = 10
+gamma = 0.1
+```
+
+¿Podemos concluir que estos valores serán los mejores para cualquier conjunto de datos?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No.
+
+Los hiperparámetros seleccionados dependen de:
+
+- los datos;
+- las variables;
+- el preprocesamiento;
+- el kernel;
+- la métrica utilizada;
+- las particiones de validación cruzada.
+
+No existe un valor universalmente óptimo de $C$ o $\gamma$.
+:::
+::::
+
+## Visualizando la búsqueda de $C$ y $\gamma$
+
+Los resultados de `GridSearchCV` pueden organizarse en una tabla.
+
+```{python}
+resultados_rbf = pd.DataFrame(
+    grid_rbf.cv_results_
+)
+```
+
+Seleccionamos las columnas relevantes:
+
+```{python}
+tabla_rbf = resultados_rbf[
+    [
+        "param_svc__C",
+        "param_svc__gamma",
+        "mean_test_score"
+    ]
+].copy()
+
+tabla_rbf.head()
+```
+
+Podemos construir una tabla donde:
+
+- las filas correspondan a $C$;
+- las columnas correspondan a $\gamma$;
+- cada celda contenga el promedio de validación cruzada.
+
+```{python}
+tabla_pivot = tabla_rbf.pivot(
+    index="param_svc__C",
+    columns="param_svc__gamma",
+    values="mean_test_score"
+)
+
+tabla_pivot
+```
+
+Esta tabla permite observar que el desempeño depende de la combinación
+
+$$(C,\gamma),$$
+
+no únicamente de cada parámetro de manera aislada.
+
+## ¿Podemos comparar diferentes kernels?
+
+Sí.
+
+Pero debemos tener cuidado: **no todos los kernels utilizan los mismos hiperparámetros**.
+
+Por ejemplo:
+
+- `linear` utiliza $C$;
+- `rbf` utiliza $C$ y $\gamma$;
+- `poly` utiliza $C$, $\gamma$, `degree` y potencialmente `coef0`.
+
+Por ello no conviene definir una sola cuadrícula donde todos los parámetros se apliquen indiscriminadamente a todos los kernels.
+
+Podemos utilizar una **lista de diccionarios**.
+
+```{python}
+param_grid = [
+    
+    {
+        "svc__kernel": ["linear"],
+        "svc__C": [
+            0.01,
+            0.1,
+            1,
+            10,
+            100
+        ]
+    },
+    
+    {
+        "svc__kernel": ["rbf"],
+        "svc__C": [
+            0.01,
+            0.1,
+            1,
+            10,
+            100
+        ],
+        "svc__gamma": [
+            0.001,
+            0.01,
+            0.1,
+            1,
+            10
+        ]
+    },
+    
+    {
+        "svc__kernel": ["poly"],
+        "svc__C": [
+            0.1,
+            1,
+            10
+        ],
+        "svc__degree": [
+            2,
+            3,
+            4
+        ],
+        "svc__gamma": ["scale"],
+        "svc__coef0": [1]
+    }
+]
+```
+
+De esta manera cada kernel recibe únicamente los hiperparámetros que queremos explorar.
+
+## Búsqueda conjunta
+
+Creamos una nueva búsqueda.
+
+```{python}
+grid = GridSearchCV(
+    estimator=pipeline,
+    param_grid=param_grid,
+    cv=cv,
+    scoring="accuracy",
+    n_jobs=1,
+    return_train_score=True
+)
+```
+
+Ejecutamos:
+
+```{python}
+grid.fit(
+    X_train,
+    y_train
+)
+```
+
+Consultamos la configuración seleccionada:
+
+```{python}
+grid.best_params_
+```
+
+Y su desempeño promedio durante validación cruzada:
+
+```{python}
+grid.best_score_
+```
+
+## El mejor estimador
+
+`GridSearchCV` vuelve a ajustar automáticamente la mejor configuración utilizando todos los datos de entrenamiento.
+
+Podemos acceder al modelo mediante:
+
+```{python}
+mejor_modelo = grid.best_estimator_
+
+mejor_modelo
+```
+
+Este objeto contiene tanto:
+
+``` text
+StandardScaler
+```
+
+como:
+
+``` text
+SVC
+```
+
+con los hiperparámetros seleccionados.
+
+Podemos inspeccionar únicamente la SVM:
+
+```{python}
+mejor_svc = (
+    mejor_modelo
+    .named_steps["svc"]
+)
+
+mejor_svc
+```
+
+Y consultar el número de vectores de soporte:
+
+```{python}
+mejor_svc.n_support_
+```
+
+## Todavía no utilizamos el conjunto de prueba
+
+En este momento hemos:
+
+1.  reservado un conjunto de prueba;
+2.  construido un `Pipeline`;
+3.  utilizado validación cruzada;
+4.  comparado valores de $C$;
+5.  comparado valores de $\gamma$;
+6.  comparado kernels;
+7.  seleccionado una configuración.
+
+Todo esto se realizó utilizando únicamente:
+
+``` text
+X_train
+y_train
+```
+
+El conjunto
+
+``` text
+X_test
+y_test
+```
+
+continúa intacto.
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué no evaluamos todavía `mejor_modelo` sobre `X_test`?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Podríamos hacerlo si éste fuera el final del análisis.
+
+Sin embargo, en la siguiente práctica queremos comparar la SVM con regresión logística y realizar una evaluación final más completa.
+
+Por ello mantendremos el conjunto de prueba sin utilizar hasta ese momento.
+
+La idea es que todas las decisiones de modelado ocurran antes de observar el desempeño final sobre test.
+:::
+::::
+
+## Inspeccionando los resultados de la búsqueda
+
+Podemos convertir todos los resultados en un `DataFrame`.
+
+```{python}
+resultados_grid = pd.DataFrame(
+    grid.cv_results_
+)
+```
+
+Seleccionamos algunas columnas.
+
+```{python}
+columnas = [
+    "param_svc__kernel",
+    "param_svc__C",
+    "param_svc__gamma",
+    "param_svc__degree",
+    "mean_train_score",
+    "mean_test_score",
+    "std_test_score",
+    "rank_test_score"
+]
+
+resultados_resumen = (
+    resultados_grid[columnas]
+    .sort_values("rank_test_score")
+)
+
+resultados_resumen.head(15)
+```
+
+Algunos valores aparecerán como `NaN` porque ciertos hiperparámetros no corresponden a todos los kernels.
+
+Por ejemplo, `degree` no es un hiperparámetro relevante para el kernel RBF.
+
+## Entrenamiento vs. validación
+
+Como utilizamos
+
+``` python
+return_train_score=True
+```
+
+podemos comparar:
+
+``` text
+mean_train_score
+```
+
+con
+
+``` text
+mean_test_score
+```
+
+donde `mean_test_score` corresponde nuevamente al desempeño sobre los pliegues de validación.
+
+Veamos las configuraciones con mayor desempeño de entrenamiento.
+
+```{python}
+resultados_grid[
+    columnas
+].sort_values(
+    "mean_train_score",
+    ascending=False
+).head(10)
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Una configuración obtiene:
+
+``` text
+mean_train_score = 1.00
+mean_test_score  = 0.91
+```
+
+Otra obtiene:
+
+``` text
+mean_train_score = 0.97
+mean_test_score  = 0.96
+```
+
+¿Deberíamos elegir automáticamente la primera porque clasifica perfectamente los datos de entrenamiento?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No.
+
+El desempeño perfecto sobre entrenamiento no es nuestro objetivo principal.
+
+La diferencia entre entrenamiento y validación puede sugerir que el primer modelo se está adaptando demasiado a los datos utilizados para ajustarlo.
+
+Para seleccionar hiperparámetros nos interesa el desempeño sobre datos no utilizados en cada ajuste, representado aquí por los pliegues de validación.
+:::
+::::
+
+## OvO y OvR en la práctica
+
+Hasta ahora `SVC` ha utilizado internamente una estrategia OvO.
+
+También podemos construir explícitamente una estrategia OvR utilizando herramientas de `scikit-learn`.
+
+Importamos:
+
+```{python}
+from sklearn.multiclass import OneVsRestClassifier
+```
+
+Construimos:
+
+```{python}
+modelo_ovr = Pipeline([
+    (
+        "scaler",
+        StandardScaler()
+    ),
+    (
+        "svc",
+        OneVsRestClassifier(
+            SVC(
+                kernel="linear",
+                C=1
+            )
+        )
+    )
+])
+```
+
+Evaluamos mediante validación cruzada.
+
+```{python}
+scores_ovr = cross_val_score(
+    modelo_ovr,
+    X_train,
+    y_train,
+    cv=cv,
+    scoring="accuracy"
+)
+
+scores_ovr
+```
+
+Promedio:
+
+```{python}
+scores_ovr.mean()
+```
+
+Comparemos con un `SVC` lineal que utiliza OvO internamente.
+
+```{python}
+modelo_ovo = Pipeline([
+    (
+        "scaler",
+        StandardScaler()
+    ),
+    (
+        "svc",
+        SVC(
+            kernel="linear",
+            C=1
+        )
+    )
+])
+```
+
+```{python}
+scores_ovo = cross_val_score(
+    modelo_ovo,
+    X_train,
+    y_train,
+    cv=cv,
+    scoring="accuracy"
+)
+
+scores_ovo.mean()
+```
+
+Construimos un resumen:
+
+```{python}
+pd.DataFrame({
+    "Estrategia": [
+        "OvO",
+        "OvR"
+    ],
+    "Accuracy_CV": [
+        scores_ovo.mean(),
+        scores_ovr.mean()
+    ],
+    "SD_CV": [
+        scores_ovo.std(),
+        scores_ovr.std()
+    ]
+})
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Si OvO obtiene un promedio ligeramente mayor que OvR en esta partición de validación cruzada, ¿podemos concluir que OvO es siempre superior?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No.
+
+El resultado corresponde a este conjunto de datos, esta configuración del modelo, esta métrica y estas particiones de validación cruzada.
+
+OvO y OvR son estrategias diferentes para extender clasificadores binarios al caso multiclase.
+
+Su comportamiento puede depender del problema.
+:::
+::::
+
+## Ejercicios
+
+### Ejercicio 1. Cambiar el número de pliegues
+
+Repite la evaluación del modelo lineal utilizando validación cruzada estratificada (`StratifiedKFold`) con:
+
+- $k=3$ pliegues (`n_splits=3`).
+- $k=10$ pliegues (`n_splits=10`).
+
+Para cada caso, calcula el promedio y la desviación estándar de `accuracy`.
+
+**Preguntas:**
+
+1. ¿Qué porcentaje de los datos se utiliza para entrenamiento y validación en cada iteración?
+2. ¿Cambian el promedio y la desviación estándar de `accuracy`?
+3. ¿Obtener una desviación estándar menor significa necesariamente que el modelo es mejor? Justifica tu respuesta.
+
+
+### Ejercicio 2. Una cuadrícula más pequeña
+
+Construye una búsqueda de hiperparámetros utilizando `GridSearchCV` exclusivamente para una SVM con kernel RBF.
+
+Considera los siguientes valores:
+
+$$
+C\in\{0.1,1,10\}
+$$
+
+y
+
+$$
+\gamma\in\{0.01,0.1,1\}.
+$$
+
+Utiliza validación cruzada estratificada de 5 pliegues y la métrica `accuracy`.
+
+**Preguntas:**
+
+1. ¿Cuántas combinaciones diferentes de $C$ y $\gamma$ se evaluarán?
+2. Considerando los 5 pliegues de validación cruzada, ¿cuántos ajustes del modelo se realizarán en total durante la búsqueda?
+3. ¿Qué combinación de $C$ y $\gamma$ obtuvo el mejor promedio de `accuracy` en validación cruzada?
+4. ¿Cuál fue ese promedio de `accuracy`?
+5. ¿La mejor combinación utiliza valores grandes o pequeños de $C$ y $\gamma$? Explica brevemente qué implican esos valores para la regularización y la influencia local de las observaciones.
+6. Compara el mejor resultado de validación cruzada con el obtenido anteriormente para la SVM lineal. ¿Hay evidencia de que utilizar el kernel RBF mejore el desempeño en este conjunto de datos?
+
+### Ejercicio 3. Investigar sobreajuste
+
+Realiza una nueva búsqueda de hiperparámetros para una SVM con kernel RBF, considerando valores relativamente grandes de $C$ y $\gamma$:
+
+$$
+C\in\{1,10,100,1000\}
+$$
+
+y
+
+$$
+\gamma\in\{0.1,1,10,100\}.
+$$
+
+Utiliza `GridSearchCV` con validación cruzada estratificada de 5 pliegues, la métrica `accuracy` y el argumento:
+
+```python
+return_train_score=True
+```
+
+Este argumento permite recuperar tanto el desempeño promedio en los conjuntos de entrenamiento (`mean_train_score`) como en los conjuntos de validación (`mean_test_score`).
+
+**Preguntas:**
+
+1. ¿Cuántas combinaciones de hiperparámetros se evaluaron? ¿Cuántos ajustes se realizaron durante la validación cruzada?
+2. Identifica la combinación de $C$ y $\gamma$ que obtuvo el mayor `mean_train_score`. ¿Cuál fue su correspondiente `mean_test_score`?
+3. Calcula la diferencia entre `mean_train_score` y `mean_test_score` para cada combinación. ¿Cuál presentó la mayor diferencia?
+4. ¿Encontraste configuraciones con un desempeño muy alto en entrenamiento, pero considerablemente menor en validación? ¿Qué podría indicar este comportamiento?
+5. ¿Qué ocurre con el desempeño de validación cuando $\gamma$ toma valores muy grandes? Relaciona tus observaciones con la influencia local de los vectores de soporte.
+6. ¿La configuración con mayor exactitud en entrenamiento coincide necesariamente con la de mayor exactitud en validación? ¿Cuál seleccionarías y por qué?
+
+::: {.callout-note}
+## Para interpretar los resultados
+
+Una diferencia importante entre el desempeño en entrenamiento y validación puede ser una señal de **sobreajuste**, especialmente cuando la exactitud en entrenamiento es alta y disminuye considerablemente en validación.
+
+Sin embargo, una diferencia pequeña no garantiza que el modelo generalice bien. También debemos considerar el desempeño absoluto en validación.
+
+Recuerda que `mean_test_score` en `GridSearchCV` corresponde al promedio obtenido en los pliegues de **validación cruzada**, no al conjunto de prueba que reservamos al inicio.
+:::
+
+### Ejercicio 4. OvO y número de clases
+
+Recordemos que las estrategias *One-versus-One* (OvO) y *One-versus-Rest* (OvR) permiten extender clasificadores binarios a problemas multiclase.
+
+El número de clasificadores binarios necesarios depende de la estrategia utilizada:
+
+$$
+N_{\mathrm{OvO}}=\frac{K(K-1)}{2},
+$$
+
+mientras que
+
+$$
+N_{\mathrm{OvR}}=K,
+$$
+
+donde $K$ representa el número de clases.
+
+**Actividades:**
+
+Calcula cuántos clasificadores binarios se necesitan con ambas estrategias para:
+
+1. $K=3$ clases.
+2. $K=5$ clases.
+3. $K=10$ clases.
+4. $K=20$ clases.
+
+Organiza tus resultados en una tabla comparativa.
+
+**Preguntas:**
+
+1. ¿Para qué valores de $K$ ambas estrategias requieren el mismo número de clasificadores?
+2. ¿Cómo cambia el número de clasificadores de OvO y OvR conforme aumenta $K$? ¿Cuál crece más rápidamente?
+3. Si tenemos $K=20$ clases, ¿cuántos clasificadores adicionales necesita OvO respecto a OvR?
+4. En OvO, ¿qué observaciones se utilizan para entrenar cada clasificador binario? ¿Y en OvR?
+5. ¿Podemos concluir que OvR siempre será computacionalmente más eficiente porque necesita menos clasificadores? Justifica tu respuesta considerando la cantidad de datos utilizada para entrenar cada uno.
+6. Si utilizamos `SVC` de `scikit-learn` con $K=10$ clases, ¿cuántos clasificadores binarios se entrenan internamente? ¿Cambiaría este número si especificamos `decision_function_shape="ovr"`?
+
+
+
+### Reto adicional. Reconocimiento de dígitos escritos a mano mediante SVM
+
+En este reto utilizaremos el conjunto de datos `Digits` de `scikit-learn`, que contiene imágenes de dígitos escritos a mano.
+
+Cada imagen tiene una resolución de $8\times 8$ píxeles y representa uno de los diez dígitos:
+
+$$
+Y\in\{0,1,2,\ldots,9\}.
+$$
+
+Cada imagen se representa mediante un vector de $64$ características, correspondientes a las intensidades de sus píxeles.
+
+Nuestro objetivo será construir una **SVM multiclase** capaz de identificar el dígito representado en una imagen.
+
+#### Parte 1. Exploración de los datos
+
+Carga el conjunto de datos utilizando:
+
+```python
+from sklearn.datasets import load_digits
+
+digits = load_digits()
+
+X = digits.data
+y = digits.target
+```
+
+Explora las dimensiones del conjunto de datos y la distribución de las clases.
+
+Para visualizar algunas imágenes puedes utilizar:
+
+```python
+import matplotlib.pyplot as plt
+
+fig, axes = plt.subplots(2, 5, figsize=(10, 4))
+
+for i, ax in enumerate(axes.ravel()):
+    ax.imshow(
+        digits.images[i],
+        cmap="gray_r"
+    )
+    ax.set_title(f"Dígito: {y[i]}")
+    ax.axis("off")
+
+plt.tight_layout()
+plt.show()
+```
+
+**Preguntas:**
+
+1. ¿Cuántas observaciones y variables predictoras tiene el conjunto de datos?
+2. ¿Cuántas clases diferentes existen?
+3. ¿Por qué cada observación tiene 64 características si originalmente es una imagen?
+4. ¿Las clases están aproximadamente balanceadas?
+
+#### Parte 2. Entrenamiento de una SVM multiclase
+
+Divide los datos en entrenamiento (70 %) y prueba (30 %), utilizando `stratify=y` y `random_state=42`.
+
+Construye un `Pipeline` que incluya:
+
+- `StandardScaler()`.
+- `SVC(kernel="linear", C=1)`.
+
+Entrena el modelo y evalúa su exactitud sobre los conjuntos de entrenamiento y prueba.
+
+**Preguntas:**
+
+1. ¿Qué exactitud obtuviste en entrenamiento y prueba?
+2. ¿Cuántos clasificadores binarios entrena internamente `SVC` para este problema?
+3. ¿Por qué no necesitamos construir manualmente un clasificador para cada par de dígitos?
+
+#### Parte 3. Comparación con un kernel RBF
+
+Construye una segunda SVM utilizando un kernel RBF.
+
+Utiliza inicialmente:
+
+```python
+SVC(
+    kernel="rbf",
+    C=1,
+    gamma="scale"
+)
+```
+
+Compara su desempeño con el modelo lineal.
+
+**Preguntas:**
+
+1. ¿Qué modelo obtuvo mayor exactitud en el conjunto de prueba?
+2. ¿Existe una diferencia importante entre ambos resultados?
+3. ¿Qué ventaja podría ofrecer un kernel RBF para reconocer dígitos escritos a mano?
+4. ¿Podemos concluir que el modelo más complejo siempre será mejor?
+
+#### Parte 4. Selección de hiperparámetros
+
+Utiliza `GridSearchCV` para seleccionar los hiperparámetros de la SVM con kernel RBF.
+
+Considera:
+
+$$
+C\in\{0.1,1,10,100\}
+$$
+
+y
+
+$$
+\gamma\in\{0.001,0.01,0.1\}.
+$$
+
+Utiliza validación cruzada estratificada de 3 pliegues y `accuracy` como métrica de evaluación.
+
+Realiza la búsqueda únicamente sobre los datos de entrenamiento y utiliza `n_jobs=2` para limitar el paralelismo.
+
+**Preguntas:**
+
+1. ¿Cuántas combinaciones de hiperparámetros se evaluarán?
+2. ¿Cuántos ajustes se realizarán durante la validación cruzada?
+3. ¿Qué combinación de $C$ y $\gamma$ obtuvo el mejor desempeño promedio?
+4. ¿La búsqueda mejoró el resultado obtenido inicialmente con el kernel RBF?
+5. ¿El mejor modelo supera a la SVM lineal?
+
+#### Parte 5. ¿Qué dígitos son más difíciles de clasificar?
+
+Utiliza el mejor modelo obtenido y calcula la matriz de confusión sobre el conjunto de prueba.
+
+Puedes apoyarte en:
+
+```python
+from sklearn.metrics import ConfusionMatrixDisplay
+
+ConfusionMatrixDisplay.from_estimator(
+    mejor_modelo,
+    X_test,
+    y_test,
+    cmap="Blues"
+)
+
+plt.show()
+```
+
+**Preguntas:**
+
+1. ¿Qué dígitos se clasifican correctamente con mayor frecuencia?
+2. ¿Qué pares de dígitos se confunden más?
+3. ¿Por qué algunos dígitos podrían resultar más difíciles de distinguir?
+4. ¿Qué información adicional proporciona la matriz de confusión que no podemos obtener únicamente con `accuracy`?
+
+::: {.callout-important}
+## Conclusiones
+
+En este reto utilizamos una SVM para resolver un problema con diez clases y 64 variables predictoras.
+
+**Redacta una conclusión breve** que responda:
+
+- ¿Qué aprendiste sobre el uso de SVM en problemas multiclase?
+- ¿Fue necesario utilizar un kernel no lineal para obtener un buen desempeño?
+- ¿Qué modelo seleccionarías considerando tanto la exactitud como la complejidad?
+
+Justifica tus respuestas utilizando los resultados obtenidos.
+:::
