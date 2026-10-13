@@ -1,0 +1,1532 @@
+# Máquinas de soporte vectorial
+
+En las secciones anteriores construimos clasificadores de soporte vectorial con fronteras lineales.
+
+El margen suave nos permitió trabajar con datos que no eran perfectamente separables. Sin embargo, la frontera continuó siendo de la forma
+
+$$\beta_0+\beta^Tx=0.$$
+
+En esta práctica estudiaremos qué ocurre cuando la relación entre las clases es **no lineal**.
+
+Ahora lo que exploraremos será:
+
+- reconocer situaciones en las que una frontera lineal es insuficiente;
+- explicar la idea de transformar el espacio de características;
+- interpretar el papel de un kernel;
+- distinguir entre kernel lineal, polinomial y radial;
+- interpretar el parámetro `degree` del kernel polinomial;
+- interpretar el parámetro $\gamma$ del kernel RBF;
+- distinguir el efecto de $C$ del efecto de $\gamma$;
+- reconocer situaciones de subajuste y sobreajuste a partir de la frontera de decisión;
+- utilizar `Pipeline` para combinar escalamiento y SVM.
+
+
+::: {.diapositivas}
+::: {.diapositivas-title}
+📝 **Diapositivas**
+:::
+
+::: {.diapositivas-body}
+[Ver diapositivas MSV](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/4.3-Maquinas_de_Soporte_Vectorial.pdf)
+:::
+:::
+
+## Antes de comenzar
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Qué controla el parámetro $C$ en `SVC`?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+En `scikit-learn`, $C$ controla la penalización asociada con las violaciones del margen.
+
+De manera general,
+
+$$C\downarrow$$
+
+implica mayor regularización y mayor tolerancia a violaciones, mientras que
+
+$$C\uparrow$$
+
+penaliza más fuertemente las violaciones y permite un ajuste más rígido a los datos de entrenamiento.
+:::
+::::
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Introducir un margen suave convierte automáticamente una frontera lineal en una frontera no lineal?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No.
+
+El margen suave permite violaciones, pero si utilizamos un kernel lineal la frontera continúa siendo lineal:
+
+$$\beta_0+\beta^Tx=0.$$
+
+Para obtener fronteras no lineales necesitamos ampliar la representación de las características.
+:::
+::::
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Supongamos que una clase se encuentra aproximadamente dentro de un círculo y la otra alrededor de ella.
+
+¿Esperarías que una recta pudiera separar correctamente ambas clases?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No.
+
+La estructura de separación es no lineal.
+
+Una recta no puede encerrar una región del plano, por lo que necesitamos una frontera más flexible.
+:::
+::::
+
+## Preparación
+
+Importamos las bibliotecas necesarias.
+
+```{python}
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import make_moons, make_circles
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
+```
+
+En esta práctica utilizaremos principalmente datos sintéticos bidimensionales.
+
+Esto es deliberado: queremos **ver** cómo cambia la frontera de decisión al modificar el kernel y sus hiperparámetros.
+
+## Función para visualizar fronteras no lineales
+
+La función utilizada en las prácticas anteriores estaba diseñada principalmente para fronteras lineales.
+
+Ahora construiremos una función más general.
+
+```{python}
+def graficar_frontera(
+    modelo,
+    X,
+    y,
+    titulo="Frontera de decisión",
+    mostrar_soporte=True
+):
+    
+    plt.figure(figsize=(8, 6))
+    
+    x_min = X[:, 0].min() - 0.8
+    x_max = X[:, 0].max() + 0.8
+    
+    y_min = X[:, 1].min() - 0.8
+    y_max = X[:, 1].max() + 0.8
+    
+    xx, yy = np.meshgrid(
+        np.linspace(x_min, x_max, 400),
+        np.linspace(y_min, y_max, 400)
+    )
+    
+    grid = np.c_[xx.ravel(), yy.ravel()]
+    
+    Z = modelo.decision_function(grid)
+    Z = Z.reshape(xx.shape)
+    
+    plt.contourf(
+        xx,
+        yy,
+        Z,
+        levels=[Z.min(), 0, Z.max()],
+        alpha=0.15
+    )
+    
+    plt.contour(
+        xx,
+        yy,
+        Z,
+        levels=[-1, 0, 1],
+        linestyles=["--", "-", "--"]
+    )
+    
+    for clase in np.unique(y):
+        plt.scatter(
+            X[y == clase, 0],
+            X[y == clase, 1],
+            label=f"Clase {clase}",
+            s=60
+        )
+    
+    if mostrar_soporte:
+        plt.scatter(
+            modelo.support_vectors_[:, 0],
+            modelo.support_vectors_[:, 1],
+            s=160,
+            facecolors="none",
+            edgecolors="black",
+            linewidths=1.4,
+            label="Vectores de soporte"
+        )
+    
+    plt.xlabel("$X_1$")
+    plt.ylabel("$X_2$")
+    plt.title(titulo)
+    plt.legend()
+    plt.show()
+```
+
+::: callout-note
+## Nota
+
+En las gráficas:
+
+- la línea continua representa la frontera de decisión $f(x)=0$;
+- las líneas discontinuas representan $f(x)=-1$ y $f(x)=1$;
+- los círculos exteriores identifican los vectores de soporte.
+:::
+
+## Un problema que no es lineal
+
+Generaremos datos utilizando `make_moons()`.
+
+```{python}
+X, y = make_moons(
+    n_samples=250,
+    noise=0.20,
+    random_state=42
+)
+```
+
+Transformamos las etiquetas a
+
+$$Y\in\{-1,+1\}.$$
+
+```{python}
+y = np.where(y == 0, -1, 1)
+```
+
+Visualizamos.
+
+```{python}
+plt.figure(figsize=(8, 6))
+
+for clase in np.unique(y):
+    plt.scatter(
+        X[y == clase, 0],
+        X[y == clase, 1],
+        label=f"Clase {clase}",
+        s=60
+    )
+
+plt.xlabel("$X_1$")
+plt.ylabel("$X_2$")
+plt.title("Datos con estructura no lineal")
+plt.legend()
+plt.show()
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Para pensar
+
+Antes de ajustar cualquier modelo:
+
+1.  ¿Las clases parecen separables mediante una recta?
+2.  ¿Qué forma aproximada debería tener una frontera adecuada?
+3.  ¿Crees que aumentar mucho $C$ resolvería el problema utilizando un kernel lineal?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+1.  No. La estructura de las dos clases es curva.
+2.  Necesitamos una frontera que pueda seguir aproximadamente esa curvatura.
+3.  No. Aumentar $C$ modifica la penalización de las violaciones, pero no cambia el hecho de que el kernel lineal produce una frontera lineal.
+
+Este último punto es especialmente importante:
+
+$$\boxed{
+C\text{ controla regularización, no la forma básica de una frontera lineal.}
+}$$
+:::
+::::
+
+## Intentemos primero una SVM lineal
+
+Dividiremos los datos en entrenamiento y prueba.
+
+```{python}
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.30,
+    random_state=42,
+    stratify=y
+)
+```
+
+Para nuestras comparaciones utilizaremos escalamiento mediante un `Pipeline`.
+
+```{python}
+modelo_lineal = Pipeline([
+    (
+        "scaler",
+        StandardScaler()
+    ),
+    (
+        "svc",
+        SVC(
+            kernel="linear",
+            C=1
+        )
+    )
+])
+```
+
+Ajustamos:
+
+```{python}
+modelo_lineal.fit(
+    X_train,
+    y_train
+)
+```
+
+
+
+### ¿Qué hace internamente el `Pipeline`?
+
+Recordemos que nuestro `Pipeline` contiene dos pasos:
+
+1. `StandardScaler()`: estandariza las variables predictoras.
+2. `SVC()`: ajusta el clasificador utilizando los datos estandarizados.
+
+Cuando ejecutamos `modelo_lineal.fit(X_train, y_train)`, ambos pasos se realizan automáticamente.
+
+Vamos a comprobarlo.
+
+**Paso 1. Recuperar el escalador ajustado**
+
+Podemos acceder a los componentes del `Pipeline` mediante `named_steps`.
+
+```{python}
+scaler_ajustado = modelo_lineal.named_steps["scaler"]
+
+print("Medias:", scaler_ajustado.mean_)
+print("Escalas:", scaler_ajustado.scale_)
+```
+
+Las medias y escalas mostradas fueron calculadas a partir de `X_train` durante el ajuste del `Pipeline`. No necesitamos calcularlas manualmente.
+
+**Paso 2. Comparar los datos originales y estandarizados**
+
+Veamos cómo cambian las primeras tres observaciones.
+
+```{python}
+print("Datos originales:")
+print(X_train[:3])
+
+print("\nDatos estandarizados:")
+print(scaler_ajustado.transform(X_train[:3]))
+```
+
+La transformación aplicada a cada variable es
+
+$$
+z_j=\frac{x_j-\overline{x}_j}{s_j},
+$$
+
+donde $\overline{x}_j$ y $s_j$ representan la media y la escala calculadas por `StandardScaler` utilizando los datos de entrenamiento.
+
+Observemos que **los datos originales no se modifican**. El escalador produce una versión transformada que utiliza internamente el clasificador.
+
+**Paso 3. Comprobar que el `Pipeline` realiza automáticamente la transformación**
+
+Ahora compararemos dos maneras de obtener predicciones.
+
+Primero utilizamos directamente el `Pipeline`:
+
+```{python}
+prediccion_pipeline = modelo_lineal.predict(X_test)
+```
+
+Después realizamos explícitamente sus dos pasos:
+
+```{python}
+# Estandarizar los datos de prueba
+X_test_scaled = scaler_ajustado.transform(X_test)
+
+# Utilizar directamente la SVM ya ajustada
+svc_ajustado = modelo_lineal.named_steps["svc"]
+
+prediccion_manual = svc_ajustado.predict(X_test_scaled)
+```
+
+Finalmente, verificamos si ambas predicciones son idénticas.
+
+```{python}
+print(
+    "¿Las predicciones son iguales?",
+    np.array_equal(
+        prediccion_pipeline,
+        prediccion_manual
+    )
+)
+```
+
+El resultado debe ser `True`.
+
+::: {.callout-tip}
+## ¿Qué comprobamos?
+
+Al ejecutar `modelo_lineal.predict(X_test)`, el `Pipeline` realiza automáticamente dos operaciones:
+
+1. Transforma `X_test` utilizando las medias y escalas aprendidas con `X_train`.
+2. Aplica la SVM entrenada sobre los datos transformados.
+
+Por eso, cuando más adelante construyamos una malla de puntos para visualizar la frontera de decisión, **podremos pasar directamente esa malla al `Pipeline`, sin estandarizarla manualmente**.
+
+Además, el escalamiento de los datos de prueba nunca debe volver a ajustarse: únicamente utilizamos `transform()`, no `fit_transform()`.
+:::
+
+
+
+Calculamos las exactitudes.
+
+```{python}
+print(
+    "Accuracy entrenamiento:",
+    accuracy_score(
+        y_train,
+        modelo_lineal.predict(X_train)
+    )
+)
+
+print(
+    "Accuracy prueba:",
+    accuracy_score(
+        y_test,
+        modelo_lineal.predict(X_test)
+    )
+)
+```
+
+## Visualización de la frontera de decisión
+
+Ahora queremos visualizar la frontera de decisión de nuestra SVM lineal.
+
+Para ello, construiremos una función que genere una malla de puntos sobre el plano $(X_1,X_2)$, prediga la clase de cada punto y coloree las regiones correspondientes.
+
+### ¿Qué ocurre con el escalamiento?
+
+Recordemos que nuestro modelo es un `Pipeline` formado por dos pasos:
+
+1. `StandardScaler()`: estandariza los predictores.
+2. `SVC()`: realiza la clasificación utilizando los datos estandarizados.
+
+Cuando ejecutamos:
+
+```python
+modelo_lineal.predict(X_test)
+```
+
+el `Pipeline` primero estandariza `X_test` utilizando los parámetros aprendidos con `X_train` y después realiza las predicciones.
+
+**Exactamente lo mismo ocurrirá cuando evaluemos los puntos de nuestra malla.**
+
+Por tanto, no necesitamos estandarizar manualmente los puntos antes de graficarlos. Basta con utilizar el `Pipeline` completo.
+
+Además, la gráfica mostrará los datos y los ejes en su escala original, aunque la SVM realice internamente la clasificación sobre las variables estandarizadas.
+
+### Función para visualizar la frontera
+
+La siguiente función:
+
+- Construye una malla de puntos sobre el plano.
+- Predice la clase de cada punto y colorea las regiones.
+- Dibuja la frontera de decisión y los niveles del margen.
+- Representa las observaciones originales.
+
+
+```{python}
+def graficar_modelo(
+    modelo,
+    X,
+    y,
+    titulo="Frontera de decisión"
+):
+    
+    # Crear figura
+    plt.figure(figsize=(8, 6))
+    
+    # Límites de la región que vamos a visualizar
+    x_min = X[:, 0].min() - 0.8
+    x_max = X[:, 0].max() + 0.8
+    
+    y_min = X[:, 1].min() - 0.8
+    y_max = X[:, 1].max() + 0.8
+    
+    # Crear una malla de puntos
+    xx, yy = np.meshgrid(
+        np.linspace(x_min, x_max, 400),
+        np.linspace(y_min, y_max, 400)
+    )
+    
+    # Convertir la malla en pares (X1, X2)
+    grid = np.c_[
+        xx.ravel(),
+        yy.ravel()
+    ]
+    
+    # Predecir la clase de cada punto de la malla
+    Z_pred = modelo.predict(grid)
+    
+    # Regresar al formato de la malla
+    Z_pred = Z_pred.reshape(xx.shape)
+    
+    # Colorear las regiones según la clase predicha
+    plt.contourf(
+        xx,
+        yy,
+        Z_pred,
+        alpha=0.15
+    )
+
+    # Evaluar la función de decisión en toda la malla
+    Z_decision = modelo.decision_function(grid)
+    
+    # Esta función está pensada para clasificación binaria
+    Z_decision = Z_decision.reshape(xx.shape)
+    
+    # Sólo incluimos niveles que realmente estén dentro
+    # del rango de la función de decisión
+    niveles = [
+        nivel
+        for nivel in [-1, 0, 1]
+        if Z_decision.min() <= nivel <= Z_decision.max()
+    ]
+    
+    # Dibujamos los niveles únicamente si existen
+    if len(niveles) > 0:
+        
+        estilos = [
+            "-" if nivel == 0 else "--"
+            for nivel in niveles
+        ]
+        
+        plt.contour(
+            xx,
+            yy,
+            Z_decision,
+            levels=niveles,
+            linestyles=estilos
+        )
+    
+    for clase in np.unique(y):
+        
+        plt.scatter(
+            X[y == clase, 0],
+            X[y == clase, 1],
+            label=f"Clase {clase}",
+            s=60
+        )
+    
+
+    plt.xlabel("$X_1$")
+    plt.ylabel("$X_2$")
+    plt.title(titulo)
+    plt.legend()
+    plt.show()
+```
+
+Visualizamos:
+
+```{python}
+graficar_modelo(
+    modelo_lineal,
+    X_train,
+    y_train,
+    titulo="SVM con kernel lineal"
+)
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿El problema principal parece ser que el modelo está permitiendo demasiadas violaciones o que la forma de la frontera es demasiado restrictiva?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+El problema fundamental es la forma de la frontera.
+
+Una recta no puede seguir adecuadamente la estructura curva de los datos.
+
+Por tanto, necesitamos aumentar la flexibilidad de la frontera.
+:::
+::::
+
+## De variables originales a nuevas características
+
+Una posibilidad sería crear explícitamente nuevas características.
+
+Por ejemplo, partiendo de
+
+$$(x_1,x_2),$$
+
+podríamos construir
+
+$$(x_1,x_2,x_1^2,x_2^2,x_1x_2).$$
+
+En ese nuevo espacio podríamos ajustar un clasificador lineal.
+
+Aunque el clasificador sería lineal respecto de las nuevas características, la frontera resultante podría ser no lineal respecto de $x_1$ y $x_2$.
+
+Conceptualmente:
+
+$$x
+\longrightarrow
+\phi(x)
+\longrightarrow
+\text{clasificador lineal}.$$
+
+Sin embargo, si tenemos muchas variables y utilizamos transformaciones complejas, el número de características puede crecer rápidamente.
+
+Los kernels proporcionan otra forma de realizar esta idea.
+
+## Recordatorio: el truco del kernel
+
+Un kernel puede interpretarse como una función
+
+$$K(x,z)$$
+
+que calcula un producto interno en algún espacio de características transformado:
+
+$$K(x,z)
+=
+\langle\phi(x),\phi(z)\rangle.$$
+
+La ventaja es que podemos calcular $K(x,z)$ sin construir explícitamente todas las componentes de
+
+$$\phi(x).$$
+
+Esta idea se conoce como el **truco del kernel**.
+
+En esta práctica compararemos tres kernels:
+
+$$\text{lineal},
+\qquad
+\text{polinomial},
+\qquad
+\text{RBF}.$$
+
+## Kernel polinomial
+
+Una forma del kernel polinomial es
+
+$$K(x,z)
+=
+(\gamma x^Tz+r)^d,$$
+
+donde:
+
+- $d$ controla el grado del polinomio;
+- $\gamma$ escala el producto interno;
+- $r$ es un término independiente.
+
+En `SVC`, estos parámetros corresponden a:
+
+``` text
+degree
+gamma
+coef0
+```
+
+Por ahora concentraremos nuestra atención en `degree`.
+
+Ajustemos un kernel polinomial de grado 2.
+
+```{python}
+modelo_poly2 = Pipeline([
+    (
+        "scaler",
+        StandardScaler()
+    ),
+    (
+        "svc",
+        SVC(
+            kernel="poly",
+            degree=2,
+            C=1,
+            gamma="scale",
+            coef0=1
+        )
+    )
+])
+```
+
+```{python}
+modelo_poly2.fit(
+    X_train,
+    y_train
+)
+```
+
+Visualizamos.
+
+```{python}
+graficar_modelo(
+    modelo_poly2,
+    X_train,
+    y_train,
+    titulo="Kernel polinomial: grado 2"
+)
+```
+
+Calculamos desempeño.
+
+```{python}
+print(
+    "Accuracy entrenamiento:",
+    accuracy_score(
+        y_train,
+        modelo_poly2.predict(X_train)
+    )
+)
+
+print(
+    "Accuracy prueba:",
+    accuracy_score(
+        y_test,
+        modelo_poly2.predict(X_test)
+    )
+)
+```
+
+## ¿Qué ocurre si aumentamos el grado?
+
+Comparemos varios grados.
+
+```{python}
+grados = [2, 3, 5]
+```
+
+```{python}
+for grado in grados:
+    
+    modelo = Pipeline([
+        (
+            "scaler",
+            StandardScaler()
+        ),
+        (
+            "svc",
+            SVC(
+                kernel="poly",
+                degree=grado,
+                C=1,
+                gamma="scale",
+                coef0=1
+            )
+        )
+    ])
+    
+    modelo.fit(
+        X_train,
+        y_train
+    )
+    
+    graficar_modelo(
+        modelo,
+        X_train,
+        y_train,
+        titulo=f"Kernel polinomial: grado {grado}"
+    )
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Para pensar
+
+1.  ¿La frontera cambia al modificar el grado?
+2.  ¿Un grado mayor garantiza una mejor clasificación?
+3.  ¿Qué riesgo aparece al incrementar excesivamente la flexibilidad?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+1.  Sí. El grado modifica el espacio de características implícito y, por tanto, la flexibilidad de la frontera.
+2.  No. Una frontera más flexible no garantiza mejor desempeño sobre nuevas observaciones.
+3.  Una flexibilidad excesiva puede hacer que el modelo se adapte a particularidades o ruido del conjunto de entrenamiento.
+
+Esto puede conducir a sobreajuste.
+:::
+::::
+
+## Kernel radial o RBF
+
+Uno de los kernels más utilizados es el kernel radial:
+
+$$K(x,z)
+=
+\exp
+\left(
+-\gamma\|x-z\|^2
+\right).$$
+
+La similitud depende de la distancia entre las observaciones.
+
+Si
+
+$$x\approx z,$$
+
+entonces
+
+$$\|x-z\|^2\approx0$$
+
+y
+
+$$K(x,z)\approx1.$$
+
+Si las observaciones están muy alejadas,
+
+$$K(x,z)\approx0.$$
+
+Por tanto, el kernel RBF permite construir una clasificación basada en relaciones **locales** entre observaciones.
+
+## Primer SVM con kernel RBF
+
+Comenzaremos con
+
+$$C=1$$
+
+y
+
+$$\gamma=1.$$
+
+```{python}
+modelo_rbf = Pipeline([
+    (
+        "scaler",
+        StandardScaler()
+    ),
+    (
+        "svc",
+        SVC(
+            kernel="rbf",
+            C=1,
+            gamma=1
+        )
+    )
+])
+```
+
+Ajustamos:
+
+```{python}
+modelo_rbf.fit(
+    X_train,
+    y_train
+)
+```
+
+Visualizamos.
+
+```{python}
+graficar_modelo(
+    modelo_rbf,
+    X_train,
+    y_train,
+    titulo="SVM con kernel RBF"
+)
+```
+
+Calculamos el desempeño.
+
+```{python}
+print(
+    "Accuracy entrenamiento:",
+    accuracy_score(
+        y_train,
+        modelo_rbf.predict(X_train)
+    )
+)
+
+print(
+    "Accuracy prueba:",
+    accuracy_score(
+        y_test,
+        modelo_rbf.predict(X_test)
+    )
+)
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+Compara esta frontera con la obtenida mediante el kernel lineal.
+
+¿Qué diferencia fundamental observas?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+El kernel RBF permite construir una frontera curva que sigue mejor la estructura no lineal de los datos.
+
+El kernel lineal está restringido a una frontera recta.
+:::
+::::
+
+## ¿Qué controla $\gamma$?
+
+Recordemos:
+
+$$K(x,z)
+=
+\exp
+\left(
+-\gamma\|x-z\|^2
+\right).$$
+
+Si $\gamma$ es pequeño, la similitud disminuye lentamente con la distancia.
+
+Por tanto, cada observación tiene una influencia relativamente amplia.
+
+Si $\gamma$ es grande, la similitud disminuye rápidamente.
+
+Entonces la influencia se vuelve mucho más localizada.
+
+De manera esquemática:
+
+$$\boxed{
+\gamma\downarrow
+\Rightarrow
+\text{influencia más global}
+}$$
+
+y
+
+$$\boxed{
+\gamma\uparrow
+\Rightarrow
+\text{influencia más local}.
+}$$
+
+Veamos qué significa esto en la práctica.
+
+## Fijamos $C$ y variamos $\gamma$
+
+Este experimento es importante.
+
+Mantendremos
+
+$$C=1$$
+
+y cambiaremos únicamente $\gamma$.
+
+```{python}
+valores_gamma = [
+    0.01,
+    0.1,
+    1,
+    10,
+    100
+]
+```
+
+```{python}
+for gamma in valores_gamma:
+    
+    modelo = Pipeline([
+        (
+            "scaler",
+            StandardScaler()
+        ),
+        (
+            "svc",
+            SVC(
+                kernel="rbf",
+                C=1,
+                gamma=gamma
+            )
+        )
+    ])
+    
+    modelo.fit(
+        X_train,
+        y_train
+    )
+    
+    graficar_modelo(
+        modelo,
+        X_train,
+        y_train,
+        titulo=fr"RBF: $C=1$, $\gamma={gamma}$"
+    )
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Para pensar
+
+Observa cuidadosamente la evolución de la frontera.
+
+1.  ¿Qué ocurre cuando $\gamma$ es muy pequeño?
+2.  ¿Qué ocurre cuando $\gamma$ es muy grande?
+3.  ¿Cuál parece producir fronteras más locales?
+4.  ¿Una frontera más complicada necesariamente generalizará mejor?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Cuando $\gamma$ es muy pequeño, cada observación tiene una influencia amplia y la frontera tiende a ser más suave.
+
+Cuando $\gamma$ aumenta, la influencia de cada observación se vuelve más local y la frontera puede adquirir formas más complejas.
+
+Con valores muy grandes, el modelo puede comenzar a construir regiones muy específicas alrededor de observaciones individuales.
+
+Una frontera más compleja no necesariamente generaliza mejor. Puede representar sobreajuste.
+:::
+::::
+
+## Comparación cuantitativa de $\gamma$
+
+Calculemos ahora las exactitudes de entrenamiento y prueba.
+
+```{python}
+comparacion_gamma = []
+
+for gamma in valores_gamma:
+    
+    modelo = Pipeline([
+        (
+            "scaler",
+            StandardScaler()
+        ),
+        (
+            "svc",
+            SVC(
+                kernel="rbf",
+                C=1,
+                gamma=gamma
+            )
+        )
+    ])
+    
+    modelo.fit(
+        X_train,
+        y_train
+    )
+    
+    comparacion_gamma.append({
+        "gamma": gamma,
+        "Accuracy_train": accuracy_score(
+            y_train,
+            modelo.predict(X_train)
+        ),
+        "Accuracy_test": accuracy_score(
+            y_test,
+            modelo.predict(X_test)
+        )
+    })
+
+comparacion_gamma = pd.DataFrame(
+    comparacion_gamma
+)
+
+comparacion_gamma
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Qué patrón esperarías encontrar cuando $\gamma$ se vuelve extremadamente grande?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Un $\gamma$ muy grande puede producir un modelo muy flexible.
+
+Por ello, la exactitud de entrenamiento puede aumentar considerablemente.
+
+Sin embargo, eso no garantiza que la exactitud sobre nuevas observaciones aumente.
+
+Puede aparecer una diferencia creciente entre desempeño de entrenamiento y prueba, consistente con sobreajuste.
+:::
+::::
+
+## Ahora fijamos $\gamma$ y variamos $C$
+
+Ya sabemos que $\gamma$ controla el alcance de la influencia de las observaciones.
+
+Ahora queremos comprobar que $C$ cumple una función diferente.
+
+Mantendremos
+
+$$\gamma=1$$
+
+y variaremos $C$.
+
+```{python}
+valores_C = [
+    0.01,
+    0.1,
+    1,
+    10,
+    100
+]
+```
+
+```{python}
+for C in valores_C:
+    
+    modelo = Pipeline([
+        (
+            "scaler",
+            StandardScaler()
+        ),
+        (
+            "svc",
+            SVC(
+                kernel="rbf",
+                C=C,
+                gamma=1
+            )
+        )
+    ])
+    
+    modelo.fit(
+        X_train,
+        y_train
+    )
+    
+    graficar_modelo(
+        modelo,
+        X_train,
+        y_train,
+        titulo=fr"RBF: $C={C}$, $\gamma=1$"
+    )
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Para pensar
+
+Compara este experimento con el anterior.
+
+¿Modificar $C$ y modificar $\gamma$ producen exactamente el mismo efecto?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+No.
+
+Ambos parámetros afectan la complejidad final del clasificador, pero tienen interpretaciones diferentes.
+
+$C$ controla la penalización de las violaciones:
+
+$$C\downarrow
+\Rightarrow
+\text{mayor regularización}.$$
+
+$\gamma$ controla qué tan local es la influencia de cada observación en el kernel RBF:
+
+$$\gamma\downarrow
+\Rightarrow
+\text{influencia más global},$$
+
+$$\gamma\uparrow
+\Rightarrow
+\text{influencia más local}.$$
+
+Por ello debemos considerar ambos hiperparámetros al construir una SVM con kernel RBF.
+:::
+::::
+
+## $C$ y $\gamma$ interactúan
+
+Hasta ahora modificamos un parámetro mientras manteníamos el otro fijo.
+
+Sin embargo, el comportamiento de una SVM RBF depende de la **combinación**
+
+$$(C,\gamma).$$
+
+Examinaremos algunas combinaciones.
+
+```{python}
+combinaciones = [
+    (0.1, 0.1),
+    (0.1, 10),
+    (10, 0.1),
+    (10, 10)
+]
+```
+
+```{python}
+for C, gamma in combinaciones:
+    
+    modelo = Pipeline([
+        (
+            "scaler",
+            StandardScaler()
+        ),
+        (
+            "svc",
+            SVC(
+                kernel="rbf",
+                C=C,
+                gamma=gamma
+            )
+        )
+    ])
+    
+    modelo.fit(
+        X_train,
+        y_train
+    )
+    
+    graficar_modelo(
+        modelo,
+        X_train,
+        y_train,
+        titulo=fr"RBF: $C={C}$, $\gamma={gamma}$"
+    )
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Para pensar
+
+Compara especialmente:
+
+$$C=0.1,\quad \gamma=0.1$$
+
+con
+
+$$C=10,\quad \gamma=10.$$
+
+¿Cuál produce una frontera más flexible?
+
+¿Podemos seleccionar $C$ y $\gamma$ independientemente basándonos únicamente en reglas generales?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+La combinación de valores grandes de $C$ y $\gamma$ puede producir una frontera mucho más flexible:
+
+- $C$ grande penaliza fuertemente las violaciones;
+- $\gamma$ grande hace que la influencia de cada observación sea muy local.
+
+En conjunto, esto puede hacer que el clasificador se adapte estrechamente a las observaciones de entrenamiento.
+
+Sin embargo, no existe una combinación universalmente correcta.
+
+Los hiperparámetros deben seleccionarse utilizando un procedimiento como validación cruzada.
+:::
+::::
+
+## Número de vectores de soporte
+
+Aunque con kernels no lineales la geometría es más difícil de visualizar que en el caso lineal, los vectores de soporte continúan desempeñando un papel fundamental.
+
+Podemos acceder al clasificador dentro del `Pipeline`.
+
+```{python}
+svc_rbf = modelo_rbf.named_steps["svc"]
+```
+
+Número total de vectores de soporte:
+
+```{python}
+len(svc_rbf.support_)
+```
+
+Número por clase:
+
+```{python}
+svc_rbf.n_support_
+```
+
+::: callout-note
+## Importante
+
+Incluso cuando la frontera es no lineal, la función de decisión continúa dependiendo de los vectores de soporte.
+
+Con un kernel, la función puede escribirse conceptualmente como
+
+$$f(x)
+=
+\beta_0+
+\sum_{i\in\mathcal{S}}
+\alpha_i K(x,x_i),$$
+
+donde $\mathcal{S}$ representa el conjunto de vectores de soporte.
+:::
+
+## Un segundo ejemplo: círculos concéntricos
+
+Veamos un problema en el que la imposibilidad de utilizar una frontera lineal es todavía más evidente.
+
+```{python}
+X_circulos, y_circulos = make_circles(
+    n_samples=300,
+    factor=0.4,
+    noise=0.10,
+    random_state=42
+)
+```
+
+Transformamos las etiquetas:
+
+```{python}
+y_circulos = np.where(
+    y_circulos == 0,
+    -1,
+    1
+)
+```
+
+Visualizamos.
+
+```{python}
+plt.figure(figsize=(7, 7))
+
+for clase in np.unique(y_circulos):
+    plt.scatter(
+        X_circulos[y_circulos == clase, 0],
+        X_circulos[y_circulos == clase, 1],
+        label=f"Clase {clase}",
+        s=55
+    )
+
+plt.xlabel("$X_1$")
+plt.ylabel("$X_2$")
+plt.title("Círculos concéntricos")
+plt.legend()
+plt.show()
+```
+
+:::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿Por qué ninguna recta puede separar adecuadamente estas dos clases?
+
+::: {.callout-tip collapse="true" icon="false"}
+## Solución
+
+Una de las clases está rodeada por la otra.
+
+Una recta divide el plano en dos semiplanos, pero no puede construir una región cerrada alrededor de la clase interior.
+
+Necesitamos una frontera no lineal.
+:::
+::::
+
+## Kernel lineal vs. RBF
+
+Dividimos los datos.
+
+```{python}
+Xc_train, Xc_test, yc_train, yc_test = train_test_split(
+    X_circulos,
+    y_circulos,
+    test_size=0.30,
+    random_state=42,
+    stratify=y_circulos
+)
+```
+
+Modelo lineal:
+
+```{python}
+modelo_circulos_lineal = Pipeline([
+    (
+        "scaler",
+        StandardScaler()
+    ),
+    (
+        "svc",
+        SVC(
+            kernel="linear",
+            C=1
+        )
+    )
+])
+
+modelo_circulos_lineal.fit(
+    Xc_train,
+    yc_train
+)
+```
+
+Modelo RBF:
+
+```{python}
+modelo_circulos_rbf = Pipeline([
+    (
+        "scaler",
+        StandardScaler()
+    ),
+    (
+        "svc",
+        SVC(
+            kernel="rbf",
+            C=1,
+            gamma=1
+        )
+    )
+])
+
+modelo_circulos_rbf.fit(
+    Xc_train,
+    yc_train
+)
+```
+
+Visualizamos el modelo lineal:
+
+```{python}
+graficar_modelo(
+    modelo_circulos_lineal,
+    Xc_train,
+    yc_train,
+    titulo="Círculos: kernel lineal"
+)
+```
+
+Y el modelo RBF:
+
+```{python}
+graficar_modelo(
+    modelo_circulos_rbf,
+    Xc_train,
+    yc_train,
+    titulo="Círculos: kernel RBF"
+)
+```
+
+Comparamos el desempeño sobre prueba.
+
+```{python}
+print(
+    "Kernel lineal:",
+    accuracy_score(
+        yc_test,
+        modelo_circulos_lineal.predict(Xc_test)
+    )
+)
+
+print(
+    "Kernel RBF:",
+    accuracy_score(
+        yc_test,
+        modelo_circulos_rbf.predict(Xc_test)
+    )
+)
+```
+
+Este ejemplo muestra claramente que permitir un margen suave no resuelve por sí mismo todos los problemas de clasificación.
+
+En ocasiones necesitamos cambiar la **forma de la frontera**.
+
+## ¿Qué kernel debemos utilizar?
+
+Después de estos experimentos podría ser tentador concluir que el kernel RBF siempre es preferible porque es más flexible.
+
+Esto sería incorrecto.
+
+Una mayor flexibilidad no implica automáticamente mejor capacidad predictiva.
+
+Un kernel lineal puede ser suficiente cuando la estructura de separación es aproximadamente lineal.
+
+Un kernel polinomial puede ser útil cuando una estructura de ese tipo representa adecuadamente la relación entre las variables.
+
+El kernel RBF permite fronteras muy flexibles, pero introduce también el hiperparámetro $\gamma$ y puede sobreajustar.
+
+Por tanto, la elección del kernel y de sus hiperparámetros debe realizarse utilizando información de entrenamiento, generalmente mediante validación cruzada.
+
+::: callout-warning
+## No utilices el conjunto de prueba para elegir el kernel
+
+No debemos:
+
+1.  ajustar varios kernels;
+2.  comparar sus resultados en test;
+3.  elegir el que obtuvo el mayor resultado en test.
+
+Eso convertiría al conjunto de prueba en parte del proceso de selección del modelo.
+
+En una evaluación correctamente diseñada, el conjunto de prueba se reserva para la evaluación final.
+:::
+
+## Ejercicios
+
+### Ejercicio 1. Kernel lineal y $C$
+
+Regresa al conjunto `X` generado con `make_moons()`.
+
+Ajusta dos modelos lineales:
+
+$$C=0.001$$
+
+y
+
+$$C=1000.$$
+
+Visualiza las fronteras.
+
+¿Un valor extremadamente grande de $C$ permite que el kernel lineal reproduzca correctamente la estructura curva?
+
+### Ejercicio 2. Explorar $\gamma$
+
+Ajusta una SVM RBF con
+
+$$C=10$$
+
+y compara:
+
+$$\gamma=0.001,\qquad
+\gamma=1,\qquad
+\gamma=100.$$
+
+Para cada modelo registra:
+
+- accuracy de entrenamiento;
+- accuracy de prueba;
+- número de vectores de soporte.
+
+Interpreta los resultados junto con las fronteras.
+
+### Ejercicio 3. Kernel polinomial
+
+Utiliza `make_circles()`.
+
+Ajusta modelos polinomiales con
+
+$$d=2,\qquad d=3,\qquad d=4.$$
+
+Mantén constantes los demás hiperparámetros.
+
+Compara las fronteras y el desempeño.
+
+### Ejercicio 4. Interpretación
+
+Sin ejecutar código, indica cuál de las siguientes modificaciones esperarías que produzca una influencia más **local** de cada observación en una SVM RBF:
+
+$$\gamma=0.01$$
+
+o
+
+$$\gamma=100.$$
+
+Justifica utilizando
+
+$$K(x,z)
+=
+\exp(-\gamma\|x-z\|^2).$$
