@@ -596,7 +596,7 @@ window.Quarto = {
 <section id="preparación" class="level2" data-number="14.2">
 <h2 data-number="14.2" class="anchored" data-anchor-id="preparación"><span class="header-section-number">14.2</span> Preparación</h2>
 <p>Importamos las bibliotecas necesarias.</p>
-<div id="c1e4e40a" class="cell" data-execution_count="1">
+<div id="399fde23" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -618,7 +618,7 @@ window.Quarto = {
 <h2 data-number="14.3" class="anchored" data-anchor-id="función-para-visualizar-fronteras-no-lineales"><span class="header-section-number">14.3</span> Función para visualizar fronteras no lineales</h2>
 <p>La función utilizada en las prácticas anteriores estaba diseñada principalmente para fronteras lineales.</p>
 <p>Ahora construiremos una función más general.</p>
-<div id="4f95d501" class="cell" data-execution_count="2">
+<div id="f9ced674" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> graficar_frontera(</span>
@@ -711,7 +711,7 @@ window.Quarto = {
 <section id="un-problema-que-no-es-lineal" class="level2" data-number="14.4">
 <h2 data-number="14.4" class="anchored" data-anchor-id="un-problema-que-no-es-lineal"><span class="header-section-number">14.4</span> Un problema que no es lineal</h2>
 <p>Generaremos datos utilizando <code>make_moons()</code>.</p>
-<div id="b329bad2" class="cell" data-execution_count="3">
+<div id="eeea0d2e" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> make_moons(</span>
@@ -723,14 +723,14 @@ window.Quarto = {
 </div>
 <p>Transformamos las etiquetas a</p>
 <p><span class="math display">\[Y\in\{-1,+1\}.\]</span></p>
-<div id="c596769f" class="cell" data-execution_count="4">
+<div id="61f01a06" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.where(y <span class="op">==</span> <span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Visualizamos.</p>
-<div id="9b0f4028" class="cell" data-execution_count="5">
+<div id="15afed03" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
@@ -803,7 +803,7 @@ C\text{ controla regularización, no la forma básica de una frontera lineal.}
 <section id="intentemos-primero-una-svm-lineal" class="level2" data-number="14.5">
 <h2 data-number="14.5" class="anchored" data-anchor-id="intentemos-primero-una-svm-lineal"><span class="header-section-number">14.5</span> Intentemos primero una SVM lineal</h2>
 <p>Dividiremos los datos en entrenamiento y prueba.</p>
-<div id="ec5b717b" class="cell" data-execution_count="6">
+<div id="1046d927" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
@@ -816,7 +816,7 @@ C\text{ controla regularización, no la forma básica de una frontera lineal.}
 </details>
 </div>
 <p>Para nuestras comparaciones utilizaremos escalamiento mediante un <code>Pipeline</code>.</p>
-<div id="040e178f" class="cell" data-execution_count="7">
+<div id="6ad14e76" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>modelo_lineal <span class="op">=</span> Pipeline([</span>
@@ -835,7 +835,7 @@ C\text{ controla regularización, no la forma básica de una frontera lineal.}
 </details>
 </div>
 <p>Ajustamos:</p>
-<div id="f21d67e5" class="cell" data-execution_count="8">
+<div id="a03fe297" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>modelo_lineal.fit(</span>
@@ -2323,7 +2323,7 @@ forceTheme('sk-container-id-1');</script>
 <p>Vamos a comprobarlo.</p>
 <p><strong>Paso 1. Recuperar el escalador ajustado</strong></p>
 <p>Podemos acceder a los componentes del <code>Pipeline</code> mediante <code>named_steps</code>.</p>
-<div id="6231a7f0" class="cell" data-execution_count="9">
+<div id="cb56723a" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>scaler_ajustado <span class="op">=</span> modelo_lineal.named_steps[<span class="st">"scaler"</span>]</span>
@@ -2339,7 +2339,7 @@ Escalas: [0.90581814 0.51586362]</code></pre>
 <p>Las medias y escalas mostradas fueron calculadas a partir de <code>X_train</code> durante el ajuste del <code>Pipeline</code>. No necesitamos calcularlas manualmente.</p>
 <p><strong>Paso 2. Comparar los datos originales y estandarizados</strong></p>
 <p>Veamos cómo cambian las primeras tres observaciones.</p>
-<div id="f09c9f40" class="cell" data-execution_count="10">
+<div id="499eda6f" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Datos originales:"</span>)</span>
@@ -2369,14 +2369,14 @@ z_j=\frac{x_j-\overline{x}_j}{s_j},
 <p><strong>Paso 3. Comprobar que el <code>Pipeline</code> realiza automáticamente la transformación</strong></p>
 <p>Ahora compararemos dos maneras de obtener predicciones.</p>
 <p>Primero utilizamos directamente el <code>Pipeline</code>:</p>
-<div id="74ee55b5" class="cell" data-execution_count="11">
+<div id="72a07f1d" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>prediccion_pipeline <span class="op">=</span> modelo_lineal.predict(X_test)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Después realizamos explícitamente sus dos pasos:</p>
-<div id="22ec2871" class="cell" data-execution_count="12">
+<div id="a53b62e9" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estandarizar los datos de prueba</span></span>
@@ -2389,7 +2389,7 @@ z_j=\frac{x_j-\overline{x}_j}{s_j},
 </details>
 </div>
 <p>Finalmente, verificamos si ambas predicciones son idénticas.</p>
-<div id="0c78714e" class="cell" data-execution_count="13">
+<div id="f0d4f65a" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -2425,7 +2425,7 @@ z_j=\frac{x_j-\overline{x}_j}{s_j},
 </div>
 </div>
 <p>Calculamos las exactitudes.</p>
-<div id="8ae517f9" class="cell" data-execution_count="14">
+<div id="11a34eb2" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -2478,7 +2478,7 @@ Accuracy prueba: 0.8666666666666667</code></pre>
 <li>Dibuja la frontera de decisión y los niveles del margen.</li>
 <li>Representa las observaciones originales.</li>
 </ul>
-<div id="b8a94ab8" class="cell" data-execution_count="15">
+<div id="a9099d4a" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> graficar_modelo(</span>
@@ -2572,7 +2572,7 @@ Accuracy prueba: 0.8666666666666667</code></pre>
 </details>
 </div>
 <p>Visualizamos:</p>
-<div id="bd772a1e" class="cell" data-execution_count="16">
+<div id="4dbb18dd" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>graficar_modelo(</span>
@@ -2677,7 +2677,7 @@ gamma
 coef0</code></pre>
 <p>Por ahora concentraremos nuestra atención en <code>degree</code>.</p>
 <p>Ajustemos un kernel polinomial de grado 2.</p>
-<div id="e4a9a064" class="cell" data-execution_count="17">
+<div id="addc3423" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>modelo_poly2 <span class="op">=</span> Pipeline([</span>
@@ -2698,7 +2698,7 @@ coef0</code></pre>
 <span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="40471c4d" class="cell" data-execution_count="18">
+<div id="21732ba5" class="cell" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>modelo_poly2.fit(</span>
@@ -4165,7 +4165,7 @@ forceTheme('sk-container-id-2');</script>
 </div>
 </div>
 <p>Visualizamos.</p>
-<div id="3fc77604" class="cell" data-execution_count="19">
+<div id="6854a8cd" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>graficar_modelo(</span>
@@ -4184,7 +4184,7 @@ forceTheme('sk-container-id-2');</script>
 </div>
 </div>
 <p>Calculamos desempeño.</p>
-<div id="c930c5fa" class="cell" data-execution_count="20">
+<div id="b2a3d12a" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -4212,13 +4212,13 @@ Accuracy prueba: 0.88</code></pre>
 <section id="qué-ocurre-si-aumentamos-el-grado" class="level2" data-number="14.10">
 <h2 data-number="14.10" class="anchored" data-anchor-id="qué-ocurre-si-aumentamos-el-grado"><span class="header-section-number">14.10</span> ¿Qué ocurre si aumentamos el grado?</h2>
 <p>Comparemos varios grados.</p>
-<div id="3b537b4d" class="cell" data-execution_count="21">
+<div id="3f790769" class="cell" data-execution_count="21">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>grados <span class="op">=</span> [<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="1d2101df" class="cell" data-execution_count="22">
+<div id="42355318" class="cell" data-execution_count="22">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> grado <span class="kw">in</span> grados:</span>
@@ -4339,7 +4339,7 @@ Accuracy prueba: 0.88</code></pre>
 <p><span class="math display">\[C=1\]</span></p>
 <p>y</p>
 <p><span class="math display">\[\gamma=1.\]</span></p>
-<div id="a11f5387" class="cell" data-execution_count="23">
+<div id="1e1e8f03" class="cell" data-execution_count="23">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>modelo_rbf <span class="op">=</span> Pipeline([</span>
@@ -4359,7 +4359,7 @@ Accuracy prueba: 0.88</code></pre>
 </details>
 </div>
 <p>Ajustamos:</p>
-<div id="68db44f2" class="cell" data-execution_count="24">
+<div id="55f5e30d" class="cell" data-execution_count="24">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>modelo_rbf.fit(</span>
@@ -5825,7 +5825,7 @@ forceTheme('sk-container-id-3');</script>
 </div>
 </div>
 <p>Visualizamos.</p>
-<div id="c2f83601" class="cell" data-execution_count="25">
+<div id="b04570f7" class="cell" data-execution_count="25">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>graficar_modelo(</span>
@@ -5844,7 +5844,7 @@ forceTheme('sk-container-id-3');</script>
 </div>
 </div>
 <p>Calculamos el desempeño.</p>
-<div id="08537215" class="cell" data-execution_count="26">
+<div id="0d9ae118" class="cell" data-execution_count="26">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -5933,7 +5933,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <p>Mantendremos</p>
 <p><span class="math display">\[C=1\]</span></p>
 <p>y cambiaremos únicamente <span class="math inline">\(\gamma\)</span>.</p>
-<div id="95cd59de" class="cell" data-execution_count="27">
+<div id="237b9148" class="cell" data-execution_count="27">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>valores_gamma <span class="op">=</span> [</span>
@@ -5945,7 +5945,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="8cf07086" class="cell" data-execution_count="28">
+<div id="4c1f5f56" class="cell" data-execution_count="28">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> gamma <span class="kw">in</span> valores_gamma:</span>
@@ -6055,7 +6055,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <section id="comparación-cuantitativa-de-gamma" class="level2" data-number="14.15">
 <h2 data-number="14.15" class="anchored" data-anchor-id="comparación-cuantitativa-de-gamma"><span class="header-section-number">14.15</span> Comparación cuantitativa de <span class="math inline">\(\gamma\)</span></h2>
 <p>Calculemos ahora las exactitudes de entrenamiento y prueba.</p>
-<div id="cfb23a13" class="cell" data-execution_count="29">
+<div id="42d3e573" class="cell" data-execution_count="29">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>comparacion_gamma <span class="op">=</span> []</span>
@@ -6190,7 +6190,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <p>Mantendremos</p>
 <p><span class="math display">\[\gamma=1\]</span></p>
 <p>y variaremos <span class="math inline">\(C\)</span>.</p>
-<div id="b9d07352" class="cell" data-execution_count="30">
+<div id="eb4b1244" class="cell" data-execution_count="30">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>valores_C <span class="op">=</span> [</span>
@@ -6202,7 +6202,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="ad74511f" class="cell" data-execution_count="31">
+<div id="3e978b5b" class="cell" data-execution_count="31">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> C <span class="kw">in</span> valores_C:</span>
@@ -6320,7 +6320,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <p>Sin embargo, el comportamiento de una SVM RBF depende de la <strong>combinación</strong></p>
 <p><span class="math display">\[(C,\gamma).\]</span></p>
 <p>Examinaremos algunas combinaciones.</p>
-<div id="40df3e07" class="cell" data-execution_count="32">
+<div id="4429e5bf" class="cell" data-execution_count="32">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>combinaciones <span class="op">=</span> [</span>
@@ -6331,7 +6331,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="f59f4e62" class="cell" data-execution_count="33">
+<div id="b63a2b45" class="cell" data-execution_count="33">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> C, gamma <span class="kw">in</span> combinaciones:</span>
@@ -6438,14 +6438,14 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <h2 data-number="14.18" class="anchored" data-anchor-id="número-de-vectores-de-soporte"><span class="header-section-number">14.18</span> Número de vectores de soporte</h2>
 <p>Aunque con kernels no lineales la geometría es más difícil de visualizar que en el caso lineal, los vectores de soporte continúan desempeñando un papel fundamental.</p>
 <p>Podemos acceder al clasificador dentro del <code>Pipeline</code>.</p>
-<div id="15ff3ebf" class="cell" data-execution_count="34">
+<div id="9ce241ef" class="cell" data-execution_count="34">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>svc_rbf <span class="op">=</span> modelo_rbf.named_steps[<span class="st">"svc"</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Número total de vectores de soporte:</p>
-<div id="93bdcf7d" class="cell" data-execution_count="35">
+<div id="772be8aa" class="cell" data-execution_count="35">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(svc_rbf.support_)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -6455,7 +6455,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 </div>
 </div>
 <p>Número por clase:</p>
-<div id="7ee5d3c5" class="cell" data-execution_count="36">
+<div id="9d4925cd" class="cell" data-execution_count="36">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>svc_rbf.n_support_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -6488,7 +6488,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <section id="un-segundo-ejemplo-círculos-concéntricos" class="level2" data-number="14.19">
 <h2 data-number="14.19" class="anchored" data-anchor-id="un-segundo-ejemplo-círculos-concéntricos"><span class="header-section-number">14.19</span> Un segundo ejemplo: círculos concéntricos</h2>
 <p>Veamos un problema en el que la imposibilidad de utilizar una frontera lineal es todavía más evidente.</p>
-<div id="718371ad" class="cell" data-execution_count="37">
+<div id="ddb59068" class="cell" data-execution_count="37">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>X_circulos, y_circulos <span class="op">=</span> make_circles(</span>
@@ -6500,7 +6500,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 </details>
 </div>
 <p>Transformamos las etiquetas:</p>
-<div id="b61ac54a" class="cell" data-execution_count="38">
+<div id="2fbdfe40" class="cell" data-execution_count="38">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>y_circulos <span class="op">=</span> np.where(</span>
@@ -6511,7 +6511,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 </details>
 </div>
 <p>Visualizamos.</p>
-<div id="af448bc2" class="cell" data-execution_count="39">
+<div id="20086626" class="cell" data-execution_count="39">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
@@ -6573,7 +6573,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <section id="kernel-lineal-vs.-rbf" class="level2" data-number="14.20">
 <h2 data-number="14.20" class="anchored" data-anchor-id="kernel-lineal-vs.-rbf"><span class="header-section-number">14.20</span> Kernel lineal vs.&nbsp;RBF</h2>
 <p>Dividimos los datos.</p>
-<div id="cc08fe1c" class="cell" data-execution_count="40">
+<div id="6f024c6e" class="cell" data-execution_count="40">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>Xc_train, Xc_test, yc_train, yc_test <span class="op">=</span> train_test_split(</span>
@@ -6586,7 +6586,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 </details>
 </div>
 <p>Modelo lineal:</p>
-<div id="2ff8b0e0" class="cell" data-execution_count="41">
+<div id="57a97c37" class="cell" data-execution_count="41">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>modelo_circulos_lineal <span class="op">=</span> Pipeline([</span>
@@ -8078,7 +8078,7 @@ forceTheme('sk-container-id-4');</script>
 </div>
 </div>
 <p>Modelo RBF:</p>
-<div id="e65ab843" class="cell" data-execution_count="42">
+<div id="0145a559" class="cell" data-execution_count="42">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>modelo_circulos_rbf <span class="op">=</span> Pipeline([</span>
@@ -9559,7 +9559,7 @@ forceTheme('sk-container-id-5');</script>
 </div>
 </div>
 <p>Visualizamos el modelo lineal:</p>
-<div id="24058bbd" class="cell" data-execution_count="43">
+<div id="640d9811" class="cell" data-execution_count="43">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>graficar_modelo(</span>
@@ -9578,7 +9578,7 @@ forceTheme('sk-container-id-5');</script>
 </div>
 </div>
 <p>Y el modelo RBF:</p>
-<div id="287b03bb" class="cell" data-execution_count="44">
+<div id="ffdbbd63" class="cell" data-execution_count="44">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>graficar_modelo(</span>
@@ -9597,7 +9597,7 @@ forceTheme('sk-container-id-5');</script>
 </div>
 </div>
 <p>Comparamos el desempeño sobre prueba.</p>
-<div id="2b2a7810" class="cell" data-execution_count="45">
+<div id="a6b1540e" class="cell" data-execution_count="45">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>

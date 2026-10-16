@@ -49,7 +49,7 @@
         "\n",
         "Importamos las bibliotecas necesarias."
       ],
-      "id": "4c7a79d8"
+      "id": "ba454c91"
     },
     {
       "cell_type": "code",
@@ -78,7 +78,7 @@
         "    mean_absolute_error\n",
         ")"
       ],
-      "id": "b949a42c",
+      "id": "09a48f53",
       "execution_count": null,
       "outputs": []
     },
@@ -88,7 +88,7 @@
       "source": [
         "Cargamos nuevamente California Housing."
       ],
-      "id": "85f9b5ab"
+      "id": "e329d391"
     },
     {
       "cell_type": "code",
@@ -99,7 +99,7 @@
         "X = housing.data\n",
         "y = housing.target"
       ],
-      "id": "e2d713d0",
+      "id": "902cc685",
       "execution_count": null,
       "outputs": []
     },
@@ -109,7 +109,7 @@
       "source": [
         "Recordemos las dimensiones:"
       ],
-      "id": "d61a50fb"
+      "id": "a5df1b33"
     },
     {
       "cell_type": "code",
@@ -117,7 +117,7 @@
       "source": [
         "X.shape"
       ],
-      "id": "8115293b",
+      "id": "ad3f7966",
       "execution_count": null,
       "outputs": []
     },
@@ -127,7 +127,7 @@
       "source": [
         "Y las características:"
       ],
-      "id": "4e2a6b2a"
+      "id": "1c68013d"
     },
     {
       "cell_type": "code",
@@ -135,7 +135,7 @@
       "source": [
         "X.columns"
       ],
-      "id": "a559f5c8",
+      "id": "595a59e4",
       "execution_count": null,
       "outputs": []
     },
@@ -147,7 +147,7 @@
         "\n",
         "Realizamos exactamente la misma separación utilizada."
       ],
-      "id": "10f864fc"
+      "id": "0c3a86b5"
     },
     {
       "cell_type": "code",
@@ -160,7 +160,7 @@
         "    random_state=42\n",
         ")"
       ],
-      "id": "ef981885",
+      "id": "d3e6d47d",
       "execution_count": null,
       "outputs": []
     },
@@ -171,7 +171,7 @@
         "print(\"Entrenamiento:\", X_train.shape)\n",
         "print(\"Test:\", X_test.shape)"
       ],
-      "id": "92883c16",
+      "id": "ce56788f",
       "execution_count": null,
       "outputs": []
     },
@@ -225,7 +225,7 @@
         "\n",
         "Definimos primero una configuración fija de Gradient Boosting."
       ],
-      "id": "e0dd359b"
+      "id": "97d43be3"
     },
     {
       "cell_type": "code",
@@ -238,7 +238,7 @@
         "    random_state=42\n",
         ")"
       ],
-      "id": "404d1f16",
+      "id": "8e753285",
       "execution_count": null,
       "outputs": []
     },
@@ -248,7 +248,7 @@
       "source": [
         "Ahora realizaremos varias divisiones cambiando únicamente la semilla aleatoria."
       ],
-      "id": "bcf54095"
+      "id": "68e3b4c6"
     },
     {
       "cell_type": "code",
@@ -282,7 +282,7 @@
         "\n",
         "df_split"
       ],
-      "id": "f60b1e38",
+      "id": "9a50633e",
       "execution_count": null,
       "outputs": []
     },
@@ -292,7 +292,7 @@
       "source": [
         "Visualicemos los resultados."
       ],
-      "id": "4da0059f"
+      "id": "6dc01662"
     },
     {
       "cell_type": "code",
@@ -311,7 +311,7 @@
         "plt.title(\"El resultado depende de la partición\")\n",
         "plt.show()"
       ],
-      "id": "a5512654",
+      "id": "c304cbe1",
       "execution_count": null,
       "outputs": []
     },
@@ -358,7 +358,7 @@
         "\n",
         "Crearemos una estrategia de 5-fold Cross-Validation."
       ],
-      "id": "a54e7e0f"
+      "id": "f828a7fd"
     },
     {
       "cell_type": "code",
@@ -370,7 +370,7 @@
         "    random_state=42\n",
         ")"
       ],
-      "id": "564310a5",
+      "id": "ea116544",
       "execution_count": null,
       "outputs": []
     },
@@ -380,7 +380,7 @@
       "source": [
         "Utilizaremos el mismo Gradient Boosting:"
       ],
-      "id": "312fc708"
+      "id": "aee44d22"
     },
     {
       "cell_type": "code",
@@ -393,7 +393,7 @@
         "    random_state=42\n",
         ")"
       ],
-      "id": "91cdc32d",
+      "id": "4a9108ac",
       "execution_count": null,
       "outputs": []
     },
@@ -403,7 +403,7 @@
       "source": [
         "Ahora utilizamos `cross_val_score()`."
       ],
-      "id": "2ec81dc2"
+      "id": "6000c11b"
     },
     {
       "cell_type": "code",
@@ -417,7 +417,7 @@
         "    scoring=\"neg_root_mean_squared_error\"\n",
         ")"
       ],
-      "id": "ee8cf23a",
+      "id": "1c7b1bda",
       "execution_count": null,
       "outputs": []
     },
@@ -427,7 +427,7 @@
       "source": [
         "Veamos el resultado:"
       ],
-      "id": "475dc74d"
+      "id": "125e1983"
     },
     {
       "cell_type": "code",
@@ -435,7 +435,7 @@
       "source": [
         "scores"
       ],
-      "id": "289c9260",
+      "id": "c96b8cf9",
       "execution_count": null,
       "outputs": []
     },
@@ -463,7 +463,7 @@
         "\n",
         "Para trabajar directamente con RMSE podemos cambiar el signo:"
       ],
-      "id": "c9967391"
+      "id": "d761023d"
     },
     {
       "cell_type": "code",
@@ -473,7 +473,7 @@
         "\n",
         "rmse_cv"
       ],
-      "id": "42f67679",
+      "id": "9166fda3",
       "execution_count": null,
       "outputs": []
     },
@@ -485,7 +485,7 @@
         "\n",
         "Calculamos ahora la media:"
       ],
-      "id": "b91855fd"
+      "id": "03396fa8"
     },
     {
       "cell_type": "code",
@@ -493,7 +493,7 @@
       "source": [
         "rmse_cv.mean()"
       ],
-      "id": "7bbee34e",
+      "id": "85eeb325",
       "execution_count": null,
       "outputs": []
     },
@@ -503,7 +503,7 @@
       "source": [
         "y la desviación estándar:"
       ],
-      "id": "fde49a61"
+      "id": "9a8997ad"
     },
     {
       "cell_type": "code",
@@ -511,7 +511,7 @@
       "source": [
         "rmse_cv.std()"
       ],
-      "id": "0ec144b9",
+      "id": "5166dad2",
       "execution_count": null,
       "outputs": []
     },
@@ -521,7 +521,7 @@
       "source": [
         "Podemos reportar:"
       ],
-      "id": "1463d8c6"
+      "id": "1bc220ed"
     },
     {
       "cell_type": "code",
@@ -532,7 +532,7 @@
         "    f\"+/- {rmse_cv.std():.4f}\"\n",
         ")"
       ],
-      "id": "8774a251",
+      "id": "0eb3db3d",
       "execution_count": null,
       "outputs": []
     },
@@ -562,7 +562,7 @@
         "\n",
         "Podemos visualizar los cinco resultados obtenidos."
       ],
-      "id": "d6b428af"
+      "id": "a1523ecc"
     },
     {
       "cell_type": "code",
@@ -589,7 +589,7 @@
         "plt.legend()\n",
         "plt.show()"
       ],
-      "id": "c6d1b1ea",
+      "id": "893d2593",
       "execution_count": null,
       "outputs": []
     },
@@ -613,7 +613,7 @@
         "\n",
         "Consideremos:"
       ],
-      "id": "2ee6bed9"
+      "id": "a61cd7a0"
     },
     {
       "cell_type": "code",
@@ -626,7 +626,7 @@
         "    (\"D\", 0.1, 100, 4)\n",
         "]"
       ],
-      "id": "a7bbc3fa",
+      "id": "31673256",
       "execution_count": null,
       "outputs": []
     },
@@ -636,7 +636,7 @@
       "source": [
         "Evaluaremos cada configuración con exactamente los mismos folds."
       ],
-      "id": "50fb0f9e"
+      "id": "38549731"
     },
     {
       "cell_type": "code",
@@ -672,7 +672,7 @@
         "        \"SD_CV\": rmse.std()\n",
         "    })"
       ],
-      "id": "e9ab95c6",
+      "id": "3c26b748",
       "execution_count": null,
       "outputs": []
     },
@@ -682,7 +682,7 @@
       "source": [
         "Construimos una tabla."
       ],
-      "id": "09347391"
+      "id": "58acf621"
     },
     {
       "cell_type": "code",
@@ -692,7 +692,7 @@
         "\n",
         "df_cv"
       ],
-      "id": "67263cc0",
+      "id": "9f781705",
       "execution_count": null,
       "outputs": []
     },
@@ -707,7 +707,7 @@
         "\n",
         "Podemos representar el RMSE promedio junto con su variabilidad."
       ],
-      "id": "bfc8dab8"
+      "id": "4c77d071"
     },
     {
       "cell_type": "code",
@@ -728,7 +728,7 @@
         "plt.title(\"Comparación mediante 5-fold Cross-Validation\")\n",
         "plt.show()"
       ],
-      "id": "c37efd76",
+      "id": "3d50f7ff",
       "execution_count": null,
       "outputs": []
     },
@@ -771,7 +771,7 @@
         "\n",
         "¿Cuántas configuraciones tenemos?"
       ],
-      "id": "0710fd45"
+      "id": "2a8270d7"
     },
     {
       "cell_type": "code",
@@ -779,7 +779,7 @@
       "source": [
         "3 * 3 * 3"
       ],
-      "id": "2459f32a",
+      "id": "21a2837f",
       "execution_count": null,
       "outputs": []
     },
@@ -799,7 +799,7 @@
         "\n",
         "Por lo tanto:"
       ],
-      "id": "a27c6301"
+      "id": "4185048c"
     },
     {
       "cell_type": "code",
@@ -807,7 +807,7 @@
       "source": [
         "27 * 5"
       ],
-      "id": "3039e4c9",
+      "id": "5a7e2466",
       "execution_count": null,
       "outputs": []
     },
@@ -831,7 +831,7 @@
         "\n",
         "Definimos primero nuestra cuadrícula."
       ],
-      "id": "36d1eaba"
+      "id": "ded69093"
     },
     {
       "cell_type": "code",
@@ -843,7 +843,7 @@
         "    \"max_depth\": [2, 3, 4]\n",
         "}"
       ],
-      "id": "12479c39",
+      "id": "c1570b7b",
       "execution_count": null,
       "outputs": []
     },
@@ -853,7 +853,7 @@
       "source": [
         "Podemos calcular el número de configuraciones:"
       ],
-      "id": "820b6e58"
+      "id": "5645398e"
     },
     {
       "cell_type": "code",
@@ -867,7 +867,7 @@
         "\n",
         "print(n_configuraciones)"
       ],
-      "id": "9eeb418a",
+      "id": "e4850353",
       "execution_count": null,
       "outputs": []
     },
@@ -877,7 +877,7 @@
       "source": [
         "Construimos la búsqueda."
       ],
-      "id": "5b144377"
+      "id": "69c36e95"
     },
     {
       "cell_type": "code",
@@ -898,7 +898,7 @@
         "\n",
         "#grid_search.fit(X_train, y_train)"
       ],
-      "id": "8bf2c1d4",
+      "id": "0bc76105",
       "execution_count": null,
       "outputs": []
     },
@@ -919,7 +919,7 @@
         "\n",
         "Vamos a medir también cuánto tarda."
       ],
-      "id": "54ddd732"
+      "id": "dad92a6a"
     },
     {
       "cell_type": "code",
@@ -933,7 +933,7 @@
         "\n",
         "print(f\"Tiempo: {tiempo_grid:.2f} segundos\")"
       ],
-      "id": "22b6b409",
+      "id": "3f679061",
       "execution_count": null,
       "outputs": []
     },
@@ -945,7 +945,7 @@
         "\n",
         "Podemos consultar directamente la configuración seleccionada."
       ],
-      "id": "8031655f"
+      "id": "2cb3eb0a"
     },
     {
       "cell_type": "code",
@@ -953,7 +953,7 @@
       "source": [
         "grid_search.best_params_"
       ],
-      "id": "021d914b",
+      "id": "87391df0",
       "execution_count": null,
       "outputs": []
     },
@@ -963,7 +963,7 @@
       "source": [
         "Y el mejor score:"
       ],
-      "id": "32434ce6"
+      "id": "5169f731"
     },
     {
       "cell_type": "code",
@@ -971,7 +971,7 @@
       "source": [
         "grid_search.best_score_"
       ],
-      "id": "d3d155f4",
+      "id": "06a14860",
       "execution_count": null,
       "outputs": []
     },
@@ -987,7 +987,7 @@
         "\n",
         "Por lo tanto:"
       ],
-      "id": "b1b3e8ec"
+      "id": "7afa722a"
     },
     {
       "cell_type": "code",
@@ -997,7 +997,7 @@
         "\n",
         "print(f\"Mejor RMSE CV: {best_rmse_grid:.4f}\")"
       ],
-      "id": "41aca718",
+      "id": "a5149803",
       "execution_count": null,
       "outputs": []
     },
@@ -1007,7 +1007,7 @@
       "source": [
         "También podemos recuperar el modelo seleccionado:"
       ],
-      "id": "a1bac14d"
+      "id": "e7c74378"
     },
     {
       "cell_type": "code",
@@ -1015,7 +1015,7 @@
       "source": [
         "grid_search.best_estimator_"
       ],
-      "id": "20eb36a0",
+      "id": "5fb245cb",
       "execution_count": null,
       "outputs": []
     },
@@ -1027,7 +1027,7 @@
         "\n",
         "`GridSearchCV` almacena mucha más información en:"
       ],
-      "id": "09b59da2"
+      "id": "bb624a8c"
     },
     {
       "cell_type": "code",
@@ -1035,7 +1035,7 @@
       "source": [
         "grid_search.cv_results_"
       ],
-      "id": "d01fe646",
+      "id": "6da4860e",
       "execution_count": null,
       "outputs": []
     },
@@ -1045,7 +1045,7 @@
       "source": [
         "Podemos convertirla en un `DataFrame`."
       ],
-      "id": "2f209c6a"
+      "id": "b5bb0828"
     },
     {
       "cell_type": "code",
@@ -1057,7 +1057,7 @@
         "\n",
         "resultados_grid.head()"
       ],
-      "id": "32bd0b98",
+      "id": "dafffb39",
       "execution_count": null,
       "outputs": []
     },
@@ -1067,7 +1067,7 @@
       "source": [
         "Seleccionemos algunas columnas importantes."
       ],
-      "id": "1c9a6760"
+      "id": "01f9922e"
     },
     {
       "cell_type": "code",
@@ -1085,7 +1085,7 @@
         "\n",
         "resultados_grid[columnas].head()"
       ],
-      "id": "64476a40",
+      "id": "8d5fdd84",
       "execution_count": null,
       "outputs": []
     },
@@ -1095,7 +1095,7 @@
       "source": [
         "Como los scores están negativos, crearemos una columna de RMSE."
       ],
-      "id": "79d53fca"
+      "id": "d2faa577"
     },
     {
       "cell_type": "code",
@@ -1105,7 +1105,7 @@
         "    -resultados_grid[\"mean_test_score\"]\n",
         ")"
       ],
-      "id": "1b9ed3bc",
+      "id": "4b609f00",
       "execution_count": null,
       "outputs": []
     },
@@ -1115,7 +1115,7 @@
       "source": [
         "Ordenamos las configuraciones:"
       ],
-      "id": "61ed300c"
+      "id": "e8a386f1"
     },
     {
       "cell_type": "code",
@@ -1132,7 +1132,7 @@
         "    ]\n",
         "].sort_values(\"RMSE_CV\").head(10)"
       ],
-      "id": "a2026927",
+      "id": "2c411371",
       "execution_count": null,
       "outputs": []
     },
@@ -1152,7 +1152,7 @@
         "\\texttt{max\\_depth}=2.\n",
         "$$"
       ],
-      "id": "786e6b58"
+      "id": "56417c72"
     },
     {
       "cell_type": "code",
@@ -1162,7 +1162,7 @@
         "    resultados_grid[\"param_max_depth\"] == 2\n",
         "].copy()"
       ],
-      "id": "2c340509",
+      "id": "dcee1148",
       "execution_count": null,
       "outputs": []
     },
@@ -1172,7 +1172,7 @@
       "source": [
         "Ahora podemos representar el RMSE para diferentes combinaciones de `learning_rate` y `n_estimators`."
       ],
-      "id": "a5ca34ac"
+      "id": "c616d8d3"
     },
     {
       "cell_type": "code",
@@ -1199,7 +1199,7 @@
         "plt.legend()\n",
         "plt.show()"
       ],
-      "id": "37aeef59",
+      "id": "9b4cc26e",
       "execution_count": null,
       "outputs": []
     },
@@ -1249,7 +1249,7 @@
         "\n",
         "ajustes del modelo."
       ],
-      "id": "f415185d"
+      "id": "462a39a2"
     },
     {
       "cell_type": "code",
@@ -1257,7 +1257,7 @@
       "source": [
         "5**5 * 5"
       ],
-      "id": "6c26ad00",
+      "id": "c505bde5",
       "execution_count": null,
       "outputs": []
     },
@@ -1298,7 +1298,7 @@
         "\n",
         "Importamos:"
       ],
-      "id": "a07331f9"
+      "id": "8a3e7866"
     },
     {
       "cell_type": "code",
@@ -1306,7 +1306,7 @@
       "source": [
         "from scipy.stats import randint, loguniform, uniform"
       ],
-      "id": "991f682b",
+      "id": "eabb41d6",
       "execution_count": null,
       "outputs": []
     },
@@ -1316,7 +1316,7 @@
       "source": [
         "Definimos:"
       ],
-      "id": "a1f8ffa7"
+      "id": "8724f02f"
     },
     {
       "cell_type": "code",
@@ -1329,7 +1329,7 @@
         "    \"subsample\": uniform(0.6, 0.4)\n",
         "}"
       ],
-      "id": "e4ed6f4b",
+      "id": "b4b9c0f2",
       "execution_count": null,
       "outputs": []
     },
@@ -1363,7 +1363,7 @@
         "\n",
         "Construimos la búsqueda."
       ],
-      "id": "a5e4883b"
+      "id": "723f54a0"
     },
     {
       "cell_type": "code",
@@ -1382,7 +1382,7 @@
         "    return_train_score=True\n",
         ")"
       ],
-      "id": "07f29954",
+      "id": "e089ff37",
       "execution_count": null,
       "outputs": []
     },
@@ -1392,7 +1392,7 @@
       "source": [
         "Ejecutamos y medimos el tiempo."
       ],
-      "id": "df419c88"
+      "id": "77d09283"
     },
     {
       "cell_type": "code",
@@ -1406,7 +1406,7 @@
         "\n",
         "print(f\"Tiempo: {tiempo_random:.2f} segundos\")"
       ],
-      "id": "955067fb",
+      "id": "411194b7",
       "execution_count": null,
       "outputs": []
     },
@@ -1418,7 +1418,7 @@
         "\n",
         "Consultamos la configuración seleccionada."
       ],
-      "id": "33266e2c"
+      "id": "19b6b941"
     },
     {
       "cell_type": "code",
@@ -1426,7 +1426,7 @@
       "source": [
         "random_search.best_params_"
       ],
-      "id": "b9ee195b",
+      "id": "f761f032",
       "execution_count": null,
       "outputs": []
     },
@@ -1436,7 +1436,7 @@
       "source": [
         "Y su RMSE promedio:"
       ],
-      "id": "329241ea"
+      "id": "ed86e66d"
     },
     {
       "cell_type": "code",
@@ -1446,7 +1446,7 @@
         "\n",
         "print(f\"Mejor RMSE CV: {best_rmse_random:.4f}\")"
       ],
-      "id": "f8c43f8d",
+      "id": "2ec7a8be",
       "execution_count": null,
       "outputs": []
     },
@@ -1456,7 +1456,7 @@
       "source": [
         "Podemos recuperar nuevamente todos los resultados."
       ],
-      "id": "e9bfb2c7"
+      "id": "90fae1dd"
     },
     {
       "cell_type": "code",
@@ -1470,7 +1470,7 @@
         "    -resultados_random[\"mean_test_score\"]\n",
         ")"
       ],
-      "id": "270093fc",
+      "id": "70fb9d01",
       "execution_count": null,
       "outputs": []
     },
@@ -1480,7 +1480,7 @@
       "source": [
         "Veamos las mejores configuraciones:"
       ],
-      "id": "307c7022"
+      "id": "60b84032"
     },
     {
       "cell_type": "code",
@@ -1497,7 +1497,7 @@
         "    ]\n",
         "].sort_values(\"RMSE_CV\").head(10)"
       ],
-      "id": "2f92641a",
+      "id": "05b2e6b3",
       "execution_count": null,
       "outputs": []
     },
@@ -1509,7 +1509,7 @@
         "\n",
         "Construyamos una comparación sencilla."
       ],
-      "id": "2af33393"
+      "id": "c358f214"
     },
     {
       "cell_type": "code",
@@ -1536,7 +1536,7 @@
         "\n",
         "comparacion_busquedas"
       ],
-      "id": "5b4af6e3",
+      "id": "bad9178f",
       "execution_count": null,
       "outputs": []
     },
@@ -1583,7 +1583,7 @@
         "\n",
         "Por ejemplo:"
       ],
-      "id": "bbe66db6"
+      "id": "54313ea6"
     },
     {
       "cell_type": "code",
@@ -1591,7 +1591,7 @@
       "source": [
         "from xgboost import XGBRegressor"
       ],
-      "id": "0dd861b8",
+      "id": "f54c882e",
       "execution_count": null,
       "outputs": []
     },
@@ -1601,7 +1601,7 @@
       "source": [
         "Podríamos definir:"
       ],
-      "id": "f5a4ab62"
+      "id": "10619fa2"
     },
     {
       "cell_type": "code",
@@ -1613,7 +1613,7 @@
         "    n_jobs=1\n",
         ")"
       ],
-      "id": "378212a7",
+      "id": "bbf734d0",
       "execution_count": null,
       "outputs": []
     },
@@ -1623,7 +1623,7 @@
       "source": [
         "y un espacio como:"
       ],
-      "id": "587871f1"
+      "id": "0704a5f3"
     },
     {
       "cell_type": "code",
@@ -1637,7 +1637,7 @@
         "    \"colsample_bytree\": [0.7, 0.9, 1.0]\n",
         "}"
       ],
-      "id": "1a64865a",
+      "id": "7355e690",
       "execution_count": null,
       "outputs": []
     },
@@ -1647,7 +1647,7 @@
       "source": [
         "Pero observa cuántas combinaciones produce:"
       ],
-      "id": "0cc16ac4"
+      "id": "4be19bcf"
     },
     {
       "cell_type": "code",
@@ -1655,7 +1655,7 @@
       "source": [
         "3**5"
       ],
-      "id": "0f808df3",
+      "id": "39cbfb7b",
       "execution_count": null,
       "outputs": []
     },
@@ -1732,7 +1732,7 @@
         "\n",
         "Para ilustrarlo utilizaremos un modelo que ellos ya conocen: regresión lineal regularizada."
       ],
-      "id": "ab871ed7"
+      "id": "8b484c0e"
     },
     {
       "cell_type": "code",
@@ -1742,7 +1742,7 @@
         "from sklearn.preprocessing import StandardScaler\n",
         "from sklearn.linear_model import Ridge"
       ],
-      "id": "45e30531",
+      "id": "d25e0a9b",
       "execution_count": null,
       "outputs": []
     },
@@ -1752,7 +1752,7 @@
       "source": [
         "Construimos:"
       ],
-      "id": "c602900a"
+      "id": "f9a0f713"
     },
     {
       "cell_type": "code",
@@ -1763,7 +1763,7 @@
         "    (\"model\", Ridge())\n",
         "])"
       ],
-      "id": "f2b22ddb",
+      "id": "ac9ca0c4",
       "execution_count": null,
       "outputs": []
     },
@@ -1773,7 +1773,7 @@
       "source": [
         "Ahora realizamos Cross-Validation sobre **todo el pipeline**."
       ],
-      "id": "fe81158a"
+      "id": "c4b0d202"
     },
     {
       "cell_type": "code",
@@ -1794,7 +1794,7 @@
         "    f\"+/- {rmse_ridge.std():.4f}\"\n",
         ")"
       ],
-      "id": "fef94a39",
+      "id": "63c61a97",
       "execution_count": null,
       "outputs": []
     },
@@ -1846,7 +1846,7 @@
         "\n",
         "Por ejemplo:"
       ],
-      "id": "6253fc9a"
+      "id": "ba492ae3"
     },
     {
       "cell_type": "code",
@@ -1856,7 +1856,7 @@
         "    \"model__alpha\": [0.01, 0.1, 1, 10, 100]\n",
         "}"
       ],
-      "id": "a8a4d967",
+      "id": "f902558d",
       "execution_count": null,
       "outputs": []
     },
@@ -1866,7 +1866,7 @@
       "source": [
         "Construimos la búsqueda:"
       ],
-      "id": "cd76ca5d"
+      "id": "42f44229"
     },
     {
       "cell_type": "code",
@@ -1882,7 +1882,7 @@
         "\n",
         "grid_ridge.fit(X_train, y_train)"
       ],
-      "id": "aad2061d",
+      "id": "d24804ee",
       "execution_count": null,
       "outputs": []
     },
@@ -1892,7 +1892,7 @@
       "source": [
         "Consultamos:"
       ],
-      "id": "d3fac0ce"
+      "id": "98419b28"
     },
     {
       "cell_type": "code",
@@ -1900,7 +1900,7 @@
       "source": [
         "grid_ridge.best_params_"
       ],
-      "id": "0c52a4b3",
+      "id": "2fb472f2",
       "execution_count": null,
       "outputs": []
     },
@@ -1910,7 +1910,7 @@
       "source": [
         "y:"
       ],
-      "id": "139b3661"
+      "id": "62540c91"
     },
     {
       "cell_type": "code",
@@ -1918,7 +1918,7 @@
       "source": [
         "-grid_ridge.best_score_"
       ],
-      "id": "36c4eb41",
+      "id": "bc1e4eda",
       "execution_count": null,
       "outputs": []
     },
@@ -1966,7 +1966,7 @@
         "\n",
         "Podemos comprobar que:"
       ],
-      "id": "0d3dc317"
+      "id": "45c414b4"
     },
     {
       "cell_type": "code",
@@ -1974,7 +1974,7 @@
       "source": [
         "grid_search.refit"
       ],
-      "id": "a7ba3fd2",
+      "id": "98ad8081",
       "execution_count": null,
       "outputs": []
     },
@@ -1984,7 +1984,7 @@
       "source": [
         "y recuperar el modelo reajustado:"
       ],
-      "id": "0308c252"
+      "id": "2faf995c"
     },
     {
       "cell_type": "code",
@@ -1994,7 +1994,7 @@
         "\n",
         "modelo_seleccionado"
       ],
-      "id": "001ef9b3",
+      "id": "d2e6e99c",
       "execution_count": null,
       "outputs": []
     },
@@ -2025,7 +2025,7 @@
         "\n",
         "Considera:"
       ],
-      "id": "670ce80d"
+      "id": "996ab1b5"
     },
     {
       "cell_type": "code",
@@ -2038,7 +2038,7 @@
         "    \"subsample\": [0.7, 0.8, 0.9, 1.0]\n",
         "}"
       ],
-      "id": "9c00cd44",
+      "id": "c9cc78c5",
       "execution_count": null,
       "outputs": []
     },
@@ -2084,7 +2084,7 @@
         "No utilices `X_test` ni `y_test` para resolver el ejercicio.\n",
         ":::"
       ],
-      "id": "2521746d"
+      "id": "809e9925"
     }
   ],
   "metadata": {
