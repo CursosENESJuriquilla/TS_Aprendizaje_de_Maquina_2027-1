@@ -1,6 +1,5 @@
 # Introducción al Aprendizaje no Supervisado
 
-
 ## ¿Qué aprendemos cuando no tenemos una respuesta?
 
 En aprendizaje supervisado disponemos de observaciones $\mathbf{x}_i$ y una respuesta $y_i$. En aprendizaje no supervisado trabajamos con
@@ -18,25 +17,19 @@ Que un algoritmo produzca grupos no demuestra que existan categorías naturales.
 
 **Ejemplo.** Si tenemos perfiles de expresión de miles de genes para varias muestras, podemos buscar patrones sin proporcionar al algoritmo las etiquetas de tejido. Si después contamos con esos metadatos, podemos utilizarlos para **interpretar** la estructura encontrada, pero no formaron parte del ajuste.
 
-
-
-:::: {.callout-warning icon="false"}
+::: {.callout-warning icon="false"}
 ## 🧠 Preguntas para discutir
 
-1. ¿Qué diferencia hay entre agrupar muestras por expresión génica y predecir el tipo de tejido?
-2. ¿Qué podría significar «similitud» entre dos perfiles biológicos?
-3. ¿Es posible obtener dos agrupamientos diferentes, ambos razonables, para los mismos datos?
-
-::::
-
-
-
+1.  ¿Qué diferencia hay entre agrupar muestras por expresión génica y predecir el tipo de tejido?
+2.  ¿Qué podría significar «similitud» entre dos perfiles biológicos?
+3.  ¿Es posible obtener dos agrupamientos diferentes, ambos razonables, para los mismos datos?
+:::
 
 ## Primer conjunto de datos: Iris
 
 Usaremos el conjunto **Iris**, con cuatro medidas de flores. La especie se conservará únicamente como **metadato para interpretar**, no como entrada de los algoritmos no supervisados.
 
-::: {.panel-tabset}
+::: panel-tabset
 ### Python
 
 ```{python}
@@ -88,7 +81,7 @@ Para la distancia euclidiana, $B$ está más cerca de $A$; para Manhattan, lo es
 
 ### Calculamos distancias entre flores
 
-::: {.panel-tabset}
+::: panel-tabset
 ### Python
 
 ```{python}
@@ -124,14 +117,14 @@ Una distancia pequeña solo significa que dos observaciones son próximas **con 
 Consideremos tres observaciones descritas mediante longitud y masa:
 
 | Observación | Longitud (m) | Masa (g) |
-|:--|--:|--:|
-| A | 1 | 100 |
-| B | 2 | 110 |
-| C | 4 | 101 |
+|:------------|-------------:|---------:|
+| A           |            1 |      100 |
+| B           |            2 |      110 |
+| C           |            4 |      101 |
 
 Sin cambiar los datos físicos, convertir gramos a kilogramos puede modificar cuál observación parece más cercana a A si utilizamos directamente la distancia euclidiana. Compruébalo:
 
-::: {.panel-tabset}
+::: panel-tabset
 ### Python
 
 ```{python}
@@ -169,7 +162,7 @@ $$x^{(c)}_{ij}=x_{ij}-\bar x_j,\qquad z_{ij}=\frac{x_{ij}-\bar x_j}{s_j}.$$
 
 El centrado no cambia las distancias euclidianas entre observaciones; el escalamiento **sí puede cambiarlas**. Estandarizar suele ser útil cuando las unidades no son comparables, pero no es una regla automática: a veces la variabilidad absoluta es parte del fenómeno.
 
-::: {.panel-tabset}
+::: panel-tabset
 ### Python
 
 ```{python}
@@ -217,7 +210,7 @@ par(mfrow = c(1, 1))
 
 Un procedimiento no supervisado puede verse afectado por valores faltantes, variables constantes, duplicados, valores atípicos y variables redundantes. Antes de usar PCA o clustering, conviene documentar qué se hizo con ellos.
 
-::: {.panel-tabset}
+::: panel-tabset
 ### Python
 
 ```{python}
@@ -247,7 +240,7 @@ En datos composicionales, de conteos o con numerosos ceros, estandarizar columna
 
 Un diagrama de dispersión permite reconocer patrones en un par de variables, pero **no representa necesariamente toda la estructura de las cuatro dimensiones**. En el siguiente gráfico, el color por especie se añade únicamente para interpretar los datos: el algoritmo no ha aprendido esas etiquetas.
 
-::: {.panel-tabset}
+::: panel-tabset
 ### Python
 
 ```{python}
@@ -279,53 +272,42 @@ legend("topleft", legend = levels(especie_r), col = colores, pch = 19, bty = "n"
 
 ### Ejercicio 1: Supervisado o no supervisado
 
-Justifica si se trata de método supervisado o no supervisado y/o si es un problema de clasificación/regresión/agrupamiento, etc: 
+Justifica si se trata de método supervisado o no supervisado y/o si es un problema de clasificación/regresión/agrupamiento, etc:
 
-(a) predecir resistencia a un antibiótico a partir de genes; 
+(a) predecir resistencia a un antibiótico a partir de genes;
 
-(b) agrupar aislamientos por perfiles genéticos sin usar fenotipos; 
+(b) agrupar aislamientos por perfiles genéticos sin usar fenotipos;
 
-(c) representar muestras con dos coordenadas; 
+(c) representar muestras con dos coordenadas;
 
 (d) predecir una concentración a partir de variables ambientales.
 
-
-
 ### Ejercicio 2. Distancias a mano
 
-Dados $A=(1,1)$, $B=(4,5)$ y $C=(5,1)$, calcula $d_2(A,B)$, $d_2(A,C)$, $d_1(A,B)$ y $d_1(A,C)$. 
+Dados $A=(1,1)$, $B=(4,5)$ y $C=(5,1)$, calcula $d_2(A,B)$, $d_2(A,C)$, $d_1(A,B)$ y $d_1(A,C)$.
 
 ¿Cuál es el vecino más cercano a $A$ con cada distancia?
 
-
-
 ### Ejercicio 3. Unidades y estandarización
 
-Reproduce el ejemplo de longitud y masa. 
+Reproduce el ejemplo de longitud y masa.
 
-(a) Identifica el vecino más próximo a A antes y después de convertir gramos a kilogramos. 
+(a) Identifica el vecino más próximo a A antes y después de convertir gramos a kilogramos.
 
-(b) Estandariza las dos columnas y calcula las distancias. 
+(b) Estandariza las dos columnas y calcula las distancias.
 
 (c) Explica por qué centrar, por sí solo, no cambia la distancia euclidiana.
 
-
-
 ### Ejercicio 4. Explora Iris
 
-(a) Construye un gráfico usando las variables 2 y 4, sin colores por especie. 
+(a) Construye un gráfico usando las variables 2 y 4, sin colores por especie.
 
-(b) Repite con colores. 
+(b) Repite con colores.
 
-(c) Calcula las correlaciones y elige un par de variables fuertemente correlacionadas. 
+(c) Calcula las correlaciones y elige un par de variables fuertemente correlacionadas.
 
 (d) Explica por qué las etiquetas de especie no deben incluirse como una quinta columna numérica para PCA o clustering no supervisado.
-
-
 
 ### Reto adicional. ¿Es el mismo conjunto de datos?
 
 Compara las distancias euclidianas entre las primeras cinco flores estandarizadas en R y Python. Explica por qué pueden diferir ligeramente y modifica uno de los procedimientos para que coincidan.
-
-
-

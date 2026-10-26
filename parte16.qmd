@@ -22,16 +22,15 @@ Vamos a:
 - calcular métricas de clasificación multiclase;
 - reconocer cuándo las probabilidades estimadas por regresión logística pueden ser especialmente útiles.
 
-
-::: {.diapositivas}
-::: {.diapositivas-title}
+::::: diapositivas
+::: diapositivas-title
 📝 **Diapositivas**
 :::
 
-::: {.diapositivas-body}
+::: diapositivas-body
 [Ver diapositivas](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/4.5-Relacion_con_RegLog.pdf)
 :::
-:::
+:::::
 
 ## Antes de comenzar
 

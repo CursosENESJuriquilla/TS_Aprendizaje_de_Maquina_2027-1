@@ -110,10 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
-
-
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -376,7 +373,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte17.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Introducción al Aprendizaje no Supervisado</span></span></a>
   </div>
 </li>
       </ul>
@@ -392,8 +389,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+  <a href="./parte18.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -613,7 +610,7 @@ e^{\beta_0+\beta^Tx}
 <section id="preparación" class="level2" data-number="16.2">
 <h2 data-number="16.2" class="anchored" data-anchor-id="preparación"><span class="header-section-number">16.2</span> Preparación</h2>
 <p>Importamos las bibliotecas necesarias.</p>
-<div id="a00f8a6d" class="cell" data-execution_count="1">
+<div id="3288237d" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -650,7 +647,7 @@ e^{\beta_0+\beta^Tx}
 <section id="recuperamos-el-problema-de-la-práctica-anterior" class="level2" data-number="16.3">
 <h2 data-number="16.3" class="anchored" data-anchor-id="recuperamos-el-problema-de-la-práctica-anterior"><span class="header-section-number">16.3</span> Recuperamos el problema de la práctica anterior</h2>
 <p>Utilizaremos nuevamente el conjunto <code>Wine</code>.</p>
-<div id="84acc25e" class="cell" data-execution_count="2">
+<div id="e80cf72a" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>wine <span class="op">=</span> load_wine()</span>
@@ -660,7 +657,7 @@ e^{\beta_0+\beta^Tx}
 </details>
 </div>
 <p>Los nombres de las clases son:</p>
-<div id="b51d2b8f" class="cell" data-execution_count="3">
+<div id="eda38bd8" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>wine.target_names</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -670,7 +667,7 @@ e^{\beta_0+\beta^Tx}
 </div>
 </div>
 <p>Y tenemos:</p>
-<div id="44babd4f" class="cell" data-execution_count="4">
+<div id="42665f0d" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>X.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -680,7 +677,7 @@ e^{\beta_0+\beta^Tx}
 </div>
 </div>
 <p>Realizamos <strong>exactamente la misma partición</strong> utilizada en la práctica anterior.</p>
-<div id="49070af8" class="cell" data-execution_count="5">
+<div id="dcdc6751" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
@@ -713,7 +710,7 @@ e^{\beta_0+\beta^Tx}
 <p>En la práctica anterior seleccionamos los hiperparámetros utilizando únicamente los datos de entrenamiento.</p>
 <p>Para que este archivo pueda ejecutarse independientemente, repetiremos la búsqueda.</p>
 <p>Primero definimos la validación cruzada.</p>
-<div id="b455d8ef" class="cell" data-execution_count="6">
+<div id="73f43fb5" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> StratifiedKFold(</span>
@@ -724,7 +721,7 @@ e^{\beta_0+\beta^Tx}
 </details>
 </div>
 <p>Construimos el <code>Pipeline</code>.</p>
-<div id="e28762f1" class="cell" data-execution_count="7">
+<div id="fe18fb20" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pipeline_svm <span class="op">=</span> Pipeline([</span>
@@ -740,7 +737,7 @@ e^{\beta_0+\beta^Tx}
 </details>
 </div>
 <p>Utilizaremos la misma cuadrícula de búsqueda.</p>
-<div id="68bebeed" class="cell" data-execution_count="8">
+<div id="4a686ac6" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>param_grid <span class="op">=</span> [</span>
@@ -793,7 +790,7 @@ e^{\beta_0+\beta^Tx}
 </details>
 </div>
 <p>Realizamos la búsqueda.</p>
-<div id="81d7153e" class="cell" data-execution_count="9">
+<div id="a1592ffb" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>grid_svm <span class="op">=</span> GridSearchCV(</span>
@@ -1853,7 +1850,7 @@ available in the ``cv_results_`` dict at the keys ending with that<br>
 scorer's name (``'_&lt;scorer_name&gt;'``) instead of ``'_score'`` shown<br>
 above. ('split0_test_precision', 'mean_train_precision' etc.)</span></a></td>
 <td class="fitted-att-type">dict</td>
-<td>{'me...me': array([0.0014..., 0.00129046]), 'me...me': array([0.0009..., 0.00070934]), 'me...re': array([0.976 ..., 0.97566667]), 'pa..._C': masked_array(...l_value=1e+20), ...}</td>
+<td>{'me...me': array([0.0016..., 0.00109434]), 'me...me': array([0.0006..., 0.00060601]), 'me...re': array([0.976 ..., 0.97566667]), 'pa..._C': masked_array(...l_value=1e+20), ...}</td>
 </tr>
 <tr class="default even">
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=multimetric_,-bool" class="param-doc-link" style="anchor-name: --doc-link-multimetric_;" rel="noreferrer" target="_blank">multimetric_ <span class="param-doc-description" style="position-anchor: --doc-link-multimetric_;"> multimetric_: bool<br>
@@ -1890,7 +1887,7 @@ This is present only if ``refit`` is not False.<br>
 <br>
 .. versionadded:: 0.20</span></a></td>
 <td class="fitted-att-type">float</td>
-<td>0.001068</td>
+<td>0.001027</td>
 </tr>
 <tr class="default even">
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=scorer_,-function%20or%20a%20dict" class="param-doc-link" style="anchor-name: --doc-link-scorer_;" rel="noreferrer" target="_blank">scorer_ <span class="param-doc-description" style="position-anchor: --doc-link-scorer_;"> scorer_: function or a dict<br>
@@ -2601,7 +2598,7 @@ forceTheme('sk-container-id-1');</script>
 </div>
 </div>
 <p>Consultamos los hiperparámetros seleccionados.</p>
-<div id="14a0184d" class="cell" data-execution_count="10">
+<div id="d06a63dd" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>grid_svm.best_params_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2611,7 +2608,7 @@ forceTheme('sk-container-id-1');</script>
 </div>
 </div>
 <p>Y el desempeño obtenido durante validación cruzada.</p>
-<div id="3d9f87e8" class="cell" data-execution_count="11">
+<div id="625bf70b" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>grid_svm.best_score_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2621,7 +2618,7 @@ forceTheme('sk-container-id-1');</script>
 </div>
 </div>
 <p>Guardamos el modelo seleccionado.</p>
-<div id="7bcffa24" class="cell" data-execution_count="12">
+<div id="2759c134" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>mejor_svm <span class="op">=</span> grid_svm.best_estimator_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -2636,7 +2633,7 @@ forceTheme('sk-container-id-1');</script>
 <p><span class="math display">\[\text{StandardScaler}
 \longrightarrow
 \text{modelo}.\]</span></p>
-<div id="fb7fdd5f" class="cell" data-execution_count="13">
+<div id="d045e30b" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>modelo_logistico <span class="op">=</span> Pipeline([</span>
@@ -2654,7 +2651,7 @@ forceTheme('sk-container-id-1');</script>
 </details>
 </div>
 <p>Ajustamos utilizando exactamente los mismos datos de entrenamiento.</p>
-<div id="864a799e" class="cell" data-execution_count="14">
+<div id="1189f276" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>modelo_logistico.fit(</span>
@@ -4172,7 +4169,7 @@ forceTheme('sk-container-id-2');</script>
 </ul>
 <p>Ahora utilizaremos el conjunto de prueba para realizar la evaluación final.</p>
 <p>Generamos las predicciones de la SVM.</p>
-<div id="757fa375" class="cell" data-execution_count="15">
+<div id="2c6d1349" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>pred_svm <span class="op">=</span> mejor_svm.predict(</span>
@@ -4181,7 +4178,7 @@ forceTheme('sk-container-id-2');</script>
 </details>
 </div>
 <p>Y las de regresión logística.</p>
-<div id="8d22fc46" class="cell" data-execution_count="16">
+<div id="07ec67ac" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pred_log <span class="op">=</span> modelo_logistico.predict(</span>
@@ -4190,7 +4187,7 @@ forceTheme('sk-container-id-2');</script>
 </details>
 </div>
 <p>Calculamos la exactitud.</p>
-<div id="6056af0a" class="cell" data-execution_count="17">
+<div id="9e5f729c" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>acc_svm <span class="op">=</span> accuracy_score(</span>
@@ -4205,7 +4202,7 @@ forceTheme('sk-container-id-2');</script>
 </details>
 </div>
 <p>Construimos una tabla.</p>
-<div id="94384e15" class="cell" data-execution_count="18">
+<div id="f17a8eee" class="cell" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>comparacion <span class="op">=</span> pd.DataFrame({</span>
@@ -4286,7 +4283,7 @@ forceTheme('sk-container-id-2');</script>
 <section id="matriz-de-confusión-de-la-svm" class="level2" data-number="16.8">
 <h2 data-number="16.8" class="anchored" data-anchor-id="matriz-de-confusión-de-la-svm"><span class="header-section-number">16.8</span> Matriz de confusión de la SVM</h2>
 <p>Calculamos:</p>
-<div id="f74e8251" class="cell" data-execution_count="19">
+<div id="64be44ff" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>cm_svm <span class="op">=</span> confusion_matrix(</span>
@@ -4303,7 +4300,7 @@ forceTheme('sk-container-id-2');</script>
 </div>
 </div>
 <p>Visualizamos.</p>
-<div id="a793c903" class="cell" data-execution_count="20">
+<div id="b15c76ab" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ConfusionMatrixDisplay(</span>
@@ -4327,7 +4324,7 @@ forceTheme('sk-container-id-2');</script>
 </section>
 <section id="matriz-de-confusión-de-regresión-logística" class="level2" data-number="16.9">
 <h2 data-number="16.9" class="anchored" data-anchor-id="matriz-de-confusión-de-regresión-logística"><span class="header-section-number">16.9</span> Matriz de confusión de regresión logística</h2>
-<div id="ff964b65" class="cell" data-execution_count="21">
+<div id="da1aaa47" class="cell" data-execution_count="21">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>cm_log <span class="op">=</span> confusion_matrix(</span>
@@ -4343,7 +4340,7 @@ forceTheme('sk-container-id-2');</script>
        [ 0,  0, 15]])</code></pre>
 </div>
 </div>
-<div id="cfd8641a" class="cell" data-execution_count="22">
+<div id="a7610c8e" class="cell" data-execution_count="22">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>ConfusionMatrixDisplay(</span>
@@ -4407,7 +4404,7 @@ forceTheme('sk-container-id-2');</script>
 <h2 data-number="16.10" class="anchored" data-anchor-id="precision-recall-y-f1"><span class="header-section-number">16.10</span> Precision, recall y F1</h2>
 <p>En problemas multiclase podemos calcular estas métricas para cada clase.</p>
 <p>Una forma compacta de obtenerlas es:</p>
-<div id="c09bf019" class="cell" data-execution_count="23">
+<div id="4a801021" class="cell" data-execution_count="23">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -4432,7 +4429,7 @@ weighted avg       0.97      0.96      0.96        54
 </div>
 </div>
 <p>Para regresión logística:</p>
-<div id="648b3c65" class="cell" data-execution_count="24">
+<div id="15ca1f82" class="cell" data-execution_count="24">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -4457,7 +4454,7 @@ weighted avg       0.98      0.98      0.98        54
 </div>
 </div>
 <p>También podemos calcular versiones macro.</p>
-<div id="f73b0e0a" class="cell" data-execution_count="25">
+<div id="5fa54ed0" class="cell" data-execution_count="25">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>metricas <span class="op">=</span> pd.DataFrame({</span>
@@ -4632,7 +4629,7 @@ y_i f(x_i).\]</span></p>
 <section id="visualicemos-ambas-pérdidas" class="level2" data-number="16.14">
 <h2 data-number="16.14" class="anchored" data-anchor-id="visualicemos-ambas-pérdidas"><span class="header-section-number">16.14</span> Visualicemos ambas pérdidas</h2>
 <p>Construimos una secuencia de valores para el margen.</p>
-<div id="861177cf" class="cell" data-execution_count="26">
+<div id="bfca433c" class="cell" data-execution_count="26">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> np.linspace(</span>
@@ -4643,7 +4640,7 @@ y_i f(x_i).\]</span></p>
 </details>
 </div>
 <p>Pérdida logística:</p>
-<div id="5b1b4481" class="cell" data-execution_count="27">
+<div id="5bc047ae" class="cell" data-execution_count="27">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>loss_log <span class="op">=</span> np.log(</span>
@@ -4652,7 +4649,7 @@ y_i f(x_i).\]</span></p>
 </details>
 </div>
 <p>Pérdida <em>hinge</em>:</p>
-<div id="f2d2411e" class="cell" data-execution_count="28">
+<div id="39d1f343" class="cell" data-execution_count="28">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>loss_hinge <span class="op">=</span> np.maximum(</span>
@@ -4662,7 +4659,7 @@ y_i f(x_i).\]</span></p>
 </details>
 </div>
 <p>Graficamos.</p>
-<div id="fd576da0" class="cell" data-execution_count="29">
+<div id="7070eb9f" class="cell" data-execution_count="29">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
@@ -4772,7 +4769,7 @@ y_if(x_i)
 <section id="comparación-visual-de-la-contribución-de-una-observación" class="level2" data-number="16.16">
 <h2 data-number="16.16" class="anchored" data-anchor-id="comparación-visual-de-la-contribución-de-una-observación"><span class="header-section-number">16.16</span> Comparación visual de la contribución de una observación</h2>
 <p>Construyamos algunos valores del margen.</p>
-<div id="acc8cd10" class="cell" data-execution_count="30">
+<div id="31fd03f4" class="cell" data-execution_count="30">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>margenes <span class="op">=</span> np.array([</span>
@@ -4787,7 +4784,7 @@ y_if(x_i)
 </details>
 </div>
 <p>Calculamos ambas pérdidas.</p>
-<div id="aa9c8a9b" class="cell" data-execution_count="31">
+<div id="9ffd24f2" class="cell" data-execution_count="31">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>tabla_perdidas <span class="op">=</span> pd.DataFrame({</span>
@@ -4971,7 +4968,7 @@ y_if(x_i)
 <section id="una-diferencia-importante-probabilidades" class="level2" data-number="16.19">
 <h2 data-number="16.19" class="anchored" data-anchor-id="una-diferencia-importante-probabilidades"><span class="header-section-number">16.19</span> Una diferencia importante: probabilidades</h2>
 <p>La regresión logística proporciona directamente probabilidades mediante:</p>
-<div id="8fda69a6" class="cell" data-execution_count="32">
+<div id="88fd7b3e" class="cell" data-execution_count="32">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>prob_log <span class="op">=</span> modelo_logistico.predict_proba(</span>
@@ -4990,7 +4987,7 @@ y_if(x_i)
 </div>
 <p>Cada fila contiene las probabilidades estimadas para las tres clases.</p>
 <p>Podemos verificar que suman aproximadamente uno.</p>
-<div id="0751906d" class="cell" data-execution_count="33">
+<div id="ccded216" class="cell" data-execution_count="33">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>prob_log[:<span class="dv">5</span>].<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -5000,7 +4997,7 @@ y_if(x_i)
 </div>
 </div>
 <p>La clase predicha corresponde a la de mayor probabilidad.</p>
-<div id="3111dc87" class="cell" data-execution_count="34">
+<div id="966d533b" class="cell" data-execution_count="34">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>np.argmax(</span>
@@ -5013,7 +5010,7 @@ y_if(x_i)
 </div>
 </div>
 <p>Podemos compararla con:</p>
-<div id="724f2aba" class="cell" data-execution_count="35">
+<div id="1aacec9c" class="cell" data-execution_count="35">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>modelo_logistico.predict(</span>
@@ -5077,7 +5074,7 @@ y_if(x_i)
 <section id="log-loss-para-regresión-logística" class="level2" data-number="16.21">
 <h2 data-number="16.21" class="anchored" data-anchor-id="log-loss-para-regresión-logística"><span class="header-section-number">16.21</span> Log-loss para regresión logística</h2>
 <p>Como la regresión logística produce probabilidades, podemos evaluar también la calidad de esas probabilidades mediante <em>log-loss</em>.</p>
-<div id="bb080c5e" class="cell" data-execution_count="36">
+<div id="b391ccd2" class="cell" data-execution_count="36">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>logloss_log <span class="op">=</span> log_loss(</span>
@@ -5789,8 +5786,8 @@ e^{\beta_0+\beta^Tx}
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./parte17.html" class="pagination-link" aria-label="pendiente">
-        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">pendiente</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./parte17.html" class="pagination-link" aria-label="Introducción al Aprendizaje no Supervisado">
+        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Introducción al Aprendizaje no Supervisado</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

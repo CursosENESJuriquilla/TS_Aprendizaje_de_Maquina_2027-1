@@ -109,7 +109,7 @@
         "\n",
         "Comenzaremos cargando las librerías necesarias."
       ],
-      "id": "9c094352"
+      "id": "2decd900"
     },
     {
       "cell_type": "code",
@@ -179,7 +179,7 @@
         "\n",
         "### Carga y exploración inicial"
       ],
-      "id": "421ca4c6"
+      "id": "07338a57"
     },
     {
       "cell_type": "code",
@@ -223,7 +223,7 @@
         "\n",
         "Visualicemos ahora ambas variables."
       ],
-      "id": "c923c256"
+      "id": "26dd5ba9"
     },
     {
       "cell_type": "code",
@@ -343,7 +343,7 @@
         "\n",
         "Construiremos una base polinomial utilizando `poly()` y ajustaremos el modelo mediante mínimos cuadrados ordinarios."
       ],
-      "id": "3cf245af"
+      "id": "9c032213"
     },
     {
       "cell_type": "code",
@@ -411,7 +411,7 @@
         "\n",
         "Construiremos una secuencia fina de valores que cubra todo el rango observado de `age`."
       ],
-      "id": "d3017b12"
+      "id": "f2a42f64"
     },
     {
       "cell_type": "code",
@@ -472,7 +472,7 @@
         "\n",
         "Graficaremos un intervalo de confianza puntual del 95%."
       ],
-      "id": "068a6811"
+      "id": "c9abb194"
     },
     {
       "cell_type": "code",
@@ -582,7 +582,7 @@
         "- `mean_ci_lower`, `mean_ci_upper`: intervalo para la media.\n",
         "- `obs_ci_lower`, `obs_ci_upper`: intervalo para una nueva observación."
       ],
-      "id": "3c04f2f9"
+      "id": "4bcf31ec"
     },
     {
       "cell_type": "code",
@@ -658,7 +658,7 @@
         "\n",
         "Al aumentar $d$ aumenta la **flexibilidad** del modelo."
       ],
-      "id": "031638cb"
+      "id": "1cb9e89d"
     },
     {
       "cell_type": "code",
@@ -774,7 +774,7 @@
         "\n",
         "Ajustemos modelos de grados 1 a 5."
       ],
-      "id": "c158844c"
+      "id": "859ea840"
     },
     {
       "cell_type": "code",
@@ -881,7 +881,7 @@
         "\n",
         "### Implementación"
       ],
-      "id": "8309f1a2"
+      "id": "c31ef866"
     },
     {
       "cell_type": "code",
@@ -975,7 +975,7 @@
         "\n",
         "### Error de validación cruzada"
       ],
-      "id": "6382e6c5"
+      "id": "066830b7"
     },
     {
       "cell_type": "code",
@@ -1161,7 +1161,7 @@
         "\n",
         "Construimos primero la variable binaria `salario_alto`."
       ],
-      "id": "9794903e"
+      "id": "40d8a8b9"
     },
     {
       "cell_type": "code",
@@ -1285,7 +1285,7 @@
         "\n",
         "Utilizaremos una base de polinomios ortogonales de grado 4, igual que en el ejemplo anterior de regresión polinomial."
       ],
-      "id": "0d547f7c"
+      "id": "dca1021c"
     },
     {
       "cell_type": "code",
@@ -1321,7 +1321,7 @@
         "\n",
         "Ajustamos ahora el modelo."
       ],
-      "id": "1e88fa05"
+      "id": "2c4fec49"
     },
     {
       "cell_type": "code",
@@ -1370,7 +1370,7 @@
         "\n",
         "Para visualizar cómo cambia la probabilidad con la edad, evaluaremos el modelo en una secuencia fina de edades."
       ],
-      "id": "1107598b"
+      "id": "d9d22075"
     },
     {
       "cell_type": "code",
@@ -1425,7 +1425,7 @@
         "- la probabilidad estimada $\\hat p(x)$;\n",
         "- el intervalo de confianza puntual del 95%."
       ],
-      "id": "871b6dd6"
+      "id": "6273988e"
     },
     {
       "cell_type": "code",
@@ -1734,7 +1734,7 @@
         "\n",
         "¿Esperarían que ese efecto fuera el mismo para una persona de 25 años que para una de 60 años? Justifiquen."
       ],
-      "id": "a4057d58"
+      "id": "30cef1e8"
     }
   ],
   "metadata": {

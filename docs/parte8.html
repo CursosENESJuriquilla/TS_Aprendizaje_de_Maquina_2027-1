@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -61,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -77,10 +80,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-256100c28b4d1a71ce469740e6db3c8e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-c366763be4b3545af05400088cd48f18.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -108,12 +111,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Buscar"
   }
 }</script>
-<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
-
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -309,13 +309,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte10.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">parte10.html</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Validación cruzada y optimización de hiperparámetros</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte11.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">parte11.html</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Evaluación y comparación de modelos</span></span></a>
   </div>
 </li>
       </ul>
@@ -332,7 +332,31 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte12.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">parte12.html</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Clasificador de margen máximo</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Clasificadores de soporte vectorial</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Máquinas de soporte vectorial</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Máquinas de soporte vectorial con más de dos clases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte16.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Relación con la regresión logística</span></span></a>
   </div>
 </li>
       </ul>
@@ -348,8 +372,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte12.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">parte12.html</span></span></a>
+  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -365,8 +389,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte12.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">parte12.html</span></span></a>
+  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -441,7 +465,7 @@ window.Quarto = {
 <h2 data-number="8.1" class="anchored" data-anchor-id="instalación-de-pysr"><span class="header-section-number">8.1</span> Instalación de PySR</h2>
 <p>Utilizaremos la biblioteca <code>PySR</code>.</p>
 <p>En un notebook de Jupyter se recomienda instalarla mediante:</p>
-<div id="6ca08f0d" class="cell" data-execution_count="1">
+<div id="55706019" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>pip install pysr</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -485,7 +509,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Ahora importamos las bibliotecas necesarias.</p>
-<div id="882ac79a" class="cell" data-execution_count="2">
+<div id="d156f9a6" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -493,6 +517,19 @@ window.Quarto = {
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pysr <span class="im">import</span> PySRRegressor</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ModuleNotFoundError</span>                       Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[1]</span><span class="ansi-green-fg">, line 4</span>
+<span class="ansi-green-fg">      1</span> <span style="font-weight:bold;color:rgb(0,135,0)">import</span> numpy <span style="font-weight:bold;color:rgb(0,135,0)">as</span> np
+<span class="ansi-green-fg">      2</span> <span style="font-weight:bold;color:rgb(0,135,0)">import</span> matplotlib.pyplot <span style="font-weight:bold;color:rgb(0,135,0)">as</span> plt
+<span class="ansi-green-fg">      3</span> 
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">4</span> <span style="font-weight:bold;color:rgb(0,135,0)">from</span> pysr <span style="font-weight:bold;color:rgb(0,135,0)">import</span> PySRRegressor
+
+<span class="ansi-red-fg">ModuleNotFoundError</span>: No module named 'pysr'</pre>
+</div>
+</div>
 </div>
 </section>
 <section id="generación-de-los-datos" class="level2" data-number="8.2">
@@ -502,7 +539,7 @@ window.Quarto = {
 <p>donde</p>
 <p><span class="math display">\[\varepsilon\sim N(0,0.3^2)\]</span></p>
 <p>representa ruido aleatorio.</p>
-<div id="3586e263" class="cell" data-execution_count="3">
+<div id="d29ce006" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">123</span>)</span>
@@ -525,7 +562,7 @@ window.Quarto = {
 <section id="visualización" class="level2" data-number="8.3">
 <h2 data-number="8.3" class="anchored" data-anchor-id="visualización"><span class="header-section-number">8.3</span> Visualización</h2>
 <p>Antes de construir un modelo, observemos los datos.</p>
-<div id="98da97c9" class="cell" data-execution_count="4">
+<div id="1bfdc547" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
@@ -559,7 +596,7 @@ window.Quarto = {
 <h2 data-number="8.4" class="anchored" data-anchor-id="preparación-de-los-datos"><span class="header-section-number">8.4</span> Preparación de los datos</h2>
 <p>PySR espera que las variables predictoras se proporcionen mediante una matriz.</p>
 <p>Actualmente <code>x</code> es un vector:</p>
-<div id="4669cb9d" class="cell" data-execution_count="5">
+<div id="be18454b" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -569,7 +606,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Lo convertimos en una matriz con una columna:</p>
-<div id="88380a94" class="cell" data-execution_count="6">
+<div id="25cf002c" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> x.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
@@ -593,7 +630,7 @@ window.Quarto = {
 <p><span class="math display">\[+,\qquad -,\qquad \times\]</span></p>
 <p>y la función</p>
 <p><span class="math display">\[\sin(x).\]</span></p>
-<div id="f50efe08" class="cell" data-execution_count="7">
+<div id="4e0c43ff" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> PySRRegressor(</span>
@@ -609,6 +646,19 @@ window.Quarto = {
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    verbosity<span class="op">=</span><span class="dv">1</span></span>
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[6]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> model = PySRRegressor(
+<span class="ansi-green-fg">      2</span>     niterations=<span class="ansi-green-fg">20</span>,
+<span class="ansi-green-fg">      3</span>     binary_operators=[
+<span class="ansi-green-fg">      4</span>         <span class="ansi-yellow-fg">"+"</span>,
+
+<span class="ansi-red-fg">NameError</span>: name 'PySRRegressor' is not defined</pre>
+</div>
+</div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -633,48 +683,20 @@ x_1x_2.\]</span></p>
 <section id="ajuste-del-modelo" class="level2" data-number="8.6">
 <h2 data-number="8.6" class="anchored" data-anchor-id="ajuste-del-modelo"><span class="header-section-number">8.6</span> Ajuste del modelo</h2>
 <p>Ajustamos el modelo utilizando los datos.</p>
-<div id="6cc398a9" class="cell" data-execution_count="8">
+<div id="bdb3c539" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>model.fit(X, y)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Compiling Julia backend...</code></pre>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[7]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> model.fit(X, y)
+
+<span class="ansi-red-fg">NameError</span>: name 'model' is not defined</pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="7">
-<pre><code>PySRRegressor.equations_ = [
-        pick     score                                           equation  \
-    0         0.000000                                          2.5617034   
-    1         0.679629                                            x0 * x0   
-    2         0.579735                              x0 * (x0 + 0.7609701)   
-    3         0.126188                                (x0 * x0) + sin(x0)   
-    4   &gt;&gt;&gt;&gt;  0.983948                 (x0 * x0) - (sin(x0) * -1.9895947)   
-    5         0.007986  ((x0 * x0) - (sin(x0) * -1.9915228)) - 0.03626...   
-    6         0.002095  (x0 * x0) + (-0.03175083 - (sin(x0 - 0.0137921...   
-    7         0.000598  (((x0 * 1.0079818) + 0.0068731476) * x0) + (-0...   
-    8         0.003239  ((x0 * x0) - (sin(x0) * ((sin(x0 * -1.6106116)...   
-    9         0.000641  ((x0 * x0) + -0.03840707) - ((sin(x0) * -1.993...   
-    10        0.006166  (((x0 * x0) + -0.02529789) - (sin(x0) * -1.995...   
-    11        0.012768  ((x0 * x0) + (sin(x0) + sin(x0))) + (sin(x0 * ...   
-    12        0.002719  ((x0 * x0) + (sin(x0) + sin(x0))) + ((sin(x0 *...   
-    13        0.007539  sin(x0) + (((x0 * x0) + -0.0076015424) + sin(x...   
-    
-            loss  complexity  
-    0   8.351337           1  
-    1   2.145050           3  
-    2   0.672800           5  
-    3   0.593039           6  
-    4   0.082878           8  
-    5   0.081564          10  
-    6   0.081223          12  
-    7   0.081126          14  
-    8   0.080342          17  
-    9   0.080187          20  
-    10  0.079694          21  
-    11  0.078683          22  
-    12  0.078469          23  
-    13  0.077295          25  
-]</code></pre>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -720,284 +742,40 @@ x_1x_2.\]</span></p>
 <h2 data-number="8.7" class="anchored" data-anchor-id="ecuaciones-encontradas"><span class="header-section-number">8.7</span> Ecuaciones encontradas</h2>
 <p>PySR no necesariamente encuentra una única ecuación.</p>
 <p>Durante la búsqueda genera diferentes expresiones con distintos niveles de complejidad y error.</p>
-<div id="2ed852f2" class="cell" data-execution_count="9">
+<div id="4a76a0a5" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model.equations_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model.equations_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="8">
-<div>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[8]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> model.equations_
 
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">complexity</th>
-<th data-quarto-table-cell-role="th">loss</th>
-<th data-quarto-table-cell-role="th">equation</th>
-<th data-quarto-table-cell-role="th">score</th>
-<th data-quarto-table-cell-role="th">sympy_format</th>
-<th data-quarto-table-cell-role="th">lambda_format</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>1</td>
-<td>8.351337</td>
-<td>2.5617034</td>
-<td>0.000000</td>
-<td>2.56170340000000</td>
-<td>PySRFunction(X=&gt;2.56170340000000)</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>3</td>
-<td>2.145050</td>
-<td>x0 * x0</td>
-<td>0.679629</td>
-<td>x0*x0</td>
-<td>PySRFunction(X=&gt;x0*x0)</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>5</td>
-<td>0.672800</td>
-<td>x0 * (x0 + 0.7609701)</td>
-<td>0.579735</td>
-<td>x0*(x0 + 0.7609701)</td>
-<td>PySRFunction(X=&gt;x0*(x0 + 0.7609701))</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>6</td>
-<td>0.593039</td>
-<td>(x0 * x0) + sin(x0)</td>
-<td>0.126188</td>
-<td>x0*x0 + sin(x0)</td>
-<td>PySRFunction(X=&gt;x0*x0 + sin(x0))</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">4</th>
-<td>8</td>
-<td>0.082878</td>
-<td>(x0 * x0) - (sin(x0) * -1.9895947)</td>
-<td>0.983948</td>
-<td>x0*x0 - (-1.9895947)*sin(x0)</td>
-<td>PySRFunction(X=&gt;x0*x0 - (-1.9895947)*sin(x0))</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">5</th>
-<td>10</td>
-<td>0.081564</td>
-<td>((x0 * x0) - (sin(x0) * -1.9915228)) - 0.03626...</td>
-<td>0.007986</td>
-<td>x0*x0 - (-1.9915228)*sin(x0) - 1*0.036266066</td>
-<td>PySRFunction(X=&gt;x0*x0 - (-1.9915228)*sin(x0) -...</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">6</th>
-<td>12</td>
-<td>0.081223</td>
-<td>(x0 * x0) + (-0.03175083 - (sin(x0 - 0.0137921...</td>
-<td>0.002095</td>
-<td>x0*x0 - (-1.9923584)*sin(x0 - 1*0.013792183) -...</td>
-<td>PySRFunction(X=&gt;x0*x0 - (-1.9923584)*sin(x0 - ...</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">7</th>
-<td>14</td>
-<td>0.081126</td>
-<td>(((x0 * 1.0079818) + 0.0068731476) * x0) + (-0...</td>
-<td>0.000598</td>
-<td>x0*(x0*1.0079818 + 0.0068731476) - (-1.9796847...</td>
-<td>PySRFunction(X=&gt;x0*(x0*1.0079818 + 0.006873147...</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">8</th>
-<td>17</td>
-<td>0.080342</td>
-<td>((x0 * x0) - (sin(x0) * ((sin(x0 * -1.6106116)...</td>
-<td>0.003239</td>
-<td>x0*x0 - (sin(x0*(-1.6106116))*(-0.07718013) - ...</td>
-<td>PySRFunction(X=&gt;x0*x0 - (sin(x0*(-1.6106116))*...</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">9</th>
-<td>20</td>
-<td>0.080187</td>
-<td>((x0 * x0) + -0.03840707) - ((sin(x0) * -1.993...</td>
-<td>0.000641</td>
-<td>x0*x0 - (sin(x0)*(-1.9931599) + sin(x0*sin(x0*...</td>
-<td>PySRFunction(X=&gt;x0*x0 - (sin(x0)*(-1.9931599) ...</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">10</th>
-<td>21</td>
-<td>0.079694</td>
-<td>(((x0 * x0) + -0.02529789) - (sin(x0) * -1.995...</td>
-<td>0.006166</td>
-<td>x0*x0 - (-1.995117)*sin(x0) + sin(x0*x0*x0*x0)...</td>
-<td>PySRFunction(X=&gt;x0*x0 - (-1.995117)*sin(x0) + ...</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">11</th>
-<td>22</td>
-<td>0.078683</td>
-<td>((x0 * x0) + (sin(x0) + sin(x0))) + (sin(x0 * ...</td>
-<td>0.012768</td>
-<td>x0*x0 + sin(x0) + sin(x0) + sin(-0.12129636)*s...</td>
-<td>PySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0) + si...</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">12</th>
-<td>23</td>
-<td>0.078469</td>
-<td>((x0 * x0) + (sin(x0) + sin(x0))) + ((sin(x0 *...</td>
-<td>0.002719</td>
-<td>x0*x0 + (sin(x0*(x0 + sin(x0*x0))) + 0.1376214...</td>
-<td>PySRFunction(X=&gt;x0*x0 + (sin(x0*(x0 + sin(x0*x...</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">13</th>
-<td>25</td>
-<td>0.077295</td>
-<td>sin(x0) + (((x0 * x0) + -0.0076015424) + sin(x...</td>
-<td>0.007539</td>
-<td>x0*x0 + sin(x0) + sin(x0 + sin(sin(x0*(x0 + 0....</td>
-<td>PySRFunction(X=&gt;x0*x0 + sin(x0) + sin(x0 + sin...</td>
-</tr>
-</tbody>
-</table>
-
+<span class="ansi-red-fg">NameError</span>: name 'model' is not defined</pre>
 </div>
 </div>
 </div>
 <p>Podemos observar algunas de las columnas principales:</p>
-<div id="6e4350e0" class="cell" data-execution_count="10">
+<div id="988fd1c4" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>model.equations_[</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"complexity"</span>, <span class="st">"loss"</span>, <span class="st">"equation"</span>, <span class="st">"score"</span>]</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model.equations_[</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"complexity"</span>, <span class="st">"loss"</span>, <span class="st">"equation"</span>, <span class="st">"score"</span>]</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="9">
-<div>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[9]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> model.equations_[
+<span class="ansi-green-fg">      2</span>     [<span class="ansi-yellow-fg">"complexity"</span>, <span class="ansi-yellow-fg">"loss"</span>, <span class="ansi-yellow-fg">"equation"</span>, <span class="ansi-yellow-fg">"score"</span>]
+<span class="ansi-green-fg">      3</span> ]
 
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">complexity</th>
-<th data-quarto-table-cell-role="th">loss</th>
-<th data-quarto-table-cell-role="th">equation</th>
-<th data-quarto-table-cell-role="th">score</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>1</td>
-<td>8.351337</td>
-<td>2.5617034</td>
-<td>0.000000</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>3</td>
-<td>2.145050</td>
-<td>x0 * x0</td>
-<td>0.679629</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>5</td>
-<td>0.672800</td>
-<td>x0 * (x0 + 0.7609701)</td>
-<td>0.579735</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>6</td>
-<td>0.593039</td>
-<td>(x0 * x0) + sin(x0)</td>
-<td>0.126188</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">4</th>
-<td>8</td>
-<td>0.082878</td>
-<td>(x0 * x0) - (sin(x0) * -1.9895947)</td>
-<td>0.983948</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">5</th>
-<td>10</td>
-<td>0.081564</td>
-<td>((x0 * x0) - (sin(x0) * -1.9915228)) - 0.03626...</td>
-<td>0.007986</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">6</th>
-<td>12</td>
-<td>0.081223</td>
-<td>(x0 * x0) + (-0.03175083 - (sin(x0 - 0.0137921...</td>
-<td>0.002095</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">7</th>
-<td>14</td>
-<td>0.081126</td>
-<td>(((x0 * 1.0079818) + 0.0068731476) * x0) + (-0...</td>
-<td>0.000598</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">8</th>
-<td>17</td>
-<td>0.080342</td>
-<td>((x0 * x0) - (sin(x0) * ((sin(x0 * -1.6106116)...</td>
-<td>0.003239</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">9</th>
-<td>20</td>
-<td>0.080187</td>
-<td>((x0 * x0) + -0.03840707) - ((sin(x0) * -1.993...</td>
-<td>0.000641</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">10</th>
-<td>21</td>
-<td>0.079694</td>
-<td>(((x0 * x0) + -0.02529789) - (sin(x0) * -1.995...</td>
-<td>0.006166</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">11</th>
-<td>22</td>
-<td>0.078683</td>
-<td>((x0 * x0) + (sin(x0) + sin(x0))) + (sin(x0 * ...</td>
-<td>0.012768</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">12</th>
-<td>23</td>
-<td>0.078469</td>
-<td>((x0 * x0) + (sin(x0) + sin(x0))) + ((sin(x0 *...</td>
-<td>0.002719</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">13</th>
-<td>25</td>
-<td>0.077295</td>
-<td>sin(x0) + (((x0 * x0) + -0.0076015424) + sin(x...</td>
-<td>0.007539</td>
-</tr>
-</tbody>
-</table>
-
+<span class="ansi-red-fg">NameError</span>: name 'model' is not defined</pre>
 </div>
 </div>
 </div>
@@ -1015,13 +793,20 @@ x_1x_2.\]</span></p>
 <section id="expresión-seleccionada" class="level2" data-number="8.8">
 <h2 data-number="8.8" class="anchored" data-anchor-id="expresión-seleccionada"><span class="header-section-number">8.8</span> Expresión seleccionada</h2>
 <p>Podemos obtener la expresión seleccionada por PySR en formato simbólico:</p>
-<div id="dfbc7f5a" class="cell" data-execution_count="11">
+<div id="f8cba457" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model.sympy()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model.sympy()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="10">
-<p><span class="math inline">\(\displaystyle x_{0} x_{0} - \sin{\left(x_{0} \right)} \left(-1.9895947\right)\)</span></p>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[10]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> model.sympy()
+
+<span class="ansi-red-fg">NameError</span>: name 'model' is not defined</pre>
+</div>
 </div>
 </div>
 <p>Recordemos que la función utilizada para generar nuestros datos fue</p>
@@ -1041,48 +826,79 @@ x_1x_2.\]</span></p>
 <section id="visualización-del-ajuste" class="level2" data-number="8.9">
 <h2 data-number="8.9" class="anchored" data-anchor-id="visualización-del-ajuste"><span class="header-section-number">8.9</span> Visualización del ajuste</h2>
 <p>Generamos valores de <span class="math inline">\(x\)</span> en todo el intervalo observado.</p>
-<div id="f0558d78" class="cell" data-execution_count="12">
+<div id="1faabcf3" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>x_grid <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">500</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>X_grid <span class="op">=</span> x_grid.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> model.predict(X_grid)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>x_grid <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">500</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>X_grid <span class="op">=</span> x_grid.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> model.predict(X_grid)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[11]</span><span class="ansi-green-fg">, line 5</span>
+<span class="ansi-green-fg">      1</span> x_grid = np.linspace(-<span class="ansi-green-fg">3</span>, <span class="ansi-green-fg">3</span>, <span class="ansi-green-fg">500</span>)
+<span class="ansi-green-fg">      2</span> 
+<span class="ansi-green-fg">      3</span> X_grid = x_grid.reshape(-<span class="ansi-green-fg">1</span>, <span class="ansi-green-fg">1</span>)
+<span class="ansi-green-fg">      4</span> 
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">5</span> y_pred = model.predict(X_grid)
+
+<span class="ansi-red-fg">NameError</span>: name 'model' is not defined</pre>
+</div>
+</div>
 </div>
 <p>Y comparamos los datos con la predicción.</p>
-<div id="64d25007" class="cell" data-execution_count="13">
+<div id="0816b4d4" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    x,</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    y,</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.4</span>,</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Datos"</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    x_grid,</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    y_pred,</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">2</span>,</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Regresión simbólica"</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"x"</span>)</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"y"</span>)</span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Ajuste mediante regresión simbólica"</span>)</span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    x,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.4</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Datos"</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    x_grid,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    y_pred,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Regresión simbólica"</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"x"</span>)</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"y"</span>)</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Ajuste mediante regresión simbólica"</span>)</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[12]</span><span class="ansi-green-fg">, line 12</span>
+<span class="ansi-green-fg">      8</span> )
+<span class="ansi-green-fg">      9</span> 
+<span class="ansi-green-fg">     10</span> plt.plot(
+<span class="ansi-green-fg">     11</span>     x_grid,
+<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">12</span>     y_pred,
+<span class="ansi-green-fg">     13</span>     linewidth=<span class="ansi-green-fg">2</span>,
+<span class="ansi-green-fg">     14</span>     label=<span class="ansi-yellow-fg">"Regresión simbólica"</span>
+<span class="ansi-green-fg">     15</span> )
+
+<span class="ansi-red-fg">NameError</span>: name 'y_pred' is not defined</pre>
+</div>
+</div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="parte8_files/figure-html/cell-14-output-1.png" width="651" height="451" class="figure-img"></p>
+<p><img src="parte8_files/figure-html/cell-14-output-2.png" width="632" height="411" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1091,52 +907,69 @@ x_1x_2.\]</span></p>
 <section id="encontramos-la-función-verdadera" class="level2" data-number="8.10">
 <h2 data-number="8.10" class="anchored" data-anchor-id="encontramos-la-función-verdadera"><span class="header-section-number">8.10</span> ¿Encontramos la función verdadera?</h2>
 <p>Como nuestros datos son simulados, conocemos la función verdadera:</p>
-<div id="ab018042" class="cell" data-execution_count="14">
+<div id="35608338" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>y_true <span class="op">=</span> x_grid<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">2</span><span class="op">*</span>np.sin(x_grid)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>y_true <span class="op">=</span> x_grid<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">2</span><span class="op">*</span>np.sin(x_grid)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Podemos compararla directamente con la función encontrada.</p>
-<div id="ba5d8f28" class="cell" data-execution_count="15">
+<div id="b51e3307" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    x,</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    y,</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.25</span>,</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Datos"</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    x_grid,</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    y_true,</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">2</span>,</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Función verdadera"</span></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    x_grid,</span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    y_pred,</span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=</span><span class="st">"--"</span>,</span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">2</span>,</span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Regresión simbólica"</span></span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"x"</span>)</span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"y"</span>)</span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Función verdadera vs. regresión simbólica"</span>)</span>
-<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
-<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    x,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.25</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Datos"</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    x_grid,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    y_true,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Función verdadera"</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    x_grid,</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    y_pred,</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>    linestyle<span class="op">=</span><span class="st">"--"</span>,</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>    label<span class="op">=</span><span class="st">"Regresión simbólica"</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"x"</span>)</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"y"</span>)</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Función verdadera vs. regresión simbólica"</span>)</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[14]</span><span class="ansi-green-fg">, line 19</span>
+<span class="ansi-green-fg">     15</span> )
+<span class="ansi-green-fg">     16</span> 
+<span class="ansi-green-fg">     17</span> plt.plot(
+<span class="ansi-green-fg">     18</span>     x_grid,
+<span class="ansi-green-fg">---&gt; </span><span class="ansi-green-fg">19</span>     y_pred,
+<span class="ansi-green-fg">     20</span>     linestyle=<span class="ansi-yellow-fg">"--"</span>,
+<span class="ansi-green-fg">     21</span>     linewidth=<span class="ansi-green-fg">2</span>,
+<span class="ansi-green-fg">     22</span>     label=<span class="ansi-yellow-fg">"Regresión simbólica"</span>
+
+<span class="ansi-red-fg">NameError</span>: name 'y_pred' is not defined</pre>
+</div>
+</div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="parte8_files/figure-html/cell-16-output-1.png" width="651" height="451" class="figure-img"></p>
+<p><img src="parte8_files/figure-html/cell-16-output-2.png" width="632" height="411" class="figure-img"></p>
 </figure>
 </div>
 </div>
