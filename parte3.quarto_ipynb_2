@@ -84,7 +84,7 @@
         "\n",
         "Primero cargamos las bibliotecas que utilizaremos."
       ],
-      "id": "04bd8696"
+      "id": "0240eef7"
     },
     {
       "cell_type": "code",
@@ -97,7 +97,7 @@
         "\n",
         "from ISLP import load_data"
       ],
-      "id": "8e52113c",
+      "id": "8727bfa1",
       "execution_count": null,
       "outputs": []
     },
@@ -107,7 +107,7 @@
       "source": [
         "Cargamos el conjunto de datos `Wage`."
       ],
-      "id": "38ec0013"
+      "id": "252bd74c"
     },
     {
       "cell_type": "code",
@@ -117,7 +117,7 @@
         "\n",
         "Wage.head()"
       ],
-      "id": "ebc2c112",
+      "id": "95c70ea3",
       "execution_count": null,
       "outputs": []
     },
@@ -127,7 +127,7 @@
       "source": [
         "Podemos revisar sus dimensiones:"
       ],
-      "id": "1e783343"
+      "id": "08b0f67b"
     },
     {
       "cell_type": "code",
@@ -135,7 +135,7 @@
       "source": [
         "Wage.shape"
       ],
-      "id": "35dfbdec",
+      "id": "10140b07",
       "execution_count": null,
       "outputs": []
     },
@@ -145,7 +145,7 @@
       "source": [
         "y algunas estadísticas descriptivas:"
       ],
-      "id": "38f0bb1c"
+      "id": "0abe34e8"
     },
     {
       "cell_type": "code",
@@ -153,7 +153,7 @@
       "source": [
         "Wage.describe()"
       ],
-      "id": "8be5700b",
+      "id": "e5037dd6",
       "execution_count": null,
       "outputs": []
     },
@@ -163,7 +163,7 @@
       "source": [
         "Para esta práctica utilizaremos únicamente:"
       ],
-      "id": "a11de4b5"
+      "id": "dab60aea"
     },
     {
       "cell_type": "code",
@@ -172,7 +172,7 @@
         "age = Wage['age']\n",
         "wage = Wage['wage']"
       ],
-      "id": "383675d7",
+      "id": "44cbc700",
       "execution_count": null,
       "outputs": []
     },
@@ -192,7 +192,7 @@
         "\n",
         "Antes de construir un modelo, observemos la relación entre ambas variables."
       ],
-      "id": "478db656"
+      "id": "8fe61612"
     },
     {
       "cell_type": "code",
@@ -214,7 +214,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "7d3fe1be",
+      "id": "536c25f9",
       "execution_count": null,
       "outputs": []
     },
@@ -287,7 +287,7 @@
         "\n",
         "El enfoque utilizado en `ISLP` consiste en dividir `age` en cuatro grupos utilizando **cuantiles**."
       ],
-      "id": "9225f3ea"
+      "id": "96cf14f4"
     },
     {
       "cell_type": "code",
@@ -302,7 +302,7 @@
         "print(\"Puntos de corte:\")\n",
         "print(cut_points)"
       ],
-      "id": "adcb7d58",
+      "id": "49b5869d",
       "execution_count": null,
       "outputs": []
     },
@@ -334,7 +334,7 @@
         "\n",
         "Podemos ver cuantos datos caen en cada intervalo:"
       ],
-      "id": "02a244ea"
+      "id": "27fb484d"
     },
     {
       "cell_type": "code",
@@ -343,7 +343,7 @@
         "print(\"\\nNúmero de observaciones por grupo:\")\n",
         "print(age_cut.value_counts().sort_index())"
       ],
-      "id": "6615c984",
+      "id": "a9258b07",
       "execution_count": null,
       "outputs": []
     },
@@ -353,7 +353,7 @@
       "source": [
         "Podemos consultar los intervalos generados:"
       ],
-      "id": "952a9533"
+      "id": "cc73c536"
     },
     {
       "cell_type": "code",
@@ -361,7 +361,7 @@
       "source": [
         "age_cut.cat.categories"
       ],
-      "id": "bcf95d6a",
+      "id": "88d4db85",
       "execution_count": null,
       "outputs": []
     },
@@ -371,7 +371,7 @@
       "source": [
         "También podemos contar cuántas observaciones pertenecen a cada grupo:"
       ],
-      "id": "92a89024"
+      "id": "a29de9d6"
     },
     {
       "cell_type": "code",
@@ -379,7 +379,7 @@
       "source": [
         "age_cut.value_counts().sort_index()"
       ],
-      "id": "6949f500",
+      "id": "e5ad0764",
       "execution_count": null,
       "outputs": []
     },
@@ -440,7 +440,7 @@
         "\n",
         "Ahora convertimos los cuatro intervalos en variables indicadoras."
       ],
-      "id": "696df47a"
+      "id": "e37eb0e7"
     },
     {
       "cell_type": "code",
@@ -456,7 +456,7 @@
         "print(\"\\nMatriz de diseño:\")\n",
         "print(X.head())"
       ],
-      "id": "cadcf05d",
+      "id": "423dab0d",
       "execution_count": null,
       "outputs": []
     },
@@ -486,7 +486,7 @@
         "\n",
         "Podemos revisar los nombres de las columnas:"
       ],
-      "id": "6f760096"
+      "id": "b9727eb9"
     },
     {
       "cell_type": "code",
@@ -494,7 +494,7 @@
       "source": [
         "X_cat.columns"
       ],
-      "id": "9e08094c",
+      "id": "46bbd06e",
       "execution_count": null,
       "outputs": []
     },
@@ -504,7 +504,7 @@
       "source": [
         "y las dimensiones de la matriz:"
       ],
-      "id": "987166d7"
+      "id": "d916a2cf"
     },
     {
       "cell_type": "code",
@@ -512,7 +512,7 @@
       "source": [
         "X_cat.shape"
       ],
-      "id": "6eb5ac2f",
+      "id": "865f3b7c",
       "execution_count": null,
       "outputs": []
     },
@@ -617,7 +617,7 @@
         "\n",
         "Utilizamos:"
       ],
-      "id": "7d30653c"
+      "id": "b3fc9eed"
     },
     {
       "cell_type": "code",
@@ -627,7 +627,7 @@
         "print(\"\\n=== Regresión por mínimos cuadrados ===\")\n",
         "print(modelo_ls.summary())"
       ],
-      "id": "8d0a9702",
+      "id": "794e666c",
       "execution_count": null,
       "outputs": []
     },
@@ -655,7 +655,7 @@
         "\n",
         "Podemos consultar directamente los coeficientes:"
       ],
-      "id": "4999147c"
+      "id": "9eb7e800"
     },
     {
       "cell_type": "code",
@@ -663,7 +663,7 @@
       "source": [
         "modelo_ls.params"
       ],
-      "id": "842b97be",
+      "id": "6bbbdc88",
       "execution_count": null,
       "outputs": []
     },
@@ -790,7 +790,7 @@
         "\n",
         "Podemos calcular directamente el salario promedio de cada grupo."
       ],
-      "id": "07f77ece"
+      "id": "326a9d87"
     },
     {
       "cell_type": "code",
@@ -805,7 +805,7 @@
         "\n",
         "medias_grupos"
       ],
-      "id": "c0d934eb",
+      "id": "d41e0f6d",
       "execution_count": null,
       "outputs": []
     },
@@ -815,7 +815,7 @@
       "source": [
         "Ahora observemos los coeficientes del modelo:"
       ],
-      "id": "f4750372"
+      "id": "2a936a3d"
     },
     {
       "cell_type": "code",
@@ -823,7 +823,7 @@
       "source": [
         "modelo_ls.params"
       ],
-      "id": "966f9e0d",
+      "id": "957e49c0",
       "execution_count": null,
       "outputs": []
     },
@@ -835,7 +835,7 @@
         "\n",
         "El intercepto coincide con la media del grupo de referencia:"
       ],
-      "id": "0170beb1"
+      "id": "aff26293"
     },
     {
       "cell_type": "code",
@@ -845,7 +845,7 @@
         "\n",
         "media_ref"
       ],
-      "id": "a64f3074",
+      "id": "0ea5c809",
       "execution_count": null,
       "outputs": []
     },
@@ -855,7 +855,7 @@
       "source": [
         "y debe cumplirse aproximadamente que"
       ],
-      "id": "9d0f8f57"
+      "id": "f1ec0870"
     },
     {
       "cell_type": "code",
@@ -863,7 +863,7 @@
       "source": [
         "modelo_ls.params.iloc[0]"
       ],
-      "id": "ce7e6d2b",
+      "id": "0f335fdd",
       "execution_count": null,
       "outputs": []
     },
@@ -875,7 +875,7 @@
         "\n",
         "Para recuperar la media del segundo grupo debemos sumar"
       ],
-      "id": "60c2d7f4"
+      "id": "e57474ae"
     },
     {
       "cell_type": "code",
@@ -883,7 +883,7 @@
       "source": [
         "modelo_ls.params.iloc[0] + modelo_ls.params.iloc[1]"
       ],
-      "id": "8bedf9df",
+      "id": "4838faa3",
       "execution_count": null,
       "outputs": []
     },
@@ -893,7 +893,7 @@
       "source": [
         "Para el tercer grupo:"
       ],
-      "id": "ad3e0a89"
+      "id": "730e05b6"
     },
     {
       "cell_type": "code",
@@ -901,7 +901,7 @@
       "source": [
         "modelo_ls.params.iloc[0] + modelo_ls.params.iloc[2]"
       ],
-      "id": "b31da705",
+      "id": "00d1f1f0",
       "execution_count": null,
       "outputs": []
     },
@@ -911,7 +911,7 @@
       "source": [
         "Y para el cuarto:"
       ],
-      "id": "4826a37b"
+      "id": "dbba6a90"
     },
     {
       "cell_type": "code",
@@ -919,7 +919,7 @@
       "source": [
         "modelo_ls.params.iloc[0] + modelo_ls.params.iloc[3]"
       ],
-      "id": "f37a1def",
+      "id": "36fedb36",
       "execution_count": null,
       "outputs": []
     },
@@ -929,7 +929,7 @@
       "source": [
         "Podemos comprobar todas las medias a la vez:"
       ],
-      "id": "d56a6ef7"
+      "id": "c7e55a86"
     },
     {
       "cell_type": "code",
@@ -947,7 +947,7 @@
         "\n",
         "medias_desde_modelo"
       ],
-      "id": "ade57265",
+      "id": "dcda7128",
       "execution_count": null,
       "outputs": []
     },
@@ -957,7 +957,7 @@
       "source": [
         "Comparemos:"
       ],
-      "id": "a14cb7b9"
+      "id": "579d77ff"
     },
     {
       "cell_type": "code",
@@ -968,7 +968,7 @@
         "    'Media desde el modelo': medias_desde_modelo\n",
         "})"
       ],
-      "id": "5be36500",
+      "id": "c4f1b20a",
       "execution_count": null,
       "outputs": []
     },
@@ -1055,7 +1055,7 @@
         "\n",
         "Veamos ahora el resumen completo del modelo."
       ],
-      "id": "37400d02"
+      "id": "f83a5736"
     },
     {
       "cell_type": "code",
@@ -1063,7 +1063,7 @@
       "source": [
         "print(modelo_ls.summary())"
       ],
-      "id": "b3d71fb9",
+      "id": "2c4ce13c",
       "execution_count": null,
       "outputs": []
     },
@@ -1540,7 +1540,7 @@
         "\n",
         "podemos utilizar:"
       ],
-      "id": "0174675a"
+      "id": "2c6ba086"
     },
     {
       "cell_type": "code",
@@ -1548,7 +1548,7 @@
       "source": [
         "modelo_ls.t_test([1, 1, 0, 0])"
       ],
-      "id": "6bb9de20",
+      "id": "d40b6e93",
       "execution_count": null,
       "outputs": []
     },
@@ -1562,7 +1562,7 @@
         "\n",
         "utilizamos:"
       ],
-      "id": "f2380258"
+      "id": "dbe23fb6"
     },
     {
       "cell_type": "code",
@@ -1570,7 +1570,7 @@
       "source": [
         "modelo_ls.t_test([1, 0, 1, 0])"
       ],
-      "id": "98461788",
+      "id": "aace5f3a",
       "execution_count": null,
       "outputs": []
     },
@@ -1582,7 +1582,7 @@
         "\n",
         "$$\\beta_0+\\beta_3,$$"
       ],
-      "id": "b4b243d0"
+      "id": "f768165f"
     },
     {
       "cell_type": "code",
@@ -1590,7 +1590,7 @@
       "source": [
         "modelo_ls.t_test([1, 0, 0, 1])"
       ],
-      "id": "ce09c139",
+      "id": "52dcf12b",
       "execution_count": null,
       "outputs": []
     },
@@ -1732,7 +1732,7 @@
         "\n",
         "Para visualizar el modelo construiremos una secuencia de edades."
       ],
-      "id": "4f86b8b6"
+      "id": "50897f0f"
     },
     {
       "cell_type": "code",
@@ -1744,7 +1744,7 @@
         "    1000\n",
         ")"
       ],
-      "id": "5337195a",
+      "id": "fe0e341f",
       "execution_count": null,
       "outputs": []
     },
@@ -1780,7 +1780,7 @@
         "\n",
         "Podemos verlos mediante:"
       ],
-      "id": "51433c28"
+      "id": "3f26fd05"
     },
     {
       "cell_type": "code",
@@ -1788,7 +1788,7 @@
       "source": [
         "cut_points"
       ],
-      "id": "2556dfed",
+      "id": "18cf0477",
       "execution_count": null,
       "outputs": []
     },
@@ -1798,7 +1798,7 @@
       "source": [
         "Ahora clasificamos cada valor de `age_grid` utilizando esos mismos puntos de corte:"
       ],
-      "id": "1acfe277"
+      "id": "ad52a11a"
     },
     {
       "cell_type": "code",
@@ -1810,7 +1810,7 @@
         "    include_lowest=True\n",
         ")"
       ],
-      "id": "a90e9687",
+      "id": "24703a28",
       "execution_count": null,
       "outputs": []
     },
@@ -1836,7 +1836,7 @@
         "\n",
         "Primero generamos las variables indicadoras eliminando la primera categoría:"
       ],
-      "id": "c7cbf915"
+      "id": "a79b51c4"
     },
     {
       "cell_type": "code",
@@ -1847,7 +1847,7 @@
         "    drop_first=True\n",
         ").astype(float)"
       ],
-      "id": "1816b1c7",
+      "id": "01c5cbc4",
       "execution_count": null,
       "outputs": []
     },
@@ -1857,7 +1857,7 @@
       "source": [
         "Después garantizamos que las columnas sean exactamente las mismas que las utilizadas durante el ajuste:"
       ],
-      "id": "0a9676bb"
+      "id": "65da3edf"
     },
     {
       "cell_type": "code",
@@ -1868,7 +1868,7 @@
         "    fill_value=0\n",
         ")"
       ],
-      "id": "00b2e1ba",
+      "id": "a2ec5a2e",
       "execution_count": null,
       "outputs": []
     },
@@ -1878,7 +1878,7 @@
       "source": [
         "Finalmente agregamos el intercepto:"
       ],
-      "id": "e01d01d5"
+      "id": "aeeabf7f"
     },
     {
       "cell_type": "code",
@@ -1889,7 +1889,7 @@
         "    has_constant='add'\n",
         ")"
       ],
-      "id": "9dc9091d",
+      "id": "4a05a4e1",
       "execution_count": null,
       "outputs": []
     },
@@ -1899,7 +1899,7 @@
       "source": [
         "y aseguramos el mismo orden de columnas:"
       ],
-      "id": "e8c05b9c"
+      "id": "af3b40af"
     },
     {
       "cell_type": "code",
@@ -1907,7 +1907,7 @@
       "source": [
         "X_grid = X_grid[X.columns]"
       ],
-      "id": "f678c770",
+      "id": "0931c8ed",
       "execution_count": null,
       "outputs": []
     },
@@ -1971,7 +1971,7 @@
         "\n",
         "Obtenemos las predicciones mediante:"
       ],
-      "id": "690d569d"
+      "id": "b6bdbdd5"
     },
     {
       "cell_type": "code",
@@ -1983,7 +1983,7 @@
         "\n",
         "media_ls = pred_ls.predicted_mean"
       ],
-      "id": "bda0f942",
+      "id": "ff7396d3",
       "execution_count": null,
       "outputs": []
     },
@@ -2108,7 +2108,7 @@
         "\n",
         "Calculamos intervalos de confianza del 95% mediante:"
       ],
-      "id": "5b5e9c61"
+      "id": "6da761b8"
     },
     {
       "cell_type": "code",
@@ -2118,7 +2118,7 @@
         "    alpha=0.05\n",
         ")"
       ],
-      "id": "e52f5f63",
+      "id": "68bb7e2a",
       "execution_count": null,
       "outputs": []
     },
@@ -2197,7 +2197,7 @@
         "\n",
         "Podemos representar gráficamente el resultado."
       ],
-      "id": "5f74e441"
+      "id": "1fbf9111"
     },
     {
       "cell_type": "code",
@@ -2261,7 +2261,7 @@
         "plt.tight_layout()\n",
         "plt.show()"
       ],
-      "id": "6f12bb2f",
+      "id": "4f7d67f2",
       "execution_count": null,
       "outputs": []
     },
@@ -2399,7 +2399,7 @@
         "\n",
         "En Python:"
       ],
-      "id": "9a4c4afb"
+      "id": "ec8fd292"
     },
     {
       "cell_type": "code",
@@ -2409,7 +2409,7 @@
         "\n",
         "y_bin.head()"
       ],
-      "id": "18d35116",
+      "id": "aa02f262",
       "execution_count": null,
       "outputs": []
     },
@@ -2435,7 +2435,7 @@
         "\n",
         "Podemos contar cuántas observaciones pertenecen a cada clase:"
       ],
-      "id": "020adfed"
+      "id": "fe4e0444"
     },
     {
       "cell_type": "code",
@@ -2443,7 +2443,7 @@
       "source": [
         "y_bin.value_counts()"
       ],
-      "id": "6fab6e3b",
+      "id": "ef119e8d",
       "execution_count": null,
       "outputs": []
     },
@@ -2453,7 +2453,7 @@
       "source": [
         "y calcular la proporción global de salarios superiores a $250$:"
       ],
-      "id": "e019f4af"
+      "id": "43a5023c"
     },
     {
       "cell_type": "code",
@@ -2461,7 +2461,7 @@
       "source": [
         "y_bin.mean()"
       ],
-      "id": "17084f26",
+      "id": "58d1bb4f",
       "execution_count": null,
       "outputs": []
     },
@@ -2533,7 +2533,7 @@
         "\n",
         "Ajustamos el modelo mediante:"
       ],
-      "id": "925d84d2"
+      "id": "f11057e4"
     },
     {
       "cell_type": "code",
@@ -2544,7 +2544,7 @@
         "    X\n",
         ").fit()"
       ],
-      "id": "8f8c0f00",
+      "id": "bc8f8a94",
       "execution_count": null,
       "outputs": []
     },
@@ -2560,7 +2560,7 @@
         "\n",
         "Podemos ver los coeficientes estimados mediante:"
       ],
-      "id": "9b8b4bc2"
+      "id": "28cbc434"
     },
     {
       "cell_type": "code",
@@ -2568,7 +2568,7 @@
       "source": [
         "modelo_logit.params"
       ],
-      "id": "743dec58",
+      "id": "a240bd71",
       "execution_count": null,
       "outputs": []
     },
@@ -2826,7 +2826,7 @@
         "\n",
         "Podemos calcularlos mediante:"
       ],
-      "id": "9b9465d8"
+      "id": "7915d18b"
     },
     {
       "cell_type": "code",
@@ -2834,7 +2834,7 @@
       "source": [
         "np.exp(modelo_logit.params)"
       ],
-      "id": "9465e326",
+      "id": "55d1a1b1",
       "execution_count": null,
       "outputs": []
     },
@@ -2900,7 +2900,7 @@
         "\n",
         "Podemos calcularlas en Python:"
       ],
-      "id": "4b968346"
+      "id": "fb37c209"
     },
     {
       "cell_type": "code",
@@ -2920,7 +2920,7 @@
         "\n",
         "probabilidades_grupos"
       ],
-      "id": "dbdca413",
+      "id": "71447fdd",
       "execution_count": null,
       "outputs": []
     },
@@ -2975,7 +2975,7 @@
         "\n",
         "Podemos calcular directamente estas proporciones:"
       ],
-      "id": "0fdb3977"
+      "id": "dc742b56"
     },
     {
       "cell_type": "code",
@@ -2995,7 +2995,7 @@
         "\n",
         "proporciones_observadas"
       ],
-      "id": "2ebf50f0",
+      "id": "21b47d2c",
       "execution_count": null,
       "outputs": []
     },
@@ -3005,7 +3005,7 @@
       "source": [
         "Comparemos con las probabilidades obtenidas a partir del modelo:"
       ],
-      "id": "6757577b"
+      "id": "401a2179"
     },
     {
       "cell_type": "code",
@@ -3016,7 +3016,7 @@
         "    'Probabilidad del modelo': probabilidades_grupos\n",
         "})"
       ],
-      "id": "6eba54f5",
+      "id": "853e7b6e",
       "execution_count": null,
       "outputs": []
     },
@@ -3108,7 +3108,7 @@
         "\n",
         "Veamos ahora:"
       ],
-      "id": "bc9d452b"
+      "id": "6e39d73c"
     },
     {
       "cell_type": "code",
@@ -3116,7 +3116,7 @@
       "source": [
         "print(modelo_logit.summary())"
       ],
-      "id": "8994ee4a",
+      "id": "02c64347",
       "execution_count": null,
       "outputs": []
     },
@@ -3503,7 +3503,7 @@
         "\n",
         "Para predecir sobre la grilla de edades utilizamos la misma matriz `X_grid` que construimos anteriormente:"
       ],
-      "id": "98b4b8af"
+      "id": "35da674b"
     },
     {
       "cell_type": "code",
@@ -3515,7 +3515,7 @@
         "\n",
         "media_logit = pred_logit.predicted"
       ],
-      "id": "029a093d",
+      "id": "0308093e",
       "execution_count": null,
       "outputs": []
     },
@@ -3564,7 +3564,7 @@
         "\n",
         "Podemos obtener información sobre la incertidumbre de las probabilidades mediante:"
       ],
-      "id": "27b58743"
+      "id": "4994a4cc"
     },
     {
       "cell_type": "code",
@@ -3576,7 +3576,7 @@
         "\n",
         "ic_logit.head()"
       ],
-      "id": "3ee1e156",
+      "id": "a05c781c",
       "execution_count": null,
       "outputs": []
     },
@@ -3586,7 +3586,7 @@
       "source": [
         "Extraemos los límites:"
       ],
-      "id": "c04a8fe3"
+      "id": "8a110342"
     },
     {
       "cell_type": "code",
@@ -3595,7 +3595,7 @@
         "ic_logit_low = ic_logit['ci_lower']\n",
         "ic_logit_high = ic_logit['ci_upper']"
       ],
-      "id": "cbcc73b7",
+      "id": "7f8c1e00",
       "execution_count": null,
       "outputs": []
     },
@@ -3627,7 +3627,7 @@
         "\n",
         "$$Wage\\leq250.$$"
       ],
-      "id": "cd837cc3"
+      "id": "48f8543a"
     },
     {
       "cell_type": "code",
@@ -3636,7 +3636,7 @@
         "rug_high = age[y_bin == 1]\n",
         "rug_low = age[y_bin == 0]"
       ],
-      "id": "6f392725",
+      "id": "76aca478",
       "execution_count": null,
       "outputs": []
     },
@@ -3651,7 +3651,7 @@
         "\n",
         "### Visualización de la regresión logística escalonada"
       ],
-      "id": "ae59a9a2"
+      "id": "3c9af211"
     },
     {
       "cell_type": "code",
@@ -3744,7 +3744,7 @@
         "plt.tight_layout()\n",
         "plt.show()"
       ],
-      "id": "e2e2719e",
+      "id": "eac6b3dc",
       "execution_count": null,
       "outputs": []
     },
@@ -3950,7 +3950,7 @@
         "\n",
         "Discute si una función escalonada parece apropiada para esa relación."
       ],
-      "id": "d4950908"
+      "id": "01f07d4e"
     }
   ],
   "metadata": {

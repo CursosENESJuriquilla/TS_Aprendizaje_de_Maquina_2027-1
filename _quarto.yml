@@ -55,7 +55,7 @@ book:
           - parte17.qmd
     - part: "**Interpretabilidad y explicabilidad de modelos**"
       chapters:
-          - parte17.qmd  
+          - parte18.qmd  
     
   # Information
   repo-url: https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1 # link de Github
