@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,13 +12,10 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
+code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: 1.5em;}
-div.column{flex: auto;}
-@media screen {
-div.columns{gap: min(4vw, 1.5em);}
-div.column{overflow-x: auto;}
-}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -80,10 +77,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-c366763be4b3545af05400088cd48f18.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-256100c28b4d1a71ce469740e6db3c8e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -113,10 +110,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
+
+
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
+
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -376,7 +376,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte17.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Introducción al Aprendizaje no Supervisado</span></span></a>
   </div>
 </li>
       </ul>
@@ -392,8 +392,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+  <a href="./parte18.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -610,7 +610,7 @@ window.Quarto = {
 <section id="preparación" class="level2" data-number="15.2">
 <h2 data-number="15.2" class="anchored" data-anchor-id="preparación"><span class="header-section-number">15.2</span> Preparación</h2>
 <p>Importamos las bibliotecas necesarias.</p>
-<div id="31d21446" class="cell" data-execution_count="1">
+<div id="1437b33d" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -640,7 +640,7 @@ window.Quarto = {
 <p>Utilizaremos el conjunto de datos <code>Wine</code>, disponible directamente en <code>scikit-learn</code>.</p>
 <p>Este conjunto contiene mediciones químicas de vinos pertenecientes a tres clases.</p>
 <p>Cargamos los datos:</p>
-<div id="dee338df" class="cell" data-execution_count="2">
+<div id="ab259bec" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>wine <span class="op">=</span> load_wine()</span>
@@ -650,7 +650,7 @@ window.Quarto = {
 </details>
 </div>
 <p>Podemos consultar los nombres de las variables:</p>
-<div id="ddf0d8d4" class="cell" data-execution_count="3">
+<div id="c45666fe" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>wine.feature_names</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -672,7 +672,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Y los nombres de las clases:</p>
-<div id="f90c45ef" class="cell" data-execution_count="4">
+<div id="c9d33a10" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>wine.target_names</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -682,7 +682,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Veamos las dimensiones:</p>
-<div id="a0592f5e" class="cell" data-execution_count="5">
+<div id="83027d49" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>X.shape</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -698,7 +698,7 @@ window.Quarto = {
 <section id="exploración-inicial" class="level2" data-number="15.4">
 <h2 data-number="15.4" class="anchored" data-anchor-id="exploración-inicial"><span class="header-section-number">15.4</span> Exploración inicial</h2>
 <p>Construimos un <code>DataFrame</code>.</p>
-<div id="c2a1eddd" class="cell" data-execution_count="6">
+<div id="d53d0f24" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>datos <span class="op">=</span> pd.DataFrame(</span>
@@ -827,7 +827,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Observemos la distribución de las clases.</p>
-<div id="68168a02" class="cell" data-execution_count="7">
+<div id="aa806a50" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>datos[<span class="st">"Clase"</span>].value_counts().sort_index()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -841,7 +841,7 @@ Name: count, dtype: int64</code></pre>
 </div>
 </div>
 <p>Podemos mostrar también los nombres.</p>
-<div id="1a8711ab" class="cell" data-execution_count="8">
+<div id="1f47405e" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>distribucion <span class="op">=</span> (</span>
@@ -932,7 +932,7 @@ Name: count, dtype: int64</code></pre>
 <section id="las-variables-no-están-en-la-misma-escala" class="level2" data-number="15.5">
 <h2 data-number="15.5" class="anchored" data-anchor-id="las-variables-no-están-en-la-misma-escala"><span class="header-section-number">15.5</span> Las variables no están en la misma escala</h2>
 <p>Veamos algunos estadísticos descriptivos.</p>
-<div id="9b5becd5" class="cell" data-execution_count="9">
+<div id="de5e7806" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>datos.drop(columns<span class="op">=</span><span class="st">"Clase"</span>).describe().T</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1143,7 +1143,7 @@ Name: count, dtype: int64</code></pre>
 <section id="separación-en-entrenamiento-y-prueba" class="level2" data-number="15.6">
 <h2 data-number="15.6" class="anchored" data-anchor-id="separación-en-entrenamiento-y-prueba"><span class="header-section-number">15.6</span> Separación en entrenamiento y prueba</h2>
 <p>Antes de realizar cualquier selección de modelo, reservaremos una parte de los datos para la evaluación final.</p>
-<div id="57020753" class="cell" data-execution_count="10">
+<div id="5e9ccc83" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
@@ -1156,7 +1156,7 @@ Name: count, dtype: int64</code></pre>
 </details>
 </div>
 <p>Comprobamos las dimensiones.</p>
-<div id="38751603" class="cell" data-execution_count="11">
+<div id="bb8f19c3" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"X_train:"</span>, X_train.shape)</span>
@@ -1171,7 +1171,7 @@ X_test: (45, 13)</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>stratify<span class="op">=</span>y</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>para conservar aproximadamente la proporción de las clases en entrenamiento y prueba.</p>
 <p>Podemos verificarlo.</p>
-<div id="0e5db8ca" class="cell" data-execution_count="12">
+<div id="d50280c8" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -1192,7 +1192,7 @@ X_test: (45, 13)</code></pre>
 Name: proportion, dtype: float64</code></pre>
 </div>
 </div>
-<div id="07a9e550" class="cell" data-execution_count="13">
+<div id="17f44042" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -1299,7 +1299,7 @@ Name: proportion, dtype: float64</code></pre>
 <h2 data-number="15.8" class="anchored" data-anchor-id="multiclase-en-svc"><span class="header-section-number">15.8</span> Multiclase en <code>SVC</code></h2>
 <p><code>SVC</code> utiliza internamente una estrategia <strong>one-versus-one</strong> para el entrenamiento multiclase.</p>
 <p>Podemos, por tanto, ajustar directamente:</p>
-<div id="25b9a7ef" class="cell" data-execution_count="14">
+<div id="c3dc24c9" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> Pipeline([</span>
@@ -1319,7 +1319,7 @@ Name: proportion, dtype: float64</code></pre>
 </div>
 <p>No necesitamos separar manualmente las tres clases en problemas binarios.</p>
 <p>Ajustamos utilizando únicamente entrenamiento:</p>
-<div id="7c8253d8" class="cell" data-execution_count="15">
+<div id="b921a914" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>modelo.fit(</span>
@@ -2881,7 +2881,7 @@ forceTheme('sk-container-id-1');</script>
 </div>
 </div>
 <p>Podemos generar predicciones sobre entrenamiento:</p>
-<div id="f0c3c8d6" class="cell" data-execution_count="16">
+<div id="6a11af3f" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>pred_train <span class="op">=</span> modelo.predict(</span>
@@ -2890,7 +2890,7 @@ forceTheme('sk-container-id-1');</script>
 </details>
 </div>
 <p>Y calcular la exactitud:</p>
-<div id="e17efedc" class="cell" data-execution_count="17">
+<div id="23b5cdfc" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>accuracy_score(</span>
@@ -2984,7 +2984,7 @@ forceTheme('sk-container-id-1');</script>
 <h2 data-number="15.10" class="anchored" data-anchor-id="validación-cruzada"><span class="header-section-number">15.10</span> Validación cruzada</h2>
 <p>Antes de realizar una búsqueda de hiperparámetros, recordemos cómo evaluar una configuración mediante validación cruzada.</p>
 <p>Utilizaremos validación cruzada estratificada.</p>
-<div id="0e8a70c2" class="cell" data-execution_count="18">
+<div id="b075ec5c" class="cell" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> StratifiedKFold(</span>
@@ -2996,7 +2996,7 @@ forceTheme('sk-container-id-1');</script>
 </div>
 <p>La estratificación busca conservar aproximadamente la distribución de las clases dentro de cada pliegue.</p>
 <p>Evaluamos el modelo lineal.</p>
-<div id="4f8b7333" class="cell" data-execution_count="19">
+<div id="2d0efc5d" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> cross_val_score(</span>
@@ -3009,7 +3009,7 @@ forceTheme('sk-container-id-1');</script>
 </details>
 </div>
 <p>Observamos los resultados.</p>
-<div id="3b0b204d" class="cell" data-execution_count="20">
+<div id="97f319c4" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>scores</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -3019,7 +3019,7 @@ forceTheme('sk-container-id-1');</script>
 </div>
 </div>
 <p>Promedio:</p>
-<div id="c6a15f8a" class="cell" data-execution_count="21">
+<div id="62febf26" class="cell" data-execution_count="21">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>scores.mean()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -3029,7 +3029,7 @@ forceTheme('sk-container-id-1');</script>
 </div>
 </div>
 <p>Desviación estándar:</p>
-<div id="724c0a62" class="cell" data-execution_count="22">
+<div id="cd8479fc" class="cell" data-execution_count="22">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>scores.std()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -3039,7 +3039,7 @@ forceTheme('sk-container-id-1');</script>
 </div>
 </div>
 <p>Podemos resumir:</p>
-<div id="74429a55" class="cell" data-execution_count="23">
+<div id="9e871873" class="cell" data-execution_count="23">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -3093,7 +3093,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 <h2 data-number="15.11" class="anchored" data-anchor-id="selección-manual-de-c"><span class="header-section-number">15.11</span> Selección manual de <span class="math inline">\(C\)</span></h2>
 <p>Antes de utilizar <code>GridSearchCV</code>, veamos cómo podríamos comparar varios valores de <span class="math inline">\(C\)</span> mediante validación cruzada.</p>
 <p>Utilizaremos un kernel lineal.</p>
-<div id="04958f25" class="cell" data-execution_count="24">
+<div id="abcb268e" class="cell" data-execution_count="24">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>valores_C <span class="op">=</span> [</span>
@@ -3106,7 +3106,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 <span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="232b82ce" class="cell" data-execution_count="25">
+<div id="30249a84" class="cell" data-execution_count="25">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>resultados_C <span class="op">=</span> []</span>
@@ -3143,7 +3143,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 </details>
 </div>
 <p>Convertimos los resultados en una tabla.</p>
-<div id="8e657c56" class="cell" data-execution_count="26">
+<div id="acca55e1" class="cell" data-execution_count="26">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>resultados_C <span class="op">=</span> pd.DataFrame(</span>
@@ -3209,7 +3209,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 </div>
 </div>
 <p>Podemos ordenarla según el promedio de validación cruzada.</p>
-<div id="df5c805f" class="cell" data-execution_count="27">
+<div id="f63324cb" class="cell" data-execution_count="27">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>resultados_C.sort_values(</span>
@@ -3309,7 +3309,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 <p>Cuando tenemos varios hiperparámetros, realizar manualmente todas las combinaciones se vuelve incómodo.</p>
 <p><code>GridSearchCV</code> automatiza este procedimiento.</p>
 <p>Primero construiremos un <code>Pipeline</code> general.</p>
-<div id="3bb59375" class="cell" data-execution_count="28">
+<div id="8f683d6a" class="cell" data-execution_count="28">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">=</span> Pipeline([</span>
@@ -3329,7 +3329,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 <section id="una-cuadrícula-sencilla" class="level2" data-number="15.13">
 <h2 data-number="15.13" class="anchored" data-anchor-id="una-cuadrícula-sencilla"><span class="header-section-number">15.13</span> Una cuadrícula sencilla</h2>
 <p>Comencemos únicamente con el kernel lineal.</p>
-<div id="bbb8c125" class="cell" data-execution_count="29">
+<div id="318e0199" class="cell" data-execution_count="29">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>param_grid_lineal <span class="op">=</span> {</span>
@@ -3356,7 +3356,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 <p>el parámetro <code>C</code> se escribe:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>svc__C</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Creamos la búsqueda.</p>
-<div id="00c817c1" class="cell" data-execution_count="30">
+<div id="32529478" class="cell" data-execution_count="30">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>grid_lineal <span class="op">=</span> GridSearchCV(</span>
@@ -3369,7 +3369,7 @@ Desviación estándar: 0.01838434849561446</code></pre>
 </details>
 </div>
 <p>Ajustamos utilizando únicamente entrenamiento.</p>
-<div id="feeaa3cd" class="cell" data-execution_count="31">
+<div id="3e16126b" class="cell" data-execution_count="31">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>grid_lineal.fit(</span>
@@ -4442,7 +4442,7 @@ available in the ``cv_results_`` dict at the keys ending with that<br>
 scorer's name (``'_&lt;scorer_name&gt;'``) instead of ``'_score'`` shown<br>
 above. ('split0_test_precision', 'mean_train_precision' etc.)</span></a></td>
 <td class="fitted-att-type">dict</td>
-<td>{'me...me': array([0.0040... 0.00214968]), 'me...me': array([0.0017... 0.00037985]), 'me...re': array([0.3985... 0.97749288]), 'pa..._C': masked_array(...l_value=1e+20), ...}</td>
+<td>{'me...me': array([0.0022... 0.00301704]), 'me...me': array([0.0013... 0.00032792]), 'me...re': array([0.3985... 0.97749288]), 'pa..._C': masked_array(...l_value=1e+20), ...}</td>
 </tr>
 <tr class="default even">
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=multimetric_,-bool" class="param-doc-link" style="anchor-name: --doc-link-multimetric_;" rel="noreferrer" target="_blank">multimetric_ <span class="param-doc-description" style="position-anchor: --doc-link-multimetric_;"> multimetric_: bool<br>
@@ -4479,7 +4479,7 @@ This is present only if ``refit`` is not False.<br>
 <br>
 .. versionadded:: 0.20</span></a></td>
 <td class="fitted-att-type">float</td>
-<td>0.007225</td>
+<td>0.01247</td>
 </tr>
 <tr class="default even">
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=scorer_,-function%20or%20a%20dict" class="param-doc-link" style="anchor-name: --doc-link-scorer_;" rel="noreferrer" target="_blank">scorer_ <span class="param-doc-description" style="position-anchor: --doc-link-scorer_;"> scorer_: function or a dict<br>
@@ -5229,7 +5229,7 @@ forceTheme('sk-container-id-2');</script>
 <section id="resultados-de-gridsearchcv" class="level2" data-number="15.14">
 <h2 data-number="15.14" class="anchored" data-anchor-id="resultados-de-gridsearchcv"><span class="header-section-number">15.14</span> Resultados de <code>GridSearchCV</code></h2>
 <p>Podemos consultar los mejores hiperparámetros:</p>
-<div id="d70be52c" class="cell" data-execution_count="32">
+<div id="00d4d9ac" class="cell" data-execution_count="32">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>grid_lineal.best_params_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -5239,7 +5239,7 @@ forceTheme('sk-container-id-2');</script>
 </div>
 </div>
 <p>Y el mejor promedio de validación cruzada:</p>
-<div id="5184069a" class="cell" data-execution_count="33">
+<div id="381854f4" class="cell" data-execution_count="33">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>grid_lineal.best_score_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -5263,7 +5263,7 @@ forceTheme('sk-container-id-2');</script>
 </div>
 </div>
 <p>Podemos consultar todos los resultados:</p>
-<div id="d3f98223" class="cell" data-execution_count="34">
+<div id="03de8cf8" class="cell" data-execution_count="34">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>resultados_grid_lineal <span class="op">=</span> pd.DataFrame(</span>
@@ -5355,7 +5355,7 @@ forceTheme('sk-container-id-2');</script>
 <p>y</p>
 <p><span class="math display">\[\gamma.\]</span></p>
 <p>Definimos:</p>
-<div id="4c9b40f8" class="cell" data-execution_count="35">
+<div id="69893768" class="cell" data-execution_count="35">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>param_grid_rbf <span class="op">=</span> {</span>
@@ -5385,7 +5385,7 @@ forceTheme('sk-container-id-2');</script>
 <section id="búsqueda-para-rbf" class="level2" data-number="15.16">
 <h2 data-number="15.16" class="anchored" data-anchor-id="búsqueda-para-rbf"><span class="header-section-number">15.16</span> Búsqueda para RBF</h2>
 <p>Creamos la búsqueda:</p>
-<div id="972f2a94" class="cell" data-execution_count="36">
+<div id="3859aff1" class="cell" data-execution_count="36">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>grid_rbf <span class="op">=</span> GridSearchCV(</span>
@@ -5398,7 +5398,7 @@ forceTheme('sk-container-id-2');</script>
 </details>
 </div>
 <p>Ejecutamos:</p>
-<div id="4c270e19" class="cell" data-execution_count="37">
+<div id="4a231f82" class="cell" data-execution_count="37">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>grid_rbf.fit(</span>
@@ -6472,7 +6472,7 @@ available in the ``cv_results_`` dict at the keys ending with that<br>
 scorer's name (``'_&lt;scorer_name&gt;'``) instead of ``'_score'`` shown<br>
 above. ('split0_test_precision', 'mean_train_precision' etc.)</span></a></td>
 <td class="fitted-att-type">dict</td>
-<td>{'me...me': array([0.0043..., 0.00226984]), 'me...me': array([0.0017..., 0.00100007]), 'me...re': array([0.3985..., 0.3985755 ]), 'pa..._C': masked_array(...l_value=1e+20), ...}</td>
+<td>{'me...me': array([0.0008..., 0.00253611]), 'me...me': array([0.0029..., 0.0014009 ]), 'me...re': array([0.3985..., 0.3985755 ]), 'pa..._C': masked_array(...l_value=1e+20), ...}</td>
 </tr>
 <tr class="default even">
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=multimetric_,-bool" class="param-doc-link" style="anchor-name: --doc-link-multimetric_;" rel="noreferrer" target="_blank">multimetric_ <span class="param-doc-description" style="position-anchor: --doc-link-multimetric_;"> multimetric_: bool<br>
@@ -6509,7 +6509,7 @@ This is present only if ``refit`` is not False.<br>
 <br>
 .. versionadded:: 0.20</span></a></td>
 <td class="fitted-att-type">float</td>
-<td>0.01774</td>
+<td>0.009571</td>
 </tr>
 <tr class="default even">
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=scorer_,-function%20or%20a%20dict" class="param-doc-link" style="anchor-name: --doc-link-scorer_;" rel="noreferrer" target="_blank">scorer_ <span class="param-doc-description" style="position-anchor: --doc-link-scorer_;"> scorer_: function or a dict<br>
@@ -7245,7 +7245,7 @@ forceTheme('sk-container-id-3');</script>
 </div>
 </div>
 <p>Consultamos:</p>
-<div id="ecb474c0" class="cell" data-execution_count="38">
+<div id="09ec2aa7" class="cell" data-execution_count="38">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>grid_rbf.best_params_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -7254,7 +7254,7 @@ forceTheme('sk-container-id-3');</script>
 <pre><code>{'svc__C': 1, 'svc__gamma': 0.1, 'svc__kernel': 'rbf'}</code></pre>
 </div>
 </div>
-<div id="3e84f44c" class="cell" data-execution_count="39">
+<div id="0ac6cebf" class="cell" data-execution_count="39">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>grid_rbf.best_score_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -7309,7 +7309,7 @@ gamma = 0.1</code></pre>
 <section id="visualizando-la-búsqueda-de-c-y-gamma" class="level2" data-number="15.17">
 <h2 data-number="15.17" class="anchored" data-anchor-id="visualizando-la-búsqueda-de-c-y-gamma"><span class="header-section-number">15.17</span> Visualizando la búsqueda de <span class="math inline">\(C\)</span> y <span class="math inline">\(\gamma\)</span></h2>
 <p>Los resultados de <code>GridSearchCV</code> pueden organizarse en una tabla.</p>
-<div id="50bc5c1e" class="cell" data-execution_count="40">
+<div id="bfd4cbcc" class="cell" data-execution_count="40">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>resultados_rbf <span class="op">=</span> pd.DataFrame(</span>
@@ -7318,7 +7318,7 @@ gamma = 0.1</code></pre>
 </details>
 </div>
 <p>Seleccionamos las columnas relevantes:</p>
-<div id="20c32247" class="cell" data-execution_count="41">
+<div id="2042b6af" class="cell" data-execution_count="41">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>tabla_rbf <span class="op">=</span> resultados_rbf[</span>
@@ -7387,7 +7387,7 @@ gamma = 0.1</code></pre>
 <li>las columnas correspondan a <span class="math inline">\(\gamma\)</span>;</li>
 <li>cada celda contenga el promedio de validación cruzada.</li>
 </ul>
-<div id="a769bba2" class="cell" data-execution_count="42">
+<div id="ee489ee1" class="cell" data-execution_count="42">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>tabla_pivot <span class="op">=</span> tabla_rbf.pivot(</span>
@@ -7484,7 +7484,7 @@ gamma = 0.1</code></pre>
 </ul>
 <p>Por ello no conviene definir una sola cuadrícula donde todos los parámetros se apliquen indiscriminadamente a todos los kernels.</p>
 <p>Podemos utilizar una <strong>lista de diccionarios</strong>.</p>
-<div id="99cf3592" class="cell" data-execution_count="43">
+<div id="aff9c2ec" class="cell" data-execution_count="43">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>param_grid <span class="op">=</span> [</span>
@@ -7541,7 +7541,7 @@ gamma = 0.1</code></pre>
 <section id="búsqueda-conjunta" class="level2" data-number="15.19">
 <h2 data-number="15.19" class="anchored" data-anchor-id="búsqueda-conjunta"><span class="header-section-number">15.19</span> Búsqueda conjunta</h2>
 <p>Creamos una nueva búsqueda.</p>
-<div id="78e78a94" class="cell" data-execution_count="44">
+<div id="b7c97dce" class="cell" data-execution_count="44">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>grid <span class="op">=</span> GridSearchCV(</span>
@@ -7555,7 +7555,7 @@ gamma = 0.1</code></pre>
 </details>
 </div>
 <p>Ejecutamos:</p>
-<div id="708558f2" class="cell" data-execution_count="45">
+<div id="75354b36" class="cell" data-execution_count="45">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>grid.fit(</span>
@@ -8634,7 +8634,7 @@ available in the ``cv_results_`` dict at the keys ending with that<br>
 scorer's name (``'_&lt;scorer_name&gt;'``) instead of ``'_score'`` shown<br>
 above. ('split0_test_precision', 'mean_train_precision' etc.)</span></a></td>
 <td class="fitted-att-type">dict</td>
-<td>{'me...me': array([0.0026..., 0.005477 ]), 'me...me': array([0.0037..., 0.00038047]), 'me...re': array([0.9851..., 0.98518519]), 'me...re': array([0.9849..., 1. ]), ...}</td>
+<td>{'me...me': array([0.0005..., 0.00336418]), 'me...me': array([0.0015..., 0. ]), 'me...re': array([0.9851..., 0.98518519]), 'me...re': array([0.9849..., 1. ]), ...}</td>
 </tr>
 <tr class="default even">
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=multimetric_,-bool" class="param-doc-link" style="anchor-name: --doc-link-multimetric_;" rel="noreferrer" target="_blank">multimetric_ <span class="param-doc-description" style="position-anchor: --doc-link-multimetric_;"> multimetric_: bool<br>
@@ -8671,7 +8671,7 @@ This is present only if ``refit`` is not False.<br>
 <br>
 .. versionadded:: 0.20</span></a></td>
 <td class="fitted-att-type">float</td>
-<td>0.01409</td>
+<td>0</td>
 </tr>
 <tr class="default even">
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.model_selection.GridSearchCV.html#:~:text=scorer_,-function%20or%20a%20dict" class="param-doc-link" style="anchor-name: --doc-link-scorer_;" rel="noreferrer" target="_blank">scorer_ <span class="param-doc-description" style="position-anchor: --doc-link-scorer_;"> scorer_: function or a dict<br>
@@ -9407,7 +9407,7 @@ forceTheme('sk-container-id-4');</script>
 </div>
 </div>
 <p>Consultamos la configuración seleccionada:</p>
-<div id="ae357ac3" class="cell" data-execution_count="46">
+<div id="ed1ce1a0" class="cell" data-execution_count="46">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>grid.best_params_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -9417,7 +9417,7 @@ forceTheme('sk-container-id-4');</script>
 </div>
 </div>
 <p>Y su desempeño promedio durante validación cruzada:</p>
-<div id="ec817cc1" class="cell" data-execution_count="47">
+<div id="bd318d0e" class="cell" data-execution_count="47">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>grid.best_score_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -9431,7 +9431,7 @@ forceTheme('sk-container-id-4');</script>
 <h2 data-number="15.20" class="anchored" data-anchor-id="el-mejor-estimador"><span class="header-section-number">15.20</span> El mejor estimador</h2>
 <p><code>GridSearchCV</code> vuelve a ajustar automáticamente la mejor configuración utilizando todos los datos de entrenamiento.</p>
 <p>Podemos acceder al modelo mediante:</p>
-<div id="c132e325" class="cell" data-execution_count="48">
+<div id="4ca69240" class="cell" data-execution_count="48">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>mejor_modelo <span class="op">=</span> grid.best_estimator_</span>
@@ -10985,7 +10985,7 @@ forceTheme('sk-container-id-5');</script>
 <pre class="text"><code>SVC</code></pre>
 <p>con los hiperparámetros seleccionados.</p>
 <p>Podemos inspeccionar únicamente la SVM:</p>
-<div id="2b31351b" class="cell" data-execution_count="49">
+<div id="ab20481c" class="cell" data-execution_count="49">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>mejor_svc <span class="op">=</span> (</span>
@@ -12228,7 +12228,7 @@ forceTheme('sk-container-id-6');</script>
 </div>
 </div>
 <p>Y consultar el número de vectores de soporte:</p>
-<div id="fe8f273a" class="cell" data-execution_count="50">
+<div id="10113286" class="cell" data-execution_count="50">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>mejor_svc.n_support_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -12293,7 +12293,7 @@ y_test</code></pre>
 <section id="inspeccionando-los-resultados-de-la-búsqueda" class="level2" data-number="15.22">
 <h2 data-number="15.22" class="anchored" data-anchor-id="inspeccionando-los-resultados-de-la-búsqueda"><span class="header-section-number">15.22</span> Inspeccionando los resultados de la búsqueda</h2>
 <p>Podemos convertir todos los resultados en un <code>DataFrame</code>.</p>
-<div id="8234ad97" class="cell" data-execution_count="51">
+<div id="55170ff4" class="cell" data-execution_count="51">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>resultados_grid <span class="op">=</span> pd.DataFrame(</span>
@@ -12302,7 +12302,7 @@ y_test</code></pre>
 </details>
 </div>
 <p>Seleccionamos algunas columnas.</p>
-<div id="82c11bd5" class="cell" data-execution_count="52">
+<div id="29aa329f" class="cell" data-execution_count="52">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>columnas <span class="op">=</span> [</span>
@@ -12526,7 +12526,7 @@ y_test</code></pre>
 <pre class="text"><code>mean_test_score</code></pre>
 <p>donde <code>mean_test_score</code> corresponde nuevamente al desempeño sobre los pliegues de validación.</p>
 <p>Veamos las configuraciones con mayor desempeño de entrenamiento.</p>
-<div id="7019638b" class="cell" data-execution_count="53">
+<div id="03e5b0b4" class="cell" data-execution_count="53">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>resultados_grid[</span>
@@ -12715,14 +12715,14 @@ mean_test_score  = 0.96</code></pre>
 <p>Hasta ahora <code>SVC</code> ha utilizado internamente una estrategia OvO.</p>
 <p>También podemos construir explícitamente una estrategia OvR utilizando herramientas de <code>scikit-learn</code>.</p>
 <p>Importamos:</p>
-<div id="c9f262fc" class="cell" data-execution_count="54">
+<div id="cc513341" class="cell" data-execution_count="54">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.multiclass <span class="im">import</span> OneVsRestClassifier</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Construimos:</p>
-<div id="f396a30d" class="cell" data-execution_count="55">
+<div id="fd841825" class="cell" data-execution_count="55">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>modelo_ovr <span class="op">=</span> Pipeline([</span>
@@ -12743,7 +12743,7 @@ mean_test_score  = 0.96</code></pre>
 </details>
 </div>
 <p>Evaluamos mediante validación cruzada.</p>
-<div id="6324e6ed" class="cell" data-execution_count="56">
+<div id="0bd0f34f" class="cell" data-execution_count="56">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>scores_ovr <span class="op">=</span> cross_val_score(</span>
@@ -12761,7 +12761,7 @@ mean_test_score  = 0.96</code></pre>
 </div>
 </div>
 <p>Promedio:</p>
-<div id="e139011d" class="cell" data-execution_count="57">
+<div id="21721fe5" class="cell" data-execution_count="57">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb91"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>scores_ovr.mean()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -12771,7 +12771,7 @@ mean_test_score  = 0.96</code></pre>
 </div>
 </div>
 <p>Comparemos con un <code>SVC</code> lineal que utiliza OvO internamente.</p>
-<div id="7fee6c6f" class="cell" data-execution_count="58">
+<div id="31da8914" class="cell" data-execution_count="58">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb93"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>modelo_ovo <span class="op">=</span> Pipeline([</span>
@@ -12789,7 +12789,7 @@ mean_test_score  = 0.96</code></pre>
 <span id="cb93-13"><a href="#cb93-13" aria-hidden="true" tabindex="-1"></a>])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="6b1afb05" class="cell" data-execution_count="59">
+<div id="c2c46c33" class="cell" data-execution_count="59">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>scores_ovo <span class="op">=</span> cross_val_score(</span>
@@ -12807,7 +12807,7 @@ mean_test_score  = 0.96</code></pre>
 </div>
 </div>
 <p>Construimos un resumen:</p>
-<div id="eebe96a4" class="cell" data-execution_count="60">
+<div id="302e464c" class="cell" data-execution_count="60">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({</span>
@@ -12911,13 +12911,9 @@ mean_test_score  = 0.96</code></pre>
 <h3 data-number="15.25.2" class="anchored" data-anchor-id="ejercicio-2.-una-cuadrícula-más-pequeña"><span class="header-section-number">15.25.2</span> Ejercicio 2. Una cuadrícula más pequeña</h3>
 <p>Construye una búsqueda de hiperparámetros utilizando <code>GridSearchCV</code> exclusivamente para una SVM con kernel RBF.</p>
 <p>Considera los siguientes valores:</p>
-<p><span class="math display">\[
-C\in\{0.1,1,10\}
-\]</span></p>
+<p><span class="math display">\[C\in\{0.1,1,10\}\]</span></p>
 <p>y</p>
-<p><span class="math display">\[
-\gamma\in\{0.01,0.1,1\}.
-\]</span></p>
+<p><span class="math display">\[\gamma\in\{0.01,0.1,1\}.\]</span></p>
 <p>Utiliza validación cruzada estratificada de 5 pliegues y la métrica <code>accuracy</code>.</p>
 <p><strong>Preguntas:</strong></p>
 <ol type="1">
@@ -12932,13 +12928,9 @@ C\in\{0.1,1,10\}
 <section id="ejercicio-3.-investigar-sobreajuste" class="level3" data-number="15.25.3">
 <h3 data-number="15.25.3" class="anchored" data-anchor-id="ejercicio-3.-investigar-sobreajuste"><span class="header-section-number">15.25.3</span> Ejercicio 3. Investigar sobreajuste</h3>
 <p>Realiza una nueva búsqueda de hiperparámetros para una SVM con kernel RBF, considerando valores relativamente grandes de <span class="math inline">\(C\)</span> y <span class="math inline">\(\gamma\)</span>:</p>
-<p><span class="math display">\[
-C\in\{1,10,100,1000\}
-\]</span></p>
+<p><span class="math display">\[C\in\{1,10,100,1000\}\]</span></p>
 <p>y</p>
-<p><span class="math display">\[
-\gamma\in\{0.1,1,10,100\}.
-\]</span></p>
+<p><span class="math display">\[\gamma\in\{0.1,1,10,100\}.\]</span></p>
 <p>Utiliza <code>GridSearchCV</code> con validación cruzada estratificada de 5 pliegues, la métrica <code>accuracy</code> y el argumento:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb97"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>return_train_score<span class="op">=</span><span class="va">True</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Este argumento permite recuperar tanto el desempeño promedio en los conjuntos de entrenamiento (<code>mean_train_score</code>) como en los conjuntos de validación (<code>mean_test_score</code>).</p>
@@ -12971,13 +12963,9 @@ C\in\{1,10,100,1000\}
 <h3 data-number="15.25.4" class="anchored" data-anchor-id="ejercicio-4.-ovo-y-número-de-clases"><span class="header-section-number">15.25.4</span> Ejercicio 4. OvO y número de clases</h3>
 <p>Recordemos que las estrategias <em>One-versus-One</em> (OvO) y <em>One-versus-Rest</em> (OvR) permiten extender clasificadores binarios a problemas multiclase.</p>
 <p>El número de clasificadores binarios necesarios depende de la estrategia utilizada:</p>
-<p><span class="math display">\[
-N_{\mathrm{OvO}}=\frac{K(K-1)}{2},
-\]</span></p>
+<p><span class="math display">\[N_{\mathrm{OvO}}=\frac{K(K-1)}{2},\]</span></p>
 <p>mientras que</p>
-<p><span class="math display">\[
-N_{\mathrm{OvR}}=K,
-\]</span></p>
+<p><span class="math display">\[N_{\mathrm{OvR}}=K,\]</span></p>
 <p>donde <span class="math inline">\(K\)</span> representa el número de clases.</p>
 <p><strong>Actividades:</strong></p>
 <p>Calcula cuántos clasificadores binarios se necesitan con ambas estrategias para:</p>
@@ -13002,9 +12990,7 @@ N_{\mathrm{OvR}}=K,
 <h3 data-number="15.25.5" class="anchored" data-anchor-id="reto-adicional.-reconocimiento-de-dígitos-escritos-a-mano-mediante-svm"><span class="header-section-number">15.25.5</span> Reto adicional. Reconocimiento de dígitos escritos a mano mediante SVM</h3>
 <p>En este reto utilizaremos el conjunto de datos <code>Digits</code> de <code>scikit-learn</code>, que contiene imágenes de dígitos escritos a mano.</p>
 <p>Cada imagen tiene una resolución de <span class="math inline">\(8\times 8\)</span> píxeles y representa uno de los diez dígitos:</p>
-<p><span class="math display">\[
-Y\in\{0,1,2,\ldots,9\}.
-\]</span></p>
+<p><span class="math display">\[Y\in\{0,1,2,\ldots,9\}.\]</span></p>
 <p>Cada imagen se representa mediante un vector de <span class="math inline">\(64\)</span> características, correspondientes a las intensidades de sus píxeles.</p>
 <p>Nuestro objetivo será construir una <strong>SVM multiclase</strong> capaz de identificar el dígito representado en una imagen.</p>
 <section id="parte-1.-exploración-de-los-datos" class="level4">
@@ -13078,13 +13064,9 @@ Y\in\{0,1,2,\ldots,9\}.
 <h4 class="anchored" data-anchor-id="parte-4.-selección-de-hiperparámetros">Parte 4. Selección de hiperparámetros</h4>
 <p>Utiliza <code>GridSearchCV</code> para seleccionar los hiperparámetros de la SVM con kernel RBF.</p>
 <p>Considera:</p>
-<p><span class="math display">\[
-C\in\{0.1,1,10,100\}
-\]</span></p>
+<p><span class="math display">\[C\in\{0.1,1,10,100\}\]</span></p>
 <p>y</p>
-<p><span class="math display">\[
-\gamma\in\{0.001,0.01,0.1\}.
-\]</span></p>
+<p><span class="math display">\[\gamma\in\{0.001,0.01,0.1\}.\]</span></p>
 <p>Utiliza validación cruzada estratificada de 3 pliegues y <code>accuracy</code> como métrica de evaluación.</p>
 <p>Realiza la búsqueda únicamente sobre los datos de entrenamiento y utiliza <code>n_jobs=2</code> para limitar el paralelismo.</p>
 <p><strong>Preguntas:</strong></p>

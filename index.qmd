@@ -14,7 +14,7 @@
 - **Semestre:** 7mo
 - **Periodo:** 2027-1
 - **Horario:** lunes de 12 a 2pm, martes de 10am a 12pm y viernes de 10am a 12pm <!-- - **Día inhábil:** martes 15 de septiembre, 2026 --> <!-- - **Horario:** 3 a 5 pm --> <!-- - **Créditos:** 4 --> <!-- - **Nivel:** Básico -->
-- **Aulas:** lunes - III 304, marte VI 403, viernes VI 201 <!-- - **Cuestionario diagnóstico:** [[Google form](https://forms.gle/xxpcC6z4UhiV9iER8)]{.highlight-yellow} --> <!-- - **Plan de clases:** [[Clase de Taller de Cómputo](https://docs.google.com/document/d/17rDksWqGWQqDFUMFqzgVF_BXnBDP3KMUrysgxIPGv9U/edit?usp=sharing)]{.highlight-yellow} -->
+- **Aulas:** lunes - VI 204, marte CID 7, viernes VI 201 <!-- - **Cuestionario diagnóstico:** [[Google form](https://forms.gle/xxpcC6z4UhiV9iER8)]{.highlight-yellow} --> <!-- - **Plan de clases:** [[Clase de Taller de Cómputo](https://docs.google.com/document/d/17rDksWqGWQqDFUMFqzgVF_BXnBDP3KMUrysgxIPGv9U/edit?usp=sharing)]{.highlight-yellow} -->
 
 ### 🎯 Objetivo principal
 

@@ -110,10 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 <script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
-
-
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -358,8 +355,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+  <a href="./parte16.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Relación con la regresión logística</span></span></a>
   </div>
 </li>
       </ul>
@@ -376,7 +373,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./parte17.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Introducción al Aprendizaje no Supervisado</span></span></a>
   </div>
 </li>
       </ul>
@@ -392,8 +389,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte17.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">pendiente</span></span></a>
+  <a href="./parte18.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -596,7 +593,7 @@ window.Quarto = {
 <section id="preparación" class="level2" data-number="14.2">
 <h2 data-number="14.2" class="anchored" data-anchor-id="preparación"><span class="header-section-number">14.2</span> Preparación</h2>
 <p>Importamos las bibliotecas necesarias.</p>
-<div id="399fde23" class="cell" data-execution_count="1">
+<div id="0c54da3e" class="cell" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -618,7 +615,7 @@ window.Quarto = {
 <h2 data-number="14.3" class="anchored" data-anchor-id="función-para-visualizar-fronteras-no-lineales"><span class="header-section-number">14.3</span> Función para visualizar fronteras no lineales</h2>
 <p>La función utilizada en las prácticas anteriores estaba diseñada principalmente para fronteras lineales.</p>
 <p>Ahora construiremos una función más general.</p>
-<div id="f9ced674" class="cell" data-execution_count="2">
+<div id="00870a03" class="cell" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> graficar_frontera(</span>
@@ -711,7 +708,7 @@ window.Quarto = {
 <section id="un-problema-que-no-es-lineal" class="level2" data-number="14.4">
 <h2 data-number="14.4" class="anchored" data-anchor-id="un-problema-que-no-es-lineal"><span class="header-section-number">14.4</span> Un problema que no es lineal</h2>
 <p>Generaremos datos utilizando <code>make_moons()</code>.</p>
-<div id="eeea0d2e" class="cell" data-execution_count="3">
+<div id="a0fe1c65" class="cell" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> make_moons(</span>
@@ -723,14 +720,14 @@ window.Quarto = {
 </div>
 <p>Transformamos las etiquetas a</p>
 <p><span class="math display">\[Y\in\{-1,+1\}.\]</span></p>
-<div id="61f01a06" class="cell" data-execution_count="4">
+<div id="b4da76b2" class="cell" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.where(y <span class="op">==</span> <span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Visualizamos.</p>
-<div id="15afed03" class="cell" data-execution_count="5">
+<div id="1d49974e" class="cell" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
@@ -803,7 +800,7 @@ C\text{ controla regularización, no la forma básica de una frontera lineal.}
 <section id="intentemos-primero-una-svm-lineal" class="level2" data-number="14.5">
 <h2 data-number="14.5" class="anchored" data-anchor-id="intentemos-primero-una-svm-lineal"><span class="header-section-number">14.5</span> Intentemos primero una SVM lineal</h2>
 <p>Dividiremos los datos en entrenamiento y prueba.</p>
-<div id="1046d927" class="cell" data-execution_count="6">
+<div id="2a358740" class="cell" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
@@ -816,7 +813,7 @@ C\text{ controla regularización, no la forma básica de una frontera lineal.}
 </details>
 </div>
 <p>Para nuestras comparaciones utilizaremos escalamiento mediante un <code>Pipeline</code>.</p>
-<div id="6ad14e76" class="cell" data-execution_count="7">
+<div id="c2c84ac9" class="cell" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>modelo_lineal <span class="op">=</span> Pipeline([</span>
@@ -835,7 +832,7 @@ C\text{ controla regularización, no la forma básica de una frontera lineal.}
 </details>
 </div>
 <p>Ajustamos:</p>
-<div id="a03fe297" class="cell" data-execution_count="8">
+<div id="eb286c3c" class="cell" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>modelo_lineal.fit(</span>
@@ -1420,6 +1417,14 @@ a.param-doc-link::before {
     width: 14px;
     height: 14px;
     cursor: pointer;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+}
+
+.copy-paste-icon:focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 1px;
 }
 
 .features {
@@ -1478,7 +1483,6 @@ a.param-doc-link::before {
 }
 
 .features .features-container {
-  max-width: 15em;
   max-height: 10em;
   overflow: auto;
   scrollbar-width: thin;
@@ -1556,7 +1560,9 @@ a.param-doc-link::before {
 </colgroup>
 <tbody>
 <tr class="user-set odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy steps to clipboard" onclick="copyToClipboard('steps',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=steps,-list%20of%20tuples" class="param-doc-link" style="anchor-name: --doc-link-steps;" rel="noreferrer" target="_blank">steps <span class="param-doc-description" style="position-anchor: --doc-link-steps;"> steps: list of tuples<br>
 <br>
 List of (name of step, estimator) tuples that are to be chained in<br>
@@ -1566,7 +1572,9 @@ must define `fit`. All non-last steps must also define `transform`. See<br>
 <td class="value">[('scaler', ...), ('svc', ...)]</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy transform_input to clipboard" onclick="copyToClipboard('transform_input',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=transform_input,-list%20of%20str%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-transform_input;" rel="noreferrer" target="_blank">transform_input <span class="param-doc-description" style="position-anchor: --doc-link-transform_input;"> transform_input: list of str, default=None<br>
 <br>
 The names of the :term:`metadata` parameters that should be transformed by the<br>
@@ -1584,7 +1592,9 @@ can enable using ``sklearn.set_config(enable_metadata_routing=True)``.<br>
 <td class="value">None</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy memory to clipboard" onclick="copyToClipboard('memory',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=memory,-str%20or%20object%20with%20the%20joblib.Memory%20interface%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-memory;" rel="noreferrer" target="_blank">memory <span class="param-doc-description" style="position-anchor: --doc-link-memory;"> memory: str or object with the joblib.Memory interface, default=None<br>
 <br>
 Used to cache the fitted transformers of the pipeline. The last step<br>
@@ -1600,7 +1610,9 @@ for an example on how to enable caching.</span></a></td>
 <td class="value">None</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy verbose to clipboard" onclick="copyToClipboard('verbose',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=verbose,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-verbose;" rel="noreferrer" target="_blank">verbose <span class="param-doc-description" style="position-anchor: --doc-link-verbose;"> verbose: bool, default=False<br>
 <br>
 If True, the time elapsed while fitting each step will be printed as it<br>
@@ -1666,7 +1678,9 @@ when fit.<br>
 </colgroup>
 <tbody>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy copy to clipboard" onclick="copyToClipboard('copy',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=copy,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-copy;" rel="noreferrer" target="_blank">copy <span class="param-doc-description" style="position-anchor: --doc-link-copy;"> copy: bool, default=True<br>
 <br>
 If False, try to avoid a copy and do inplace scaling instead.<br>
@@ -1676,7 +1690,9 @@ returned.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy with_mean to clipboard" onclick="copyToClipboard('with_mean',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_mean,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-with_mean;" rel="noreferrer" target="_blank">with_mean <span class="param-doc-description" style="position-anchor: --doc-link-with_mean;"> with_mean: bool, default=True<br>
 <br>
 If True, center the data before scaling.<br>
@@ -1687,7 +1703,9 @@ memory.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy with_std to clipboard" onclick="copyToClipboard('with_std',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_std,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-with_std;" rel="noreferrer" target="_blank">with_std <span class="param-doc-description" style="position-anchor: --doc-link-with_std;"> with_std: bool, default=True<br>
 <br>
 If True, scale the data to unit variance (or equivalently,<br>
@@ -1780,13 +1798,13 @@ The variance for each feature in the training set. Used to compute<br>
             <summary>
               <div class="arrow"></div>
               <div>2 features</div>
-              <div class="image-container" title="Copy all output features">
-                <i class="copy-paste-icon" onclick="
+              <div class="image-container">
+                <button type="button" class="copy-paste-icon" title="Copy output features (max 100)" aria-label="Copy output features (max 100)" onclick="
                   event.stopPropagation();
                   event.preventDefault();
                   copyFeatureNamesToClipboard(this);
                   ">
-                </i>
+                </button>
               </div>
             </summary>
             <div class="features-container">
@@ -1818,7 +1836,9 @@ The variance for each feature in the training set. Used to compute<br>
 </colgroup>
 <tbody>
 <tr class="user-set odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy kernel to clipboard" onclick="copyToClipboard('kernel',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=kernel,-%7B%27linear%27%2C%20%27poly%27%2C%20%27rbf%27%2C%20%27sigmoid%27%2C%20%27precomputed%27%7D%20or%20callable%2C%20%20%20%20%20%20%20%20%20%20default%3D%27rbf%27" class="param-doc-link" style="anchor-name: --doc-link-kernel;" rel="noreferrer" target="_blank">kernel <span class="param-doc-description" style="position-anchor: --doc-link-kernel;"> kernel: {'linear', 'poly', 'rbf', 'sigmoid', 'precomputed'} or callable, default='rbf'<br>
 <br>
 Specifies the kernel type to be used in the algorithm. If<br>
@@ -1830,7 +1850,9 @@ visualization of different kernel types see<br>
 <td class="value">'linear'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy C to clipboard" onclick="copyToClipboard('C',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=C,-float%2C%20default%3D1.0" class="param-doc-link" style="anchor-name: --doc-link-C;" rel="noreferrer" target="_blank">C <span class="param-doc-description" style="position-anchor: --doc-link-C;"> C: float, default=1.0<br>
 <br>
 Regularization parameter. The strength of the regularization is<br>
@@ -1841,7 +1863,9 @@ of scaling the regularization parameter C, see<br>
 <td class="value">1</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy degree to clipboard" onclick="copyToClipboard('degree',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=degree,-int%2C%20default%3D3" class="param-doc-link" style="anchor-name: --doc-link-degree;" rel="noreferrer" target="_blank">degree <span class="param-doc-description" style="position-anchor: --doc-link-degree;"> degree: int, default=3<br>
 <br>
 Degree of the polynomial kernel function ('poly').<br>
@@ -1849,7 +1873,9 @@ Must be non-negative. Ignored by all other kernels.</span></a></td>
 <td class="value">3</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy gamma to clipboard" onclick="copyToClipboard('gamma',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=gamma,-%7B%27scale%27%2C%20%27auto%27%7D%20or%20float%2C%20default%3D%27scale%27" class="param-doc-link" style="anchor-name: --doc-link-gamma;" rel="noreferrer" target="_blank">gamma <span class="param-doc-description" style="position-anchor: --doc-link-gamma;"> gamma: {'scale', 'auto'} or float, default='scale'<br>
 <br>
 Kernel coefficient for 'rbf', 'poly' and 'sigmoid'.<br>
@@ -1864,7 +1890,9 @@ The default value of ``gamma`` changed from 'auto' to 'scale'.</span></a></td>
 <td class="value">'scale'</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy coef0 to clipboard" onclick="copyToClipboard('coef0',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=coef0,-float%2C%20default%3D0.0" class="param-doc-link" style="anchor-name: --doc-link-coef0;" rel="noreferrer" target="_blank">coef0 <span class="param-doc-description" style="position-anchor: --doc-link-coef0;"> coef0: float, default=0.0<br>
 <br>
 Independent term in kernel function.<br>
@@ -1872,7 +1900,9 @@ It is only significant in 'poly' and 'sigmoid'.</span></a></td>
 <td class="value">0.0</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy shrinking to clipboard" onclick="copyToClipboard('shrinking',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=shrinking,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-shrinking;" rel="noreferrer" target="_blank">shrinking <span class="param-doc-description" style="position-anchor: --doc-link-shrinking;"> shrinking: bool, default=True<br>
 <br>
 Whether to use the shrinking heuristic.<br>
@@ -1880,7 +1910,9 @@ See the :ref:`User Guide &lt;shrinking_svm&gt;`.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy probability to clipboard" onclick="copyToClipboard('probability',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=probability,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-probability;" rel="noreferrer" target="_blank">probability <span class="param-doc-description" style="position-anchor: --doc-link-probability;"> probability: bool, default=False<br>
 <br>
 Whether to enable probability estimates. This must be enabled prior<br>
@@ -1895,21 +1927,27 @@ Use `CalibratedClassifierCV(SVC(), ensemble=False)` instead of<br>
 <td class="value">'deprecated'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy tol to clipboard" onclick="copyToClipboard('tol',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=tol,-float%2C%20default%3D1e-3" class="param-doc-link" style="anchor-name: --doc-link-tol;" rel="noreferrer" target="_blank">tol <span class="param-doc-description" style="position-anchor: --doc-link-tol;"> tol: float, default=1e-3<br>
 <br>
 Tolerance for stopping criterion.</span></a></td>
 <td class="value">0.001</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy cache_size to clipboard" onclick="copyToClipboard('cache_size',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=cache_size,-float%2C%20default%3D200" class="param-doc-link" style="anchor-name: --doc-link-cache_size;" rel="noreferrer" target="_blank">cache_size <span class="param-doc-description" style="position-anchor: --doc-link-cache_size;"> cache_size: float, default=200<br>
 <br>
 Specify the size of the kernel cache (in MB).</span></a></td>
 <td class="value">200</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy class_weight to clipboard" onclick="copyToClipboard('class_weight',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=class_weight,-dict%20or%20%27balanced%27%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-class_weight;" rel="noreferrer" target="_blank">class_weight <span class="param-doc-description" style="position-anchor: --doc-link-class_weight;"> class_weight: dict or 'balanced', default=None<br>
 <br>
 Set the parameter C of class i to class_weight[i]*C for<br>
@@ -1921,7 +1959,9 @@ as ``n_samples / (n_classes * np.bincount(y))``.</span></a></td>
 <td class="value">None</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy verbose to clipboard" onclick="copyToClipboard('verbose',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=verbose,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-verbose;" rel="noreferrer" target="_blank">verbose <span class="param-doc-description" style="position-anchor: --doc-link-verbose;"> verbose: bool, default=False<br>
 <br>
 Enable verbose output. Note that this setting takes advantage of a<br>
@@ -1930,14 +1970,18 @@ properly in a multithreaded context.</span></a></td>
 <td class="value">False</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy max_iter to clipboard" onclick="copyToClipboard('max_iter',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=max_iter,-int%2C%20default%3D-1" class="param-doc-link" style="anchor-name: --doc-link-max_iter;" rel="noreferrer" target="_blank">max_iter <span class="param-doc-description" style="position-anchor: --doc-link-max_iter;"> max_iter: int, default=-1<br>
 <br>
 Hard limit on iterations within solver, or -1 for no limit.</span></a></td>
 <td class="value">-1</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy decision_function_shape to clipboard" onclick="copyToClipboard('decision_function_shape',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=decision_function_shape,-%7B%27ovo%27%2C%20%27ovr%27%7D%2C%20default%3D%27ovr%27" class="param-doc-link" style="anchor-name: --doc-link-decision_function_shape;" rel="noreferrer" target="_blank">decision_function_shape <span class="param-doc-description" style="position-anchor: --doc-link-decision_function_shape;"> decision_function_shape: {'ovo', 'ovr'}, default='ovr'<br>
 <br>
 Whether to return a one-vs-rest ('ovr') decision function of shape<br>
@@ -1959,7 +2003,9 @@ Deprecated *decision_function_shape='ovo' and None*.</span></a></td>
 <td class="value">'ovr'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy break_ties to clipboard" onclick="copyToClipboard('break_ties',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=break_ties,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-break_ties;" rel="noreferrer" target="_blank">break_ties <span class="param-doc-description" style="position-anchor: --doc-link-break_ties;"> break_ties: bool, default=False<br>
 <br>
 If true, ``decision_function_shape='ovr'``, and number of classes &gt; 2,<br>
@@ -1974,7 +2020,9 @@ example of its usage with ``decision_function_shape='ovr'``.<br>
 <td class="value">False</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy random_state to clipboard" onclick="copyToClipboard('random_state',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=random_state,-int%2C%20RandomState%20instance%20or%20None%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-random_state;" rel="noreferrer" target="_blank">random_state <span class="param-doc-description" style="position-anchor: --doc-link-random_state;"> random_state: int, RandomState instance or None, default=None<br>
 <br>
 Controls the pseudo random number generation for shuffling the data for<br>
@@ -2323,7 +2371,7 @@ forceTheme('sk-container-id-1');</script>
 <p>Vamos a comprobarlo.</p>
 <p><strong>Paso 1. Recuperar el escalador ajustado</strong></p>
 <p>Podemos acceder a los componentes del <code>Pipeline</code> mediante <code>named_steps</code>.</p>
-<div id="cb56723a" class="cell" data-execution_count="9">
+<div id="7f78674f" class="cell" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>scaler_ajustado <span class="op">=</span> modelo_lineal.named_steps[<span class="st">"scaler"</span>]</span>
@@ -2339,7 +2387,7 @@ Escalas: [0.90581814 0.51586362]</code></pre>
 <p>Las medias y escalas mostradas fueron calculadas a partir de <code>X_train</code> durante el ajuste del <code>Pipeline</code>. No necesitamos calcularlas manualmente.</p>
 <p><strong>Paso 2. Comparar los datos originales y estandarizados</strong></p>
 <p>Veamos cómo cambian las primeras tres observaciones.</p>
-<div id="499eda6f" class="cell" data-execution_count="10">
+<div id="81c2b899" class="cell" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Datos originales:"</span>)</span>
@@ -2369,14 +2417,14 @@ z_j=\frac{x_j-\overline{x}_j}{s_j},
 <p><strong>Paso 3. Comprobar que el <code>Pipeline</code> realiza automáticamente la transformación</strong></p>
 <p>Ahora compararemos dos maneras de obtener predicciones.</p>
 <p>Primero utilizamos directamente el <code>Pipeline</code>:</p>
-<div id="72a07f1d" class="cell" data-execution_count="11">
+<div id="e987d39e" class="cell" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>prediccion_pipeline <span class="op">=</span> modelo_lineal.predict(X_test)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Después realizamos explícitamente sus dos pasos:</p>
-<div id="a53b62e9" class="cell" data-execution_count="12">
+<div id="74deb35c" class="cell" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estandarizar los datos de prueba</span></span>
@@ -2389,7 +2437,7 @@ z_j=\frac{x_j-\overline{x}_j}{s_j},
 </details>
 </div>
 <p>Finalmente, verificamos si ambas predicciones son idénticas.</p>
-<div id="f0d4f65a" class="cell" data-execution_count="13">
+<div id="c92ca266" class="cell" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -2425,7 +2473,7 @@ z_j=\frac{x_j-\overline{x}_j}{s_j},
 </div>
 </div>
 <p>Calculamos las exactitudes.</p>
-<div id="11a34eb2" class="cell" data-execution_count="14">
+<div id="29ad1f11" class="cell" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -2478,7 +2526,7 @@ Accuracy prueba: 0.8666666666666667</code></pre>
 <li>Dibuja la frontera de decisión y los niveles del margen.</li>
 <li>Representa las observaciones originales.</li>
 </ul>
-<div id="a9099d4a" class="cell" data-execution_count="15">
+<div id="041b7c2b" class="cell" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> graficar_modelo(</span>
@@ -2572,7 +2620,7 @@ Accuracy prueba: 0.8666666666666667</code></pre>
 </details>
 </div>
 <p>Visualizamos:</p>
-<div id="4dbb18dd" class="cell" data-execution_count="16">
+<div id="4c025b59" class="cell" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>graficar_modelo(</span>
@@ -2677,7 +2725,7 @@ gamma
 coef0</code></pre>
 <p>Por ahora concentraremos nuestra atención en <code>degree</code>.</p>
 <p>Ajustemos un kernel polinomial de grado 2.</p>
-<div id="addc3423" class="cell" data-execution_count="17">
+<div id="64a9c4c9" class="cell" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>modelo_poly2 <span class="op">=</span> Pipeline([</span>
@@ -2698,7 +2746,7 @@ coef0</code></pre>
 <span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>])</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="21732ba5" class="cell" data-execution_count="18">
+<div id="69cf979f" class="cell" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>modelo_poly2.fit(</span>
@@ -3283,6 +3331,14 @@ a.param-doc-link::before {
     width: 14px;
     height: 14px;
     cursor: pointer;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+}
+
+.copy-paste-icon:focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 1px;
 }
 
 .features {
@@ -3341,7 +3397,6 @@ a.param-doc-link::before {
 }
 
 .features .features-container {
-  max-width: 15em;
   max-height: 10em;
   overflow: auto;
   scrollbar-width: thin;
@@ -3419,7 +3474,9 @@ a.param-doc-link::before {
 </colgroup>
 <tbody>
 <tr class="user-set odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy steps to clipboard" onclick="copyToClipboard('steps',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=steps,-list%20of%20tuples" class="param-doc-link" style="anchor-name: --doc-link-steps;" rel="noreferrer" target="_blank">steps <span class="param-doc-description" style="position-anchor: --doc-link-steps;"> steps: list of tuples<br>
 <br>
 List of (name of step, estimator) tuples that are to be chained in<br>
@@ -3429,7 +3486,9 @@ must define `fit`. All non-last steps must also define `transform`. See<br>
 <td class="value">[('scaler', ...), ('svc', ...)]</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy transform_input to clipboard" onclick="copyToClipboard('transform_input',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=transform_input,-list%20of%20str%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-transform_input;" rel="noreferrer" target="_blank">transform_input <span class="param-doc-description" style="position-anchor: --doc-link-transform_input;"> transform_input: list of str, default=None<br>
 <br>
 The names of the :term:`metadata` parameters that should be transformed by the<br>
@@ -3447,7 +3506,9 @@ can enable using ``sklearn.set_config(enable_metadata_routing=True)``.<br>
 <td class="value">None</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy memory to clipboard" onclick="copyToClipboard('memory',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=memory,-str%20or%20object%20with%20the%20joblib.Memory%20interface%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-memory;" rel="noreferrer" target="_blank">memory <span class="param-doc-description" style="position-anchor: --doc-link-memory;"> memory: str or object with the joblib.Memory interface, default=None<br>
 <br>
 Used to cache the fitted transformers of the pipeline. The last step<br>
@@ -3463,7 +3524,9 @@ for an example on how to enable caching.</span></a></td>
 <td class="value">None</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy verbose to clipboard" onclick="copyToClipboard('verbose',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=verbose,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-verbose;" rel="noreferrer" target="_blank">verbose <span class="param-doc-description" style="position-anchor: --doc-link-verbose;"> verbose: bool, default=False<br>
 <br>
 If True, the time elapsed while fitting each step will be printed as it<br>
@@ -3529,7 +3592,9 @@ when fit.<br>
 </colgroup>
 <tbody>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy copy to clipboard" onclick="copyToClipboard('copy',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=copy,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-copy;" rel="noreferrer" target="_blank">copy <span class="param-doc-description" style="position-anchor: --doc-link-copy;"> copy: bool, default=True<br>
 <br>
 If False, try to avoid a copy and do inplace scaling instead.<br>
@@ -3539,7 +3604,9 @@ returned.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy with_mean to clipboard" onclick="copyToClipboard('with_mean',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_mean,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-with_mean;" rel="noreferrer" target="_blank">with_mean <span class="param-doc-description" style="position-anchor: --doc-link-with_mean;"> with_mean: bool, default=True<br>
 <br>
 If True, center the data before scaling.<br>
@@ -3550,7 +3617,9 @@ memory.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy with_std to clipboard" onclick="copyToClipboard('with_std',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_std,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-with_std;" rel="noreferrer" target="_blank">with_std <span class="param-doc-description" style="position-anchor: --doc-link-with_std;"> with_std: bool, default=True<br>
 <br>
 If True, scale the data to unit variance (or equivalently,<br>
@@ -3643,13 +3712,13 @@ The variance for each feature in the training set. Used to compute<br>
             <summary>
               <div class="arrow"></div>
               <div>2 features</div>
-              <div class="image-container" title="Copy all output features">
-                <i class="copy-paste-icon" onclick="
+              <div class="image-container">
+                <button type="button" class="copy-paste-icon" title="Copy output features (max 100)" aria-label="Copy output features (max 100)" onclick="
                   event.stopPropagation();
                   event.preventDefault();
                   copyFeatureNamesToClipboard(this);
                   ">
-                </i>
+                </button>
               </div>
             </summary>
             <div class="features-container">
@@ -3681,7 +3750,9 @@ The variance for each feature in the training set. Used to compute<br>
 </colgroup>
 <tbody>
 <tr class="user-set odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy kernel to clipboard" onclick="copyToClipboard('kernel',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=kernel,-%7B%27linear%27%2C%20%27poly%27%2C%20%27rbf%27%2C%20%27sigmoid%27%2C%20%27precomputed%27%7D%20or%20callable%2C%20%20%20%20%20%20%20%20%20%20default%3D%27rbf%27" class="param-doc-link" style="anchor-name: --doc-link-kernel;" rel="noreferrer" target="_blank">kernel <span class="param-doc-description" style="position-anchor: --doc-link-kernel;"> kernel: {'linear', 'poly', 'rbf', 'sigmoid', 'precomputed'} or callable, default='rbf'<br>
 <br>
 Specifies the kernel type to be used in the algorithm. If<br>
@@ -3693,7 +3764,9 @@ visualization of different kernel types see<br>
 <td class="value">'poly'</td>
 </tr>
 <tr class="user-set even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy degree to clipboard" onclick="copyToClipboard('degree',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=degree,-int%2C%20default%3D3" class="param-doc-link" style="anchor-name: --doc-link-degree;" rel="noreferrer" target="_blank">degree <span class="param-doc-description" style="position-anchor: --doc-link-degree;"> degree: int, default=3<br>
 <br>
 Degree of the polynomial kernel function ('poly').<br>
@@ -3701,7 +3774,9 @@ Must be non-negative. Ignored by all other kernels.</span></a></td>
 <td class="value">2</td>
 </tr>
 <tr class="user-set odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy coef0 to clipboard" onclick="copyToClipboard('coef0',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=coef0,-float%2C%20default%3D0.0" class="param-doc-link" style="anchor-name: --doc-link-coef0;" rel="noreferrer" target="_blank">coef0 <span class="param-doc-description" style="position-anchor: --doc-link-coef0;"> coef0: float, default=0.0<br>
 <br>
 Independent term in kernel function.<br>
@@ -3709,7 +3784,9 @@ It is only significant in 'poly' and 'sigmoid'.</span></a></td>
 <td class="value">1</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy C to clipboard" onclick="copyToClipboard('C',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=C,-float%2C%20default%3D1.0" class="param-doc-link" style="anchor-name: --doc-link-C;" rel="noreferrer" target="_blank">C <span class="param-doc-description" style="position-anchor: --doc-link-C;"> C: float, default=1.0<br>
 <br>
 Regularization parameter. The strength of the regularization is<br>
@@ -3720,7 +3797,9 @@ of scaling the regularization parameter C, see<br>
 <td class="value">1</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy gamma to clipboard" onclick="copyToClipboard('gamma',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=gamma,-%7B%27scale%27%2C%20%27auto%27%7D%20or%20float%2C%20default%3D%27scale%27" class="param-doc-link" style="anchor-name: --doc-link-gamma;" rel="noreferrer" target="_blank">gamma <span class="param-doc-description" style="position-anchor: --doc-link-gamma;"> gamma: {'scale', 'auto'} or float, default='scale'<br>
 <br>
 Kernel coefficient for 'rbf', 'poly' and 'sigmoid'.<br>
@@ -3735,7 +3814,9 @@ The default value of ``gamma`` changed from 'auto' to 'scale'.</span></a></td>
 <td class="value">'scale'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy shrinking to clipboard" onclick="copyToClipboard('shrinking',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=shrinking,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-shrinking;" rel="noreferrer" target="_blank">shrinking <span class="param-doc-description" style="position-anchor: --doc-link-shrinking;"> shrinking: bool, default=True<br>
 <br>
 Whether to use the shrinking heuristic.<br>
@@ -3743,7 +3824,9 @@ See the :ref:`User Guide &lt;shrinking_svm&gt;`.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy probability to clipboard" onclick="copyToClipboard('probability',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=probability,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-probability;" rel="noreferrer" target="_blank">probability <span class="param-doc-description" style="position-anchor: --doc-link-probability;"> probability: bool, default=False<br>
 <br>
 Whether to enable probability estimates. This must be enabled prior<br>
@@ -3758,21 +3841,27 @@ Use `CalibratedClassifierCV(SVC(), ensemble=False)` instead of<br>
 <td class="value">'deprecated'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy tol to clipboard" onclick="copyToClipboard('tol',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=tol,-float%2C%20default%3D1e-3" class="param-doc-link" style="anchor-name: --doc-link-tol;" rel="noreferrer" target="_blank">tol <span class="param-doc-description" style="position-anchor: --doc-link-tol;"> tol: float, default=1e-3<br>
 <br>
 Tolerance for stopping criterion.</span></a></td>
 <td class="value">0.001</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy cache_size to clipboard" onclick="copyToClipboard('cache_size',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=cache_size,-float%2C%20default%3D200" class="param-doc-link" style="anchor-name: --doc-link-cache_size;" rel="noreferrer" target="_blank">cache_size <span class="param-doc-description" style="position-anchor: --doc-link-cache_size;"> cache_size: float, default=200<br>
 <br>
 Specify the size of the kernel cache (in MB).</span></a></td>
 <td class="value">200</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy class_weight to clipboard" onclick="copyToClipboard('class_weight',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=class_weight,-dict%20or%20%27balanced%27%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-class_weight;" rel="noreferrer" target="_blank">class_weight <span class="param-doc-description" style="position-anchor: --doc-link-class_weight;"> class_weight: dict or 'balanced', default=None<br>
 <br>
 Set the parameter C of class i to class_weight[i]*C for<br>
@@ -3784,7 +3873,9 @@ as ``n_samples / (n_classes * np.bincount(y))``.</span></a></td>
 <td class="value">None</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy verbose to clipboard" onclick="copyToClipboard('verbose',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=verbose,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-verbose;" rel="noreferrer" target="_blank">verbose <span class="param-doc-description" style="position-anchor: --doc-link-verbose;"> verbose: bool, default=False<br>
 <br>
 Enable verbose output. Note that this setting takes advantage of a<br>
@@ -3793,14 +3884,18 @@ properly in a multithreaded context.</span></a></td>
 <td class="value">False</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy max_iter to clipboard" onclick="copyToClipboard('max_iter',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=max_iter,-int%2C%20default%3D-1" class="param-doc-link" style="anchor-name: --doc-link-max_iter;" rel="noreferrer" target="_blank">max_iter <span class="param-doc-description" style="position-anchor: --doc-link-max_iter;"> max_iter: int, default=-1<br>
 <br>
 Hard limit on iterations within solver, or -1 for no limit.</span></a></td>
 <td class="value">-1</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy decision_function_shape to clipboard" onclick="copyToClipboard('decision_function_shape',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=decision_function_shape,-%7B%27ovo%27%2C%20%27ovr%27%7D%2C%20default%3D%27ovr%27" class="param-doc-link" style="anchor-name: --doc-link-decision_function_shape;" rel="noreferrer" target="_blank">decision_function_shape <span class="param-doc-description" style="position-anchor: --doc-link-decision_function_shape;"> decision_function_shape: {'ovo', 'ovr'}, default='ovr'<br>
 <br>
 Whether to return a one-vs-rest ('ovr') decision function of shape<br>
@@ -3822,7 +3917,9 @@ Deprecated *decision_function_shape='ovo' and None*.</span></a></td>
 <td class="value">'ovr'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy break_ties to clipboard" onclick="copyToClipboard('break_ties',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=break_ties,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-break_ties;" rel="noreferrer" target="_blank">break_ties <span class="param-doc-description" style="position-anchor: --doc-link-break_ties;"> break_ties: bool, default=False<br>
 <br>
 If true, ``decision_function_shape='ovr'``, and number of classes &gt; 2,<br>
@@ -3837,7 +3934,9 @@ example of its usage with ``decision_function_shape='ovr'``.<br>
 <td class="value">False</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy random_state to clipboard" onclick="copyToClipboard('random_state',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=random_state,-int%2C%20RandomState%20instance%20or%20None%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-random_state;" rel="noreferrer" target="_blank">random_state <span class="param-doc-description" style="position-anchor: --doc-link-random_state;"> random_state: int, RandomState instance or None, default=None<br>
 <br>
 Controls the pseudo random number generation for shuffling the data for<br>
@@ -4165,7 +4264,7 @@ forceTheme('sk-container-id-2');</script>
 </div>
 </div>
 <p>Visualizamos.</p>
-<div id="6854a8cd" class="cell" data-execution_count="19">
+<div id="c6e85a4c" class="cell" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>graficar_modelo(</span>
@@ -4184,7 +4283,7 @@ forceTheme('sk-container-id-2');</script>
 </div>
 </div>
 <p>Calculamos desempeño.</p>
-<div id="b2a3d12a" class="cell" data-execution_count="20">
+<div id="72a3f291" class="cell" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -4212,13 +4311,13 @@ Accuracy prueba: 0.88</code></pre>
 <section id="qué-ocurre-si-aumentamos-el-grado" class="level2" data-number="14.10">
 <h2 data-number="14.10" class="anchored" data-anchor-id="qué-ocurre-si-aumentamos-el-grado"><span class="header-section-number">14.10</span> ¿Qué ocurre si aumentamos el grado?</h2>
 <p>Comparemos varios grados.</p>
-<div id="3f790769" class="cell" data-execution_count="21">
+<div id="67b8d2b3" class="cell" data-execution_count="21">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>grados <span class="op">=</span> [<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="42355318" class="cell" data-execution_count="22">
+<div id="a955bb53" class="cell" data-execution_count="22">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> grado <span class="kw">in</span> grados:</span>
@@ -4339,7 +4438,7 @@ Accuracy prueba: 0.88</code></pre>
 <p><span class="math display">\[C=1\]</span></p>
 <p>y</p>
 <p><span class="math display">\[\gamma=1.\]</span></p>
-<div id="1e1e8f03" class="cell" data-execution_count="23">
+<div id="b18a3820" class="cell" data-execution_count="23">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>modelo_rbf <span class="op">=</span> Pipeline([</span>
@@ -4359,7 +4458,7 @@ Accuracy prueba: 0.88</code></pre>
 </details>
 </div>
 <p>Ajustamos:</p>
-<div id="55f5e30d" class="cell" data-execution_count="24">
+<div id="3f5665a1" class="cell" data-execution_count="24">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>modelo_rbf.fit(</span>
@@ -4944,6 +5043,14 @@ a.param-doc-link::before {
     width: 14px;
     height: 14px;
     cursor: pointer;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+}
+
+.copy-paste-icon:focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 1px;
 }
 
 .features {
@@ -5002,7 +5109,6 @@ a.param-doc-link::before {
 }
 
 .features .features-container {
-  max-width: 15em;
   max-height: 10em;
   overflow: auto;
   scrollbar-width: thin;
@@ -5079,7 +5185,9 @@ a.param-doc-link::before {
 </colgroup>
 <tbody>
 <tr class="user-set odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy steps to clipboard" onclick="copyToClipboard('steps',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=steps,-list%20of%20tuples" class="param-doc-link" style="anchor-name: --doc-link-steps;" rel="noreferrer" target="_blank">steps <span class="param-doc-description" style="position-anchor: --doc-link-steps;"> steps: list of tuples<br>
 <br>
 List of (name of step, estimator) tuples that are to be chained in<br>
@@ -5089,7 +5197,9 @@ must define `fit`. All non-last steps must also define `transform`. See<br>
 <td class="value">[('scaler', ...), ('svc', ...)]</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy transform_input to clipboard" onclick="copyToClipboard('transform_input',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=transform_input,-list%20of%20str%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-transform_input;" rel="noreferrer" target="_blank">transform_input <span class="param-doc-description" style="position-anchor: --doc-link-transform_input;"> transform_input: list of str, default=None<br>
 <br>
 The names of the :term:`metadata` parameters that should be transformed by the<br>
@@ -5107,7 +5217,9 @@ can enable using ``sklearn.set_config(enable_metadata_routing=True)``.<br>
 <td class="value">None</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy memory to clipboard" onclick="copyToClipboard('memory',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=memory,-str%20or%20object%20with%20the%20joblib.Memory%20interface%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-memory;" rel="noreferrer" target="_blank">memory <span class="param-doc-description" style="position-anchor: --doc-link-memory;"> memory: str or object with the joblib.Memory interface, default=None<br>
 <br>
 Used to cache the fitted transformers of the pipeline. The last step<br>
@@ -5123,7 +5235,9 @@ for an example on how to enable caching.</span></a></td>
 <td class="value">None</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy verbose to clipboard" onclick="copyToClipboard('verbose',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=verbose,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-verbose;" rel="noreferrer" target="_blank">verbose <span class="param-doc-description" style="position-anchor: --doc-link-verbose;"> verbose: bool, default=False<br>
 <br>
 If True, the time elapsed while fitting each step will be printed as it<br>
@@ -5189,7 +5303,9 @@ when fit.<br>
 </colgroup>
 <tbody>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy copy to clipboard" onclick="copyToClipboard('copy',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=copy,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-copy;" rel="noreferrer" target="_blank">copy <span class="param-doc-description" style="position-anchor: --doc-link-copy;"> copy: bool, default=True<br>
 <br>
 If False, try to avoid a copy and do inplace scaling instead.<br>
@@ -5199,7 +5315,9 @@ returned.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy with_mean to clipboard" onclick="copyToClipboard('with_mean',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_mean,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-with_mean;" rel="noreferrer" target="_blank">with_mean <span class="param-doc-description" style="position-anchor: --doc-link-with_mean;"> with_mean: bool, default=True<br>
 <br>
 If True, center the data before scaling.<br>
@@ -5210,7 +5328,9 @@ memory.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy with_std to clipboard" onclick="copyToClipboard('with_std',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_std,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-with_std;" rel="noreferrer" target="_blank">with_std <span class="param-doc-description" style="position-anchor: --doc-link-with_std;"> with_std: bool, default=True<br>
 <br>
 If True, scale the data to unit variance (or equivalently,<br>
@@ -5303,13 +5423,13 @@ The variance for each feature in the training set. Used to compute<br>
             <summary>
               <div class="arrow"></div>
               <div>2 features</div>
-              <div class="image-container" title="Copy all output features">
-                <i class="copy-paste-icon" onclick="
+              <div class="image-container">
+                <button type="button" class="copy-paste-icon" title="Copy output features (max 100)" aria-label="Copy output features (max 100)" onclick="
                   event.stopPropagation();
                   event.preventDefault();
                   copyFeatureNamesToClipboard(this);
                   ">
-                </i>
+                </button>
               </div>
             </summary>
             <div class="features-container">
@@ -5341,7 +5461,9 @@ The variance for each feature in the training set. Used to compute<br>
 </colgroup>
 <tbody>
 <tr class="user-set odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy gamma to clipboard" onclick="copyToClipboard('gamma',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=gamma,-%7B%27scale%27%2C%20%27auto%27%7D%20or%20float%2C%20default%3D%27scale%27" class="param-doc-link" style="anchor-name: --doc-link-gamma;" rel="noreferrer" target="_blank">gamma <span class="param-doc-description" style="position-anchor: --doc-link-gamma;"> gamma: {'scale', 'auto'} or float, default='scale'<br>
 <br>
 Kernel coefficient for 'rbf', 'poly' and 'sigmoid'.<br>
@@ -5356,7 +5478,9 @@ The default value of ``gamma`` changed from 'auto' to 'scale'.</span></a></td>
 <td class="value">1</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy C to clipboard" onclick="copyToClipboard('C',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=C,-float%2C%20default%3D1.0" class="param-doc-link" style="anchor-name: --doc-link-C;" rel="noreferrer" target="_blank">C <span class="param-doc-description" style="position-anchor: --doc-link-C;"> C: float, default=1.0<br>
 <br>
 Regularization parameter. The strength of the regularization is<br>
@@ -5367,7 +5491,9 @@ of scaling the regularization parameter C, see<br>
 <td class="value">1</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy kernel to clipboard" onclick="copyToClipboard('kernel',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=kernel,-%7B%27linear%27%2C%20%27poly%27%2C%20%27rbf%27%2C%20%27sigmoid%27%2C%20%27precomputed%27%7D%20or%20callable%2C%20%20%20%20%20%20%20%20%20%20default%3D%27rbf%27" class="param-doc-link" style="anchor-name: --doc-link-kernel;" rel="noreferrer" target="_blank">kernel <span class="param-doc-description" style="position-anchor: --doc-link-kernel;"> kernel: {'linear', 'poly', 'rbf', 'sigmoid', 'precomputed'} or callable, default='rbf'<br>
 <br>
 Specifies the kernel type to be used in the algorithm. If<br>
@@ -5379,7 +5505,9 @@ visualization of different kernel types see<br>
 <td class="value">'rbf'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy degree to clipboard" onclick="copyToClipboard('degree',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=degree,-int%2C%20default%3D3" class="param-doc-link" style="anchor-name: --doc-link-degree;" rel="noreferrer" target="_blank">degree <span class="param-doc-description" style="position-anchor: --doc-link-degree;"> degree: int, default=3<br>
 <br>
 Degree of the polynomial kernel function ('poly').<br>
@@ -5387,7 +5515,9 @@ Must be non-negative. Ignored by all other kernels.</span></a></td>
 <td class="value">3</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy coef0 to clipboard" onclick="copyToClipboard('coef0',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=coef0,-float%2C%20default%3D0.0" class="param-doc-link" style="anchor-name: --doc-link-coef0;" rel="noreferrer" target="_blank">coef0 <span class="param-doc-description" style="position-anchor: --doc-link-coef0;"> coef0: float, default=0.0<br>
 <br>
 Independent term in kernel function.<br>
@@ -5395,7 +5525,9 @@ It is only significant in 'poly' and 'sigmoid'.</span></a></td>
 <td class="value">0.0</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy shrinking to clipboard" onclick="copyToClipboard('shrinking',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=shrinking,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-shrinking;" rel="noreferrer" target="_blank">shrinking <span class="param-doc-description" style="position-anchor: --doc-link-shrinking;"> shrinking: bool, default=True<br>
 <br>
 Whether to use the shrinking heuristic.<br>
@@ -5403,7 +5535,9 @@ See the :ref:`User Guide &lt;shrinking_svm&gt;`.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy probability to clipboard" onclick="copyToClipboard('probability',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=probability,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-probability;" rel="noreferrer" target="_blank">probability <span class="param-doc-description" style="position-anchor: --doc-link-probability;"> probability: bool, default=False<br>
 <br>
 Whether to enable probability estimates. This must be enabled prior<br>
@@ -5418,21 +5552,27 @@ Use `CalibratedClassifierCV(SVC(), ensemble=False)` instead of<br>
 <td class="value">'deprecated'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy tol to clipboard" onclick="copyToClipboard('tol',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=tol,-float%2C%20default%3D1e-3" class="param-doc-link" style="anchor-name: --doc-link-tol;" rel="noreferrer" target="_blank">tol <span class="param-doc-description" style="position-anchor: --doc-link-tol;"> tol: float, default=1e-3<br>
 <br>
 Tolerance for stopping criterion.</span></a></td>
 <td class="value">0.001</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy cache_size to clipboard" onclick="copyToClipboard('cache_size',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=cache_size,-float%2C%20default%3D200" class="param-doc-link" style="anchor-name: --doc-link-cache_size;" rel="noreferrer" target="_blank">cache_size <span class="param-doc-description" style="position-anchor: --doc-link-cache_size;"> cache_size: float, default=200<br>
 <br>
 Specify the size of the kernel cache (in MB).</span></a></td>
 <td class="value">200</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy class_weight to clipboard" onclick="copyToClipboard('class_weight',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=class_weight,-dict%20or%20%27balanced%27%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-class_weight;" rel="noreferrer" target="_blank">class_weight <span class="param-doc-description" style="position-anchor: --doc-link-class_weight;"> class_weight: dict or 'balanced', default=None<br>
 <br>
 Set the parameter C of class i to class_weight[i]*C for<br>
@@ -5444,7 +5584,9 @@ as ``n_samples / (n_classes * np.bincount(y))``.</span></a></td>
 <td class="value">None</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy verbose to clipboard" onclick="copyToClipboard('verbose',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=verbose,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-verbose;" rel="noreferrer" target="_blank">verbose <span class="param-doc-description" style="position-anchor: --doc-link-verbose;"> verbose: bool, default=False<br>
 <br>
 Enable verbose output. Note that this setting takes advantage of a<br>
@@ -5453,14 +5595,18 @@ properly in a multithreaded context.</span></a></td>
 <td class="value">False</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy max_iter to clipboard" onclick="copyToClipboard('max_iter',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=max_iter,-int%2C%20default%3D-1" class="param-doc-link" style="anchor-name: --doc-link-max_iter;" rel="noreferrer" target="_blank">max_iter <span class="param-doc-description" style="position-anchor: --doc-link-max_iter;"> max_iter: int, default=-1<br>
 <br>
 Hard limit on iterations within solver, or -1 for no limit.</span></a></td>
 <td class="value">-1</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy decision_function_shape to clipboard" onclick="copyToClipboard('decision_function_shape',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=decision_function_shape,-%7B%27ovo%27%2C%20%27ovr%27%7D%2C%20default%3D%27ovr%27" class="param-doc-link" style="anchor-name: --doc-link-decision_function_shape;" rel="noreferrer" target="_blank">decision_function_shape <span class="param-doc-description" style="position-anchor: --doc-link-decision_function_shape;"> decision_function_shape: {'ovo', 'ovr'}, default='ovr'<br>
 <br>
 Whether to return a one-vs-rest ('ovr') decision function of shape<br>
@@ -5482,7 +5628,9 @@ Deprecated *decision_function_shape='ovo' and None*.</span></a></td>
 <td class="value">'ovr'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy break_ties to clipboard" onclick="copyToClipboard('break_ties',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=break_ties,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-break_ties;" rel="noreferrer" target="_blank">break_ties <span class="param-doc-description" style="position-anchor: --doc-link-break_ties;"> break_ties: bool, default=False<br>
 <br>
 If true, ``decision_function_shape='ovr'``, and number of classes &gt; 2,<br>
@@ -5497,7 +5645,9 @@ example of its usage with ``decision_function_shape='ovr'``.<br>
 <td class="value">False</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy random_state to clipboard" onclick="copyToClipboard('random_state',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=random_state,-int%2C%20RandomState%20instance%20or%20None%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-random_state;" rel="noreferrer" target="_blank">random_state <span class="param-doc-description" style="position-anchor: --doc-link-random_state;"> random_state: int, RandomState instance or None, default=None<br>
 <br>
 Controls the pseudo random number generation for shuffling the data for<br>
@@ -5825,7 +5975,7 @@ forceTheme('sk-container-id-3');</script>
 </div>
 </div>
 <p>Visualizamos.</p>
-<div id="b04570f7" class="cell" data-execution_count="25">
+<div id="b74e0ee4" class="cell" data-execution_count="25">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>graficar_modelo(</span>
@@ -5844,7 +5994,7 @@ forceTheme('sk-container-id-3');</script>
 </div>
 </div>
 <p>Calculamos el desempeño.</p>
-<div id="0d9ae118" class="cell" data-execution_count="26">
+<div id="cdb6e8ce" class="cell" data-execution_count="26">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>
@@ -5933,7 +6083,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <p>Mantendremos</p>
 <p><span class="math display">\[C=1\]</span></p>
 <p>y cambiaremos únicamente <span class="math inline">\(\gamma\)</span>.</p>
-<div id="237b9148" class="cell" data-execution_count="27">
+<div id="9b3f8ac7" class="cell" data-execution_count="27">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>valores_gamma <span class="op">=</span> [</span>
@@ -5945,7 +6095,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="4c1f5f56" class="cell" data-execution_count="28">
+<div id="12276902" class="cell" data-execution_count="28">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> gamma <span class="kw">in</span> valores_gamma:</span>
@@ -6055,7 +6205,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <section id="comparación-cuantitativa-de-gamma" class="level2" data-number="14.15">
 <h2 data-number="14.15" class="anchored" data-anchor-id="comparación-cuantitativa-de-gamma"><span class="header-section-number">14.15</span> Comparación cuantitativa de <span class="math inline">\(\gamma\)</span></h2>
 <p>Calculemos ahora las exactitudes de entrenamiento y prueba.</p>
-<div id="42d3e573" class="cell" data-execution_count="29">
+<div id="848470c7" class="cell" data-execution_count="29">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>comparacion_gamma <span class="op">=</span> []</span>
@@ -6190,7 +6340,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <p>Mantendremos</p>
 <p><span class="math display">\[\gamma=1\]</span></p>
 <p>y variaremos <span class="math inline">\(C\)</span>.</p>
-<div id="eb4b1244" class="cell" data-execution_count="30">
+<div id="db46f129" class="cell" data-execution_count="30">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>valores_C <span class="op">=</span> [</span>
@@ -6202,7 +6352,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="3e978b5b" class="cell" data-execution_count="31">
+<div id="b8fe4ddf" class="cell" data-execution_count="31">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> C <span class="kw">in</span> valores_C:</span>
@@ -6320,7 +6470,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <p>Sin embargo, el comportamiento de una SVM RBF depende de la <strong>combinación</strong></p>
 <p><span class="math display">\[(C,\gamma).\]</span></p>
 <p>Examinaremos algunas combinaciones.</p>
-<div id="4429e5bf" class="cell" data-execution_count="32">
+<div id="5d58149d" class="cell" data-execution_count="32">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>combinaciones <span class="op">=</span> [</span>
@@ -6331,7 +6481,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<div id="b63a2b45" class="cell" data-execution_count="33">
+<div id="9d742b4d" class="cell" data-execution_count="33">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> C, gamma <span class="kw">in</span> combinaciones:</span>
@@ -6438,14 +6588,14 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <h2 data-number="14.18" class="anchored" data-anchor-id="número-de-vectores-de-soporte"><span class="header-section-number">14.18</span> Número de vectores de soporte</h2>
 <p>Aunque con kernels no lineales la geometría es más difícil de visualizar que en el caso lineal, los vectores de soporte continúan desempeñando un papel fundamental.</p>
 <p>Podemos acceder al clasificador dentro del <code>Pipeline</code>.</p>
-<div id="9ce241ef" class="cell" data-execution_count="34">
+<div id="f87baf04" class="cell" data-execution_count="34">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>svc_rbf <span class="op">=</span> modelo_rbf.named_steps[<span class="st">"svc"</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Número total de vectores de soporte:</p>
-<div id="772be8aa" class="cell" data-execution_count="35">
+<div id="10989947" class="cell" data-execution_count="35">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(svc_rbf.support_)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -6455,7 +6605,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 </div>
 </div>
 <p>Número por clase:</p>
-<div id="9d4925cd" class="cell" data-execution_count="36">
+<div id="1c5eb465" class="cell" data-execution_count="36">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>svc_rbf.n_support_</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
@@ -6488,7 +6638,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <section id="un-segundo-ejemplo-círculos-concéntricos" class="level2" data-number="14.19">
 <h2 data-number="14.19" class="anchored" data-anchor-id="un-segundo-ejemplo-círculos-concéntricos"><span class="header-section-number">14.19</span> Un segundo ejemplo: círculos concéntricos</h2>
 <p>Veamos un problema en el que la imposibilidad de utilizar una frontera lineal es todavía más evidente.</p>
-<div id="ddb59068" class="cell" data-execution_count="37">
+<div id="3708232e" class="cell" data-execution_count="37">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>X_circulos, y_circulos <span class="op">=</span> make_circles(</span>
@@ -6500,7 +6650,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 </details>
 </div>
 <p>Transformamos las etiquetas:</p>
-<div id="2fbdfe40" class="cell" data-execution_count="38">
+<div id="ec6d0dd7" class="cell" data-execution_count="38">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>y_circulos <span class="op">=</span> np.where(</span>
@@ -6511,7 +6661,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 </details>
 </div>
 <p>Visualizamos.</p>
-<div id="20086626" class="cell" data-execution_count="39">
+<div id="1240971e" class="cell" data-execution_count="39">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
@@ -6573,7 +6723,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 <section id="kernel-lineal-vs.-rbf" class="level2" data-number="14.20">
 <h2 data-number="14.20" class="anchored" data-anchor-id="kernel-lineal-vs.-rbf"><span class="header-section-number">14.20</span> Kernel lineal vs.&nbsp;RBF</h2>
 <p>Dividimos los datos.</p>
-<div id="6f024c6e" class="cell" data-execution_count="40">
+<div id="2125067d" class="cell" data-execution_count="40">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>Xc_train, Xc_test, yc_train, yc_test <span class="op">=</span> train_test_split(</span>
@@ -6586,7 +6736,7 @@ Accuracy prueba: 0.9466666666666667</code></pre>
 </details>
 </div>
 <p>Modelo lineal:</p>
-<div id="57a97c37" class="cell" data-execution_count="41">
+<div id="5e68f826" class="cell" data-execution_count="41">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>modelo_circulos_lineal <span class="op">=</span> Pipeline([</span>
@@ -7185,6 +7335,14 @@ a.param-doc-link::before {
     width: 14px;
     height: 14px;
     cursor: pointer;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+}
+
+.copy-paste-icon:focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 1px;
 }
 
 .features {
@@ -7243,7 +7401,6 @@ a.param-doc-link::before {
 }
 
 .features .features-container {
-  max-width: 15em;
   max-height: 10em;
   overflow: auto;
   scrollbar-width: thin;
@@ -7321,7 +7478,9 @@ a.param-doc-link::before {
 </colgroup>
 <tbody>
 <tr class="user-set odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy steps to clipboard" onclick="copyToClipboard('steps',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=steps,-list%20of%20tuples" class="param-doc-link" style="anchor-name: --doc-link-steps;" rel="noreferrer" target="_blank">steps <span class="param-doc-description" style="position-anchor: --doc-link-steps;"> steps: list of tuples<br>
 <br>
 List of (name of step, estimator) tuples that are to be chained in<br>
@@ -7331,7 +7490,9 @@ must define `fit`. All non-last steps must also define `transform`. See<br>
 <td class="value">[('scaler', ...), ('svc', ...)]</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy transform_input to clipboard" onclick="copyToClipboard('transform_input',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=transform_input,-list%20of%20str%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-transform_input;" rel="noreferrer" target="_blank">transform_input <span class="param-doc-description" style="position-anchor: --doc-link-transform_input;"> transform_input: list of str, default=None<br>
 <br>
 The names of the :term:`metadata` parameters that should be transformed by the<br>
@@ -7349,7 +7510,9 @@ can enable using ``sklearn.set_config(enable_metadata_routing=True)``.<br>
 <td class="value">None</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy memory to clipboard" onclick="copyToClipboard('memory',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=memory,-str%20or%20object%20with%20the%20joblib.Memory%20interface%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-memory;" rel="noreferrer" target="_blank">memory <span class="param-doc-description" style="position-anchor: --doc-link-memory;"> memory: str or object with the joblib.Memory interface, default=None<br>
 <br>
 Used to cache the fitted transformers of the pipeline. The last step<br>
@@ -7365,7 +7528,9 @@ for an example on how to enable caching.</span></a></td>
 <td class="value">None</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy verbose to clipboard" onclick="copyToClipboard('verbose',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=verbose,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-verbose;" rel="noreferrer" target="_blank">verbose <span class="param-doc-description" style="position-anchor: --doc-link-verbose;"> verbose: bool, default=False<br>
 <br>
 If True, the time elapsed while fitting each step will be printed as it<br>
@@ -7431,7 +7596,9 @@ when fit.<br>
 </colgroup>
 <tbody>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy copy to clipboard" onclick="copyToClipboard('copy',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=copy,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-copy;" rel="noreferrer" target="_blank">copy <span class="param-doc-description" style="position-anchor: --doc-link-copy;"> copy: bool, default=True<br>
 <br>
 If False, try to avoid a copy and do inplace scaling instead.<br>
@@ -7441,7 +7608,9 @@ returned.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy with_mean to clipboard" onclick="copyToClipboard('with_mean',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_mean,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-with_mean;" rel="noreferrer" target="_blank">with_mean <span class="param-doc-description" style="position-anchor: --doc-link-with_mean;"> with_mean: bool, default=True<br>
 <br>
 If True, center the data before scaling.<br>
@@ -7452,7 +7621,9 @@ memory.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy with_std to clipboard" onclick="copyToClipboard('with_std',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_std,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-with_std;" rel="noreferrer" target="_blank">with_std <span class="param-doc-description" style="position-anchor: --doc-link-with_std;"> with_std: bool, default=True<br>
 <br>
 If True, scale the data to unit variance (or equivalently,<br>
@@ -7545,13 +7716,13 @@ The variance for each feature in the training set. Used to compute<br>
             <summary>
               <div class="arrow"></div>
               <div>2 features</div>
-              <div class="image-container" title="Copy all output features">
-                <i class="copy-paste-icon" onclick="
+              <div class="image-container">
+                <button type="button" class="copy-paste-icon" title="Copy output features (max 100)" aria-label="Copy output features (max 100)" onclick="
                   event.stopPropagation();
                   event.preventDefault();
                   copyFeatureNamesToClipboard(this);
                   ">
-                </i>
+                </button>
               </div>
             </summary>
             <div class="features-container">
@@ -7583,7 +7754,9 @@ The variance for each feature in the training set. Used to compute<br>
 </colgroup>
 <tbody>
 <tr class="user-set odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy kernel to clipboard" onclick="copyToClipboard('kernel',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=kernel,-%7B%27linear%27%2C%20%27poly%27%2C%20%27rbf%27%2C%20%27sigmoid%27%2C%20%27precomputed%27%7D%20or%20callable%2C%20%20%20%20%20%20%20%20%20%20default%3D%27rbf%27" class="param-doc-link" style="anchor-name: --doc-link-kernel;" rel="noreferrer" target="_blank">kernel <span class="param-doc-description" style="position-anchor: --doc-link-kernel;"> kernel: {'linear', 'poly', 'rbf', 'sigmoid', 'precomputed'} or callable, default='rbf'<br>
 <br>
 Specifies the kernel type to be used in the algorithm. If<br>
@@ -7595,7 +7768,9 @@ visualization of different kernel types see<br>
 <td class="value">'linear'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy C to clipboard" onclick="copyToClipboard('C',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=C,-float%2C%20default%3D1.0" class="param-doc-link" style="anchor-name: --doc-link-C;" rel="noreferrer" target="_blank">C <span class="param-doc-description" style="position-anchor: --doc-link-C;"> C: float, default=1.0<br>
 <br>
 Regularization parameter. The strength of the regularization is<br>
@@ -7606,7 +7781,9 @@ of scaling the regularization parameter C, see<br>
 <td class="value">1</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy degree to clipboard" onclick="copyToClipboard('degree',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=degree,-int%2C%20default%3D3" class="param-doc-link" style="anchor-name: --doc-link-degree;" rel="noreferrer" target="_blank">degree <span class="param-doc-description" style="position-anchor: --doc-link-degree;"> degree: int, default=3<br>
 <br>
 Degree of the polynomial kernel function ('poly').<br>
@@ -7614,7 +7791,9 @@ Must be non-negative. Ignored by all other kernels.</span></a></td>
 <td class="value">3</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy gamma to clipboard" onclick="copyToClipboard('gamma',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=gamma,-%7B%27scale%27%2C%20%27auto%27%7D%20or%20float%2C%20default%3D%27scale%27" class="param-doc-link" style="anchor-name: --doc-link-gamma;" rel="noreferrer" target="_blank">gamma <span class="param-doc-description" style="position-anchor: --doc-link-gamma;"> gamma: {'scale', 'auto'} or float, default='scale'<br>
 <br>
 Kernel coefficient for 'rbf', 'poly' and 'sigmoid'.<br>
@@ -7629,7 +7808,9 @@ The default value of ``gamma`` changed from 'auto' to 'scale'.</span></a></td>
 <td class="value">'scale'</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy coef0 to clipboard" onclick="copyToClipboard('coef0',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=coef0,-float%2C%20default%3D0.0" class="param-doc-link" style="anchor-name: --doc-link-coef0;" rel="noreferrer" target="_blank">coef0 <span class="param-doc-description" style="position-anchor: --doc-link-coef0;"> coef0: float, default=0.0<br>
 <br>
 Independent term in kernel function.<br>
@@ -7637,7 +7818,9 @@ It is only significant in 'poly' and 'sigmoid'.</span></a></td>
 <td class="value">0.0</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy shrinking to clipboard" onclick="copyToClipboard('shrinking',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=shrinking,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-shrinking;" rel="noreferrer" target="_blank">shrinking <span class="param-doc-description" style="position-anchor: --doc-link-shrinking;"> shrinking: bool, default=True<br>
 <br>
 Whether to use the shrinking heuristic.<br>
@@ -7645,7 +7828,9 @@ See the :ref:`User Guide &lt;shrinking_svm&gt;`.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy probability to clipboard" onclick="copyToClipboard('probability',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=probability,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-probability;" rel="noreferrer" target="_blank">probability <span class="param-doc-description" style="position-anchor: --doc-link-probability;"> probability: bool, default=False<br>
 <br>
 Whether to enable probability estimates. This must be enabled prior<br>
@@ -7660,21 +7845,27 @@ Use `CalibratedClassifierCV(SVC(), ensemble=False)` instead of<br>
 <td class="value">'deprecated'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy tol to clipboard" onclick="copyToClipboard('tol',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=tol,-float%2C%20default%3D1e-3" class="param-doc-link" style="anchor-name: --doc-link-tol;" rel="noreferrer" target="_blank">tol <span class="param-doc-description" style="position-anchor: --doc-link-tol;"> tol: float, default=1e-3<br>
 <br>
 Tolerance for stopping criterion.</span></a></td>
 <td class="value">0.001</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy cache_size to clipboard" onclick="copyToClipboard('cache_size',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=cache_size,-float%2C%20default%3D200" class="param-doc-link" style="anchor-name: --doc-link-cache_size;" rel="noreferrer" target="_blank">cache_size <span class="param-doc-description" style="position-anchor: --doc-link-cache_size;"> cache_size: float, default=200<br>
 <br>
 Specify the size of the kernel cache (in MB).</span></a></td>
 <td class="value">200</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy class_weight to clipboard" onclick="copyToClipboard('class_weight',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=class_weight,-dict%20or%20%27balanced%27%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-class_weight;" rel="noreferrer" target="_blank">class_weight <span class="param-doc-description" style="position-anchor: --doc-link-class_weight;"> class_weight: dict or 'balanced', default=None<br>
 <br>
 Set the parameter C of class i to class_weight[i]*C for<br>
@@ -7686,7 +7877,9 @@ as ``n_samples / (n_classes * np.bincount(y))``.</span></a></td>
 <td class="value">None</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy verbose to clipboard" onclick="copyToClipboard('verbose',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=verbose,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-verbose;" rel="noreferrer" target="_blank">verbose <span class="param-doc-description" style="position-anchor: --doc-link-verbose;"> verbose: bool, default=False<br>
 <br>
 Enable verbose output. Note that this setting takes advantage of a<br>
@@ -7695,14 +7888,18 @@ properly in a multithreaded context.</span></a></td>
 <td class="value">False</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy max_iter to clipboard" onclick="copyToClipboard('max_iter',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=max_iter,-int%2C%20default%3D-1" class="param-doc-link" style="anchor-name: --doc-link-max_iter;" rel="noreferrer" target="_blank">max_iter <span class="param-doc-description" style="position-anchor: --doc-link-max_iter;"> max_iter: int, default=-1<br>
 <br>
 Hard limit on iterations within solver, or -1 for no limit.</span></a></td>
 <td class="value">-1</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy decision_function_shape to clipboard" onclick="copyToClipboard('decision_function_shape',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=decision_function_shape,-%7B%27ovo%27%2C%20%27ovr%27%7D%2C%20default%3D%27ovr%27" class="param-doc-link" style="anchor-name: --doc-link-decision_function_shape;" rel="noreferrer" target="_blank">decision_function_shape <span class="param-doc-description" style="position-anchor: --doc-link-decision_function_shape;"> decision_function_shape: {'ovo', 'ovr'}, default='ovr'<br>
 <br>
 Whether to return a one-vs-rest ('ovr') decision function of shape<br>
@@ -7724,7 +7921,9 @@ Deprecated *decision_function_shape='ovo' and None*.</span></a></td>
 <td class="value">'ovr'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy break_ties to clipboard" onclick="copyToClipboard('break_ties',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=break_ties,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-break_ties;" rel="noreferrer" target="_blank">break_ties <span class="param-doc-description" style="position-anchor: --doc-link-break_ties;"> break_ties: bool, default=False<br>
 <br>
 If true, ``decision_function_shape='ovr'``, and number of classes &gt; 2,<br>
@@ -7739,7 +7938,9 @@ example of its usage with ``decision_function_shape='ovr'``.<br>
 <td class="value">False</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy random_state to clipboard" onclick="copyToClipboard('random_state',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=random_state,-int%2C%20RandomState%20instance%20or%20None%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-random_state;" rel="noreferrer" target="_blank">random_state <span class="param-doc-description" style="position-anchor: --doc-link-random_state;"> random_state: int, RandomState instance or None, default=None<br>
 <br>
 Controls the pseudo random number generation for shuffling the data for<br>
@@ -8078,7 +8279,7 @@ forceTheme('sk-container-id-4');</script>
 </div>
 </div>
 <p>Modelo RBF:</p>
-<div id="0145a559" class="cell" data-execution_count="42">
+<div id="60d35b37" class="cell" data-execution_count="42">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>modelo_circulos_rbf <span class="op">=</span> Pipeline([</span>
@@ -8678,6 +8879,14 @@ a.param-doc-link::before {
     width: 14px;
     height: 14px;
     cursor: pointer;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+}
+
+.copy-paste-icon:focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 1px;
 }
 
 .features {
@@ -8736,7 +8945,6 @@ a.param-doc-link::before {
 }
 
 .features .features-container {
-  max-width: 15em;
   max-height: 10em;
   overflow: auto;
   scrollbar-width: thin;
@@ -8813,7 +9021,9 @@ a.param-doc-link::before {
 </colgroup>
 <tbody>
 <tr class="user-set odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy steps to clipboard" onclick="copyToClipboard('steps',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=steps,-list%20of%20tuples" class="param-doc-link" style="anchor-name: --doc-link-steps;" rel="noreferrer" target="_blank">steps <span class="param-doc-description" style="position-anchor: --doc-link-steps;"> steps: list of tuples<br>
 <br>
 List of (name of step, estimator) tuples that are to be chained in<br>
@@ -8823,7 +9033,9 @@ must define `fit`. All non-last steps must also define `transform`. See<br>
 <td class="value">[('scaler', ...), ('svc', ...)]</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy transform_input to clipboard" onclick="copyToClipboard('transform_input',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=transform_input,-list%20of%20str%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-transform_input;" rel="noreferrer" target="_blank">transform_input <span class="param-doc-description" style="position-anchor: --doc-link-transform_input;"> transform_input: list of str, default=None<br>
 <br>
 The names of the :term:`metadata` parameters that should be transformed by the<br>
@@ -8841,7 +9053,9 @@ can enable using ``sklearn.set_config(enable_metadata_routing=True)``.<br>
 <td class="value">None</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy memory to clipboard" onclick="copyToClipboard('memory',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=memory,-str%20or%20object%20with%20the%20joblib.Memory%20interface%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-memory;" rel="noreferrer" target="_blank">memory <span class="param-doc-description" style="position-anchor: --doc-link-memory;"> memory: str or object with the joblib.Memory interface, default=None<br>
 <br>
 Used to cache the fitted transformers of the pipeline. The last step<br>
@@ -8857,7 +9071,9 @@ for an example on how to enable caching.</span></a></td>
 <td class="value">None</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy verbose to clipboard" onclick="copyToClipboard('verbose',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.pipeline.Pipeline.html#:~:text=verbose,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-verbose;" rel="noreferrer" target="_blank">verbose <span class="param-doc-description" style="position-anchor: --doc-link-verbose;"> verbose: bool, default=False<br>
 <br>
 If True, the time elapsed while fitting each step will be printed as it<br>
@@ -8923,7 +9139,9 @@ when fit.<br>
 </colgroup>
 <tbody>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy copy to clipboard" onclick="copyToClipboard('copy',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=copy,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-copy;" rel="noreferrer" target="_blank">copy <span class="param-doc-description" style="position-anchor: --doc-link-copy;"> copy: bool, default=True<br>
 <br>
 If False, try to avoid a copy and do inplace scaling instead.<br>
@@ -8933,7 +9151,9 @@ returned.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy with_mean to clipboard" onclick="copyToClipboard('with_mean',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_mean,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-with_mean;" rel="noreferrer" target="_blank">with_mean <span class="param-doc-description" style="position-anchor: --doc-link-with_mean;"> with_mean: bool, default=True<br>
 <br>
 If True, center the data before scaling.<br>
@@ -8944,7 +9164,9 @@ memory.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy with_std to clipboard" onclick="copyToClipboard('with_std',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.preprocessing.StandardScaler.html#:~:text=with_std,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-with_std;" rel="noreferrer" target="_blank">with_std <span class="param-doc-description" style="position-anchor: --doc-link-with_std;"> with_std: bool, default=True<br>
 <br>
 If True, scale the data to unit variance (or equivalently,<br>
@@ -9037,13 +9259,13 @@ The variance for each feature in the training set. Used to compute<br>
             <summary>
               <div class="arrow"></div>
               <div>2 features</div>
-              <div class="image-container" title="Copy all output features">
-                <i class="copy-paste-icon" onclick="
+              <div class="image-container">
+                <button type="button" class="copy-paste-icon" title="Copy output features (max 100)" aria-label="Copy output features (max 100)" onclick="
                   event.stopPropagation();
                   event.preventDefault();
                   copyFeatureNamesToClipboard(this);
                   ">
-                </i>
+                </button>
               </div>
             </summary>
             <div class="features-container">
@@ -9075,7 +9297,9 @@ The variance for each feature in the training set. Used to compute<br>
 </colgroup>
 <tbody>
 <tr class="user-set odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy gamma to clipboard" onclick="copyToClipboard('gamma',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=gamma,-%7B%27scale%27%2C%20%27auto%27%7D%20or%20float%2C%20default%3D%27scale%27" class="param-doc-link" style="anchor-name: --doc-link-gamma;" rel="noreferrer" target="_blank">gamma <span class="param-doc-description" style="position-anchor: --doc-link-gamma;"> gamma: {'scale', 'auto'} or float, default='scale'<br>
 <br>
 Kernel coefficient for 'rbf', 'poly' and 'sigmoid'.<br>
@@ -9090,7 +9314,9 @@ The default value of ``gamma`` changed from 'auto' to 'scale'.</span></a></td>
 <td class="value">1</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy C to clipboard" onclick="copyToClipboard('C',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=C,-float%2C%20default%3D1.0" class="param-doc-link" style="anchor-name: --doc-link-C;" rel="noreferrer" target="_blank">C <span class="param-doc-description" style="position-anchor: --doc-link-C;"> C: float, default=1.0<br>
 <br>
 Regularization parameter. The strength of the regularization is<br>
@@ -9101,7 +9327,9 @@ of scaling the regularization parameter C, see<br>
 <td class="value">1</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy kernel to clipboard" onclick="copyToClipboard('kernel',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=kernel,-%7B%27linear%27%2C%20%27poly%27%2C%20%27rbf%27%2C%20%27sigmoid%27%2C%20%27precomputed%27%7D%20or%20callable%2C%20%20%20%20%20%20%20%20%20%20default%3D%27rbf%27" class="param-doc-link" style="anchor-name: --doc-link-kernel;" rel="noreferrer" target="_blank">kernel <span class="param-doc-description" style="position-anchor: --doc-link-kernel;"> kernel: {'linear', 'poly', 'rbf', 'sigmoid', 'precomputed'} or callable, default='rbf'<br>
 <br>
 Specifies the kernel type to be used in the algorithm. If<br>
@@ -9113,7 +9341,9 @@ visualization of different kernel types see<br>
 <td class="value">'rbf'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy degree to clipboard" onclick="copyToClipboard('degree',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=degree,-int%2C%20default%3D3" class="param-doc-link" style="anchor-name: --doc-link-degree;" rel="noreferrer" target="_blank">degree <span class="param-doc-description" style="position-anchor: --doc-link-degree;"> degree: int, default=3<br>
 <br>
 Degree of the polynomial kernel function ('poly').<br>
@@ -9121,7 +9351,9 @@ Must be non-negative. Ignored by all other kernels.</span></a></td>
 <td class="value">3</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy coef0 to clipboard" onclick="copyToClipboard('coef0',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=coef0,-float%2C%20default%3D0.0" class="param-doc-link" style="anchor-name: --doc-link-coef0;" rel="noreferrer" target="_blank">coef0 <span class="param-doc-description" style="position-anchor: --doc-link-coef0;"> coef0: float, default=0.0<br>
 <br>
 Independent term in kernel function.<br>
@@ -9129,7 +9361,9 @@ It is only significant in 'poly' and 'sigmoid'.</span></a></td>
 <td class="value">0.0</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy shrinking to clipboard" onclick="copyToClipboard('shrinking',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=shrinking,-bool%2C%20default%3DTrue" class="param-doc-link" style="anchor-name: --doc-link-shrinking;" rel="noreferrer" target="_blank">shrinking <span class="param-doc-description" style="position-anchor: --doc-link-shrinking;"> shrinking: bool, default=True<br>
 <br>
 Whether to use the shrinking heuristic.<br>
@@ -9137,7 +9371,9 @@ See the :ref:`User Guide &lt;shrinking_svm&gt;`.</span></a></td>
 <td class="value">True</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy probability to clipboard" onclick="copyToClipboard('probability',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=probability,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-probability;" rel="noreferrer" target="_blank">probability <span class="param-doc-description" style="position-anchor: --doc-link-probability;"> probability: bool, default=False<br>
 <br>
 Whether to enable probability estimates. This must be enabled prior<br>
@@ -9152,21 +9388,27 @@ Use `CalibratedClassifierCV(SVC(), ensemble=False)` instead of<br>
 <td class="value">'deprecated'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy tol to clipboard" onclick="copyToClipboard('tol',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=tol,-float%2C%20default%3D1e-3" class="param-doc-link" style="anchor-name: --doc-link-tol;" rel="noreferrer" target="_blank">tol <span class="param-doc-description" style="position-anchor: --doc-link-tol;"> tol: float, default=1e-3<br>
 <br>
 Tolerance for stopping criterion.</span></a></td>
 <td class="value">0.001</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy cache_size to clipboard" onclick="copyToClipboard('cache_size',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=cache_size,-float%2C%20default%3D200" class="param-doc-link" style="anchor-name: --doc-link-cache_size;" rel="noreferrer" target="_blank">cache_size <span class="param-doc-description" style="position-anchor: --doc-link-cache_size;"> cache_size: float, default=200<br>
 <br>
 Specify the size of the kernel cache (in MB).</span></a></td>
 <td class="value">200</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy class_weight to clipboard" onclick="copyToClipboard('class_weight',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=class_weight,-dict%20or%20%27balanced%27%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-class_weight;" rel="noreferrer" target="_blank">class_weight <span class="param-doc-description" style="position-anchor: --doc-link-class_weight;"> class_weight: dict or 'balanced', default=None<br>
 <br>
 Set the parameter C of class i to class_weight[i]*C for<br>
@@ -9178,7 +9420,9 @@ as ``n_samples / (n_classes * np.bincount(y))``.</span></a></td>
 <td class="value">None</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy verbose to clipboard" onclick="copyToClipboard('verbose',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=verbose,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-verbose;" rel="noreferrer" target="_blank">verbose <span class="param-doc-description" style="position-anchor: --doc-link-verbose;"> verbose: bool, default=False<br>
 <br>
 Enable verbose output. Note that this setting takes advantage of a<br>
@@ -9187,14 +9431,18 @@ properly in a multithreaded context.</span></a></td>
 <td class="value">False</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy max_iter to clipboard" onclick="copyToClipboard('max_iter',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=max_iter,-int%2C%20default%3D-1" class="param-doc-link" style="anchor-name: --doc-link-max_iter;" rel="noreferrer" target="_blank">max_iter <span class="param-doc-description" style="position-anchor: --doc-link-max_iter;"> max_iter: int, default=-1<br>
 <br>
 Hard limit on iterations within solver, or -1 for no limit.</span></a></td>
 <td class="value">-1</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy decision_function_shape to clipboard" onclick="copyToClipboard('decision_function_shape',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=decision_function_shape,-%7B%27ovo%27%2C%20%27ovr%27%7D%2C%20default%3D%27ovr%27" class="param-doc-link" style="anchor-name: --doc-link-decision_function_shape;" rel="noreferrer" target="_blank">decision_function_shape <span class="param-doc-description" style="position-anchor: --doc-link-decision_function_shape;"> decision_function_shape: {'ovo', 'ovr'}, default='ovr'<br>
 <br>
 Whether to return a one-vs-rest ('ovr') decision function of shape<br>
@@ -9216,7 +9464,9 @@ Deprecated *decision_function_shape='ovo' and None*.</span></a></td>
 <td class="value">'ovr'</td>
 </tr>
 <tr class="default even">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy break_ties to clipboard" onclick="copyToClipboard('break_ties',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=break_ties,-bool%2C%20default%3DFalse" class="param-doc-link" style="anchor-name: --doc-link-break_ties;" rel="noreferrer" target="_blank">break_ties <span class="param-doc-description" style="position-anchor: --doc-link-break_ties;"> break_ties: bool, default=False<br>
 <br>
 If true, ``decision_function_shape='ovr'``, and number of classes &gt; 2,<br>
@@ -9231,7 +9481,9 @@ example of its usage with ``decision_function_shape='ovr'``.<br>
 <td class="value">False</td>
 </tr>
 <tr class="default odd">
-<td><em></em></td>
+<td><button type="button" class="copy-paste-icon" aria-label="Copy random_state to clipboard" onclick="copyToClipboard('random_state',
+                          this.parentElement.nextElementSibling)">
+</button></td>
 <td class="param"><a href="https://scikit-learn.org/1.9/modules/generated/sklearn.svm.SVC.html#:~:text=random_state,-int%2C%20RandomState%20instance%20or%20None%2C%20default%3DNone" class="param-doc-link" style="anchor-name: --doc-link-random_state;" rel="noreferrer" target="_blank">random_state <span class="param-doc-description" style="position-anchor: --doc-link-random_state;"> random_state: int, RandomState instance or None, default=None<br>
 <br>
 Controls the pseudo random number generation for shuffling the data for<br>
@@ -9559,7 +9811,7 @@ forceTheme('sk-container-id-5');</script>
 </div>
 </div>
 <p>Visualizamos el modelo lineal:</p>
-<div id="640d9811" class="cell" data-execution_count="43">
+<div id="f3a00cb5" class="cell" data-execution_count="43">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>graficar_modelo(</span>
@@ -9578,7 +9830,7 @@ forceTheme('sk-container-id-5');</script>
 </div>
 </div>
 <p>Y el modelo RBF:</p>
-<div id="ffdbbd63" class="cell" data-execution_count="44">
+<div id="e1f55a79" class="cell" data-execution_count="44">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>graficar_modelo(</span>
@@ -9597,7 +9849,7 @@ forceTheme('sk-container-id-5');</script>
 </div>
 </div>
 <p>Comparamos el desempeño sobre prueba.</p>
-<div id="a6b1540e" class="cell" data-execution_count="45">
+<div id="1cf0c71d" class="cell" data-execution_count="45">
 <details open="" class="code-fold">
 <summary>Código</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(</span>

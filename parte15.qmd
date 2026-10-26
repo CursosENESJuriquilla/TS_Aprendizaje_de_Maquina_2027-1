@@ -22,15 +22,15 @@ Vamos a:
 - interpretar `best_params_` y `best_score_`;
 - mantener separado el conjunto de prueba durante la selección del modelo.
 
-::: {.diapositivas}
-::: {.diapositivas-title}
+::::: diapositivas
+::: diapositivas-title
 📝 **Diapositivas**
 :::
 
-::: {.diapositivas-body}
+::: diapositivas-body
 [Ver diapositivas SVM con más de dos clases](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/4.4-MSV_con_mas_clases.pdf)
 :::
-:::
+:::::
 
 ## Antes de comenzar
 
@@ -440,8 +440,7 @@ Por ahora no evaluaremos sobre test.
 
 Primero debemos seleccionar adecuadamente nuestro modelo.
 
-
-::: {.callout-note}
+::: callout-note
 ## ¿Ya resolvimos el problema?
 
 Es posible que nuestra primera SVM lineal obtenga una exactitud de $1$, es decir, que clasifique correctamente todas las observaciones del conjunto de entrenamiento.
@@ -461,7 +460,6 @@ En particular, estudiaremos:
 
 Un modelo más complejo no necesariamente produce mejores resultados.
 :::
-
 
 ## ¿Por qué un `Pipeline`?
 
@@ -1371,10 +1369,9 @@ Para cada caso, calcula el promedio y la desviación estándar de `accuracy`.
 
 **Preguntas:**
 
-1. ¿Qué porcentaje de los datos se utiliza para entrenamiento y validación en cada iteración?
-2. ¿Cambian el promedio y la desviación estándar de `accuracy`?
-3. ¿Obtener una desviación estándar menor significa necesariamente que el modelo es mejor? Justifica tu respuesta.
-
+1.  ¿Qué porcentaje de los datos se utiliza para entrenamiento y validación en cada iteración?
+2.  ¿Cambian el promedio y la desviación estándar de `accuracy`?
+3.  ¿Obtener una desviación estándar menor significa necesariamente que el modelo es mejor? Justifica tu respuesta.
 
 ### Ejercicio 2. Una cuadrícula más pequeña
 
@@ -1382,44 +1379,36 @@ Construye una búsqueda de hiperparámetros utilizando `GridSearchCV` exclusivam
 
 Considera los siguientes valores:
 
-$$
-C\in\{0.1,1,10\}
-$$
+$$C\in\{0.1,1,10\}$$
 
 y
 
-$$
-\gamma\in\{0.01,0.1,1\}.
-$$
+$$\gamma\in\{0.01,0.1,1\}.$$
 
 Utiliza validación cruzada estratificada de 5 pliegues y la métrica `accuracy`.
 
 **Preguntas:**
 
-1. ¿Cuántas combinaciones diferentes de $C$ y $\gamma$ se evaluarán?
-2. Considerando los 5 pliegues de validación cruzada, ¿cuántos ajustes del modelo se realizarán en total durante la búsqueda?
-3. ¿Qué combinación de $C$ y $\gamma$ obtuvo el mejor promedio de `accuracy` en validación cruzada?
-4. ¿Cuál fue ese promedio de `accuracy`?
-5. ¿La mejor combinación utiliza valores grandes o pequeños de $C$ y $\gamma$? Explica brevemente qué implican esos valores para la regularización y la influencia local de las observaciones.
-6. Compara el mejor resultado de validación cruzada con el obtenido anteriormente para la SVM lineal. ¿Hay evidencia de que utilizar el kernel RBF mejore el desempeño en este conjunto de datos?
+1.  ¿Cuántas combinaciones diferentes de $C$ y $\gamma$ se evaluarán?
+2.  Considerando los 5 pliegues de validación cruzada, ¿cuántos ajustes del modelo se realizarán en total durante la búsqueda?
+3.  ¿Qué combinación de $C$ y $\gamma$ obtuvo el mejor promedio de `accuracy` en validación cruzada?
+4.  ¿Cuál fue ese promedio de `accuracy`?
+5.  ¿La mejor combinación utiliza valores grandes o pequeños de $C$ y $\gamma$? Explica brevemente qué implican esos valores para la regularización y la influencia local de las observaciones.
+6.  Compara el mejor resultado de validación cruzada con el obtenido anteriormente para la SVM lineal. ¿Hay evidencia de que utilizar el kernel RBF mejore el desempeño en este conjunto de datos?
 
 ### Ejercicio 3. Investigar sobreajuste
 
 Realiza una nueva búsqueda de hiperparámetros para una SVM con kernel RBF, considerando valores relativamente grandes de $C$ y $\gamma$:
 
-$$
-C\in\{1,10,100,1000\}
-$$
+$$C\in\{1,10,100,1000\}$$
 
 y
 
-$$
-\gamma\in\{0.1,1,10,100\}.
-$$
+$$\gamma\in\{0.1,1,10,100\}.$$
 
 Utiliza `GridSearchCV` con validación cruzada estratificada de 5 pliegues, la métrica `accuracy` y el argumento:
 
-```python
+``` python
 return_train_score=True
 ```
 
@@ -1427,14 +1416,14 @@ Este argumento permite recuperar tanto el desempeño promedio en los conjuntos d
 
 **Preguntas:**
 
-1. ¿Cuántas combinaciones de hiperparámetros se evaluaron? ¿Cuántos ajustes se realizaron durante la validación cruzada?
-2. Identifica la combinación de $C$ y $\gamma$ que obtuvo el mayor `mean_train_score`. ¿Cuál fue su correspondiente `mean_test_score`?
-3. Calcula la diferencia entre `mean_train_score` y `mean_test_score` para cada combinación. ¿Cuál presentó la mayor diferencia?
-4. ¿Encontraste configuraciones con un desempeño muy alto en entrenamiento, pero considerablemente menor en validación? ¿Qué podría indicar este comportamiento?
-5. ¿Qué ocurre con el desempeño de validación cuando $\gamma$ toma valores muy grandes? Relaciona tus observaciones con la influencia local de los vectores de soporte.
-6. ¿La configuración con mayor exactitud en entrenamiento coincide necesariamente con la de mayor exactitud en validación? ¿Cuál seleccionarías y por qué?
+1.  ¿Cuántas combinaciones de hiperparámetros se evaluaron? ¿Cuántos ajustes se realizaron durante la validación cruzada?
+2.  Identifica la combinación de $C$ y $\gamma$ que obtuvo el mayor `mean_train_score`. ¿Cuál fue su correspondiente `mean_test_score`?
+3.  Calcula la diferencia entre `mean_train_score` y `mean_test_score` para cada combinación. ¿Cuál presentó la mayor diferencia?
+4.  ¿Encontraste configuraciones con un desempeño muy alto en entrenamiento, pero considerablemente menor en validación? ¿Qué podría indicar este comportamiento?
+5.  ¿Qué ocurre con el desempeño de validación cuando $\gamma$ toma valores muy grandes? Relaciona tus observaciones con la influencia local de los vectores de soporte.
+6.  ¿La configuración con mayor exactitud en entrenamiento coincide necesariamente con la de mayor exactitud en validación? ¿Cuál seleccionarías y por qué?
 
-::: {.callout-note}
+::: callout-note
 ## Para interpretar los resultados
 
 Una diferencia importante entre el desempeño en entrenamiento y validación puede ser una señal de **sobreajuste**, especialmente cuando la exactitud en entrenamiento es alta y disminuye considerablemente en validación.
@@ -1450,15 +1439,11 @@ Recordemos que las estrategias *One-versus-One* (OvO) y *One-versus-Rest* (OvR) 
 
 El número de clasificadores binarios necesarios depende de la estrategia utilizada:
 
-$$
-N_{\mathrm{OvO}}=\frac{K(K-1)}{2},
-$$
+$$N_{\mathrm{OvO}}=\frac{K(K-1)}{2},$$
 
 mientras que
 
-$$
-N_{\mathrm{OvR}}=K,
-$$
+$$N_{\mathrm{OvR}}=K,$$
 
 donde $K$ representa el número de clases.
 
@@ -1466,23 +1451,21 @@ donde $K$ representa el número de clases.
 
 Calcula cuántos clasificadores binarios se necesitan con ambas estrategias para:
 
-1. $K=3$ clases.
-2. $K=5$ clases.
-3. $K=10$ clases.
-4. $K=20$ clases.
+1.  $K=3$ clases.
+2.  $K=5$ clases.
+3.  $K=10$ clases.
+4.  $K=20$ clases.
 
 Organiza tus resultados en una tabla comparativa.
 
 **Preguntas:**
 
-1. ¿Para qué valores de $K$ ambas estrategias requieren el mismo número de clasificadores?
-2. ¿Cómo cambia el número de clasificadores de OvO y OvR conforme aumenta $K$? ¿Cuál crece más rápidamente?
-3. Si tenemos $K=20$ clases, ¿cuántos clasificadores adicionales necesita OvO respecto a OvR?
-4. En OvO, ¿qué observaciones se utilizan para entrenar cada clasificador binario? ¿Y en OvR?
-5. ¿Podemos concluir que OvR siempre será computacionalmente más eficiente porque necesita menos clasificadores? Justifica tu respuesta considerando la cantidad de datos utilizada para entrenar cada uno.
-6. Si utilizamos `SVC` de `scikit-learn` con $K=10$ clases, ¿cuántos clasificadores binarios se entrenan internamente? ¿Cambiaría este número si especificamos `decision_function_shape="ovr"`?
-
-
+1.  ¿Para qué valores de $K$ ambas estrategias requieren el mismo número de clasificadores?
+2.  ¿Cómo cambia el número de clasificadores de OvO y OvR conforme aumenta $K$? ¿Cuál crece más rápidamente?
+3.  Si tenemos $K=20$ clases, ¿cuántos clasificadores adicionales necesita OvO respecto a OvR?
+4.  En OvO, ¿qué observaciones se utilizan para entrenar cada clasificador binario? ¿Y en OvR?
+5.  ¿Podemos concluir que OvR siempre será computacionalmente más eficiente porque necesita menos clasificadores? Justifica tu respuesta considerando la cantidad de datos utilizada para entrenar cada uno.
+6.  Si utilizamos `SVC` de `scikit-learn` con $K=10$ clases, ¿cuántos clasificadores binarios se entrenan internamente? ¿Cambiaría este número si especificamos `decision_function_shape="ovr"`?
 
 ### Reto adicional. Reconocimiento de dígitos escritos a mano mediante SVM
 
@@ -1490,9 +1473,7 @@ En este reto utilizaremos el conjunto de datos `Digits` de `scikit-learn`, que c
 
 Cada imagen tiene una resolución de $8\times 8$ píxeles y representa uno de los diez dígitos:
 
-$$
-Y\in\{0,1,2,\ldots,9\}.
-$$
+$$Y\in\{0,1,2,\ldots,9\}.$$
 
 Cada imagen se representa mediante un vector de $64$ características, correspondientes a las intensidades de sus píxeles.
 
@@ -1502,7 +1483,7 @@ Nuestro objetivo será construir una **SVM multiclase** capaz de identificar el 
 
 Carga el conjunto de datos utilizando:
 
-```python
+``` python
 from sklearn.datasets import load_digits
 
 digits = load_digits()
@@ -1515,7 +1496,7 @@ Explora las dimensiones del conjunto de datos y la distribución de las clases.
 
 Para visualizar algunas imágenes puedes utilizar:
 
-```python
+``` python
 import matplotlib.pyplot as plt
 
 fig, axes = plt.subplots(2, 5, figsize=(10, 4))
@@ -1534,10 +1515,10 @@ plt.show()
 
 **Preguntas:**
 
-1. ¿Cuántas observaciones y variables predictoras tiene el conjunto de datos?
-2. ¿Cuántas clases diferentes existen?
-3. ¿Por qué cada observación tiene 64 características si originalmente es una imagen?
-4. ¿Las clases están aproximadamente balanceadas?
+1.  ¿Cuántas observaciones y variables predictoras tiene el conjunto de datos?
+2.  ¿Cuántas clases diferentes existen?
+3.  ¿Por qué cada observación tiene 64 características si originalmente es una imagen?
+4.  ¿Las clases están aproximadamente balanceadas?
 
 #### Parte 2. Entrenamiento de una SVM multiclase
 
@@ -1552,9 +1533,9 @@ Entrena el modelo y evalúa su exactitud sobre los conjuntos de entrenamiento y 
 
 **Preguntas:**
 
-1. ¿Qué exactitud obtuviste en entrenamiento y prueba?
-2. ¿Cuántos clasificadores binarios entrena internamente `SVC` para este problema?
-3. ¿Por qué no necesitamos construir manualmente un clasificador para cada par de dígitos?
+1.  ¿Qué exactitud obtuviste en entrenamiento y prueba?
+2.  ¿Cuántos clasificadores binarios entrena internamente `SVC` para este problema?
+3.  ¿Por qué no necesitamos construir manualmente un clasificador para cada par de dígitos?
 
 #### Parte 3. Comparación con un kernel RBF
 
@@ -1562,7 +1543,7 @@ Construye una segunda SVM utilizando un kernel RBF.
 
 Utiliza inicialmente:
 
-```python
+``` python
 SVC(
     kernel="rbf",
     C=1,
@@ -1574,10 +1555,10 @@ Compara su desempeño con el modelo lineal.
 
 **Preguntas:**
 
-1. ¿Qué modelo obtuvo mayor exactitud en el conjunto de prueba?
-2. ¿Existe una diferencia importante entre ambos resultados?
-3. ¿Qué ventaja podría ofrecer un kernel RBF para reconocer dígitos escritos a mano?
-4. ¿Podemos concluir que el modelo más complejo siempre será mejor?
+1.  ¿Qué modelo obtuvo mayor exactitud en el conjunto de prueba?
+2.  ¿Existe una diferencia importante entre ambos resultados?
+3.  ¿Qué ventaja podría ofrecer un kernel RBF para reconocer dígitos escritos a mano?
+4.  ¿Podemos concluir que el modelo más complejo siempre será mejor?
 
 #### Parte 4. Selección de hiperparámetros
 
@@ -1585,15 +1566,11 @@ Utiliza `GridSearchCV` para seleccionar los hiperparámetros de la SVM con kerne
 
 Considera:
 
-$$
-C\in\{0.1,1,10,100\}
-$$
+$$C\in\{0.1,1,10,100\}$$
 
 y
 
-$$
-\gamma\in\{0.001,0.01,0.1\}.
-$$
+$$\gamma\in\{0.001,0.01,0.1\}.$$
 
 Utiliza validación cruzada estratificada de 3 pliegues y `accuracy` como métrica de evaluación.
 
@@ -1601,11 +1578,11 @@ Realiza la búsqueda únicamente sobre los datos de entrenamiento y utiliza `n_j
 
 **Preguntas:**
 
-1. ¿Cuántas combinaciones de hiperparámetros se evaluarán?
-2. ¿Cuántos ajustes se realizarán durante la validación cruzada?
-3. ¿Qué combinación de $C$ y $\gamma$ obtuvo el mejor desempeño promedio?
-4. ¿La búsqueda mejoró el resultado obtenido inicialmente con el kernel RBF?
-5. ¿El mejor modelo supera a la SVM lineal?
+1.  ¿Cuántas combinaciones de hiperparámetros se evaluarán?
+2.  ¿Cuántos ajustes se realizarán durante la validación cruzada?
+3.  ¿Qué combinación de $C$ y $\gamma$ obtuvo el mejor desempeño promedio?
+4.  ¿La búsqueda mejoró el resultado obtenido inicialmente con el kernel RBF?
+5.  ¿El mejor modelo supera a la SVM lineal?
 
 #### Parte 5. ¿Qué dígitos son más difíciles de clasificar?
 
@@ -1613,7 +1590,7 @@ Utiliza el mejor modelo obtenido y calcula la matriz de confusión sobre el conj
 
 Puedes apoyarte en:
 
-```python
+``` python
 from sklearn.metrics import ConfusionMatrixDisplay
 
 ConfusionMatrixDisplay.from_estimator(
@@ -1628,12 +1605,12 @@ plt.show()
 
 **Preguntas:**
 
-1. ¿Qué dígitos se clasifican correctamente con mayor frecuencia?
-2. ¿Qué pares de dígitos se confunden más?
-3. ¿Por qué algunos dígitos podrían resultar más difíciles de distinguir?
-4. ¿Qué información adicional proporciona la matriz de confusión que no podemos obtener únicamente con `accuracy`?
+1.  ¿Qué dígitos se clasifican correctamente con mayor frecuencia?
+2.  ¿Qué pares de dígitos se confunden más?
+3.  ¿Por qué algunos dígitos podrían resultar más difíciles de distinguir?
+4.  ¿Qué información adicional proporciona la matriz de confusión que no podemos obtener únicamente con `accuracy`?
 
-::: {.callout-important}
+::: callout-important
 ## Conclusiones
 
 En este reto utilizamos una SVM para resolver un problema con diez clases y 64 variables predictoras.

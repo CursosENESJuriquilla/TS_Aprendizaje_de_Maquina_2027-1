@@ -1,6 +1,9 @@
 project:
   type: book
   output-dir: docs #docs _book
+  
+# Entorno de Python para ejecutar los capítulos
+#jupyter: quarto-env
 
 book:
   title: "Temas Selectos de Aprendizaje de Máquina"
@@ -84,7 +87,7 @@ format:
     code-block-bg: true # Bloque de código
     code-block-border-left: "#007f99" # color del borde izquierdo del codigo
     syntax-highlighting: arrow # Estilo de los codigos https://quarto.org/docs/output-formats/html-code.html#highlighting
-    freeze: false  # Desactivar congelamiento
+    #freeze: false  # Desactivar congelamiento
 
 editor: visual
 
@@ -96,4 +99,5 @@ execute:
   error: true # Se aceptan errores
   message: false # Silenciar mensajes de salida
   echo: true
+  freeze: auto
 
