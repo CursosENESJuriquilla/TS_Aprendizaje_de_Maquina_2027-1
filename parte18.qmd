@@ -1,1 +1,733 @@
-# Pendiente
+# Análisis de Componentes Principales (PCA)
+
+## ¿Por qué necesitamos PCA?
+
+Una observación puede describirse por varias características relacionadas. En datos ecológicos, por ejemplo, los individuos de mayor tamaño pueden presentar simultáneamente mayor masa corporal y aletas más largas. Visualizar pares de variables ayuda, pero no resume todas sus relaciones.
+
+Si tenemos $n$ individuos y $p$ variables cuantitativas, organizamos los datos en $X\in\mathbb{R}^{n\times p}$. El **análisis de componentes principales (PCA)** construye nuevas coordenadas como combinaciones lineales de las variables originales, de modo que las primeras capturen la mayor varianza posible.
+
+PCA **no utiliza etiquetas de clase** y **no es un algoritmo de agrupamiento**. Una representación bidimensional puede revelar patrones, pero no demuestra por sí sola que existan grupos bien separados.
+
+::: {.callout-warning icon="false"}
+## 🧠 Preguntas
+
+1.  ¿Cuál es la diferencia entre centrar y estandarizar una variable?
+2.  ¿Por qué la masa en gramos podría dominar un análisis que también incluye longitudes en milímetros?
+3.  ¿Qué información podría resultar redundante cuando dos variables están muy correlacionadas?
+:::
+
+## Interpretación geométrica y matemática
+
+Sea $X_c$ la matriz de datos centrados por columna. Elegimos una dirección unitaria $\mathbf v\in\mathbb R^p$ y proyectamos las observaciones sobre ella:
+
+$$z_i=\mathbf x_{c,i}^{\top}\mathbf v,\qquad \|\mathbf v\|=1. $$
+
+La primera componente principal corresponde a la dirección que maximiza la varianza de las proyecciones:
+
+$$ \mathbf v_1=\arg\max_{\|\mathbf v\|=1}\operatorname{Var}(X_c\mathbf v). $$
+
+Como la matriz de covarianzas muestral es $S=X_c^\top X_c/(n-1)$, tenemos
+
+$$ \operatorname{Var}(X_c\mathbf v)=\mathbf v^\top S\mathbf v. $$
+
+Las direcciones principales son autovectores de $S$ ordenados según sus autovalores $\lambda_1\geq\lambda_2\geq\cdots\geq0$. La segunda dirección maximiza la varianza entre las direcciones ortogonales a la primera, y así sucesivamente.
+
+::: {.callout-important title="Tres objetos diferentes"}
+- **Loadings o cargas:** coeficientes de las variables originales que definen cada dirección principal. En R aparecen en `rotation`; en Python, en `components_` (con las componentes en filas).
+- **Scores o puntuaciones:** coordenadas de cada individuo en el nuevo sistema. En R aparecen en `x`; en Python se obtienen con `transform()` o `fit_transform()`.
+- **Varianza explicada:** fracción $\lambda_k/\sum_j\lambda_j$ de la variabilidad total asociada a la componente $k$.
+:::
+
+### Un ejemplo para interpretar sin cuentas largas
+
+Considera $A=(1,1)$, $B=(2,2)$ y $C=(3,3)$. La media es $(2,2)$ y las observaciones centradas son $(-1,-1)$, $(0,0)$ y $(1,1)$. Toda la variación está en la dirección $\mathbf v_1=(1,1)/\sqrt{2}$; la dirección ortogonal $\mathbf v_2=(-1,1)/\sqrt{2}$ tiene varianza cero. Por tanto, una componente resume exactamente estos datos.
+
+## Nuestro conjunto de datos: Palmer Penguins
+
+Estudiaremos mediciones morfológicas de pingüinos del archipiélago Palmer. Consideraremos cuatro variables cuantitativas:
+
+| Variable original   | Significado          | Unidad |
+|---------------------|----------------------|--------|
+| `bill_length_mm`    | Longitud del pico    | mm     |
+| `bill_depth_mm`     | Profundidad del pico | mm     |
+| `flipper_length_mm` | Longitud de la aleta | mm     |
+| `body_mass_g`       | Masa corporal        | g      |
+
+La variable `species` servirá **solamente para colorear e interpretar** algunas gráficas; no participará en el cálculo de PCA. Los datos también incluyen otras variables, como isla y sexo, que no incorporaremos al análisis inicial.
+
+### Preparación de datos y valores faltantes
+
+Primero seleccionamos las columnas y eliminamos únicamente los registros incompletos en las cuatro mediciones. No eliminamos observaciones por su especie.
+
+```{r}
+#| label: r-penguins-preparacion
+# Instalar una sola vez en la consola de R, si hace falta:
+# install.packages(c("palmerpenguins", "reticulate"))
+
+library(palmerpenguins)
+
+variables <- c("bill_length_mm", "bill_depth_mm",
+               "flipper_length_mm", "body_mass_g")
+
+penguins_clean <- as.data.frame(palmerpenguins::penguins[, c("species", variables)])
+penguins_clean <- penguins_clean[complete.cases(penguins_clean[, variables]), ]
+penguins_clean$species <- as.character(penguins_clean$species)
+row.names(penguins_clean) <- NULL
+
+X_r <- penguins_clean[, variables]
+especie_r <- penguins_clean$species
+
+cat("Dimensiones de la matriz numérica:", dim(X_r), "\n")
+head(penguins_clean)
+```
+
+::: {.callout-note title="Nota sobre el entorno"}
+La pestaña Python carga los datos directamente con el paquete `palmerpenguins`. No depende de los objetos creados en R. Para ejecutarla, instala una sola vez `palmerpenguins` en el entorno de Python.
+:::
+
+```{python}
+#| label: py-penguins-preparacion
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from IPython.display import display
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+
+from palmerpenguins import load_penguins
+
+penguins_py = load_penguins()[["species", "bill_length_mm",
+                              "bill_depth_mm", "flipper_length_mm",
+                              "body_mass_g"]].dropna(subset=[
+    "bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g"
+]).reset_index(drop=True).copy()
+variables_py = ["bill_length_mm", "bill_depth_mm",
+                "flipper_length_mm", "body_mass_g"]
+X_py = penguins_py[variables_py].astype(float)
+especie_py = penguins_py["species"].astype(str)
+
+print("Dimensiones:", X_py.shape)
+display(penguins_py.head())
+```
+
+::: {.callout-warning title="¿Por qué no usar todas las columnas?"}
+PCA clásico requiere una matriz numérica. Incluir `species` como si fuera una medida introduciría artificialmente la información que luego queremos observar en la figura. Las variables categóricas requieren otros tratamientos y no deben codificarse con números arbitrarios para este PCA.
+:::
+
+### Exploración: escalas y correlaciones
+
+::: panel-tabset
+### R
+
+```{r}
+#| label: r-penguins-exploracion
+summary(X_r)
+round(cor(X_r), 2)
+pairs(X_r, main = "Palmer Penguins: relaciones entre mediciones")
+```
+
+### Python
+
+```{python}
+#| label: py-penguins-exploracion
+display(X_py.describe().round(2))
+display(X_py.corr().round(2))
+pd.plotting.scatter_matrix(X_py, figsize=(9, 9), diagonal="hist")
+plt.suptitle("Palmer Penguins: relaciones entre mediciones", y=1.01)
+plt.tight_layout()
+plt.show()
+```
+:::
+
+::: {.callout-warning icon="false"}
+## 🧠 Pregunta
+
+¿qué pares de variables parecen asociados? ¿Cuál tiene mayor magnitud numérica? ¿Sería razonable que una variable medida en gramos dominara el PCA sin estandarizar?
+:::
+
+## PCA con datos centrados, sin estandarizar
+
+Centrar significa restar la media de cada variable. En este primer análisis conservaremos las unidades originales, para observar su efecto.
+
+::: panel-tabset
+### R
+
+```{r}
+#| label: r-pca-sin-escalar
+pca_raw_r <- prcomp(X_r, center = TRUE, scale. = FALSE)
+summary(pca_raw_r)
+round(pca_raw_r$rotation, 3)
+```
+
+### Python
+
+```{python}
+#| label: py-pca-sin-escalar
+pca_raw_py = PCA(n_components=4)
+scores_raw_py = pca_raw_py.fit_transform(X_py)
+print("Proporciones de varianza:", np.round(pca_raw_py.explained_variance_ratio_, 4))
+display(pd.DataFrame(pca_raw_py.components_, columns=variables_py,
+                     index=[f"PC{k}" for k in range(1, 5)]).round(3))
+```
+:::
+
+**Interpretación:** compara la magnitud de los coeficientes de `body_mass_g` con los de las otras variables. ¿Estamos estudiando la variabilidad morfológica conjunta o casi exclusivamente la variabilidad de masa?
+
+## PCA después de estandarizar
+
+La estandarización de una variable $j$ consiste en
+
+$$ z_{ij}=\frac{x_{ij}-\bar x_j}{s_j}, $$
+
+donde $s_j$ es su desviación estándar muestral. De esta manera, cada variable tiene media cero y varianza muestral uno. Hacer PCA sobre estas variables equivale a utilizar la matriz de correlaciones.
+
+::: {.callout-note title="Comparabilidad exacta entre R y Python"}
+`scale()` y `prcomp(scale.=TRUE)` utilizan la desviación estándar muestral (denominador $n-1$). `StandardScaler()` utiliza por defecto la desviación con denominador $n$. Para comparar *scores* y varianzas numéricamente con mayor claridad, aquí estandarizamos en Python usando `X_py.std(ddof=1)`, como en R. Las direcciones principales no cambian por ese factor global de escala.
+:::
+
+::: panel-tabset
+### R
+
+```{r}
+#| label: r-pca-escalado
+X_scaled_r <- scale(X_r)
+pca_r <- prcomp(X_r, center = TRUE, scale. = TRUE)
+summary(pca_r)
+round(pca_r$rotation, 3)
+head(pca_r$x)
+```
+
+### Python
+
+```{python}
+#| label: py-pca-escalado
+medias_py = X_py.mean()
+desv_py = X_py.std(ddof=1)
+X_scaled_py = (X_py - medias_py) / desv_py
+pca_py = PCA(n_components=4)
+scores_py = pca_py.fit_transform(X_scaled_py)
+print("Varianza explicada:", np.round(pca_py.explained_variance_ratio_, 4))
+display(pd.DataFrame(pca_py.components_, columns=variables_py,
+                     index=[f"PC{k}" for k in range(1, 5)]).round(3))
+display(pd.DataFrame(scores_py, columns=[f"PC{k}" for k in range(1, 5)]).head())
+```
+:::
+
+::: {.callout-important title="Los signos pueden ser diferentes"}
+Si R devuelve una componente $\mathbf v$ y Python devuelve $-\mathbf v$, **no existe contradicción**: ambos vectores representan el mismo eje. Para comparar las componentes hay que permitir un cambio de signo conjunto en los *loadings* y *scores* de ese eje.
+:::
+
+## ¿Cuánta varianza explican las componentes?
+
+La proporción de varianza explicada por PC$k$ es
+
+$$ \mathrm{PVE}_k=\frac{\lambda_k}{\sum_{j=1}^{p}\lambda_j}, \qquad \mathrm{PVE}_{1:q}=\sum_{k=1}^{q}\mathrm{PVE}_k. $$
+
+El **scree plot** muestra la proporción individual y la curva acumulada ayuda a decidir cuántas componentes conservar. No existe un umbral universal: depende del objetivo del análisis y de cuánto detalle podamos perder.
+
+::: panel-tabset
+### R
+
+```{r}
+#| label: r-pca-varianza
+pve_r <- pca_r$sdev^2 / sum(pca_r$sdev^2)
+plot(seq_along(pve_r), pve_r, type = "b", pch = 19,
+     xlab = "Componente principal", ylab = "Proporción de varianza explicada",
+     main = "Scree plot (PCA estandarizado)", ylim = c(0, 1))
+plot(seq_along(pve_r), cumsum(pve_r), type = "b", pch = 19,
+     xlab = "Número de componentes", ylab = "Varianza acumulada",
+     main = "Varianza acumulada", ylim = c(0, 1))
+round(cbind(Individual = pve_r, Acumulada = cumsum(pve_r)), 3)
+```
+
+### Python
+
+```{python}
+#| label: py-pca-varianza
+pve_py = pca_py.explained_variance_ratio_
+fig, ax = plt.subplots(figsize=(7, 4))
+ax.plot(np.arange(1, 5), pve_py, marker="o", label="Individual")
+ax.plot(np.arange(1, 5), np.cumsum(pve_py), marker="s", label="Acumulada")
+ax.set(xlabel="Número de componente", ylabel="Proporción de varianza",
+       title="Varianza explicada (PCA estandarizado)", xticks=np.arange(1, 5), ylim=(0, 1))
+ax.legend()
+plt.show()
+```
+:::
+
+## Visualización de los individuos: *scores*
+
+Cada fila de la matriz de *scores* representa un pingüino y cada columna, su coordenada en una componente principal. Colorearemos por especie **después** de calcular PCA, únicamente como referencia para interpretar la figura.
+
+::: panel-tabset
+### R
+
+```{r}
+#| label: r-pca-scores
+colores <- c("Adelie" = "#1b9e77", "Chinstrap" = "#d95f02", "Gentoo" = "#7570b3")
+plot(pca_r$x[, 1], pca_r$x[, 2], col = colores[especie_r], pch = 19,
+     xlab = sprintf("PC1 (%.1f%%)", 100 * pve_r[1]),
+     ylab = sprintf("PC2 (%.1f%%)", 100 * pve_r[2]),
+     main = "Palmer Penguins: puntuaciones PCA")
+legend("topright", legend = names(colores), col = colores, pch = 19, bty = "n")
+```
+
+### Python
+
+```{python}
+#| label: py-pca-scores
+colores_py = {"Adelie": "#1b9e77", "Chinstrap": "#d95f02", "Gentoo": "#7570b3"}
+fig, ax = plt.subplots(figsize=(7, 5))
+for especie, color in colores_py.items():
+    mask = especie_py.eq(especie).to_numpy()
+    ax.scatter(scores_py[mask, 0], scores_py[mask, 1], label=especie,
+               color=color, alpha=0.75, s=25)
+ax.set(xlabel=f"PC1 ({100*pve_py[0]:.1f}%)", ylabel=f"PC2 ({100*pve_py[1]:.1f}%)",
+       title="Palmer Penguins: puntuaciones PCA")
+ax.legend()
+plt.show()
+```
+:::
+
+**Preguntas:** ¿se observa separación entre algunas especies? ¿Hay superposición? ¿Por qué no podemos afirmar que PCA es un clasificador de especies?
+
+## Interpretación de variables: *loadings*
+
+Para una componente $k$, el *score* de un individuo es
+
+$$ z_{ik}=\sum_{j=1}^{p}x_{ij}^{\*}v_{jk}, $$
+
+donde $x_{ij}^{*}$ son las variables centradas y estandarizadas. Un coeficiente de gran magnitud indica una contribución importante de esa variable a la dirección principal; el signo indica la orientación relativa de la variable sobre el eje, pero el signo global del eje es arbitrario.
+
+::: panel-tabset
+### R
+
+```{r}
+#| label: r-pca-loadings
+round(pca_r$rotation[, 1:2], 3)
+# El biplot conjunto se construye más adelante.
+# Por ahora observamos únicamente la matriz de cargas.
+```
+
+### Python
+
+```{python}
+#| label: py-pca-loadings
+loadings_py = pd.DataFrame(pca_py.components_.T,
+                           index=variables_py, columns=[f"PC{k}" for k in range(1, 5)])
+display(loadings_py[["PC1", "PC2"]].round(3))
+
+# La representación conjunta de puntos y flechas
+# se construye en la sección de biplots.
+```
+:::
+
+::: {.callout-warning title="No confundir cargas con correlaciones"}
+Los coeficientes de `rotation` y `components_` son entradas de vectores unitarios. No son, en general, las correlaciones entre las variables originales y las componentes. Para variables estandarizadas, estas correlaciones se calculan como $\operatorname{Corr}(X_j^*,\mathrm{PC}_k)=v_{jk}\sqrt{\lambda_k}$.
+:::
+
+## Reconstrucción y pérdida de información
+
+Si conservamos solo las primeras $q$ componentes, aproximamos la matriz estandarizada mediante
+
+$$ \widehat X^{\*}_{(q)}=Z_qV_q^\top. $$
+
+Con menos componentes, la reconstrucción es una aproximación. El error cuadrático total disminuye cuando aumentamos $q$.
+
+::: panel-tabset
+### R
+
+```{r}
+#| label: r-pca-reconstruccion
+q <- 2
+Zq_r <- pca_r$x[, 1:q, drop = FALSE]
+Vq_r <- pca_r$rotation[, 1:q, drop = FALSE]
+Xhat_scaled_r <- Zq_r %*% t(Vq_r)
+Xhat_r <- sweep(sweep(Xhat_scaled_r, 2, pca_r$scale, "*"),
+                2, pca_r$center, "+")
+error_r <- mean((as.matrix(X_r) - Xhat_r)^2)
+cat("Error cuadrático medio (unidades originales):", error_r, "\n")
+head(Xhat_r)
+```
+
+### Python
+
+```{python}
+#| label: py-pca-reconstruccion
+q = 2
+Zq_py = scores_py[:, :q]
+Vq_py = pca_py.components_[:q, :]
+Xhat_scaled_py = Zq_py @ Vq_py
+Xhat_py = Xhat_scaled_py * desv_py.to_numpy() + medias_py.to_numpy()
+error_py = np.mean((X_py.to_numpy() - Xhat_py)**2)
+print("Error cuadrático medio (unidades originales):", error_py)
+display(pd.DataFrame(Xhat_py, columns=variables_py).head())
+```
+:::
+
+**Para reflexionar:** la reconstrucción minimiza el error cuadrático en el espacio sobre el que se ajustó PCA. Cuando ajustamos PCA sobre variables estandarizadas, la optimalidad corresponde a ese espacio, no necesariamente al error medido en unidades originales.
+
+## Biplots: individuos y variables en una misma figura
+
+Un *biplot* combina información de los individuos (*scores*) y de las variables (*loadings*). Debemos recordar que **ambos objetos viven en escalas diferentes**. Para mostrar flechas y puntos juntos, hay que elegir explícitamente un factor de escala; la longitud visual de una flecha no es una magnitud absoluta.
+
+Aquí construiremos un biplot didáctico de PC1 y PC2, escalando las flechas solo para visualizarlas. No interpretaremos la distancia de las puntas de las flechas a los puntos como una distancia original entre observaciones.
+
+::: panel-tabset
+### R
+
+```{r}
+#| label: r-s3-biplot
+scores_r <- pca_r$x[, 1:2]
+loads_r <- pca_r$rotation[, 1:2]
+colores <- c("Adelie" = "#1b9e77", "Chinstrap" = "#d95f02", "Gentoo" = "#7570b3")
+col_obs <- colores[penguins_clean$species]
+plot(scores_r, col = col_obs, pch = 19, cex = 0.65,
+     xlab = "PC1", ylab = "PC2", main = "Palmer Penguins: biplot exploratorio")
+legend("topright", legend = names(colores), col = colores, pch = 19, bty = "n")
+factor_flechas <- 0.65 * min(
+  diff(range(scores_r[,1])) / diff(range(c(0, loads_r[,1]))),
+  diff(range(scores_r[,2])) / diff(range(c(0, loads_r[,2])))
+)
+arrows(0, 0, loads_r[,1] * factor_flechas, loads_r[,2] * factor_flechas,
+       length = 0.09, lwd = 2)
+text(loads_r[,1] * factor_flechas, loads_r[,2] * factor_flechas,
+     labels = rownames(loads_r), pos = 3, cex = 0.7)
+```
+
+### Python
+
+```{python}
+#| label: py-s3-biplot
+colores_py = {"Adelie": "#1b9e77", "Chinstrap": "#d95f02", "Gentoo": "#7570b3"}
+fig, ax = plt.subplots(figsize=(9, 6))
+for especie, color in colores_py.items():
+    mask = penguins_py["species"].astype(str).eq(especie).to_numpy()
+    ax.scatter(scores_py[mask, 0], scores_py[mask, 1], s=18, alpha=0.7, label=especie, color=color)
+V = pca_py.components_[:2, :].T
+factor = 0.65 * min(
+    np.ptp(scores_py[:, 0]) / np.ptp(np.r_[0, V[:, 0]]),
+    np.ptp(scores_py[:, 1]) / np.ptp(np.r_[0, V[:, 1]])
+)
+for j, nombre in enumerate(variables_py):
+    x, y = V[j, :] * factor
+    ax.arrow(0, 0, x, y, width=0.007, head_width=0.11, length_includes_head=True, color="black")
+    ax.text(x, y, nombre, fontsize=8)
+ax.set(xlabel="PC1", ylabel="PC2", title="Palmer Penguins: biplot exploratorio")
+ax.legend()
+plt.show()
+```
+:::
+
+::: {.callout-warning title="Interpretar con cuidado"}
+- Las flechas de este gráfico representan **coeficientes de las componentes** y se han reescalado solo para visualizarlas. Sus ángulos no deben interpretarse directamente como correlaciones exactas entre variables. Para una aproximación de correlaciones, conviene representar las coordenadas $v_{jk}\sqrt{\lambda_k}$ en lugar de los coeficientes $v_{jk}$ sin modificar.
+- Una flecha corta en este dibujo **no implica** necesariamente que la variable sea poco importante: la escala elegida y la proyección a dos dimensiones influyen.
+- El color de las especies se añadió **después** del ajuste. PCA no aprendió las especies.
+- El gráfico muestra relaciones proyectadas; no debemos asumir que todas las distancias del espacio original se preservan.
+:::
+
+## Selección del número de componentes
+
+Ya calculamos la varianza explicada individual y acumulada. Ahora debemos tomar una decisión: ¿cuántas componentes conservar?
+
+- **Varianza acumulada:** elegir el menor $q$ que alcance una proporción de referencia (por ejemplo, 80 % o 90 %).
+- **Scree plot:** buscar un cambio visible de pendiente, si lo hay.
+- **Reconstrucción:** valorar cuánta información se pierde al reducir la dimensión.
+- **Objetivo:** una representación de dos componentes puede ser útil para visualizar, aunque no alcance un umbral de varianza determinado.
+
+Los umbrales son decisiones metodológicas, no reglas universales.
+
+::: panel-tabset
+### R
+
+```{r}
+#| label: r-pca-elegir-q
+acumulada_r <- cumsum(pve_r)
+umbrales <- c(0.80, 0.90, 0.95)
+q_por_umbral_r <- sapply(umbrales, function(u) which(acumulada_r >= u)[1])
+data.frame(umbral = umbrales, componentes = q_por_umbral_r)
+```
+
+### Python
+
+```{python}
+#| label: py-pca-elegir-q
+acumulada_py = np.cumsum(pve_py)
+umbrales_py = [0.80, 0.90, 0.95]
+pd.DataFrame({
+    "umbral": umbrales_py,
+    "componentes": [int(np.searchsorted(acumulada_py, u) + 1)
+                    for u in umbrales_py]
+})
+```
+:::
+
+::: {.callout-warning icon="false"}
+## 🧠 Para discutir
+
+¿Usarías el mismo número de componentes para construir una figura y para comprimir los datos? ¿Qué criterio utilizarías para justificar cada decisión?
+:::
+
+## PCA con más variables: Wine
+
+Palmer Penguins tiene solo cuatro mediciones cuantitativas. Para observar cómo cambia el problema al aumentar la dimensión, utilizaremos **Wine**, un conjunto de scikit-learn con 13 características químicas. Sus clases conocidas se reservarán para interpretar la visualización, no para ajustar PCA.
+
+Las dos pestañas cargan el conjunto **Wine** de scikit-learn de forma independiente. En R utilizamos `reticulate` únicamente para acceder al conjunto de datos de scikit-learn; **no se reutilizan objetos creados en la pestaña Python**. La implementación de PCA se realiza con `prcomp()` en R y con `PCA()` en Python.
+
+```{r}
+#| label: r-s3-wine-datos
+# Cargamos Wine desde R, sin depender de la pestaña Python.
+sk_datasets_r <- reticulate::import("sklearn.datasets", convert = TRUE)
+wine_obj_r <- sk_datasets_r$load_wine()
+wine_r <- as.data.frame(wine_obj_r$data)
+names(wine_r) <- as.character(wine_obj_r$feature_names)
+wine_grupos_r <- as.integer(wine_obj_r$target)
+cat("Dimensiones en R:", dim(wine_r), "\n")
+head(wine_r)
+```
+
+```{python}
+#| label: py-s3-wine-datos
+from sklearn.datasets import load_wine
+wine = load_wine(as_frame=True)
+wine_df = wine.data.copy()
+wine_target = wine.target.copy()
+print("Dimensiones:", wine_df.shape)
+display(wine_df.head())
+print("Clases (solo referencia externa):", np.unique(wine_target))
+```
+
+### PCA con y sin estandarización
+
+El conjunto Wine contiene características medidas en unidades y escalas muy diferentes. Compararemos cuánto cambia la varianza explicada si estandarizamos.
+
+::: panel-tabset
+### R
+
+```{r}
+#| label: r-s3-wine-pca
+wine_pca_crudo_r <- prcomp(wine_r, center=TRUE, scale.=FALSE)
+wine_pca_std_r <- prcomp(wine_r, center=TRUE, scale.=TRUE)
+comparacion_r <- data.frame(
+  PC = 1:5,
+  sin_escalar = (wine_pca_crudo_r$sdev^2 / sum(wine_pca_crudo_r$sdev^2))[1:5],
+  estandarizado = (wine_pca_std_r$sdev^2 / sum(wine_pca_std_r$sdev^2))[1:5]
+)
+print(round(comparacion_r, 4))
+```
+
+### Python
+
+```{python}
+#| label: py-s3-wine-pca
+wine_Z_py = (wine_df - wine_df.mean()) / wine_df.std(ddof=1)
+wine_pca_crudo_py = PCA().fit(wine_df)
+wine_pca_std_py = PCA().fit(wine_Z_py)
+display(pd.DataFrame({
+    "PC": np.arange(1, 6),
+    "sin_escalar": wine_pca_crudo_py.explained_variance_ratio_[:5],
+    "estandarizado": wine_pca_std_py.explained_variance_ratio_[:5]
+}).round(4))
+```
+:::
+
+**Preguntas:** ¿cuál de las dos versiones permite que todas las características participen en condiciones más comparables? ¿Por qué esto no implica que estandarizar sea siempre la única decisión correcta?
+
+### Visualización y selección de componentes
+
+::: panel-tabset
+### R
+
+```{r}
+#| label: r-s3-wine-figura
+s <- wine_pca_std_r$x
+col_wine <- c("#1b9e77", "#d95f02", "#7570b3")
+plot(s[,1], s[,2], col=col_wine[wine_grupos_r+1], pch=19,
+     xlab="PC1", ylab="PC2", main="Wine: PCA estandarizado")
+legend("topright", legend=c("Clase 0", "Clase 1", "Clase 2"),
+       col=col_wine, pch=19, bty="n")
+prop <- wine_pca_std_r$sdev^2 / sum(wine_pca_std_r$sdev^2)
+cat("Número de componentes para 90 %:", which(cumsum(prop)>=0.9)[1], "\n")
+```
+
+### Python
+
+```{python}
+#| label: py-s3-wine-figura
+wine_scores = wine_pca_std_py.transform(wine_Z_py)
+fig, ax = plt.subplots(figsize=(7, 5))
+for clase in sorted(wine_target.unique()):
+    mask = wine_target.to_numpy() == clase
+    ax.scatter(wine_scores[mask,0], wine_scores[mask,1], label=f"Clase {clase}", s=25)
+ax.set(xlabel="PC1", ylabel="PC2", title="Wine: PCA estandarizado")
+ax.legend()
+plt.show()
+print("Número de componentes para 90 %:",
+      np.searchsorted(np.cumsum(wine_pca_std_py.explained_variance_ratio_), 0.9) + 1)
+```
+:::
+
+::: {.callout-important title="Una distinción esencial"}
+Que las clases parezcan separadas en el plano PC1–PC2 no significa que PCA sea un clasificador. Tampoco podemos deducir de una figura que la clasificación será perfecta. Las etiquetas se usan aquí únicamente para contrastar la estructura observada.
+:::
+
+## Ejercicios de interpretación
+
+### Ejercicio 1. Interpretación conceptual
+
+Explica con tus palabras qué diferencia hay entre una carga y una puntuación. ¿Por qué las etiquetas de especie no se incluyen en la matriz $X$? ¿Qué implica que PC1 explique más varianza que PC2?
+
+::: {.callout-tip collapse="true" title="Solución del ejercicio 1"}
+Una carga indica cómo participa una variable original en una dirección principal; una puntuación indica dónde se ubica una observación sobre esa dirección. Incluir `species` haría que el análisis incorporara información de los grupos antes de intentar observarlos. PC1 recoge la mayor varianza posible entre las direcciones unitarias; PC2 recoge la mayor varianza restante bajo la restricción de ortogonalidad.
+:::
+
+### Ejercicio 2. ¿Qué cambia al estandarizar?
+
+Compara las dos primeras componentes obtenidas con y sin estandarización. Identifica qué variable domina el PCA sin escalar y explica por qué. Compara también las proporciones de varianza explicada.
+
+::: {.callout-tip collapse="true" title="Solución orientativa del ejercicio 2"}
+En el PCA sin estandarizar, la masa corporal, expresada en gramos y con una dispersión numérica mucho mayor, domina la variabilidad total. Después de estandarizar, las cuatro variables aportan varianza unitaria y las componentes reflejan patrones de variación conjunta. La proporción de varianza explicada cambia porque cambió la matriz analizada: de covarianzas a correlaciones.
+:::
+
+### Ejercicio 3. Elegir el número de componentes
+
+Determina el mínimo número $q$ de componentes que alcanza al menos el 85% de varianza explicada acumulada. Reporta el resultado en R y Python. ¿Por qué este umbral no garantiza conservar toda la información importante?
+
+::: {.callout-tip collapse="true" title="Solución del ejercicio 3"}
+**R**
+
+```{r}
+#| eval: false
+which(cumsum(pve_r) >= 0.85)[1]
+```
+
+**Python**
+
+```{python}
+#| eval: false
+np.flatnonzero(np.cumsum(pve_py) >= 0.85)[0] + 1
+```
+
+El umbral es una regla práctica y depende del objetivo: una dirección con poca varianza podría contener información relevante para un problema posterior.
+:::
+
+### Ejercicio 4. Reconstruir con una sola componente
+
+Repite la reconstrucción de la sección 9 usando $q=1$ y compara el error con el obtenido para $q=2$. ¿Cuál debería ser mayor? Justifica antes de ejecutar.
+
+::: {.callout-tip collapse="true" title="Solución del ejercicio 4"}
+**R**
+
+```{r}
+#| eval: false
+q <- 1
+Xhat1_scaled_r <- pca_r$x[, 1:q, drop = FALSE] %*%
+  t(pca_r$rotation[, 1:q, drop = FALSE])
+Xhat1_r <- sweep(sweep(Xhat1_scaled_r, 2, pca_r$scale, "*"),
+                 2, pca_r$center, "+")
+mean((as.matrix(X_r) - Xhat1_r)^2)
+```
+
+**Python**
+
+```{python}
+#| eval: false
+q = 1
+Xhat1_py = (scores_py[:, :q] @ pca_py.components_[:q, :]) * \
+           desv_py.to_numpy() + medias_py.to_numpy()
+np.mean((X_py.to_numpy() - Xhat1_py)**2)
+```
+
+Conservar dos componentes no aumenta el error cuadrático de reconstrucción en el espacio estandarizado, que es el espacio en el que se optimizó PCA. Al expresar el error en unidades originales, su comportamiento debe comprobarse, porque las variables reciben ponderaciones diferentes.
+:::
+
+### Reto adicional. ¿La separación entre especies implica un buen agrupamiento?
+
+Examina la gráfica de *scores*. Propón dos razones por las que un agrupamiento automático podría no recuperar exactamente las especies, incluso si aparecen regiones diferenciadas en el plano PC1–PC2. ¿Qué información se pierde al descartar PC3 y PC4?
+
+::: {.callout-tip collapse="true" title="Ideas para la discusión"}
+Las especies pueden solaparse en características morfológicas; además, PCA busca varianza y no separación entre grupos. La proyección bidimensional omite la variación asociada a las componentes restantes y puede acercar individuos que están separados en el espacio original.
+:::
+
+### Ejercicio 5. Interpretar un biplot
+
+En el biplot de Penguins, identifica dos variables cuyas flechas apunten en direcciones parecidas y otras dos que apunten en direcciones diferentes. Explica qué sugiere esto sobre su asociación, y por qué no equivale a calcular la correlación exacta.
+
+:::{.callout-tip collapse="true" title="Solución del ejercicio 5} 
+Se espera mencionar que las direcciones de las flechas aproximan asociaciones en el plano de las primeras componentes. Una proyección bidimensional puede omitir parte de la relación, y la escala de las flechas es arbitraria en nuestra visualización. Para contrastar, calcula la matriz de correlaciones de las cuatro variables originales. 
+:::
+
+### Ejercicio 6. Elegir $q$ en Wine
+
+Utiliza R y Python para encontrar el número mínimo de componentes que explica al menos 80 %, 90 % y 95 % de la varianza del PCA estandarizado. ¿Qué criterio escogerías para visualización y cuál para reconstrucción?
+
+::: {.callout-tip collapse="true" title="Solución del ejercicio 6"}
+```{r}
+#| eval: false
+acum <- cumsum(wine_pca_std_r$sdev^2 / sum(wine_pca_std_r$sdev^2))
+sapply(c(0.80, 0.90, 0.95), function(u) which(acum >= u)[1])
+```
+:::
+
+::: {.callout-tip collapse="true" title="Solución del ejercicio 6"}
+```{python}
+#| eval: false
+acum = np.cumsum(wine_pca_std_py.explained_variance_ratio_)
+{umbral: int(np.searchsorted(acum, umbral) + 1)
+ for umbral in (0.80, 0.90, 0.95)}
+```
+:::
+
+### Ejercicio 7. Reconstrucción con Wine
+
+Reconstruye la matriz estandarizada de Wine con $q=2$, $q=5$ y $q=10$. Calcula el error cuadrático medio para cada caso y verifica que disminuye cuando $q$ aumenta. **No reconstruyas las etiquetas de clase.**
+
+::: {.callout-tip collapse="true" title="Solución del ejercicio 7"}
+```{r}
+#| eval: false
+Z <- scale(wine_r)
+sapply(c(2, 5, 10), function(q) {
+  Tq <- wine_pca_std_r$x[, 1:q, drop=FALSE]
+  Vq <- wine_pca_std_r$rotation[, 1:q, drop=FALSE]
+  mean((Z - Tq %*% t(Vq))^2)
+})
+```
+:::
+
+::: {.callout-tip collapse="true" title="Solución del ejercicio 7"}
+```{python}
+#| eval: false
+for q in (2, 5, 10):
+    Tq = wine_pca_std_py.transform(wine_Z_py)[:, :q]
+    Vq = wine_pca_std_py.components_[:q, :]
+    reconstruida = Tq @ Vq + wine_pca_std_py.mean_
+    print(q, np.mean((wine_Z_py.to_numpy() - reconstruida)**2))
+```
+:::
+
+### Ejercicio 8. ¿PCA sirve para separar grupos?
+
+Compara los dos primeros componentes de Wine con y sin estandarización. ¿En cuál figura parecen más distinguibles las clases? ¿Es válido elegir la versión de PCA únicamente porque separa mejor las etiquetas conocidas, si el objetivo declarado es exploración no supervisada?
+
+::: {.callout-tip collapse="true" title="Solución del ejercicio 8"}
+El resultado visual se determina ejecutando ambas gráficas. En un análisis estrictamente no supervisado, usar las etiquetas para decidir el preprocesamiento puede sesgar la interpretación hacia esas clases. Si el objetivo real es separar clases conocidas, conviene explicitar que estamos usando información supervisada y evaluar un procedimiento predictivo apropiado.
+:::
+
+### Reto adicional. Contrastar resultados en R y Python
+
+Compara las proporciones de varianza explicada por el PCA estandarizado de Wine en ambos lenguajes. Después compara las cargas de PC1 permitiendo un cambio global de signo. ¿Por qué comparar directamente `rotation` con `components_` sin transponer puede producir confusión?
+
+::: {.callout-tip collapse="true" title="Solución del ejercicio 8"}
+```{r}
+#| eval: false
+prop_r <- wine_pca_std_r$sdev^2 / sum(wine_pca_std_r$sdev^2)
+# Para comparar con Python, copia las proporciones mostradas
+# en su pestaña, o expórtalas a CSV.
+round(prop_r, 6)
+round(wine_pca_std_r$rotation[, 1], 6)
+# En Python, components_[0, :] es la primera componente.
+# Los signos pueden diferir sin que cambie el resultado.
+```
+
+En Python, `components_` organiza cada componente en una **fila**; en R, `rotation` las organiza en **columnas**. La última comparación permite que los vectores difieran solo por signo. Si tu instalación de `reticulate` maneja de manera diferente la indexación de objetos Python, convierte primero `components_` a una matriz de R y selecciona su primera fila.
+:::
