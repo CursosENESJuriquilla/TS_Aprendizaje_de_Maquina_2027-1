@@ -1,1 +1,353 @@
-# Pendiente
+# Reducción de dimensionalidad no lineal: t-SNE y UMAP
+
+
+::: {.callout-note title="Antes de comenzar: paquetes y entorno"}
+Trabajaremos **solo en Python**. Necesitas `numpy`, `pandas`, `matplotlib`, `scikit-learn`, `palmerpenguins` y `umap-learn`. Instala los paquetes faltantes:
+
+```bash
+python -m pip install numpy pandas matplotlib scikit-learn palmerpenguins umap-learn
+```
+
+El paquete se instala como `umap-learn`, pero se importa con `import umap`. Si acabas de instalarlo mientras el kernel estaba abierto, reinicia el kernel antes de continuar. La primera ejecución de UMAP puede tardar un poco más por la compilación inicial.
+:::
+
+## De PCA a las representaciones no lineales
+
+En la práctica anterior utilizamos **PCA** para representar observaciones mediante combinaciones lineales de sus variables. Ahora estudiaremos dos métodos que buscan representaciones de baja dimensión dando especial importancia a las **relaciones de vecindad**.
+
+- **t-SNE** intenta que observaciones similares en el espacio original permanezcan próximas en la representación, mediante la comparación de distribuciones de similitud.
+- **UMAP** construye una representación basada en vecindades y en una estructura de grafo, buscando preservar relaciones locales.
+
+Ambos producen coordenadas para visualizar las observaciones, pero **sus ejes no son componentes principales**: no representan direcciones de máxima varianza ni tienen una interpretación directa como las de PCA.
+
+::: {.callout-important title="No confundir visualización con clustering"}
+PCA, t-SNE y UMAP **no asignan etiquetas de cluster**. Que aparezcan grupos separados en una figura no demuestra, por sí solo, que existan clusters bien definidos en los datos originales. Tampoco debemos comparar directamente distancias, tamaños o espacios vacíos entre grupos como si fueran medidas fieles del espacio original.
+:::
+
+## Preparación: Palmer Penguins
+
+Reutilizaremos las **cuatro variables morfológicas** estudiadas en PCA. Esto nos permitirá comparar los tres métodos sobre exactamente las mismas observaciones y evitar que las diferencias se deban a cambios en los datos.
+
+```{python}
+#| eval: false
+#| label: tsne-umap-preparacion
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from palmerpenguins import load_penguins
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+import umap
+
+SEED = 42
+variables = [
+    "bill_length_mm",
+    "bill_depth_mm",
+    "flipper_length_mm",
+    "body_mass_g"
+]
+
+penguins = load_penguins()
+penguins_clean = penguins.dropna(subset=variables + ["species"]).copy()
+
+X = penguins_clean[variables].copy()
+especie = penguins_clean["species"].reset_index(drop=True)
+
+# Las tres técnicas utilizarán exactamente esta matriz estandarizada.
+escalador = StandardScaler()
+Z = escalador.fit_transform(X)
+
+print("Observaciones y variables:", Z.shape)
+print("Especies:")
+print(especie.value_counts())
+display(X.head())
+```
+
+`StandardScaler()` resta la media y divide por la desviación estándar de cada variable. Aunque su convención de desviación estándar difiere ligeramente de la utilizada por `prcomp()` en R, **todas las técnicas de esta práctica reciben la misma matriz `Z`**, de modo que la comparación es consistente.
+
+Las etiquetas de especie se conservarán únicamente para colorear las figuras: **no forman parte de `Z`**.
+
+Definimos una función auxiliar para mantener la misma presentación en las gráficas. No es parte del algoritmo de reducción de dimensionalidad.
+
+```{python}
+#| eval: false
+#| label: funcion-graficas-reduccion
+colores = {
+    "Adelie": "#1b9e77",
+    "Chinstrap": "#d95f02",
+    "Gentoo": "#7570b3"
+}
+
+def graficar_representacion(coordenadas, titulo, ax=None,
+                            xlabel="Dimensión 1", ylabel="Dimensión 2"):
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(7, 5))
+
+    for nombre, color in colores.items():
+        mask = especie.eq(nombre).to_numpy()
+        ax.scatter(
+            coordenadas[mask, 0], coordenadas[mask, 1],
+            color=color, s=25, alpha=0.75, label=nombre
+        )
+
+    ax.set(xlabel=xlabel, ylabel=ylabel, title=titulo)
+    ax.legend(fontsize=8)
+    return ax
+```
+
+## t-SNE: conservar vecindades
+
+**t-distributed Stochastic Neighbor Embedding (t-SNE)** busca que las observaciones cercanas en el espacio original tiendan a quedar cercanas en el mapa. Para ello compara similitudes entre pares de observaciones en ambos espacios y optimiza una representación de menor dimensión.
+
+La función `TSNE()` de `scikit-learn` permite calcular esta representación:
+
+```{python}
+#| eval: false
+#| label: penguins-tsne
+modelo_tsne = TSNE(
+    n_components=2,
+    perplexity=30,
+    learning_rate="auto",
+    init="pca",
+    random_state=SEED
+)
+
+Y_tsne = modelo_tsne.fit_transform(Z)
+
+graficar_representacion(Y_tsne, "Palmer Penguins: t-SNE")
+plt.show()
+```
+
+**¿Qué indican los argumentos?**
+
+- `n_components=2`: solicita una representación bidimensional.
+- `perplexity=30`: controla, de manera aproximada, la escala de las vecindades que considera el método. No es exactamente el número de vecinos.
+- `learning_rate="auto"`: utiliza una tasa de aprendizaje calculada automáticamente durante la optimización.
+- `init="pca"`: inicializa la representación mediante PCA.
+- `random_state=SEED`: fija la semilla para facilitar la reproducibilidad.
+
+`fit_transform(Z)` ajusta el método y devuelve una matriz con **dos coordenadas por pingüino**. Estas coordenadas no tienen unidades físicas ni representan las variables originales.
+
+### ¿Qué sucede si cambiamos `perplexity`?
+
+Compararemos dos valores sin modificar las observaciones. El propósito no es elegir el mapa que se vea más separado, sino observar que la representación depende de los parámetros.
+
+```{python}
+#| eval: false
+#| label: penguins-tsne-perplexity
+fig, axes = plt.subplots(1, 2, figsize=(12, 4.5), constrained_layout=True)
+
+for ax, perplexity in zip(axes, [5, 50]):
+    Y = TSNE(
+        n_components=2,
+        perplexity=perplexity,
+        learning_rate="auto",
+        init="pca",
+        random_state=SEED
+    ).fit_transform(Z)
+
+    graficar_representacion(Y, f"t-SNE: perplexity = {perplexity}", ax=ax)
+
+plt.show()
+```
+
+**Para observar:** ¿cambia la forma o la separación visual de las especies? ¿Podemos concluir que una configuración es mejor únicamente porque muestra grupos más definidos?
+
+::: {.callout-warning title="Precauciones al interpretar t-SNE"}
+La cercanía local es especialmente importante en t-SNE, pero **las distancias entre grupos alejados, sus tamaños aparentes y la orientación de los ejes no deben interpretarse literalmente**. El resultado también puede cambiar con los parámetros y la inicialización.
+:::
+
+## UMAP: representar una estructura de vecindades
+
+**Uniform Manifold Approximation and Projection (UMAP)** construye relaciones entre observaciones cercanas y busca representarlas en un espacio de menor dimensión. Al igual que t-SNE, puede revelar patrones que no se aprecian fácilmente en una proyección lineal.
+
+```{python}
+#| eval: false
+#| label: penguins-umap
+modelo_umap = umap.UMAP(
+    n_components=2,
+    n_neighbors=15,
+    min_dist=0.1,
+    metric="euclidean",
+    random_state=SEED,
+    n_jobs=1
+)
+
+Y_umap = modelo_umap.fit_transform(Z)
+
+graficar_representacion(Y_umap, "Palmer Penguins: UMAP")
+plt.show()
+```
+
+**¿Qué indican los argumentos?**
+
+- `n_components=2`: solicita dos coordenadas por observación.
+- `n_neighbors=15`: controla el tamaño de las vecindades utilizadas para construir la representación; valores pequeños enfatizan relaciones más locales.
+- `min_dist=0.1`: controla qué tan próximos pueden quedar los puntos en la representación; valores pequeños permiten agrupaciones visualmente más compactas.
+- `metric="euclidean"`: utiliza distancia euclidiana entre las observaciones estandarizadas.
+- `random_state=SEED`: fija la semilla para facilitar la reproducibilidad.
+- `n_jobs=1`: evita incompatibilidades entre paralelización y la semilla fija en algunas versiones de UMAP.
+
+Como antes, `fit_transform(Z)` devuelve una matriz de dos columnas. **Las coordenadas de UMAP no son comparables numéricamente con las de t-SNE o PCA.**
+
+### ¿Qué sucede si cambiamos sus parámetros?
+
+Probemos dos configuraciones que enfatizan de manera distinta las vecindades y la compactación visual.
+
+```{python}
+#| eval: false
+#| label: penguins-umap-parametros
+configuraciones = [
+    {"n_neighbors": 5, "min_dist": 0.0},
+    {"n_neighbors": 50, "min_dist": 0.5}
+]
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4.5), constrained_layout=True)
+
+for ax, config in zip(axes, configuraciones):
+    Y = umap.UMAP(
+        n_components=2,
+        metric="euclidean",
+        random_state=SEED,
+        n_jobs=1,
+        **config
+    ).fit_transform(Z)
+
+    titulo = (f"UMAP: n_neighbors = {config['n_neighbors']}, "
+              f"min_dist = {config['min_dist']}")
+    graficar_representacion(Y, titulo, ax=ax)
+
+plt.show()
+```
+
+**Para observar:** ¿cuál configuración produce grupos más compactos? ¿Por qué un mapa más compacto no implica necesariamente que los grupos estén mejor definidos en el espacio original?
+
+::: {.callout-note title="¿Y en R?"}
+También existen implementaciones en R: `Rtsne::Rtsne()` para t-SNE y `uwot::umap()` para UMAP. Ambas aceptan matrices numéricas y permiten controlar parámetros como `perplexity`, `n_neighbors` y `min_dist`. Por ejemplo, para una matriz estandarizada `Z`:
+
+```r
+resultado_tsne <- Rtsne::Rtsne(Z, perplexity = 30)
+resultado_umap <- uwot::umap(Z, n_neighbors = 15, min_dist = 0.1)
+```
+
+Las coordenadas se obtienen con `resultado_tsne$Y` y `resultado_umap`, respectivamente. No ejecutaremos código de R en esta práctica.
+:::
+
+## Comparación: PCA, t-SNE y UMAP
+
+Ahora representaremos **los mismos pingüinos** mediante los tres métodos. La diferencia es únicamente la forma en que se construyen las dos coordenadas.
+
+```{python}
+#| eval: false
+#| label: comparacion-pca-tsne-umap
+modelo_pca = PCA(n_components=2)
+Y_pca = modelo_pca.fit_transform(Z)
+
+fig, axes = plt.subplots(1, 3, figsize=(16, 4.5), constrained_layout=True)
+
+graficar_representacion(
+    Y_pca,
+    "PCA",
+    ax=axes[0],
+    xlabel=f"PC1 ({100 * modelo_pca.explained_variance_ratio_[0]:.1f} %)",
+    ylabel=f"PC2 ({100 * modelo_pca.explained_variance_ratio_[1]:.1f} %)"
+)
+graficar_representacion(Y_tsne, "t-SNE", ax=axes[1])
+graficar_representacion(Y_umap, "UMAP", ax=axes[2])
+
+plt.show()
+```
+
+| Aspecto | PCA | t-SNE | UMAP |
+|---|---|---|---|
+| Tipo de transformación | Lineal | No lineal | No lineal |
+| Qué prioriza | Varianza máxima en las componentes | Similitudes y vecindades locales | Estructura de vecindades |
+| Interpretación de los ejes | Direcciones principales | Sin significado directo | Sin significado directo |
+| Varianza explicada por eje | Sí | No | No |
+| ¿Produce clusters? | No | No | No |
+
+**Preguntas para discutir:**
+
+1. ¿En cuáles representaciones se distinguen visualmente mejor las especies?
+2. ¿Por qué solo en PCA podemos reportar el porcentaje de varianza explicada por cada eje?
+3. ¿Podemos asegurar que dos especies están más relacionadas porque sus regiones aparecen más cercanas en el mapa de t-SNE o UMAP?
+4. ¿Qué ventajas y limitaciones tiene reutilizar un conjunto con solo cuatro variables para comparar estos métodos?
+
+::: {.callout-important title="Conclusión"}
+Una representación bidimensional es una **herramienta exploratoria**, no una prueba de separación entre clases ni una evaluación automática de la calidad de los grupos. Además, coloreamos por especie *después* de calcular las coordenadas: los tres métodos se ajustaron sin utilizar esa información.
+:::
+
+## Ejercicio final: aplicar t-SNE y UMAP a otro conjunto
+
+Trabaja con **Breast Cancer Wisconsin**, que contiene 30 características numéricas y una etiqueta de diagnóstico. Ya conoces este conjunto por la práctica de PCA.
+
+Para cargarlo:
+
+```{python}
+#| eval: false
+#| label: ejercicio-breast-cancer-carga2
+from sklearn.datasets import load_breast_cancer
+
+bc = load_breast_cancer(as_frame=True)
+X_bc = bc.data.copy()
+diagnostico_bc = bc.target.copy()
+
+print(X_bc.shape)
+display(X_bc.head())
+X_bc.info()
+display(X_bc.describe())
+print(diagnostico_bc.value_counts())
+```
+
+::: {.callout-warning title="Actividades"}
+1. Estandariza las 30 variables y construye representaciones bidimensionales con **PCA, t-SNE y UMAP**. Utiliza las mismas observaciones en los tres métodos.
+2. Colorea las observaciones según el diagnóstico, **sin incluir la etiqueta en el ajuste**. Describe las semejanzas y diferencias entre las tres figuras.
+3. Cambia **un parámetro** de t-SNE y **uno** de UMAP. ¿Qué cambia en las representaciones? ¿Qué interpretaciones se mantienen y cuáles requieren cautela?
+4. Explica por qué una separación visual entre diagnósticos no basta para concluir que uno de estos métodos es un clasificador.
+:::
+
+## Aprendizaje de variedades
+
+
+::: {.callout-note}
+## Una perspectiva geométrica
+
+Hasta ahora hemos estudiado distintos métodos para reducir la dimensionalidad de un conjunto de datos. Sin embargo, ¿por qué necesitamos métodos no lineales como t-SNE o UMAP si ya contamos con PCA?
+
+La respuesta está relacionada con la **geometría de los datos**.
+
+Un conjunto de observaciones puede estar representado mediante muchas variables y, aun así, concentrarse cerca de una estructura geométrica de dimensión mucho menor, conocida como **variedad** (*manifold*).
+
+Por ejemplo, consideremos puntos distribuidos sobre la superficie de un cilindro. Aunque sus coordenadas pertenecen a $\mathbb{R}^3$, para describir la posición de cada punto sobre la superficie bastan dos parámetros: su ángulo y su altura. Decimos que el cilindro tiene **dimensión intrínseca 2**.
+
+### ¿Qué sucede al utilizar PCA?
+
+PCA busca direcciones ortogonales que expliquen la mayor variabilidad de los datos. Es un método **lineal**, por lo que aproxima los datos mediante un subespacio lineal de menor dimensión.
+
+Si los puntos se encuentran sobre una superficie curva, una proyección lineal puede superponer regiones diferentes de esa superficie o distorsionar las distancias entre observaciones.
+
+Por tanto, una representación con pocas componentes principales no necesariamente recupera la geometría intrínseca de los datos.
+
+### ¿Qué buscan los métodos no lineales?
+
+Los métodos de aprendizaje de variedades parten de la idea de que las relaciones entre observaciones pueden describirse mejor mediante estructuras no lineales.
+
+Algunos métodos, como Isomap, intentan conservar distancias asociadas con caminos sobre la variedad. Otros, como t-SNE y UMAP, construyen representaciones de baja dimensión que buscan conservar determinadas relaciones de vecindad entre observaciones.
+
+No obstante, **estos métodos no garantizan recuperar exactamente la geometría original**. En particular, las distancias globales y las separaciones entre grupos en una visualización de t-SNE o UMAP deben interpretarse con precaución.
+
+### Una conexión con la topología
+
+La geometría estudia propiedades como distancias y curvaturas, mientras que la topología se interesa por características como la conectividad y la presencia de agujeros.
+
+Esto plantea una pregunta importante: **¿qué información geométrica y topológica se pierde al reducir la dimensionalidad de los datos?**
+
+Por ejemplo, la superficie de un cilindro presenta una estructura circular que no desaparece simplemente porque intentemos representarla en dos dimensiones.
+
+Esta perspectiva es especialmente relevante en conjuntos de datos biológicos, donde las relaciones entre muestras pueden ser complejas y no necesariamente lineales.
+
+**Referencia:** Rabadán, R. y Blumberg, A. J. (2019). *Topological Data Analysis for Genomics and Evolution*. Cambridge University Press, capítulo 4.
+:::
+

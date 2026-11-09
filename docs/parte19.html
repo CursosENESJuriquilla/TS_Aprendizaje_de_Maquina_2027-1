@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>19&nbsp; Pendiente – Temas Selectos de Aprendizaje de Máquina</title>
+<title>19&nbsp; Reducción de dimensionalidad no lineal: t-SNE y UMAP – Temas Selectos de Aprendizaje de Máquina</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -36,6 +71,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./parte20.html" rel="next">
 <link href="./parte18.html" rel="prev">
 <link href="./figures/favicon.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
@@ -76,6 +112,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -89,7 +154,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./parte19.html"><strong>Interpretabilidad y explicabilidad de modelos</strong></a></li><li class="breadcrumb-item"><a href="./parte19.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Pendiente</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./parte17.html"><strong>Aprendizaje no supervisado</strong></a></li><li class="breadcrumb-item"><a href="./parte19.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Reducción de dimensionalidad no lineal: t-SNE y UMAP</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
@@ -317,6 +382,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Análisis de Componentes Principales (PCA)</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./parte19.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Reducción de dimensionalidad no lineal: t-SNE y UMAP</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -330,8 +401,8 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./parte19.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
+  <a href="./parte20.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Pendiente</span></span></a>
   </div>
 </li>
       </ul>
@@ -341,15 +412,33 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+  <li><a href="#de-pca-a-las-representaciones-no-lineales" id="toc-de-pca-a-las-representaciones-no-lineales" class="nav-link active" data-scroll-target="#de-pca-a-las-representaciones-no-lineales"><span class="header-section-number">19.1</span> De PCA a las representaciones no lineales</a></li>
+  <li><a href="#preparación-palmer-penguins" id="toc-preparación-palmer-penguins" class="nav-link" data-scroll-target="#preparación-palmer-penguins"><span class="header-section-number">19.2</span> Preparación: Palmer Penguins</a></li>
+  <li><a href="#t-sne-conservar-vecindades" id="toc-t-sne-conservar-vecindades" class="nav-link" data-scroll-target="#t-sne-conservar-vecindades"><span class="header-section-number">19.3</span> t-SNE: conservar vecindades</a>
+  <ul>
+  <li><a href="#qué-sucede-si-cambiamos-perplexity" id="toc-qué-sucede-si-cambiamos-perplexity" class="nav-link" data-scroll-target="#qué-sucede-si-cambiamos-perplexity"><span class="header-section-number">19.3.1</span> ¿Qué sucede si cambiamos <code>perplexity</code>?</a></li>
+  </ul></li>
+  <li><a href="#umap-representar-una-estructura-de-vecindades" id="toc-umap-representar-una-estructura-de-vecindades" class="nav-link" data-scroll-target="#umap-representar-una-estructura-de-vecindades"><span class="header-section-number">19.4</span> UMAP: representar una estructura de vecindades</a>
+  <ul>
+  <li><a href="#qué-sucede-si-cambiamos-sus-parámetros" id="toc-qué-sucede-si-cambiamos-sus-parámetros" class="nav-link" data-scroll-target="#qué-sucede-si-cambiamos-sus-parámetros"><span class="header-section-number">19.4.1</span> ¿Qué sucede si cambiamos sus parámetros?</a></li>
+  </ul></li>
+  <li><a href="#comparación-pca-t-sne-y-umap" id="toc-comparación-pca-t-sne-y-umap" class="nav-link" data-scroll-target="#comparación-pca-t-sne-y-umap"><span class="header-section-number">19.5</span> Comparación: PCA, t-SNE y UMAP</a></li>
+  <li><a href="#ejercicio-final-aplicar-t-sne-y-umap-a-otro-conjunto" id="toc-ejercicio-final-aplicar-t-sne-y-umap-a-otro-conjunto" class="nav-link" data-scroll-target="#ejercicio-final-aplicar-t-sne-y-umap-a-otro-conjunto"><span class="header-section-number">19.6</span> Ejercicio final: aplicar t-SNE y UMAP a otro conjunto</a></li>
+  <li><a href="#aprendizaje-de-variedades" id="toc-aprendizaje-de-variedades" class="nav-link" data-scroll-target="#aprendizaje-de-variedades"><span class="header-section-number">19.7</span> Aprendizaje de variedades</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./parte19.html"><strong>Interpretabilidad y explicabilidad de modelos</strong></a></li><li class="breadcrumb-item"><a href="./parte19.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Pendiente</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./parte17.html"><strong>Aprendizaje no supervisado</strong></a></li><li class="breadcrumb-item"><a href="./parte19.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Reducción de dimensionalidad no lineal: t-SNE y UMAP</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Pendiente</span></h1>
+<h1 class="title"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Reducción de dimensionalidad no lineal: t-SNE y UMAP</span></h1>
 </div>
 
 
@@ -366,8 +455,433 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<div class="callout callout-style-default callout-note callout-titled" title="Antes de comenzar: paquetes y entorno">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Antes de comenzar: paquetes y entorno
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Trabajaremos <strong>solo en Python</strong>. Necesitas <code>numpy</code>, <code>pandas</code>, <code>matplotlib</code>, <code>scikit-learn</code>, <code>palmerpenguins</code> y <code>umap-learn</code>. Instala los paquetes faltantes:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install numpy pandas matplotlib scikit-learn palmerpenguins umap-learn</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>El paquete se instala como <code>umap-learn</code>, pero se importa con <code>import umap</code>. Si acabas de instalarlo mientras el kernel estaba abierto, reinicia el kernel antes de continuar. La primera ejecución de UMAP puede tardar un poco más por la compilación inicial.</p>
+</div>
+</div>
+<section id="de-pca-a-las-representaciones-no-lineales" class="level2" data-number="19.1">
+<h2 data-number="19.1" class="anchored" data-anchor-id="de-pca-a-las-representaciones-no-lineales"><span class="header-section-number">19.1</span> De PCA a las representaciones no lineales</h2>
+<p>En la práctica anterior utilizamos <strong>PCA</strong> para representar observaciones mediante combinaciones lineales de sus variables. Ahora estudiaremos dos métodos que buscan representaciones de baja dimensión dando especial importancia a las <strong>relaciones de vecindad</strong>.</p>
+<ul>
+<li><strong>t-SNE</strong> intenta que observaciones similares en el espacio original permanezcan próximas en la representación, mediante la comparación de distribuciones de similitud.</li>
+<li><strong>UMAP</strong> construye una representación basada en vecindades y en una estructura de grafo, buscando preservar relaciones locales.</li>
+</ul>
+<p>Ambos producen coordenadas para visualizar las observaciones, pero <strong>sus ejes no son componentes principales</strong>: no representan direcciones de máxima varianza ni tienen una interpretación directa como las de PCA.</p>
+<div class="callout callout-style-default callout-important callout-titled" title="No confundir visualización con clustering">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>No confundir visualización con clustering
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>PCA, t-SNE y UMAP <strong>no asignan etiquetas de cluster</strong>. Que aparezcan grupos separados en una figura no demuestra, por sí solo, que existan clusters bien definidos en los datos originales. Tampoco debemos comparar directamente distancias, tamaños o espacios vacíos entre grupos como si fueran medidas fieles del espacio original.</p>
+</div>
+</div>
+</section>
+<section id="preparación-palmer-penguins" class="level2" data-number="19.2">
+<h2 data-number="19.2" class="anchored" data-anchor-id="preparación-palmer-penguins"><span class="header-section-number">19.2</span> Preparación: Palmer Penguins</h2>
+<p>Reutilizaremos las <strong>cuatro variables morfológicas</strong> estudiadas en PCA. Esto nos permitirá comparar los tres métodos sobre exactamente las mismas observaciones y evitar que las diferencias se deban a cambios en los datos.</p>
+<div id="tsne-umap-preparacion" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> palmerpenguins <span class="im">import</span> load_penguins</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.manifold <span class="im">import</span> TSNE</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> umap</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>SEED <span class="op">=</span> <span class="dv">42</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>variables <span class="op">=</span> [</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"bill_length_mm"</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"bill_depth_mm"</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"flipper_length_mm"</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"body_mass_g"</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> load_penguins()</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>penguins_clean <span class="op">=</span> penguins.dropna(subset<span class="op">=</span>variables <span class="op">+</span> [<span class="st">"species"</span>]).copy()</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> penguins_clean[variables].copy()</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>especie <span class="op">=</span> penguins_clean[<span class="st">"species"</span>].reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Las tres técnicas utilizarán exactamente esta matriz estandarizada.</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>escalador <span class="op">=</span> StandardScaler()</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> escalador.fit_transform(X)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Observaciones y variables:"</span>, Z.shape)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Especies:"</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(especie.value_counts())</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>display(X.head())</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><code>StandardScaler()</code> resta la media y divide por la desviación estándar de cada variable. Aunque su convención de desviación estándar difiere ligeramente de la utilizada por <code>prcomp()</code> en R, <strong>todas las técnicas de esta práctica reciben la misma matriz <code>Z</code></strong>, de modo que la comparación es consistente.</p>
+<p>Las etiquetas de especie se conservarán únicamente para colorear las figuras: <strong>no forman parte de <code>Z</code></strong>.</p>
+<p>Definimos una función auxiliar para mantener la misma presentación en las gráficas. No es parte del algoritmo de reducción de dimensionalidad.</p>
+<div id="funcion-graficas-reduccion" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>colores <span class="op">=</span> {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Adelie"</span>: <span class="st">"#1b9e77"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Chinstrap"</span>: <span class="st">"#d95f02"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Gentoo"</span>: <span class="st">"#7570b3"</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> graficar_representacion(coordenadas, titulo, ax<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                            xlabel<span class="op">=</span><span class="st">"Dimensión 1"</span>, ylabel<span class="op">=</span><span class="st">"Dimensión 2"</span>):</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> ax <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> nombre, color <span class="kw">in</span> colores.items():</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        mask <span class="op">=</span> especie.eq(nombre).to_numpy()</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        ax.scatter(</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>            coordenadas[mask, <span class="dv">0</span>], coordenadas[mask, <span class="dv">1</span>],</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>            color<span class="op">=</span>color, s<span class="op">=</span><span class="dv">25</span>, alpha<span class="op">=</span><span class="fl">0.75</span>, label<span class="op">=</span>nombre</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    ax.<span class="bu">set</span>(xlabel<span class="op">=</span>xlabel, ylabel<span class="op">=</span>ylabel, title<span class="op">=</span>titulo)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    ax.legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ax</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="t-sne-conservar-vecindades" class="level2" data-number="19.3">
+<h2 data-number="19.3" class="anchored" data-anchor-id="t-sne-conservar-vecindades"><span class="header-section-number">19.3</span> t-SNE: conservar vecindades</h2>
+<p><strong>t-distributed Stochastic Neighbor Embedding (t-SNE)</strong> busca que las observaciones cercanas en el espacio original tiendan a quedar cercanas en el mapa. Para ello compara similitudes entre pares de observaciones en ambos espacios y optimiza una representación de menor dimensión.</p>
+<p>La función <code>TSNE()</code> de <code>scikit-learn</code> permite calcular esta representación:</p>
+<div id="penguins-tsne" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>modelo_tsne <span class="op">=</span> TSNE(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    n_components<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    perplexity<span class="op">=</span><span class="dv">30</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    learning_rate<span class="op">=</span><span class="st">"auto"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    init<span class="op">=</span><span class="st">"pca"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span>SEED</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>Y_tsne <span class="op">=</span> modelo_tsne.fit_transform(Z)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>graficar_representacion(Y_tsne, <span class="st">"Palmer Penguins: t-SNE"</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><strong>¿Qué indican los argumentos?</strong></p>
+<ul>
+<li><code>n_components=2</code>: solicita una representación bidimensional.</li>
+<li><code>perplexity=30</code>: controla, de manera aproximada, la escala de las vecindades que considera el método. No es exactamente el número de vecinos.</li>
+<li><code>learning_rate="auto"</code>: utiliza una tasa de aprendizaje calculada automáticamente durante la optimización.</li>
+<li><code>init="pca"</code>: inicializa la representación mediante PCA.</li>
+<li><code>random_state=SEED</code>: fija la semilla para facilitar la reproducibilidad.</li>
+</ul>
+<p><code>fit_transform(Z)</code> ajusta el método y devuelve una matriz con <strong>dos coordenadas por pingüino</strong>. Estas coordenadas no tienen unidades físicas ni representan las variables originales.</p>
+<section id="qué-sucede-si-cambiamos-perplexity" class="level3" data-number="19.3.1">
+<h3 data-number="19.3.1" class="anchored" data-anchor-id="qué-sucede-si-cambiamos-perplexity"><span class="header-section-number">19.3.1</span> ¿Qué sucede si cambiamos <code>perplexity</code>?</h3>
+<p>Compararemos dos valores sin modificar las observaciones. El propósito no es elegir el mapa que se vea más separado, sino observar que la representación depende de los parámetros.</p>
+<div id="penguins-tsne-perplexity" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="fl">4.5</span>), constrained_layout<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, perplexity <span class="kw">in</span> <span class="bu">zip</span>(axes, [<span class="dv">5</span>, <span class="dv">50</span>]):</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    Y <span class="op">=</span> TSNE(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        n_components<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        perplexity<span class="op">=</span>perplexity,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        learning_rate<span class="op">=</span><span class="st">"auto"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        init<span class="op">=</span><span class="st">"pca"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span>SEED</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    ).fit_transform(Z)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    graficar_representacion(Y, <span class="ss">f"t-SNE: perplexity = </span><span class="sc">{</span>perplexity<span class="sc">}</span><span class="ss">"</span>, ax<span class="op">=</span>ax)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><strong>Para observar:</strong> ¿cambia la forma o la separación visual de las especies? ¿Podemos concluir que una configuración es mejor únicamente porque muestra grupos más definidos?</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="Precauciones al interpretar t-SNE">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Precauciones al interpretar t-SNE
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La cercanía local es especialmente importante en t-SNE, pero <strong>las distancias entre grupos alejados, sus tamaños aparentes y la orientación de los ejes no deben interpretarse literalmente</strong>. El resultado también puede cambiar con los parámetros y la inicialización.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="umap-representar-una-estructura-de-vecindades" class="level2" data-number="19.4">
+<h2 data-number="19.4" class="anchored" data-anchor-id="umap-representar-una-estructura-de-vecindades"><span class="header-section-number">19.4</span> UMAP: representar una estructura de vecindades</h2>
+<p><strong>Uniform Manifold Approximation and Projection (UMAP)</strong> construye relaciones entre observaciones cercanas y busca representarlas en un espacio de menor dimensión. Al igual que t-SNE, puede revelar patrones que no se aprecian fácilmente en una proyección lineal.</p>
+<div id="penguins-umap" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>modelo_umap <span class="op">=</span> umap.UMAP(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    n_components<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    n_neighbors<span class="op">=</span><span class="dv">15</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    min_dist<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    metric<span class="op">=</span><span class="st">"euclidean"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span>SEED,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    n_jobs<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>Y_umap <span class="op">=</span> modelo_umap.fit_transform(Z)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>graficar_representacion(Y_umap, <span class="st">"Palmer Penguins: UMAP"</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><strong>¿Qué indican los argumentos?</strong></p>
+<ul>
+<li><code>n_components=2</code>: solicita dos coordenadas por observación.</li>
+<li><code>n_neighbors=15</code>: controla el tamaño de las vecindades utilizadas para construir la representación; valores pequeños enfatizan relaciones más locales.</li>
+<li><code>min_dist=0.1</code>: controla qué tan próximos pueden quedar los puntos en la representación; valores pequeños permiten agrupaciones visualmente más compactas.</li>
+<li><code>metric="euclidean"</code>: utiliza distancia euclidiana entre las observaciones estandarizadas.</li>
+<li><code>random_state=SEED</code>: fija la semilla para facilitar la reproducibilidad.</li>
+<li><code>n_jobs=1</code>: evita incompatibilidades entre paralelización y la semilla fija en algunas versiones de UMAP.</li>
+</ul>
+<p>Como antes, <code>fit_transform(Z)</code> devuelve una matriz de dos columnas. <strong>Las coordenadas de UMAP no son comparables numéricamente con las de t-SNE o PCA.</strong></p>
+<section id="qué-sucede-si-cambiamos-sus-parámetros" class="level3" data-number="19.4.1">
+<h3 data-number="19.4.1" class="anchored" data-anchor-id="qué-sucede-si-cambiamos-sus-parámetros"><span class="header-section-number">19.4.1</span> ¿Qué sucede si cambiamos sus parámetros?</h3>
+<p>Probemos dos configuraciones que enfatizan de manera distinta las vecindades y la compactación visual.</p>
+<div id="penguins-umap-parametros" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>configuraciones <span class="op">=</span> [</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"n_neighbors"</span>: <span class="dv">5</span>, <span class="st">"min_dist"</span>: <span class="fl">0.0</span>},</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"n_neighbors"</span>: <span class="dv">50</span>, <span class="st">"min_dist"</span>: <span class="fl">0.5</span>}</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="fl">4.5</span>), constrained_layout<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, config <span class="kw">in</span> <span class="bu">zip</span>(axes, configuraciones):</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    Y <span class="op">=</span> umap.UMAP(</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        n_components<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        metric<span class="op">=</span><span class="st">"euclidean"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span>SEED,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        n_jobs<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">**</span>config</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    ).fit_transform(Z)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    titulo <span class="op">=</span> (<span class="ss">f"UMAP: n_neighbors = </span><span class="sc">{</span>config[<span class="st">'n_neighbors'</span>]<span class="sc">}</span><span class="ss">, "</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>              <span class="ss">f"min_dist = </span><span class="sc">{</span>config[<span class="st">'min_dist'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    graficar_representacion(Y, titulo, ax<span class="op">=</span>ax)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><strong>Para observar:</strong> ¿cuál configuración produce grupos más compactos? ¿Por qué un mapa más compacto no implica necesariamente que los grupos estén mejor definidos en el espacio original?</p>
+<div class="callout callout-style-default callout-note callout-titled" title="¿Y en R?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>¿Y en R?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>También existen implementaciones en R: <code>Rtsne::Rtsne()</code> para t-SNE y <code>uwot::umap()</code> para UMAP. Ambas aceptan matrices numéricas y permiten controlar parámetros como <code>perplexity</code>, <code>n_neighbors</code> y <code>min_dist</code>. Por ejemplo, para una matriz estandarizada <code>Z</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>resultado_tsne <span class="ot">&lt;-</span> Rtsne<span class="sc">::</span><span class="fu">Rtsne</span>(Z, <span class="at">perplexity =</span> <span class="dv">30</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>resultado_umap <span class="ot">&lt;-</span> uwot<span class="sc">::</span><span class="fu">umap</span>(Z, <span class="at">n_neighbors =</span> <span class="dv">15</span>, <span class="at">min_dist =</span> <span class="fl">0.1</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Las coordenadas se obtienen con <code>resultado_tsne$Y</code> y <code>resultado_umap</code>, respectivamente. No ejecutaremos código de R en esta práctica.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="comparación-pca-t-sne-y-umap" class="level2" data-number="19.5">
+<h2 data-number="19.5" class="anchored" data-anchor-id="comparación-pca-t-sne-y-umap"><span class="header-section-number">19.5</span> Comparación: PCA, t-SNE y UMAP</h2>
+<p>Ahora representaremos <strong>los mismos pingüinos</strong> mediante los tres métodos. La diferencia es únicamente la forma en que se construyen las dos coordenadas.</p>
+<div id="comparacion-pca-tsne-umap" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>modelo_pca <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>Y_pca <span class="op">=</span> modelo_pca.fit_transform(Z)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="fl">4.5</span>), constrained_layout<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>graficar_representacion(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    Y_pca,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PCA"</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    ax<span class="op">=</span>axes[<span class="dv">0</span>],</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    xlabel<span class="op">=</span><span class="ss">f"PC1 (</span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> modelo_pca<span class="sc">.</span>explained_variance_ratio_[<span class="dv">0</span>]<span class="sc">:.1f}</span><span class="ss"> %)"</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    ylabel<span class="op">=</span><span class="ss">f"PC2 (</span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> modelo_pca<span class="sc">.</span>explained_variance_ratio_[<span class="dv">1</span>]<span class="sc">:.1f}</span><span class="ss"> %)"</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>graficar_representacion(Y_tsne, <span class="st">"t-SNE"</span>, ax<span class="op">=</span>axes[<span class="dv">1</span>])</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>graficar_representacion(Y_umap, <span class="st">"UMAP"</span>, ax<span class="op">=</span>axes[<span class="dv">2</span>])</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Aspecto</th>
+<th>PCA</th>
+<th>t-SNE</th>
+<th>UMAP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Tipo de transformación</td>
+<td>Lineal</td>
+<td>No lineal</td>
+<td>No lineal</td>
+</tr>
+<tr class="even">
+<td>Qué prioriza</td>
+<td>Varianza máxima en las componentes</td>
+<td>Similitudes y vecindades locales</td>
+<td>Estructura de vecindades</td>
+</tr>
+<tr class="odd">
+<td>Interpretación de los ejes</td>
+<td>Direcciones principales</td>
+<td>Sin significado directo</td>
+<td>Sin significado directo</td>
+</tr>
+<tr class="even">
+<td>Varianza explicada por eje</td>
+<td>Sí</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>¿Produce clusters?</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Preguntas para discutir:</strong></p>
+<ol type="1">
+<li>¿En cuáles representaciones se distinguen visualmente mejor las especies?</li>
+<li>¿Por qué solo en PCA podemos reportar el porcentaje de varianza explicada por cada eje?</li>
+<li>¿Podemos asegurar que dos especies están más relacionadas porque sus regiones aparecen más cercanas en el mapa de t-SNE o UMAP?</li>
+<li>¿Qué ventajas y limitaciones tiene reutilizar un conjunto con solo cuatro variables para comparar estos métodos?</li>
+</ol>
+<div class="callout callout-style-default callout-important callout-titled" title="Conclusión">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Conclusión
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Una representación bidimensional es una <strong>herramienta exploratoria</strong>, no una prueba de separación entre clases ni una evaluación automática de la calidad de los grupos. Además, coloreamos por especie <em>después</em> de calcular las coordenadas: los tres métodos se ajustaron sin utilizar esa información.</p>
+</div>
+</div>
+</section>
+<section id="ejercicio-final-aplicar-t-sne-y-umap-a-otro-conjunto" class="level2" data-number="19.6">
+<h2 data-number="19.6" class="anchored" data-anchor-id="ejercicio-final-aplicar-t-sne-y-umap-a-otro-conjunto"><span class="header-section-number">19.6</span> Ejercicio final: aplicar t-SNE y UMAP a otro conjunto</h2>
+<p>Trabaja con <strong>Breast Cancer Wisconsin</strong>, que contiene 30 características numéricas y una etiqueta de diagnóstico. Ya conoces este conjunto por la práctica de PCA.</p>
+<p>Para cargarlo:</p>
+<div id="ejercicio-breast-cancer-carga2" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_breast_cancer</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>bc <span class="op">=</span> load_breast_cancer(as_frame<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>X_bc <span class="op">=</span> bc.data.copy()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>diagnostico_bc <span class="op">=</span> bc.target.copy()</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(X_bc.shape)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>display(X_bc.head())</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>X_bc.info()</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>display(X_bc.describe())</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(diagnostico_bc.value_counts())</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" title="Actividades">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Actividades
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Estandariza las 30 variables y construye representaciones bidimensionales con <strong>PCA, t-SNE y UMAP</strong>. Utiliza las mismas observaciones en los tres métodos.</li>
+<li>Colorea las observaciones según el diagnóstico, <strong>sin incluir la etiqueta en el ajuste</strong>. Describe las semejanzas y diferencias entre las tres figuras.</li>
+<li>Cambia <strong>un parámetro</strong> de t-SNE y <strong>uno</strong> de UMAP. ¿Qué cambia en las representaciones? ¿Qué interpretaciones se mantienen y cuáles requieren cautela?</li>
+<li>Explica por qué una separación visual entre diagnósticos no basta para concluir que uno de estos métodos es un clasificador.</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="aprendizaje-de-variedades" class="level2" data-number="19.7">
+<h2 data-number="19.7" class="anchored" data-anchor-id="aprendizaje-de-variedades"><span class="header-section-number">19.7</span> Aprendizaje de variedades</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Una perspectiva geométrica
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Hasta ahora hemos estudiado distintos métodos para reducir la dimensionalidad de un conjunto de datos. Sin embargo, ¿por qué necesitamos métodos no lineales como t-SNE o UMAP si ya contamos con PCA?</p>
+<p>La respuesta está relacionada con la <strong>geometría de los datos</strong>.</p>
+<p>Un conjunto de observaciones puede estar representado mediante muchas variables y, aun así, concentrarse cerca de una estructura geométrica de dimensión mucho menor, conocida como <strong>variedad</strong> (<em>manifold</em>).</p>
+<p>Por ejemplo, consideremos puntos distribuidos sobre la superficie de un cilindro. Aunque sus coordenadas pertenecen a <span class="math inline">\(\mathbb{R}^3\)</span>, para describir la posición de cada punto sobre la superficie bastan dos parámetros: su ángulo y su altura. Decimos que el cilindro tiene <strong>dimensión intrínseca 2</strong>.</p>
+<section id="qué-sucede-al-utilizar-pca" class="level3" data-number="19.7.1">
+<h3 data-number="19.7.1" class="anchored" data-anchor-id="qué-sucede-al-utilizar-pca"><span class="header-section-number">19.7.1</span> ¿Qué sucede al utilizar PCA?</h3>
+<p>PCA busca direcciones ortogonales que expliquen la mayor variabilidad de los datos. Es un método <strong>lineal</strong>, por lo que aproxima los datos mediante un subespacio lineal de menor dimensión.</p>
+<p>Si los puntos se encuentran sobre una superficie curva, una proyección lineal puede superponer regiones diferentes de esa superficie o distorsionar las distancias entre observaciones.</p>
+<p>Por tanto, una representación con pocas componentes principales no necesariamente recupera la geometría intrínseca de los datos.</p>
+</section>
+<section id="qué-buscan-los-métodos-no-lineales" class="level3" data-number="19.7.2">
+<h3 data-number="19.7.2" class="anchored" data-anchor-id="qué-buscan-los-métodos-no-lineales"><span class="header-section-number">19.7.2</span> ¿Qué buscan los métodos no lineales?</h3>
+<p>Los métodos de aprendizaje de variedades parten de la idea de que las relaciones entre observaciones pueden describirse mejor mediante estructuras no lineales.</p>
+<p>Algunos métodos, como Isomap, intentan conservar distancias asociadas con caminos sobre la variedad. Otros, como t-SNE y UMAP, construyen representaciones de baja dimensión que buscan conservar determinadas relaciones de vecindad entre observaciones.</p>
+<p>No obstante, <strong>estos métodos no garantizan recuperar exactamente la geometría original</strong>. En particular, las distancias globales y las separaciones entre grupos en una visualización de t-SNE o UMAP deben interpretarse con precaución.</p>
+</section>
+<section id="una-conexión-con-la-topología" class="level3" data-number="19.7.3">
+<h3 data-number="19.7.3" class="anchored" data-anchor-id="una-conexión-con-la-topología"><span class="header-section-number">19.7.3</span> Una conexión con la topología</h3>
+<p>La geometría estudia propiedades como distancias y curvaturas, mientras que la topología se interesa por características como la conectividad y la presencia de agujeros.</p>
+<p>Esto plantea una pregunta importante: <strong>¿qué información geométrica y topológica se pierde al reducir la dimensionalidad de los datos?</strong></p>
+<p>Por ejemplo, la superficie de un cilindro presenta una estructura circular que no desaparece simplemente porque intentemos representarla en dos dimensiones.</p>
+<p>Esta perspectiva es especialmente relevante en conjuntos de datos biológicos, donde las relaciones entre muestras pueden ser complejas y no necesariamente lineales.</p>
+<p><strong>Referencia:</strong> Rabadán, R. y Blumberg, A. J. (2019). <em>Topological Data Analysis for Genomics and Evolution</em>. Cambridge University Press, capítulo 4.</p>
+</section>
+</div>
+</div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -816,6 +1330,9 @@ ul.task-list li input[type="checkbox"] {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./parte20.html" class="pagination-link" aria-label="Pendiente">
+        <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Pendiente</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
