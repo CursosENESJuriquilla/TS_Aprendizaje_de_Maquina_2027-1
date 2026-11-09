@@ -1,5 +1,17 @@
 # Introducción al Aprendizaje no Supervisado
 
+
+::::: diapositivas
+::: diapositivas-title
+📝 **Diapositivas**
+:::
+
+::: diapositivas-body
+[Ver diapositivas](https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1/blob/main/Material/5.1-Intro_AprendizajeNoSupervisado.pdf)
+:::
+:::::
+
+
 ## ¿Qué aprendemos cuando no tenemos una respuesta?
 
 En aprendizaje supervisado disponemos de observaciones $\mathbf{x}_i$ y una respuesta $y_i$. En aprendizaje no supervisado trabajamos con
