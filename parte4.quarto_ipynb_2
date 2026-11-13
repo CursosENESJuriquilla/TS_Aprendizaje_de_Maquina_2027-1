@@ -28,7 +28,7 @@
         "\n",
         "Comenzamos importando las librerías necesarias."
       ],
-      "id": "3f1cdaa9"
+      "id": "9cadb64e"
     },
     {
       "cell_type": "code",
@@ -54,7 +54,7 @@
         "    NaturalSpline\n",
         ")"
       ],
-      "id": "590a77da",
+      "id": "fd44669e",
       "execution_count": null,
       "outputs": []
     },
@@ -74,7 +74,7 @@
         "\n",
         "## Cargar los datos `Wage`"
       ],
-      "id": "43f3c5bb"
+      "id": "db77804a"
     },
     {
       "cell_type": "code",
@@ -84,7 +84,7 @@
         "\n",
         "Wage.head()"
       ],
-      "id": "6ac283ca",
+      "id": "6c52526d",
       "execution_count": null,
       "outputs": []
     },
@@ -94,7 +94,7 @@
       "source": [
         "Recordemos algunas de las variables disponibles."
       ],
-      "id": "12c1d8c3"
+      "id": "dc5e12bb"
     },
     {
       "cell_type": "code",
@@ -102,7 +102,7 @@
       "source": [
         "Wage.columns"
       ],
-      "id": "ff7e4acb",
+      "id": "3773682f",
       "execution_count": null,
       "outputs": []
     },
@@ -115,7 +115,7 @@
         "- `age`: edad del trabajador;\n",
         "- `wage`: salario."
       ],
-      "id": "51e3be47"
+      "id": "8e83432e"
     },
     {
       "cell_type": "code",
@@ -124,7 +124,7 @@
         "age = Wage[\"age\"]\n",
         "wage = Wage[\"wage\"]"
       ],
-      "id": "4171e22a",
+      "id": "95255311",
       "execution_count": null,
       "outputs": []
     },
@@ -134,7 +134,7 @@
       "source": [
         "Veamos algunas estadísticas descriptivas."
       ],
-      "id": "63490bf2"
+      "id": "56cd6da4"
     },
     {
       "cell_type": "code",
@@ -142,7 +142,7 @@
       "source": [
         "Wage[[\"age\", \"wage\"]].describe()"
       ],
-      "id": "c91f7a0b",
+      "id": "becdd8d1",
       "execution_count": null,
       "outputs": []
     },
@@ -154,7 +154,7 @@
         "\n",
         "Antes de ajustar cualquier modelo, observemos los datos."
       ],
-      "id": "b99b3df3"
+      "id": "4437d73d"
     },
     {
       "cell_type": "code",
@@ -174,7 +174,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "9353d9bf",
+      "id": "63e4725e",
       "execution_count": null,
       "outputs": []
     },
@@ -230,7 +230,7 @@
         "\n",
         "Utilizamos `BSpline()`."
       ],
-      "id": "1061c33e"
+      "id": "f5199047"
     },
     {
       "cell_type": "code",
@@ -243,7 +243,7 @@
         "\n",
         "bs_transform"
       ],
-      "id": "aa4bb019",
+      "id": "5d3aedfb",
       "execution_count": null,
       "outputs": []
     },
@@ -255,7 +255,7 @@
         "\n",
         "Primero debemos ajustar el transformador al predictor."
       ],
-      "id": "30ee1705"
+      "id": "75d4269b"
     },
     {
       "cell_type": "code",
@@ -263,7 +263,7 @@
       "source": [
         "bs_transform = bs_transform.fit(age)"
       ],
-      "id": "8aa15bc6",
+      "id": "c2cc5897",
       "execution_count": null,
       "outputs": []
     },
@@ -273,7 +273,7 @@
       "source": [
         "Ahora transformamos las edades."
       ],
-      "id": "97b07932"
+      "id": "5da5ae18"
     },
     {
       "cell_type": "code",
@@ -283,7 +283,7 @@
         "\n",
         "bs_age"
       ],
-      "id": "8f4bc9a7",
+      "id": "d43ae609",
       "execution_count": null,
       "outputs": []
     },
@@ -293,7 +293,7 @@
       "source": [
         "Veamos sus dimensiones."
       ],
-      "id": "44ab2687"
+      "id": "9d88b918"
     },
     {
       "cell_type": "code",
@@ -301,7 +301,7 @@
       "source": [
         "bs_age.shape"
       ],
-      "id": "6e1dcb83",
+      "id": "9562bb3f",
       "execution_count": null,
       "outputs": []
     },
@@ -361,7 +361,7 @@
         "\n",
         "Podemos visualizar estas funciones. Primero ordenamos las edades, para que las curvas se dibujen de izquierda a derecha:"
       ],
-      "id": "153afda8"
+      "id": "726b9567"
     },
     {
       "cell_type": "code",
@@ -371,7 +371,7 @@
         "\n",
         "age_sorted = age.to_numpy()[age_order]"
       ],
-      "id": "d3139c66",
+      "id": "321d7637",
       "execution_count": null,
       "outputs": []
     },
@@ -381,7 +381,7 @@
       "source": [
         "Como `bs_age` es un `DataFrame` de pandas, utilizamos `.iloc` para ordenar sus filas:"
       ],
-      "id": "0c7aabe2"
+      "id": "a6bcd8bc"
     },
     {
       "cell_type": "code",
@@ -389,7 +389,7 @@
       "source": [
         "bs_sorted = bs_age.iloc[age_order, :].to_numpy()"
       ],
-      "id": "c5ef552c",
+      "id": "9782fb00",
       "execution_count": null,
       "outputs": []
     },
@@ -399,7 +399,7 @@
       "source": [
         "Ahora graficamos cada una de las funciones base:"
       ],
-      "id": "0a41ec90"
+      "id": "b1630056"
     },
     {
       "cell_type": "code",
@@ -420,7 +420,7 @@
         "plt.legend()\n",
         "plt.show()"
       ],
-      "id": "7b2b44e3",
+      "id": "48ddb2f7",
       "execution_count": null,
       "outputs": []
     },
@@ -453,7 +453,7 @@
         "\n",
         "Definimos un spline para `age` con los mismos nodos."
       ],
-      "id": "9268137e"
+      "id": "c27c7b07"
     },
     {
       "cell_type": "code",
@@ -466,7 +466,7 @@
         "    )\n",
         "])"
       ],
-      "id": "c88da461",
+      "id": "e0e982f9",
       "execution_count": null,
       "outputs": []
     },
@@ -476,7 +476,7 @@
       "source": [
         "Ahora ajustamos la especificación a los datos."
       ],
-      "id": "e8bdc0e3"
+      "id": "46f757ef"
     },
     {
       "cell_type": "code",
@@ -484,7 +484,7 @@
       "source": [
         "bs_age_spec = bs_age_spec.fit(Wage)"
       ],
-      "id": "5b64ec5d",
+      "id": "ed065d72",
       "execution_count": null,
       "outputs": []
     },
@@ -494,7 +494,7 @@
       "source": [
         "Construimos la matriz de diseño."
       ],
-      "id": "7823b80f"
+      "id": "b62a0f99"
     },
     {
       "cell_type": "code",
@@ -504,7 +504,7 @@
         "\n",
         "X_bs.head()"
       ],
-      "id": "2f67b9e3",
+      "id": "11d10647",
       "execution_count": null,
       "outputs": []
     },
@@ -514,7 +514,7 @@
       "source": [
         "Veamos sus dimensiones."
       ],
-      "id": "c7702dd7"
+      "id": "88410e29"
     },
     {
       "cell_type": "code",
@@ -522,7 +522,7 @@
       "source": [
         "X_bs.shape"
       ],
-      "id": "11bd1f58",
+      "id": "1cac7475",
       "execution_count": null,
       "outputs": []
     },
@@ -532,7 +532,7 @@
       "source": [
         "Ahora ajustamos una regresión lineal."
       ],
-      "id": "74e367a6"
+      "id": "2db70796"
     },
     {
       "cell_type": "code",
@@ -543,7 +543,7 @@
         "    X_bs\n",
         ").fit()"
       ],
-      "id": "17790563",
+      "id": "69a6bf62",
       "execution_count": null,
       "outputs": []
     },
@@ -553,7 +553,7 @@
       "source": [
         "Podemos resumir el modelo."
       ],
-      "id": "595f6097"
+      "id": "4c4a0643"
     },
     {
       "cell_type": "code",
@@ -561,7 +561,7 @@
       "source": [
         "summarize(model_bs)"
       ],
-      "id": "4e5d2d93",
+      "id": "7d741759",
       "execution_count": null,
       "outputs": []
     },
@@ -629,7 +629,7 @@
         "\n",
         "Para visualizar el ajuste construiremos una secuencia de edades."
       ],
-      "id": "60f1bbbc"
+      "id": "3a46e74d"
     },
     {
       "cell_type": "code",
@@ -641,7 +641,7 @@
         "    500\n",
         ")"
       ],
-      "id": "72c2b6c9",
+      "id": "d4b76178",
       "execution_count": null,
       "outputs": []
     },
@@ -651,7 +651,7 @@
       "source": [
         "Creamos un `DataFrame` con estas nuevas observaciones."
       ],
-      "id": "f4f3995b"
+      "id": "9767f8b4"
     },
     {
       "cell_type": "code",
@@ -661,7 +661,7 @@
         "    \"age\": age_grid\n",
         "})"
       ],
-      "id": "1713c30c",
+      "id": "ad836e4c",
       "execution_count": null,
       "outputs": []
     },
@@ -671,7 +671,7 @@
       "source": [
         "Ahora debemos transformar las nuevas edades utilizando **la misma base aprendida con los datos originales**."
       ],
-      "id": "fc64723b"
+      "id": "4182a272"
     },
     {
       "cell_type": "code",
@@ -679,7 +679,7 @@
       "source": [
         "X_grid_bs = bs_age_spec.transform(age_grid_df)"
       ],
-      "id": "3d45c696",
+      "id": "50166b95",
       "execution_count": null,
       "outputs": []
     },
@@ -689,7 +689,7 @@
       "source": [
         "Calculamos las predicciones."
       ],
-      "id": "cdadc052"
+      "id": "115e381c"
     },
     {
       "cell_type": "code",
@@ -697,7 +697,7 @@
       "source": [
         "pred_bs = model_bs.get_prediction(X_grid_bs)"
       ],
-      "id": "95d8d9f2",
+      "id": "c7e39065",
       "execution_count": null,
       "outputs": []
     },
@@ -707,7 +707,7 @@
       "source": [
         "Obtenemos el resumen de predicciones."
       ],
-      "id": "e9a0594b"
+      "id": "0abd2545"
     },
     {
       "cell_type": "code",
@@ -717,7 +717,7 @@
         "\n",
         "pred_bs_summary.head()"
       ],
-      "id": "a989b22e",
+      "id": "14a6343f",
       "execution_count": null,
       "outputs": []
     },
@@ -733,7 +733,7 @@
         "\n",
         "## Graficar el spline cúbico"
       ],
-      "id": "94b8440f"
+      "id": "abd9f199"
     },
     {
       "cell_type": "code",
@@ -775,7 +775,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "4cc1f750",
+      "id": "6d9b7146",
       "execution_count": null,
       "outputs": []
     },
@@ -791,7 +791,7 @@
         "\n",
         "Podemos recuperar los nodos utilizados por un objeto `BSpline`."
       ],
-      "id": "8c915b4c"
+      "id": "4dd5b85d"
     },
     {
       "cell_type": "code",
@@ -803,7 +803,7 @@
         "\n",
         "bs_check.internal_knots_"
       ],
-      "id": "9a0a6033",
+      "id": "cf95b5c3",
       "execution_count": null,
       "outputs": []
     },
@@ -819,7 +819,7 @@
         "\n",
         "Por ejemplo:"
       ],
-      "id": "92d82a41"
+      "id": "51f0f1dc"
     },
     {
       "cell_type": "code",
@@ -829,7 +829,7 @@
         "    df=6\n",
         ").fit(age)"
       ],
-      "id": "aa248632",
+      "id": "4569ed02",
       "execution_count": null,
       "outputs": []
     },
@@ -839,7 +839,7 @@
       "source": [
         "Inspeccionamos los nodos seleccionados automáticamente."
       ],
-      "id": "d54c0a21"
+      "id": "75bcf780"
     },
     {
       "cell_type": "code",
@@ -847,7 +847,7 @@
       "source": [
         "bs_df6.internal_knots_"
       ],
-      "id": "2e0e88b4",
+      "id": "3d7070db",
       "execution_count": null,
       "outputs": []
     },
@@ -861,7 +861,7 @@
         "\n",
         "Podemos comprobarlos directamente."
       ],
-      "id": "cb4bc233"
+      "id": "0db39755"
     },
     {
       "cell_type": "code",
@@ -869,7 +869,7 @@
       "source": [
         "age.quantile([0.25, 0.50, 0.75])"
       ],
-      "id": "2d089203",
+      "id": "d4f91bdc",
       "execution_count": null,
       "outputs": []
     },
@@ -902,7 +902,7 @@
         "\n",
         "Ahora utilizaremos directamente `df=6`."
       ],
-      "id": "438e9276"
+      "id": "8db66ff7"
     },
     {
       "cell_type": "code",
@@ -915,7 +915,7 @@
         "    )\n",
         "]).fit(Wage)"
       ],
-      "id": "d23c4962",
+      "id": "04541dfa",
       "execution_count": null,
       "outputs": []
     },
@@ -925,7 +925,7 @@
       "source": [
         "Construimos la matriz y ajustamos el modelo."
       ],
-      "id": "d2d9e694"
+      "id": "b308fe07"
     },
     {
       "cell_type": "code",
@@ -940,7 +940,7 @@
         "\n",
         "summarize(model_bs_df)"
       ],
-      "id": "b53669a7",
+      "id": "4ec87df5",
       "execution_count": null,
       "outputs": []
     },
@@ -952,7 +952,7 @@
         "\n",
         "Transformamos la malla de edades."
       ],
-      "id": "ea53f71c"
+      "id": "0cb349ed"
     },
     {
       "cell_type": "code",
@@ -960,7 +960,7 @@
       "source": [
         "X_grid_bs_df = bs_df_spec.transform(age_grid_df)"
       ],
-      "id": "4db407d5",
+      "id": "1a09b0e1",
       "execution_count": null,
       "outputs": []
     },
@@ -970,7 +970,7 @@
       "source": [
         "Calculamos las predicciones."
       ],
-      "id": "f22faf98"
+      "id": "0984e470"
     },
     {
       "cell_type": "code",
@@ -980,7 +980,7 @@
         "    X_grid_bs_df\n",
         ").summary_frame()"
       ],
-      "id": "c513e693",
+      "id": "1a4e18b1",
       "execution_count": null,
       "outputs": []
     },
@@ -1008,7 +1008,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "21348506",
+      "id": "a6fcf449",
       "execution_count": null,
       "outputs": []
     },
@@ -1058,7 +1058,7 @@
         "\n",
         "produce funciones constantes por regiones."
       ],
-      "id": "7edbbbb9"
+      "id": "8e237ca8"
     },
     {
       "cell_type": "code",
@@ -1072,7 +1072,7 @@
         "    )\n",
         "]).fit(Wage)"
       ],
-      "id": "2f17db8a",
+      "id": "5ea2e300",
       "execution_count": null,
       "outputs": []
     },
@@ -1082,7 +1082,7 @@
       "source": [
         "Construimos la matriz."
       ],
-      "id": "bf46faa0"
+      "id": "13b5450a"
     },
     {
       "cell_type": "code",
@@ -1090,7 +1090,7 @@
       "source": [
         "X_degree0 = bs_degree0_spec.transform(Wage)"
       ],
-      "id": "ff9c2e5a",
+      "id": "78afd784",
       "execution_count": null,
       "outputs": []
     },
@@ -1100,7 +1100,7 @@
       "source": [
         "Ajustamos el modelo."
       ],
-      "id": "5e9a5f10"
+      "id": "92e55099"
     },
     {
       "cell_type": "code",
@@ -1113,7 +1113,7 @@
         "\n",
         "summarize(model_degree0)"
       ],
-      "id": "b65b480c",
+      "id": "cf1a0609",
       "execution_count": null,
       "outputs": []
     },
@@ -1123,7 +1123,7 @@
       "source": [
         "## Visualizar el spline de grado cero"
       ],
-      "id": "f1962d4c"
+      "id": "1a6e2671"
     },
     {
       "cell_type": "code",
@@ -1137,7 +1137,7 @@
         "    X_grid_degree0\n",
         ")"
       ],
-      "id": "cc41c02b",
+      "id": "78e6f63d",
       "execution_count": null,
       "outputs": []
     },
@@ -1165,7 +1165,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "ca40e12c",
+      "id": "f267666e",
       "execution_count": null,
       "outputs": []
     },
@@ -1183,7 +1183,7 @@
         "\n",
         "Por ejemplo:"
       ],
-      "id": "d5f2a73e"
+      "id": "597eeb29"
     },
     {
       "cell_type": "code",
@@ -1196,7 +1196,7 @@
         "\n",
         "age_bins.value_counts().sort_index()"
       ],
-      "id": "904508aa",
+      "id": "855830ed",
       "execution_count": null,
       "outputs": []
     },
@@ -1226,7 +1226,7 @@
         "\n",
         "Utilizaremos cinco grados de libertad."
       ],
-      "id": "e5877ff4"
+      "id": "2d220768"
     },
     {
       "cell_type": "code",
@@ -1239,7 +1239,7 @@
         "    )\n",
         "]).fit(Wage)"
       ],
-      "id": "47d215a2",
+      "id": "68b138d6",
       "execution_count": null,
       "outputs": []
     },
@@ -1249,7 +1249,7 @@
       "source": [
         "Construimos la matriz de diseño."
       ],
-      "id": "315b381e"
+      "id": "2994317b"
     },
     {
       "cell_type": "code",
@@ -1259,7 +1259,7 @@
         "\n",
         "X_ns.head()"
       ],
-      "id": "7ee7b573",
+      "id": "6ecc5cd0",
       "execution_count": null,
       "outputs": []
     },
@@ -1269,7 +1269,7 @@
       "source": [
         "Ajustamos el modelo."
       ],
-      "id": "30ef9bf2"
+      "id": "1227a45f"
     },
     {
       "cell_type": "code",
@@ -1282,7 +1282,7 @@
         "\n",
         "summarize(model_ns)"
       ],
-      "id": "59160106",
+      "id": "2e4e9406",
       "execution_count": null,
       "outputs": []
     },
@@ -1294,7 +1294,7 @@
         "\n",
         "Transformamos la malla de edades."
       ],
-      "id": "532f45b3"
+      "id": "97461f8b"
     },
     {
       "cell_type": "code",
@@ -1304,7 +1304,7 @@
         "    age_grid_df\n",
         ")"
       ],
-      "id": "eec77d43",
+      "id": "8caff10a",
       "execution_count": null,
       "outputs": []
     },
@@ -1314,7 +1314,7 @@
       "source": [
         "Obtenemos predicciones e intervalos."
       ],
-      "id": "e9be1161"
+      "id": "d2059fbc"
     },
     {
       "cell_type": "code",
@@ -1324,7 +1324,7 @@
         "    X_grid_ns\n",
         ").summary_frame()"
       ],
-      "id": "f777dc0b",
+      "id": "5dfd87f0",
       "execution_count": null,
       "outputs": []
     },
@@ -1364,7 +1364,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "a3b54a9e",
+      "id": "ab93061c",
       "execution_count": null,
       "outputs": []
     },
@@ -1376,7 +1376,7 @@
         "\n",
         "Construiremos dos modelos con complejidad similar."
       ],
-      "id": "7f8deb39"
+      "id": "aee73b8e"
     },
     {
       "cell_type": "code",
@@ -1396,7 +1396,7 @@
         "    )\n",
         "]).fit(Wage)"
       ],
-      "id": "42879128",
+      "id": "8d6e0f7e",
       "execution_count": null,
       "outputs": []
     },
@@ -1406,7 +1406,7 @@
       "source": [
         "Ajustamos ambos modelos."
       ],
-      "id": "38aebccd"
+      "id": "c0208473"
     },
     {
       "cell_type": "code",
@@ -1422,7 +1422,7 @@
         "    natural_spec.transform(Wage)\n",
         ").fit()"
       ],
-      "id": "f7faca44",
+      "id": "996b04a6",
       "execution_count": null,
       "outputs": []
     },
@@ -1432,7 +1432,7 @@
       "source": [
         "Calculamos las predicciones."
       ],
-      "id": "3ee25b8b"
+      "id": "0c513208"
     },
     {
       "cell_type": "code",
@@ -1446,7 +1446,7 @@
         "    natural_spec.transform(age_grid_df)\n",
         ")"
       ],
-      "id": "c47c5322",
+      "id": "04a4905a",
       "execution_count": null,
       "outputs": []
     },
@@ -1483,7 +1483,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "07ffc7e3",
+      "id": "392b6ece",
       "execution_count": null,
       "outputs": []
     },
@@ -1515,7 +1515,7 @@
         "\n",
         "Construimos primero un polinomio de grado 15."
       ],
-      "id": "5f851240"
+      "id": "32cdfbca"
     },
     {
       "cell_type": "code",
@@ -1528,7 +1528,7 @@
         "    )\n",
         "]).fit(Wage)"
       ],
-      "id": "82e1947d",
+      "id": "30cf9b9d",
       "execution_count": null,
       "outputs": []
     },
@@ -1538,7 +1538,7 @@
       "source": [
         "Ajustamos el modelo."
       ],
-      "id": "cb4d1bf6"
+      "id": "f72d8342"
     },
     {
       "cell_type": "code",
@@ -1549,7 +1549,7 @@
         "    poly15_spec.transform(Wage)\n",
         ").fit()"
       ],
-      "id": "87e6cd04",
+      "id": "c6b86f96",
       "execution_count": null,
       "outputs": []
     },
@@ -1559,7 +1559,7 @@
       "source": [
         "Ahora ajustamos un spline natural con 15 grados de libertad."
       ],
-      "id": "c06f7f4f"
+      "id": "0c760017"
     },
     {
       "cell_type": "code",
@@ -1577,7 +1577,7 @@
         "    ns15_spec.transform(Wage)\n",
         ").fit()"
       ],
-      "id": "69b0654e",
+      "id": "21624cb6",
       "execution_count": null,
       "outputs": []
     },
@@ -1587,7 +1587,7 @@
       "source": [
         "Calculamos predicciones."
       ],
-      "id": "c28306e1"
+      "id": "4477923a"
     },
     {
       "cell_type": "code",
@@ -1601,7 +1601,7 @@
         "    ns15_spec.transform(age_grid_df)\n",
         ")"
       ],
-      "id": "8582569e",
+      "id": "5e56638a",
       "execution_count": null,
       "outputs": []
     },
@@ -1611,7 +1611,7 @@
       "source": [
         "## Visualizar la comparación"
       ],
-      "id": "f8d5494c"
+      "id": "407dc102"
     },
     {
       "cell_type": "code",
@@ -1646,7 +1646,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "f3e84a96",
+      "id": "20274c87",
       "execution_count": null,
       "outputs": []
     },
@@ -1702,7 +1702,7 @@
         "\\sum_{i=1}^{n}\n",
         "\\left(y_i-\\hat y_i\\right)^2.$$"
       ],
-      "id": "10511f09"
+      "id": "72b3319f"
     },
     {
       "cell_type": "code",
@@ -1739,7 +1739,7 @@
         "        \"MSE_train\": mse\n",
         "    })"
       ],
-      "id": "83fe4f0d",
+      "id": "97ad3dd7",
       "execution_count": null,
       "outputs": []
     },
@@ -1749,7 +1749,7 @@
       "source": [
         "Convertimos los resultados en un `DataFrame`."
       ],
-      "id": "d2e485b7"
+      "id": "abe5d913"
     },
     {
       "cell_type": "code",
@@ -1759,7 +1759,7 @@
         "\n",
         "results_df"
       ],
-      "id": "d1d851b7",
+      "id": "6472c3e0",
       "execution_count": null,
       "outputs": []
     },
@@ -1769,7 +1769,7 @@
       "source": [
         "## Graficar el error de entrenamiento"
       ],
-      "id": "a5a54c7d"
+      "id": "4e5be7b0"
     },
     {
       "cell_type": "code",
@@ -1789,7 +1789,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "9cc64876",
+      "id": "50dff52e",
       "execution_count": null,
       "outputs": []
     },
@@ -1880,7 +1880,7 @@
         "\n",
         "No es necesario implementarlo todavía."
       ],
-      "id": "a673e726"
+      "id": "aa4da753"
     }
   ],
   "metadata": {

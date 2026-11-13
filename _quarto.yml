@@ -61,7 +61,11 @@ book:
     - part: "**Interpretabilidad y explicabilidad de modelos**"
       chapters:
           - parte20.qmd  
-    
+    - part: "**Proyectos**"
+      chapters:
+          - proyecto1.qmd
+          - proyecto2.qmd
+
   # Information
   repo-url: https://github.com/CursosENESJuriquilla/TS_Aprendizaje_de_Maquina_2027-1 # link de Github
   sharing: [twitter, facebook, linkedin]

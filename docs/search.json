@@ -5058,6 +5058,7 @@
     ]
   },
   {
+<<<<<<< Updated upstream
     "objectID": "parte19.html",
     "href": "parte19.html",
     "title": "19  Reducción de dimensionalidad no lineal: t-SNE y UMAP",
@@ -5143,6 +5144,181 @@
     "crumbs": [
       "**Aprendizaje no supervisado**",
       "<span class='chapter-number'>19</span>  <span class='chapter-title'>Reducción de dimensionalidad no lineal: t-SNE y UMAP</span>"
+=======
+    "objectID": "proyecto1.html",
+    "href": "proyecto1.html",
+    "title": "20  Proyecto final 1: Clasificación de variedades de frijol",
+    "section": "",
+    "text": "20.1 Propósito y pregunta de investigación\nAnalizar si las características morfológicas extraídas de imágenes permiten distinguir siete variedades de frijol, identificar cuáles se confunden y comparar métodos de clasificación.",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Proyecto final 1:  Clasificación de variedades de frijol</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto1.html#datos-y-lectura-científica-obligatoria",
+    "href": "proyecto1.html#datos-y-lectura-científica-obligatoria",
+    "title": "20  Proyecto final 1: Clasificación de variedades de frijol",
+    "section": "20.2 Datos y lectura científica obligatoria",
+    "text": "20.2 Datos y lectura científica obligatoria\n\nFuente oficial: https://archive.ics.uci.edu/dataset/602/dry+bean+dataset\nDescargar el conjunto Dry Bean de UCI. Usar el archivo Dry_Bean_Dataset.xlsx o su versión .arff, dentro del ZIP oficial.\nDimensiones esperadas: 13,611 filas;\n16 predictores numéricos;\nvariable objetivo Class, con siete variedades.\nArtículo obligatorio: Köklü, M. y Özkan, I. A. (2020). “Multiclass classification of dry beans using computer vision and machine learning techniques”. Computers and Electronics in Agriculture, 174, 105507. https://doi.org/10.1016/j.compag.2020.105507\nCita del conjunto: Dry Bean (2020), UCI Machine Learning Repository. https://doi.org/10.24432/C50S4B",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Proyecto final 1:  Clasificación de variedades de frijol</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto1.html#reglas-generales-del-análisis",
+    "href": "proyecto1.html#reglas-generales-del-análisis",
+    "title": "20  Proyecto final 1: Clasificación de variedades de frijol",
+    "section": "20.3 Reglas generales del análisis",
+    "text": "20.3 Reglas generales del análisis\n\nTrabajar únicamente con los datos indicados. Documentar librerías, versión de Python y semilla aleatoria.\nSeparar primero entrenamiento (80 %) y prueba (20 %) de forma estratificada por clase; mantener el conjunto de prueba sin utilizar hasta la evaluación final.\nAjustar el escalamiento, la selección de variables y cualquier transformación usando solo el conjunto de entrenamiento; aplicar al de prueba los parámetros aprendidos.\nAjustar hiperparámetros mediante validación cruzada estratificada dentro del entrenamiento (por ejemplo, 5 pliegues). No seleccionar el mejor modelo mirando repetidamente la prueba.\nUsar macro-F1 como métrica principal; informar también exactitud, precisión/recall por clase y matriz de confusión.\nNo utilizar la etiqueta verdadera como predictor; no presentar PCA/UMAP como prueba de capacidad predictiva.\nExplicar las decisiones y los resultados con texto propio. Una gráfica sin interpretación no cuenta como análisis.",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Proyecto final 1:  Clasificación de variedades de frijol</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto1.html#actividades-obligatorias",
+    "href": "proyecto1.html#actividades-obligatorias",
+    "title": "20  Proyecto final 1: Clasificación de variedades de frijol",
+    "section": "20.4 Actividades obligatorias",
+    "text": "20.4 Actividades obligatorias\n\n20.4.1 Exploración y preparación\n\nCargar el archivo; mostrar dimensiones, nombres y tipos de variables; confirmar ausencia o presencia de faltantes y duplicados.\nMostrar número y proporción de semillas por variedad; incluir una gráfica de barras.\nElegir tres características morfológicas (por ejemplo Area, MajorAxisLength, Roundness) y comparar sus distribuciones por variedad. Justificar por qué podrían ser útiles.\nSeparar entrenamiento y prueba; construir el escalamiento dentro del flujo de entrenamiento cuando corresponda.\n\n\n\n20.4.2 PCA y visualización no lineal\n\nEstandarizar los predictores a partir del entrenamiento y ajustar PCA en entrenamiento.\nGraficar varianza explicada acumulada; informar cuántas componentes alcanzan al menos 90 % de varianza (si se alcanza).\nDibujar PC1 vs. PC2, coloreando por clase verdadera únicamente para interpretar la visualización. Describir qué clases se superponen.\nAplicar UMAP a los datos de entrenamiento (con semilla fija) y comparar su representación bidimensional con PCA. No interpretar las distancias globales de UMAP como equivalentes a distancias originales.\n\n\n\n20.4.3 Clustering no supervisado\n\nAplicar K-means sobre los predictores de entrenamiento escalados, o sobre componentes principales suficientes para conservar al menos 90 % de la varianza; justificar la elección.\nExplorar al menos k=2,…,8 con silhouette; mostrar una tabla o gráfica de resultados.\nElegir un k y comparar los clusters con las etiquetas verdaderas usando ARI y una tabla cruzada; explicar por qué cluster y clase no son conceptos idénticos.\nVisualizar los clusters sobre PCA y describir qué patrones aparecen, sin afirmar que los colores prueban separación biológica.\n\n\n\n20.4.4 Clasificación supervisada: SVM y XGBoost\n\nConstruir un SVM con un grid search y un modelo XGBoost multiclase.\nComparar configuraciones sencillas mediante validación cruzada estratificada en entrenamiento: SVM (C y gamma) y XGBoost (n_estimators, max_depth y learning_rate). Limitar la búsqueda para que sea viable en el tiempo disponible.\nSeleccionar la configuración de cada método según macro-F1 de validación; evaluar una sola vez ambos modelos finales sobre prueba.\nPresentar una tabla comparativa con macro-F1, exactitud y desempeño por clase, además de matrices de confusión.\nIdentificar las dos clases con mayores confusiones y proponer una explicación sustentada en las variables y visualizaciones.\nMostrar las 10 variables más importantes según XGBoost y discutir qué significa esta medida; no confundir importancia predictiva con causalidad.\n\n\n\n20.4.5 Discusión e interpretación\n\n¿Qué variedades se distinguen mejor? ¿Cuáles se confunden y qué rasgos morfológicos podrían explicarlo?\n¿La estructura observada con PCA/UMAP coincide con los errores de SVM y XGBoost? Dar al menos un ejemplo.\n¿Qué variables resultan más importantes y qué significan geométricamente?\n¿Cuál modelo elegirías para clasificar semillas nuevas y por qué? Considera desempeño, interpretabilidad y costo computacional.",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Proyecto final 1:  Clasificación de variedades de frijol</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto1.html#lectura-y-comparación-crítica-con-el-artículo",
+    "href": "proyecto1.html#lectura-y-comparación-crítica-con-el-artículo",
+    "title": "20  Proyecto final 1: Clasificación de variedades de frijol",
+    "section": "20.5 Lectura y comparación crítica con el artículo",
+    "text": "20.5 Lectura y comparación crítica con el artículo\nLeer al menos resumen, introducción, metodología general, resultados principales y discusión del artículo. Incluir una sección titulada “Comparación con la literatura”, de 1 a 2 páginas, que responda explícitamente:\n\n¿Cuál fue el objetivo del artículo y qué problema práctico buscaba resolver?\n¿Cómo se obtuvieron las 16 variables a partir de las imágenes? ¿Qué pasos del artículo no estás reproduciendo?\n¿Qué algoritmos evaluaron los autores y qué métricas utilizaron?\nEl artículo reporta aproximadamente 93.13 % de clasificación correcta para SVM. ¿Es directamente comparable con tu exactitud? Contrasta las particiones y la validación antes de concluir.\n¿Tus clases más difíciles coinciden con las reportadas? Si no, ¿qué razones metodológicas podrían explicarlo?\n¿Qué aporta tu comparación con XGBoost y qué limitaciones tiene respecto del trabajo original?",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Proyecto final 1:  Clasificación de variedades de frijol</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto1.html#productos-a-entregar",
+    "href": "proyecto1.html#productos-a-entregar",
+    "title": "20  Proyecto final 1: Clasificación de variedades de frijol",
+    "section": "20.6 Productos a entregar",
+    "text": "20.6 Productos a entregar\n\nNotebook .ipynb ejecutable de principio a fin, con código, resultados, gráficas, comentarios e interpretación en Markdown.\nInforme breve en PDF: pregunta, datos, metodología, resultados, discusión, comparación con el artículo, conclusiones y referencias.\nPresentación oral de 10 minutos más 5 minutos de preguntas.\nRepositorio y carpeta comprimida con notebook renderizado, informe, diapositivas y un archivo README con instrucciones para reproducir el análisis.",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Proyecto final 1:  Clasificación de variedades de frijol</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto1.html#criterios-de-evaluación-100-puntos",
+    "href": "proyecto1.html#criterios-de-evaluación-100-puntos",
+    "title": "20  Proyecto final 1: Clasificación de variedades de frijol",
+    "section": "20.7 Criterios de evaluación (100 puntos)",
+    "text": "20.7 Criterios de evaluación (100 puntos)\n\n\n\n\n\n\n\nCriterio\nPuntos\n\n\n\n\nCalidad y reproducibilidad del código; separación y ausencia de fuga\n20\n\n\nExploración, PCA y UMAP con interpretación\n15\n\n\nClustering y discusión de ARI/silhouette\n15\n\n\nSVM y XGBoost: validación y evaluación\n25\n\n\nInterpretación crítica y comparación con el artículo\n15\n\n\nInforme, presentación oral y claridad de comunicación\n10\n\n\nTotal\n100\n\n\n\n\n\n\n\n\n\nImportanteCriterio esencial\n\n\n\nLa interpretación de los resultados y la comparación crítica con la literatura son obligatorias. No basta con entregar código o gráficas.",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Proyecto final 1:  Clasificación de variedades de frijol</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto1.html#propósito-y-pregunta-de-investigación",
+    "href": "proyecto1.html#propósito-y-pregunta-de-investigación",
+    "title": "20  Proyecto final 1: Clasificación de variedades de frijol",
+    "section": "",
+    "text": "Advertencia🧠 Pregunta principal\n\n\n\n¿Qué características de forma y tamaño permiten distinguir variedades de frijol y qué modelo clasifica mejor semillas no observadas?",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Proyecto final 1:  Clasificación de variedades de frijol</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto2.html",
+    "href": "proyecto2.html",
+    "title": "21  Proyecto final 2: Clasificación de tipos de cáncer mediante expresión génica",
+    "section": "",
+    "text": "21.1 Propósito y pregunta de investigación\nInvestigar si los perfiles de expresión génica de RNA-seq permiten distinguir cinco tipos de tumores y comparar métodos supervisados y no supervisados en datos de alta dimensionalidad.",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Proyecto final 2:  Clasificación de tipos de cáncer mediante expresión génica</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto2.html#propósito-y-pregunta-de-investigación",
+    "href": "proyecto2.html#propósito-y-pregunta-de-investigación",
+    "title": "21  Proyecto final 2: Clasificación de tipos de cáncer mediante expresión génica",
+    "section": "",
+    "text": "Advertencia🧠 Pregunta principal\n\n\n\n¿Qué estructura muestran los perfiles de expresión génica de cinco tipos tumorales y qué tan bien pueden clasificarse muestras no observadas?",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Proyecto final 2:  Clasificación de tipos de cáncer mediante expresión génica</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto2.html#datos-y-lectura-científica-obligatoria",
+    "href": "proyecto2.html#datos-y-lectura-científica-obligatoria",
+    "title": "21  Proyecto final 2: Clasificación de tipos de cáncer mediante expresión génica",
+    "section": "21.2 Datos y lectura científica obligatoria",
+    "text": "21.2 Datos y lectura científica obligatoria\n\nFuente oficial: https://archive.ics.uci.edu/dataset/401/gene+expression+cancer+rna+seq\nDescargar TCGA-PANCAN-HiSeq-801x20531.tar.gz y extraer data.csv y labels.csv. Conservar los identificadores de muestra para comprobar la correspondencia entre archivos.\nDimensiones esperadas: 801 muestras, 20,531 columnas de expresión génica y cinco etiquetas: BRCA, KIRC, COAD, LUAD y PRAD.\nArtículo científico obligatorio: Akter, S., Adesola, R. O. y Basnet, S. (2025). “Machine learning approach to identify significant genes and classify cancer types from RNA-seq data”. Global Medical Genetics, 12(4), 100079. https://doi.org/10.1016/j.gmg.2025.100079 | Texto completo: https://pmc.ncbi.nlm.nih.gov/articles/PMC12547461/\nCita del conjunto: Fiorini, S. (2016). gene expression cancer RNA-Seq. UCI Machine Learning Repository. https://doi.org/10.24432/C5R88H\nEste artículo utiliza el conjunto PANCAN RNA-seq de UCI, por lo que constituye la referencia principal para comparar el planteamiento, la selección de genes y la evaluación de clasificadores. Las métricas no deben compararse directamente si cambian las particiones, los predictores o el protocolo de validación.",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Proyecto final 2:  Clasificación de tipos de cáncer mediante expresión génica</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto2.html#reglas-generales-del-análisis",
+    "href": "proyecto2.html#reglas-generales-del-análisis",
+    "title": "21  Proyecto final 2: Clasificación de tipos de cáncer mediante expresión génica",
+    "section": "21.3 Reglas generales del análisis",
+    "text": "21.3 Reglas generales del análisis\n\nTrabajar únicamente con los datos indicados. Documentar librerías, versión de Python y semilla aleatoria.\nSeparar primero entrenamiento (80 %) y prueba (20 %) de forma estratificada por clase; mantener el conjunto de prueba sin utilizar hasta la evaluación final.\nAjustar el escalamiento, la selección de variables y cualquier transformación usando solo el conjunto de entrenamiento; aplicar al de prueba los parámetros aprendidos.\nAjustar hiperparámetros mediante validación cruzada estratificada dentro del entrenamiento (por ejemplo, 5 pliegues). No seleccionar el mejor modelo mirando repetidamente la prueba.\nUsar macro-F1 como métrica principal; informar también exactitud, precisión/recall por clase y matriz de confusión.\nNo utilizar la etiqueta verdadera como predictor; no presentar PCA/UMAP como prueba de capacidad predictiva.\nExplicar las decisiones y los resultados con texto propio. Una gráfica sin interpretación no cuenta como análisis.",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Proyecto final 2:  Clasificación de tipos de cáncer mediante expresión génica</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto2.html#actividades-obligatorias",
+    "href": "proyecto2.html#actividades-obligatorias",
+    "title": "21  Proyecto final 2: Clasificación de tipos de cáncer mediante expresión génica",
+    "section": "21.4 Actividades obligatorias",
+    "text": "21.4 Actividades obligatorias\n\n21.4.1 Exploración y preparación\n\nCargar data.csv y labels.csv; comprobar que cada etiqueta corresponde al identificador de muestra correcto. Reportar dimensiones y valores faltantes.\nMostrar número y proporción de muestras por tumor; explicar brevemente qué representan BRCA, KIRC, COAD, LUAD y PRAD.\nSeparar entrenamiento y prueba antes de seleccionar genes. Seleccionar 500 genes con mayor varianza exclusivamente a partir del entrenamiento; aplicar la misma selección a prueba.\n\n\n\n\n\n\n\nTipHint\n\n\n\n\n\nSeleccionar los 500 genes con mayor varianza\nN_GENES = 500\nvarianzas = X_train.var(axis=0)\ngenes_seleccionados = \"los 500 con mayor varianza\"\nXtr_500 = X_train.loc[:, genes_seleccionados]\nXte_500 = X_test.loc[:, genes_seleccionados]\n\n## transformar \nescalador = StandardScaler()\nXtr_std = escalador.fit_transform(???) ## transformar conjunto de train\nXte_std = ?? ## transformar conjunto de test\n\n\n\n\nExplicar por qué es necesaria la reducción de variables, y por qué seleccionar genes con todas las muestras antes de separar produciría fuga de información.\n\n\n\n21.4.2 PCA y visualización no lineal\n\nEstandarizar los predictores a partir del entrenamiento y ajustar PCA en entrenamiento.\nGraficar varianza explicada acumulada; informar cuántas componentes alcanzan al menos 90 % de varianza (si se alcanza).\nDibujar PC1 vs. PC2, coloreando por clase verdadera únicamente para interpretar la visualización. Describir qué clases se superponen.\nAplicar UMAP a los datos de entrenamiento (con semilla fija) y comparar su representación bidimensional con PCA. No interpretar las distancias globales de UMAP como equivalentes a distancias originales.\n\n\n\n21.4.3 Clustering no supervisado\n\nAplicar K-means sobre los predictores de entrenamiento escalados, o sobre componentes principales suficientes para conservar al menos 90 % de la varianza; justificar la elección.\nExplorar al menos k=2,…,8 con silhouette; mostrar una tabla o gráfica de resultados.\nElegir un k y comparar los clusters con las etiquetas verdaderas usando ARI y una tabla cruzada; explicar por qué cluster y clase no son conceptos idénticos.\nVisualizar los clusters sobre PCA y describir qué patrones aparecen, sin afirmar que los colores prueban separación biológica.\n\n\n\n21.4.4 Clasificación supervisada: SVM y XGBoost\n\nConstruir un SVM con grid search y un modelo XGBoost multiclase.\nComparar configuraciones sencillas mediante validación cruzada estratificada en entrenamiento: SVM (C y gamma) y XGBoost (n_estimators, max_depth y learning_rate). Limitar la búsqueda para que sea viable en el tiempo disponible.\nSeleccionar la configuración de cada método según macro-F1 de validación; evaluar una sola vez ambos modelos finales sobre prueba.\nPresentar una tabla comparativa con macro-F1, exactitud y desempeño por clase, además de matrices de confusión.\nIdentificar las dos clases con mayores confusiones y proponer una explicación sustentada en las variables y visualizaciones.\nMostrar las 10 variables más importantes según XGBoost y discutir qué significa esta medida; no confundir importancia predictiva con causalidad.\n\n\n\n21.4.5 Discusión e interpretación\n\n¿Qué tipos tumorales se distinguen mejor y cuáles muestran superposición? Relacionar PCA/UMAP, clusters y errores de clasificación.\n¿Qué ventajas y riesgos tiene trabajar con muchas más variables que muestras?\n¿Qué genes identificó XGBoost como relevantes? Aclarar que gene_XX es un identificador genérico y no permite atribuir funciones biológicas sin anotación adicional.\n¿Un desempeño alto en este conjunto implica que el modelo puede utilizarse para diagnóstico clínico? Explicar por qué no.",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Proyecto final 2:  Clasificación de tipos de cáncer mediante expresión génica</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto2.html#lectura-y-comparación-crítica-con-el-artículo",
+    "href": "proyecto2.html#lectura-y-comparación-crítica-con-el-artículo",
+    "title": "21  Proyecto final 2: Clasificación de tipos de cáncer mediante expresión génica",
+    "section": "21.5 Lectura y comparación crítica con el artículo",
+    "text": "21.5 Lectura y comparación crítica con el artículo\nLeer el resumen, la introducción, los métodos (incluida la selección de genes y la validación), los resultados y la discusión del artículo de Akter et al. (2025). Incluir una sección titulada “Comparación con la literatura”, de 1 a 2 páginas, que responda explícitamente:\n\n¿Cuál es la pregunta de investigación de Akter et al. (2025)? ¿Qué tipos de cáncer y qué datos de expresión génica analizan?\n¿Cómo seleccionan los genes relevantes los autores? Compara su procedimiento con la selección de 500 genes por variabilidad realizada exclusivamente sobre el conjunto de entrenamiento en este proyecto.\n¿Qué clasificadores evalúan los autores? Identifica los que coinciden con tu trabajo (por ejemplo, SVM) y explica qué aporta tu comparación con XGBoost.\n¿Qué estrategia de validación y qué métricas utilizan los autores? Compara ese diseño con tu partición de entrenamiento/prueba y explica por qué las cifras de desempeño no son directamente equivalentes.\n¿Cómo se comparan cualitativamente tus resultados (matrices de confusión, macro-F1 y exactitud) con los del artículo? Describe coincidencias y diferencias sin atribuirlas a una sola causa.\n¿Qué significa que un gen sea importante para un clasificador? ¿Por qué esto no demuestra por sí solo que sea un biomarcador clínicamente validado? Discute también las limitaciones de muestra y validación externa.",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Proyecto final 2:  Clasificación de tipos de cáncer mediante expresión génica</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto2.html#productos-a-entregar",
+    "href": "proyecto2.html#productos-a-entregar",
+    "title": "21  Proyecto final 2: Clasificación de tipos de cáncer mediante expresión génica",
+    "section": "21.6 Productos a entregar",
+    "text": "21.6 Productos a entregar\n\nNotebook .ipynb ejecutable de principio a fin, con código, resultados, gráficas, comentarios e interpretación en Markdown.\nInforme breve en PDF: pregunta, datos, metodología, resultados, discusión, comparación con el artículo, conclusiones y referencias.\nPresentación oral de 10 minutos más 5 minutos de preguntas.\nRepositorio y carpeta comprimida con notebook, informe, diapositivas y un archivo README con instrucciones para reproducir el análisis.",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Proyecto final 2:  Clasificación de tipos de cáncer mediante expresión génica</span>"
+    ]
+  },
+  {
+    "objectID": "proyecto2.html#criterios-de-evaluación-100-puntos",
+    "href": "proyecto2.html#criterios-de-evaluación-100-puntos",
+    "title": "21  Proyecto final 2: Clasificación de tipos de cáncer mediante expresión génica",
+    "section": "21.7 Criterios de evaluación (100 puntos)",
+    "text": "21.7 Criterios de evaluación (100 puntos)\n\n\n\n\n\n\n\nCriterio\nPuntos\n\n\n\n\nCalidad y reproducibilidad del código; separación y ausencia de fuga\n20\n\n\nExploración, PCA y UMAP con interpretación\n15\n\n\nClustering y discusión de ARI/silhouette\n15\n\n\nSVM y XGBoost: validación y evaluación\n25\n\n\nInterpretación crítica y comparación con el artículo\n15\n\n\nInforme, presentación oral y claridad de comunicación\n10\n\n\nTotal\n100\n\n\n\n\n\n\n\n\n\nImportanteCriterio esencial\n\n\n\nLa interpretación de los resultados y la comparación crítica con la literatura son obligatorias. No basta con entregar código o gráficas.",
+    "crumbs": [
+      "**Proyectos**",
+      "<span class='chapter-number'>21</span>  <span class='chapter-title'>Proyecto final 2:  Clasificación de tipos de cáncer mediante expresión génica</span>"
+>>>>>>> Stashed changes
     ]
   }
 ]

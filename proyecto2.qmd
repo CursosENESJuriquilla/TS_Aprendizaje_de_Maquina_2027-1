@@ -1,0 +1,124 @@
+# Proyecto final 2: Clasificación de tipos de cáncer mediante expresión génica
+
+## Propósito y pregunta de investigación
+
+Investigar si los perfiles de expresión génica de RNA-seq permiten distinguir cinco tipos de tumores y comparar métodos supervisados y no supervisados en datos de alta dimensionalidad.
+
+::: {.callout-warning icon="false"}
+## 🧠 Pregunta principal
+
+¿Qué estructura muestran los perfiles de expresión génica de cinco tipos tumorales y qué tan bien pueden clasificarse muestras no observadas?
+:::
+
+## Datos y lectura científica obligatoria
+
+- Fuente oficial: <https://archive.ics.uci.edu/dataset/401/gene+expression+cancer+rna+seq>
+- Descargar TCGA-PANCAN-HiSeq-801x20531.tar.gz y extraer data.csv y labels.csv. Conservar los identificadores de muestra para comprobar la correspondencia entre archivos.
+- Dimensiones esperadas: 801 muestras, 20,531 columnas de expresión génica y cinco etiquetas: BRCA, KIRC, COAD, LUAD y PRAD.
+- Artículo científico obligatorio: Akter, S., Adesola, R. O. y Basnet, S. (2025). “Machine learning approach to identify significant genes and classify cancer types from RNA-seq data”. Global Medical Genetics, 12(4), 100079. <https://doi.org/10.1016/j.gmg.2025.100079> \| Texto completo: <https://pmc.ncbi.nlm.nih.gov/articles/PMC12547461/>
+- Cita del conjunto: Fiorini, S. (2016). gene expression cancer RNA-Seq. UCI Machine Learning Repository. <https://doi.org/10.24432/C5R88H>
+- Este artículo utiliza el conjunto PANCAN RNA-seq de UCI, por lo que constituye la referencia principal para comparar el planteamiento, la selección de genes y la evaluación de clasificadores. Las métricas no deben compararse directamente si cambian las particiones, los predictores o el protocolo de validación.
+
+## Reglas generales del análisis
+
+- Trabajar únicamente con los datos indicados. Documentar librerías, versión de Python y semilla aleatoria.
+- Separar primero entrenamiento (80 %) y prueba (20 %) de forma estratificada por clase; mantener el conjunto de prueba sin utilizar hasta la evaluación final.
+- Ajustar el escalamiento, la selección de variables y cualquier transformación usando solo el conjunto de entrenamiento; aplicar al de prueba los parámetros aprendidos.
+- Ajustar hiperparámetros mediante validación cruzada estratificada dentro del entrenamiento (por ejemplo, 5 pliegues). No seleccionar el mejor modelo mirando repetidamente la prueba.
+- Usar macro-F1 como métrica principal; informar también exactitud, precisión/recall por clase y matriz de confusión.
+- No utilizar la etiqueta verdadera como predictor; no presentar PCA/UMAP como prueba de capacidad predictiva.
+- Explicar las decisiones y los resultados con texto propio. Una gráfica sin interpretación no cuenta como análisis.
+
+## Actividades obligatorias
+
+### Exploración y preparación
+
+1.  Cargar data.csv y labels.csv; comprobar que cada etiqueta corresponde al identificador de muestra correcto. Reportar dimensiones y valores faltantes.
+2.  Mostrar número y proporción de muestras por tumor; explicar brevemente qué representan BRCA, KIRC, COAD, LUAD y PRAD.
+3.  Separar entrenamiento y prueba antes de seleccionar genes. Seleccionar 500 genes con mayor varianza exclusivamente a partir del entrenamiento; aplicar la misma selección a prueba.
+
+::: {.callout-tip collapse="true" icon="false"}
+## Hint
+
+``` r
+Seleccionar los 500 genes con mayor varianza
+N_GENES = 500
+varianzas = X_train.var(axis=0)
+genes_seleccionados = "los 500 con mayor varianza"
+Xtr_500 = X_train.loc[:, genes_seleccionados]
+Xte_500 = X_test.loc[:, genes_seleccionados]
+
+## transformar 
+escalador = StandardScaler()
+Xtr_std = escalador.fit_transform(???) ## transformar conjunto de train
+Xte_std = ?? ## transformar conjunto de test
+```
+:::
+
+4.  Explicar por qué es necesaria la reducción de variables, y por qué seleccionar genes con todas las muestras antes de separar produciría fuga de información.
+
+### PCA y visualización no lineal
+
+1.  Estandarizar los predictores a partir del entrenamiento y ajustar PCA en entrenamiento.
+2.  Graficar varianza explicada acumulada; informar cuántas componentes alcanzan al menos 90 % de varianza (si se alcanza).
+3.  Dibujar PC1 vs. PC2, coloreando por clase verdadera únicamente para interpretar la visualización. Describir qué clases se superponen.
+4.  Aplicar UMAP a los datos de entrenamiento (con semilla fija) y comparar su representación bidimensional con PCA. No interpretar las distancias globales de UMAP como equivalentes a distancias originales.
+
+### Clustering no supervisado
+
+1.  Aplicar K-means sobre los predictores de entrenamiento escalados, o sobre componentes principales suficientes para conservar al menos 90 % de la varianza; justificar la elección.
+2.  Explorar al menos k=2,…,8 con silhouette; mostrar una tabla o gráfica de resultados.
+3.  Elegir un k y comparar los clusters con las etiquetas verdaderas usando ARI y una tabla cruzada; explicar por qué cluster y clase no son conceptos idénticos.
+4.  Visualizar los clusters sobre PCA y describir qué patrones aparecen, sin afirmar que los colores prueban separación biológica.
+
+### Clasificación supervisada: SVM y XGBoost
+
+1.  Construir un SVM con grid search y un modelo XGBoost multiclase.
+2.  Comparar configuraciones sencillas mediante validación cruzada estratificada en entrenamiento: SVM (C y gamma) y XGBoost (n_estimators, max_depth y learning_rate). Limitar la búsqueda para que sea viable en el tiempo disponible.
+3.  Seleccionar la configuración de cada método según macro-F1 de validación; evaluar una sola vez ambos modelos finales sobre prueba.
+4.  Presentar una tabla comparativa con macro-F1, exactitud y desempeño por clase, además de matrices de confusión.
+5.  Identificar las dos clases con mayores confusiones y proponer una explicación sustentada en las variables y visualizaciones.
+6.  Mostrar las 10 variables más importantes según XGBoost y discutir qué significa esta medida; no confundir importancia predictiva con causalidad.
+
+### Discusión e interpretación
+
+1.  ¿Qué tipos tumorales se distinguen mejor y cuáles muestran superposición? Relacionar PCA/UMAP, clusters y errores de clasificación.
+2.  ¿Qué ventajas y riesgos tiene trabajar con muchas más variables que muestras?
+3.  ¿Qué genes identificó XGBoost como relevantes? Aclarar que gene_XX es un identificador genérico y no permite atribuir funciones biológicas sin anotación adicional.
+4.  ¿Un desempeño alto en este conjunto implica que el modelo puede utilizarse para diagnóstico clínico? Explicar por qué no.
+
+## Lectura y comparación crítica con el artículo
+
+Leer el resumen, la introducción, los métodos (incluida la selección de genes y la validación), los resultados y la discusión del artículo de Akter et al. (2025). Incluir una sección titulada “Comparación con la literatura”, de 1 a 2 páginas, que responda explícitamente:
+
+1.  ¿Cuál es la pregunta de investigación de Akter et al. (2025)? ¿Qué tipos de cáncer y qué datos de expresión génica analizan?
+2.  ¿Cómo seleccionan los genes relevantes los autores? Compara su procedimiento con la selección de 500 genes por variabilidad realizada exclusivamente sobre el conjunto de entrenamiento en este proyecto.
+3.  ¿Qué clasificadores evalúan los autores? Identifica los que coinciden con tu trabajo (por ejemplo, SVM) y explica qué aporta tu comparación con XGBoost.
+4.  ¿Qué estrategia de validación y qué métricas utilizan los autores? Compara ese diseño con tu partición de entrenamiento/prueba y explica por qué las cifras de desempeño no son directamente equivalentes.
+5.  ¿Cómo se comparan cualitativamente tus resultados (matrices de confusión, macro-F1 y exactitud) con los del artículo? Describe coincidencias y diferencias sin atribuirlas a una sola causa.
+6.  ¿Qué significa que un gen sea importante para un clasificador? ¿Por qué esto no demuestra por sí solo que sea un biomarcador clínicamente validado? Discute también las limitaciones de muestra y validación externa.
+
+## Productos a entregar
+
+- Notebook .ipynb ejecutable de principio a fin, con código, resultados, gráficas, comentarios e interpretación en Markdown.
+- Informe breve en PDF: pregunta, datos, metodología, resultados, discusión, comparación con el artículo, conclusiones y referencias.
+- Presentación oral de 10 minutos más 5 minutos de preguntas.
+- Repositorio y carpeta comprimida con notebook, informe, diapositivas y un archivo README con instrucciones para reproducir el análisis.
+
+## Criterios de evaluación (100 puntos)
+
+| Criterio | Puntos |
+|----|----|
+| Calidad y reproducibilidad del código; separación y ausencia de fuga | 20 |
+| Exploración, PCA y UMAP con interpretación | 15 |
+| Clustering y discusión de ARI/silhouette | 15 |
+| SVM y XGBoost: validación y evaluación | 25 |
+| Interpretación crítica y comparación con el artículo | 15 |
+| Informe, presentación oral y claridad de comunicación | 10 |
+| Total | 100 |
+
+::: callout-important
+## Criterio esencial
+
+La interpretación de los resultados y la comparación crítica con la literatura son obligatorias. No basta con entregar código o gráficas.
+:::

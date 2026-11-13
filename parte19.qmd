@@ -1,10 +1,9 @@
 # Reducción de dimensionalidad no lineal: t-SNE y UMAP
 
-
 ::: {.callout-note title="Antes de comenzar: paquetes y entorno"}
 Trabajaremos **solo en Python**. Necesitas `numpy`, `pandas`, `matplotlib`, `scikit-learn`, `palmerpenguins` y `umap-learn`. Instala los paquetes faltantes:
 
-```bash
+``` bash
 python -m pip install numpy pandas matplotlib scikit-learn palmerpenguins umap-learn
 ```
 
@@ -227,7 +226,7 @@ plt.show()
 ::: {.callout-note title="¿Y en R?"}
 También existen implementaciones en R: `Rtsne::Rtsne()` para t-SNE y `uwot::umap()` para UMAP. Ambas aceptan matrices numéricas y permiten controlar parámetros como `perplexity`, `n_neighbors` y `min_dist`. Por ejemplo, para una matriz estandarizada `Z`:
 
-```r
+``` r
 resultado_tsne <- Rtsne::Rtsne(Z, perplexity = 30)
 resultado_umap <- uwot::umap(Z, n_neighbors = 15, min_dist = 0.1)
 ```
@@ -261,7 +260,7 @@ plt.show()
 ```
 
 | Aspecto | PCA | t-SNE | UMAP |
-|---|---|---|---|
+|----|----|----|----|
 | Tipo de transformación | Lineal | No lineal | No lineal |
 | Qué prioriza | Varianza máxima en las componentes | Similitudes y vecindades locales | Estructura de vecindades |
 | Interpretación de los ejes | Direcciones principales | Sin significado directo | Sin significado directo |
@@ -270,10 +269,10 @@ plt.show()
 
 **Preguntas para discutir:**
 
-1. ¿En cuáles representaciones se distinguen visualmente mejor las especies?
-2. ¿Por qué solo en PCA podemos reportar el porcentaje de varianza explicada por cada eje?
-3. ¿Podemos asegurar que dos especies están más relacionadas porque sus regiones aparecen más cercanas en el mapa de t-SNE o UMAP?
-4. ¿Qué ventajas y limitaciones tiene reutilizar un conjunto con solo cuatro variables para comparar estos métodos?
+1.  ¿En cuáles representaciones se distinguen visualmente mejor las especies?
+2.  ¿Por qué solo en PCA podemos reportar el porcentaje de varianza explicada por cada eje?
+3.  ¿Podemos asegurar que dos especies están más relacionadas porque sus regiones aparecen más cercanas en el mapa de t-SNE o UMAP?
+4.  ¿Qué ventajas y limitaciones tiene reutilizar un conjunto con solo cuatro variables para comparar estos métodos?
 
 ::: {.callout-important title="Conclusión"}
 Una representación bidimensional es una **herramienta exploratoria**, no una prueba de separación entre clases ni una evaluación automática de la calidad de los grupos. Además, coloreamos por especie *después* de calcular las coordenadas: los tres métodos se ajustaron sin utilizar esa información.
@@ -302,16 +301,15 @@ print(diagnostico_bc.value_counts())
 ```
 
 ::: {.callout-warning title="Actividades"}
-1. Estandariza las 30 variables y construye representaciones bidimensionales con **PCA, t-SNE y UMAP**. Utiliza las mismas observaciones en los tres métodos.
-2. Colorea las observaciones según el diagnóstico, **sin incluir la etiqueta en el ajuste**. Describe las semejanzas y diferencias entre las tres figuras.
-3. Cambia **un parámetro** de t-SNE y **uno** de UMAP. ¿Qué cambia en las representaciones? ¿Qué interpretaciones se mantienen y cuáles requieren cautela?
-4. Explica por qué una separación visual entre diagnósticos no basta para concluir que uno de estos métodos es un clasificador.
+1.  Estandariza las 30 variables y construye representaciones bidimensionales con **PCA, t-SNE y UMAP**. Utiliza las mismas observaciones en los tres métodos.
+2.  Colorea las observaciones según el diagnóstico, **sin incluir la etiqueta en el ajuste**. Describe las semejanzas y diferencias entre las tres figuras.
+3.  Cambia **un parámetro** de t-SNE y **uno** de UMAP. ¿Qué cambia en las representaciones? ¿Qué interpretaciones se mantienen y cuáles requieren cautela?
+4.  Explica por qué una separación visual entre diagnósticos no basta para concluir que uno de estos métodos es un clasificador.
 :::
 
 ## Aprendizaje de variedades
 
-
-::: {.callout-note}
+::: callout-note
 ## Una perspectiva geométrica
 
 Hasta ahora hemos estudiado distintos métodos para reducir la dimensionalidad de un conjunto de datos. Sin embargo, ¿por qué necesitamos métodos no lineales como t-SNE o UMAP si ya contamos con PCA?
@@ -350,4 +348,3 @@ Esta perspectiva es especialmente relevante en conjuntos de datos biológicos, d
 
 **Referencia:** Rabadán, R. y Blumberg, A. J. (2019). *Topological Data Analysis for Genomics and Evolution*. Cambridge University Press, capítulo 4.
 :::
-

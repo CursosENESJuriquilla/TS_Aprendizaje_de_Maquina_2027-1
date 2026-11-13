@@ -173,9 +173,6 @@ corrplot(
 )
 ```
 
-
-
-
 ### Python
 
 ```{python}
@@ -203,7 +200,7 @@ En R utilizaremos `prcomp()` del paquete `stats` para realizar el análisis de c
 
 Su forma general es:
 
-```r
+``` r
 prcomp(
   x,
   center = TRUE,
@@ -217,7 +214,7 @@ prcomp(
 ### Argumentos principales de `prcomp()`
 
 | Argumento | ¿Para qué sirve? |
-|---|---|
+|------------------------------------|------------------------------------|
 | `x` | Matriz numérica o `data.frame`: filas = observaciones y columnas = variables. |
 | `center` | Resta la media de cada variable si es `TRUE` (valor predeterminado). |
 | `scale.` | Divide las variables centradas entre sus desviaciones estándar muestrales si es `TRUE`; por defecto es `FALSE`. |
@@ -255,9 +252,7 @@ display(pd.DataFrame(pca_raw_py.components_, columns=variables_py,
 
 Para evitar que las unidades de medición determinen qué variables dominan el análisis, podemos centrar y estandarizar cada variable:
 
-$$
-z_{ij}=\frac{x_{ij}-\bar{x}_j}{s_j},
-$$
+$$z_{ij}=\frac{x_{ij}-\bar{x}_j}{s_j},$$
 
 donde $\bar{x}_j$ es la media y $s_j$ la desviación estándar muestral de la variable $j$. Así, las variables transformadas tienen media cero y varianza muestral uno. **Realizar PCA con estas variables equivale a obtener las direcciones principales de la matriz de correlaciones.**
 
@@ -301,7 +296,7 @@ Si R devuelve una dirección principal $\mathbf{a}_k$ y Python devuelve $-\mathb
 El objeto `pca_r` guarda la información necesaria para interpretar el análisis. La función `summary(pca_r)` presenta las desviaciones estándar de las componentes, la proporción de varianza explicada y la proporción acumulada.
 
 | Resultado | Contenido | Interpretación |
-|---|---|---|
+|------------------------|------------------------|------------------------|
 | `pca_r$sdev` | Desviaciones estándar de las componentes. | Su cuadrado es la varianza de cada componente, es decir, el autovalor $\eta_k$. |
 | `pca_r$rotation` | Matriz $A$ de direcciones principales. | Sus columnas son los vectores $\mathbf{a}_k$ que definen las componentes. |
 | `pca_r$x` | Matriz $T$ de puntuaciones (*scores*). | Sus filas indican las coordenadas de los pingüinos en el nuevo espacio. |
@@ -319,9 +314,7 @@ Las **filas** de `rotation` corresponden a las variables originales y las **colu
 
 Con cuatro variables estandarizadas, la primera componente se escribe como
 
-$$
-PC_1=a_{11}Z_1+a_{21}Z_2+a_{31}Z_3+a_{41}Z_4.
-$$
+$$PC_1=a_{11}Z_1+a_{21}Z_2+a_{31}Z_3+a_{41}Z_4.$$
 
 Los coeficientes $a_{j1}$ son los elementos de la primera columna de `rotation`. Sus magnitudes ayudan a interpretar qué variables intervienen más en la dirección; los signos describen su relación dentro de esa componente. **Estos coeficientes no son, en general, las correlaciones entre las variables originales y las componentes.**
 
@@ -334,9 +327,7 @@ head(pca_r$x)
 
 Las puntuaciones son las coordenadas de las observaciones después de proyectarlas sobre las direcciones principales. Si $Z$ es la matriz de datos estandarizados, $A$ es la matriz de direcciones y $T$ es la matriz de puntuaciones, entonces
 
-$$
-T=ZA.
-$$
+$$T=ZA.$$
 
 Por tanto, `rotation` describe **cómo se construyen los nuevos ejes** y `x` describe **dónde se ubica cada observación en esos ejes**.
 
@@ -351,9 +342,7 @@ pca_r$scale
 
 La desviación estándar de la componente $k$ es `pca_r$sdev[k]`. Su cuadrado es la varianza correspondiente:
 
-$$
-\eta_k=\operatorname{Var}(PC_k)=(\mathrm{sdev}_k)^2.
-$$
+$$\eta_k=\operatorname{Var}(PC_k)=(\mathrm{sdev}_k)^2.$$
 
 Como PCA ordena las componentes de mayor a menor varianza, se cumple $\eta_1\geq\eta_2\geq\cdots$. Los valores de `center` y `scale` documentan la transformación aplicada y permiten transformar nuevas observaciones de forma consistente.
 
@@ -361,11 +350,9 @@ Como PCA ordena las componentes de mayor a menor varianza, se cumple $\eta_1\geq
 
 La proporción de varianza explicada por la componente $k$ y la proporción acumulada de las primeras $q$ componentes son
 
-$$
-\mathrm{PVE}_k=\frac{\eta_k}{\sum_{j=1}^{p}\eta_j},
+$$\mathrm{PVE}_k=\frac{\eta_k}{\sum_{j=1}^{p}\eta_j},
 \qquad
-\mathrm{PVE}_{1:q}=\sum_{k=1}^{q}\mathrm{PVE}_k.
-$$
+\mathrm{PVE}_{1:q}=\sum_{k=1}^{q}\mathrm{PVE}_k.$$
 
 En R obtenemos los autovalores elevando al cuadrado `pca_r$sdev`. El **scree plot** muestra la varianza explicada por cada componente, mientras que la curva acumulada ayuda a decidir cuántas conservar. No existe un umbral universal: la decisión depende del objetivo del análisis.
 
@@ -408,24 +395,20 @@ plt.show()
 ```
 :::
 
-
-:::: {.callout-warning icon="false"}
+::: {.callout-warning icon="false"}
 ## 🧠 Pregunta
 
-1. ¿Qué diferencias observas entre PCA sin estandarizar y PCA estandarizado?
-2. ¿Qué representa cada columna de `pca_r$rotation` y cada fila de `pca_r$x`?
-3. ¿Qué relación existe entre `pca_r$sdev`, los autovalores $\eta_k$ y la varianza explicada?
-4. ¿Qué porcentaje de varianza conservamos con PC1 y PC2? ¿Es suficiente para el objetivo de visualización?
-::::
-
+1.  ¿Qué diferencias observas entre PCA sin estandarizar y PCA estandarizado?
+2.  ¿Qué representa cada columna de `pca_r$rotation` y cada fila de `pca_r$x`?
+3.  ¿Qué relación existe entre `pca_r$sdev`, los autovalores $\eta_k$ y la varianza explicada?
+4.  ¿Qué porcentaje de varianza conservamos con PC1 y PC2? ¿Es suficiente para el objetivo de visualización?
+:::
 
 ## Visualización de las observaciones: *scores*
 
 Una vez ajustado PCA, podemos representar las observaciones en el espacio definido por las componentes principales. La matriz de puntuaciones (*scores*) se obtiene mediante
 
-$$
-T=ZA,
-$$
+$$T=ZA,$$
 
 donde $Z$ es la matriz de datos estandarizados y $A$ contiene las direcciones principales. Cada fila de $T$ corresponde a un pingüino y cada columna a una componente principal.
 
@@ -490,17 +473,13 @@ La cercanía entre puntos indica semejanza **en la proyección sobre PC1 y PC2**
 
 Las columnas de `pca_r$rotation` son los vectores de direcciones principales. Si $a_{jk}$ es la entrada de la fila $j$ y la columna $k$ de $A$, la puntuación de la observación $i$ en la componente $k$ es
 
-$$
-t_{ik}=\sum_{j=1}^{p}z_{ij}a_{jk}.
-$$
+$$t_{ik}=\sum_{j=1}^{p}z_{ij}a_{jk}.$$
 
 Un coeficiente $a_{jk}$ de gran magnitud indica que la variable $j$ tiene un peso importante en la construcción de esa dirección. El signo global de cada componente es arbitrario.
 
 Cuando PCA se calcula con variables estandarizadas, la **correlación** entre la variable $Z_j$ y la componente $T_k$ es
 
-$$
-\operatorname{Corr}(Z_j,T_k)=a_{jk}\sqrt{\eta_k},
-$$
+$$\operatorname{Corr}(Z_j,T_k)=a_{jk}\sqrt{\eta_k},$$
 
 donde $\eta_k$ es la varianza de la componente $k$. Por tanto, **los coeficientes de `rotation` no son directamente correlaciones**.
 
@@ -655,30 +634,22 @@ PCA no solo permite representar observaciones mediante menos coordenadas: tambi�
 
 Recordemos que $Z$ es la matriz de datos centrados y estandarizados, de dimensión $n\times p$, y que $A$ contiene las direcciones principales en sus columnas. La matriz de puntuaciones (*scores*) es
 
-$$
-T=ZA.
-$$
+$$T=ZA.$$
 
 Si se conservan todas las $p$ componentes y $A$ es ortogonal, entonces $AA^\top=I_p$ y podemos recuperar exactamente los datos estandarizados:
 
-$$
-Z=TA^\top.
-$$
+$$Z=TA^\top.$$
 
 Sin embargo, para reducir la dimensión conservamos únicamente las primeras $q$ componentes, con $q<p$. Denotamos por $T_q$ la matriz de sus puntuaciones y por $A_q$ la matriz de sus direcciones. La reconstrucción es
 
-$$
-\widehat Z_{(q)}=T_qA_q^\top.
-$$
+$$\widehat Z_{(q)}=T_qA_q^\top.$$
 
 Para Penguins, $p=4$ y, si elegimos $q=2$, las dimensiones son
 
-$$
-\underbrace{\widehat Z_{(2)}}_{n\times4}
+$$\underbrace{\widehat Z_{(2)}}_{n\times4}
 =
 \underbrace{T_2}_{n\times2}
-\underbrace{A_2^\top}_{2\times4}.
-$$
+\underbrace{A_2^\top}_{2\times4}.$$
 
 Es decir, **volvemos a obtener cuatro columnas**, pero sus valores son aproximaciones: reconstruimos cuatro variables utilizando solo dos coordenadas por observación. No estamos recuperando las componentes descartadas.
 
@@ -735,9 +706,7 @@ display(Xhat_df_py.head())
 
 Para deshacer la estandarización utilizamos
 
-$$
-\widehat x_{ij}=\widehat z_{ij}s_j+\bar x_j.
-$$
+$$\widehat x_{ij}=\widehat z_{ij}s_j+\bar x_j.$$
 
 La función `sweep()` de R aplica una operación por columnas (`MARGIN = 2`): primero multiplica cada columna por su desviación estándar (`pca_r$scale`) y luego suma su media (`pca_r$center`). En Python hacemos las mismas operaciones usando los vectores `desv_py` y `medias_py`.
 
@@ -745,19 +714,15 @@ La función `sweep()` de R aplica una operación por columnas (`MARGIN = 2`): pr
 
 Podemos calcular el **error cuadrático medio** entre las observaciones originales y las reconstruidas:
 
-$$
-\operatorname{MSE}_{\mathrm{original}}
+$$\operatorname{MSE}_{\mathrm{original}}
 =\frac{1}{np}\sum_{i=1}^n\sum_{j=1}^p
-(x_{ij}-\widehat x_{ij})^2.
-$$
+(x_{ij}-\widehat x_{ij})^2.$$
 
 Sin embargo, nuestras variables están en distintas unidades (milímetros y gramos). Por ello, también calcularemos el error en el **espacio estandarizado**, que es el espacio en el que se ajustó PCA:
 
-$$
-\operatorname{MSE}_{\mathrm{estandarizado}}
+$$\operatorname{MSE}_{\mathrm{estandarizado}}
 =\frac{1}{np}\sum_{i=1}^n\sum_{j=1}^p
-(z_{ij}-\widehat z_{ij})^2.
-$$
+(z_{ij}-\widehat z_{ij})^2.$$
 
 ::: panel-tabset
 ### R
@@ -943,17 +908,13 @@ plt.show()
 
 Los autovalores $\eta_1,\ldots,\eta_p$ representan las varianzas de las componentes. La proporción de varianza explicada por las primeras $q$ es
 
-$$
-\mathrm{PVE}_{1:q}=\frac{\sum_{k=1}^{q}\eta_k}{\sum_{k=1}^{p}\eta_k}.
-$$
+$$\mathrm{PVE}_{1:q}=\frac{\sum_{k=1}^{q}\eta_k}{\sum_{k=1}^{p}\eta_k}.$$
 
 Como las componentes son ortogonales, la suma de cuadrados que queda sin reconstruir corresponde a las componentes descartadas. Por ello,
 
-$$
-\frac{\lVert Z-\widehat Z_{(q)}\rVert_F^2}{\lVert Z\rVert_F^2}
+$$\frac{\lVert Z-\widehat Z_{(q)}\rVert_F^2}{\lVert Z\rVert_F^2}
 =\frac{\sum_{k=q+1}^{p}\eta_k}{\sum_{k=1}^{p}\eta_k}
-=1-\mathrm{PVE}_{1:q},
-$$
+=1-\mathrm{PVE}_{1:q},$$
 
 donde $\lVert\cdot\rVert_F$ es la norma de Frobenius (la raíz de la suma de los cuadrados de todos los elementos). **Esta igualdad corresponde al error relativo en el espacio estandarizado**, no al MSE calculado en unidades originales.
 
@@ -1004,21 +965,20 @@ print(np.allclose(comparacion_q_py["Error_relativo"],
 :::: {.callout-warning icon="false"}
 ## 🧠 Pregunta
 
-1. ¿Por qué la reconstrucción vuelve a tener cuatro columnas si solo conservamos dos componentes?
-2. ¿Qué significa que un punto esté lejos de la diagonal en la comparación de masa corporal?
-3. ¿Por qué el error de reconstrucción disminuye al conservar más componentes?
-4. ¿Qué diferencia hay entre un MSE en unidades originales y uno en el espacio estandarizado?
-5. Si conservamos el 85 % de la varianza, ¿qué porcentaje de la suma total de cuadrados estandarizada queda sin reconstruir?
+1.  ¿Por qué la reconstrucción vuelve a tener cuatro columnas si solo conservamos dos componentes?
+2.  ¿Qué significa que un punto esté lejos de la diagonal en la comparación de masa corporal?
+3.  ¿Por qué el error de reconstrucción disminuye al conservar más componentes?
+4.  ¿Qué diferencia hay entre un MSE en unidades originales y uno en el espacio estandarizado?
+5.  Si conservamos el 85 % de la varianza, ¿qué porcentaje de la suma total de cuadrados estandarizada queda sin reconstruir?
 
 ::: {.callout-tip collapse="true" icon="false"}
 ## Solución
 
-1. Porque las dos puntuaciones se multiplican por las direcciones principales, que tienen cuatro entradas; así se estiman las cuatro variables originales.
-2. Que la masa reconstruida difiere de la observada; la distancia vertical es el error para esa variable.
-3. Porque el espacio de reconstrucción con $q$ componentes está contenido en el espacio con $q+1$, y PCA elige las direcciones de mayor varianza.
-4. El primero mezcla gramos y milímetros y puede quedar dominado por la escala mayor; el segundo mide el error en las variables estandarizadas utilizadas para ajustar PCA.
-5. Queda sin reconstruir el 15 % de la suma total de cuadrados estandarizada.
-
+1.  Porque las dos puntuaciones se multiplican por las direcciones principales, que tienen cuatro entradas; así se estiman las cuatro variables originales.
+2.  Que la masa reconstruida difiere de la observada; la distancia vertical es el error para esa variable.
+3.  Porque el espacio de reconstrucción con $q$ componentes está contenido en el espacio con $q+1$, y PCA elige las direcciones de mayor varianza.
+4.  El primero mezcla gramos y milímetros y puede quedar dominado por la escala mayor; el segundo mide el error en las variables estandarizadas utilizadas para ajustar PCA.
+5.  Queda sin reconstruir el 15 % de la suma total de cuadrados estandarizada.
 :::
 ::::
 
@@ -1117,7 +1077,6 @@ display(pd.DataFrame({
 Justifica tu respuesta considerando la proporción de varianza explicada y el error de reconstrucción.
 :::
 
-
 ## PCA con más variables: Wine
 
 Hasta ahora hemos trabajado con las cuatro mediciones morfológicas de Palmer Penguins. Para explorar cómo se comporta PCA cuando aumenta el número de variables, utilizaremos **Wine**, un conjunto de datos de `scikit-learn` que contiene 178 observaciones y 13 características químicas de vinos.
@@ -1127,7 +1086,6 @@ El conjunto incluye tres clases conocidas. Estas etiquetas se utilizarán única
 En R cargaremos los datos mediante `reticulate`, pero realizaremos PCA con `prcomp()`. En Python utilizaremos `PCA()` de `scikit-learn`.
 
 ::: panel-tabset
-
 ### R
 
 ```{r}
@@ -1168,7 +1126,6 @@ print("Dimensiones:", wine_df.shape)
 display(wine_df.head())
 print("Clases:", np.unique(wine_target))
 ```
-
 :::
 
 ### PCA con y sin estandarización
@@ -1178,7 +1135,6 @@ Las 13 características químicas de Wine están medidas en distintas unidades y
 Compararemos PCA sobre los datos centrados, sin estandarizar, con PCA sobre los datos centrados y estandarizados.
 
 ::: panel-tabset
-
 ### R
 
 ```{r}
@@ -1237,15 +1193,12 @@ display(pd.DataFrame({
     "Estandarizado": np.round(100 * pve_wine_py[:5], 2)
 }))
 ```
-
 :::
 
 ::: {.callout-warning title="Para interpretar"}
-
-1. ¿Cómo cambia la proporción de varianza explicada por PC1 después de estandarizar?
-2. ¿Por qué es importante considerar las escalas de las variables antes de aplicar PCA?
-3. ¿Estandarizar es siempre la mejor decisión? Justifica tu respuesta.
-
+1.  ¿Cómo cambia la proporción de varianza explicada por PC1 después de estandarizar?
+2.  ¿Por qué es importante considerar las escalas de las variables antes de aplicar PCA?
+3.  ¿Estandarizar es siempre la mejor decisión? Justifica tu respuesta.
 :::
 
 ### Visualización de las componentes principales
@@ -1255,7 +1208,6 @@ Utilizaremos `fviz_pca_ind()` para representar las observaciones mediante PC1 y 
 También utilizaremos `fviz_eig()` para observar cómo se distribuye la varianza explicada entre las 13 componentes.
 
 ::: panel-tabset
-
 ### R
 
 ```{r}
@@ -1367,7 +1319,6 @@ ax.set(
 )
 plt.show()
 ```
-
 :::
 
 Las elipses resumen la dispersión de las observaciones de cada clase en el plano PC1–PC2. No representan fronteras de clasificación ni garantizan que las clases estén perfectamente separadas.
@@ -1377,7 +1328,6 @@ Las elipses resumen la dispersión de las observaciones de cada clase en el plan
 Finalmente, calcularemos el número mínimo de componentes necesario para explicar al menos el 90 % de la varianza total.
 
 ::: panel-tabset
-
 ### R
 
 ```{r}
@@ -1411,26 +1361,21 @@ print(
     "%"
 )
 ```
-
 :::
 
 ::: {.callout-important title="Una distinción esencial"}
-
 Aunque las clases conocidas puedan aparecer separadas en el plano PC1–PC2, **PCA sigue siendo un método no supervisado**.
 
 Las etiquetas no intervienen en el cálculo de las componentes; únicamente permiten interpretar posteriormente la representación obtenida.
 
 Además, una separación visual no garantiza que un clasificador pueda distinguir perfectamente las clases.
-
 :::
 
 ::: {.callout-warning title="Para concluir"}
-
-1. ¿Qué diferencias observas entre la distribución de la varianza explicada en Penguins y Wine?
-2. ¿Las primeras dos componentes permiten representar adecuadamente la variabilidad de Wine?
-3. ¿Cuántas componentes conservarías para reducir la dimensionalidad de Wine? Justifica tu elección.
-4. ¿Qué información adicional necesitarías para evaluar si las clases pueden distinguirse mediante un modelo de clasificación?
-
+1.  ¿Qué diferencias observas entre la distribución de la varianza explicada en Penguins y Wine?
+2.  ¿Las primeras dos componentes permiten representar adecuadamente la variabilidad de Wine?
+3.  ¿Cuántas componentes conservarías para reducir la dimensionalidad de Wine? Justifica tu elección.
+4.  ¿Qué información adicional necesitarías para evaluar si las clases pueden distinguirse mediante un modelo de clasificación?
 :::
 
 ## Ejercicios de interpretación
@@ -1438,7 +1383,6 @@ Además, una separación visual no garantiza que un clasificador pueda distingui
 ### Ejercicio 1. Interpretación conceptual
 
 Explica con tus palabras qué diferencia hay entre una carga y una puntuación. ¿Por qué las etiquetas de especie no se incluyen en la matriz $X$? ¿Qué implica que PC1 explique más varianza que PC2?
-
 
 ### Ejercicio 2. PCA con Breast Cancer Wisconsin
 
@@ -1499,11 +1443,11 @@ print(diagnostico.value_counts())
 
 **Actividades**
 
-1. Explora las variables disponibles y determina si es conveniente estandarizarlas antes de aplicar PCA. Justifica tu decisión.
-2. Realiza PCA y analiza la proporción de varianza explicada por las primeras componentes. ¿Cuántas componentes necesitas para explicar al menos el 90 % de la varianza?
-3. Construye una representación de las observaciones mediante PC1 y PC2. Utiliza los diagnósticos únicamente para identificar los grupos en la gráfica.
-4. Examina las direcciones principales e identifica las variables que más contribuyen a PC1 y PC2. ¿Qué características parecen explicar las principales diferencias entre las observaciones?
-5. Interpreta tus resultados: ¿qué tan útil es la representación bidimensional para visualizar las diferencias entre los diagnósticos? ¿Qué limitaciones tiene esta interpretación?
+1.  Explora las variables disponibles y determina si es conveniente estandarizarlas antes de aplicar PCA. Justifica tu decisión.
+2.  Realiza PCA y analiza la proporción de varianza explicada por las primeras componentes. ¿Cuántas componentes necesitas para explicar al menos el 90 % de la varianza?
+3.  Construye una representación de las observaciones mediante PC1 y PC2. Utiliza los diagnósticos únicamente para identificar los grupos en la gráfica.
+4.  Examina las direcciones principales e identifica las variables que más contribuyen a PC1 y PC2. ¿Qué características parecen explicar las principales diferencias entre las observaciones?
+5.  Interpreta tus resultados: ¿qué tan útil es la representación bidimensional para visualizar las diferencias entre los diagnósticos? ¿Qué limitaciones tiene esta interpretación?
 
 ::: {.callout-warning title="Importante"}
 La variable de diagnóstico no debe utilizarse para calcular PCA. Solamente se empleará para interpretar posteriormente los resultados.
@@ -1577,16 +1521,11 @@ display(datos_decathlon.describe())
 
 En este ejercicio trabajaremos con los primeros **23 atletas y las 10 variables correspondientes a las pruebas deportivas**.
 
-
-
 **Actividades**
 
-1. Examina las diez variables deportivas. ¿Qué diferencias existen entre sus unidades de medición? ¿Por qué podrían afectar los resultados de PCA?
-2. Realiza PCA y determina cuánta varianza explican las primeras dos componentes. ¿Cuántas componentes necesitas para explicar al menos el 90 % de la varianza total?
-3. Construye el círculo de correlaciones de las variables. Identifica qué pruebas deportivas presentan asociaciones positivas y cuáles muestran relaciones negativas.
-4. Representa a los atletas en el plano PC1–PC2. Identifica algunos atletas con puntuaciones extremas y utiliza las variables asociadas a cada componente para interpretar sus posiciones.
-5. Construye un biplot e interpreta conjuntamente los resultados de los atletas y las pruebas deportivas.
-6. A partir de tus resultados, explica qué características del rendimiento deportivo parecen resumir PC1 y PC2. ¿Consideras que dos componentes son suficientes para describir adecuadamente a los atletas?
-
-
-
+1.  Examina las diez variables deportivas. ¿Qué diferencias existen entre sus unidades de medición? ¿Por qué podrían afectar los resultados de PCA?
+2.  Realiza PCA y determina cuánta varianza explican las primeras dos componentes. ¿Cuántas componentes necesitas para explicar al menos el 90 % de la varianza total?
+3.  Construye el círculo de correlaciones de las variables. Identifica qué pruebas deportivas presentan asociaciones positivas y cuáles muestran relaciones negativas.
+4.  Representa a los atletas en el plano PC1–PC2. Identifica algunos atletas con puntuaciones extremas y utiliza las variables asociadas a cada componente para interpretar sus posiciones.
+5.  Construye un biplot e interpreta conjuntamente los resultados de los atletas y las pruebas deportivas.
+6.  A partir de tus resultados, explica qué características del rendimiento deportivo parecen resumir PC1 y PC2. ¿Consideras que dos componentes son suficientes para describir adecuadamente a los atletas?

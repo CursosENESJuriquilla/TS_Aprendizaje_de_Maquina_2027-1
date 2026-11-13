@@ -1,0 +1,106 @@
+# Proyecto final 1: Clasificación de variedades de frijol
+
+## Propósito y pregunta de investigación
+
+Analizar si las características morfológicas extraídas de imágenes permiten distinguir siete variedades de frijol, identificar cuáles se confunden y comparar métodos de clasificación.
+
+::: {.callout-warning icon="false"}
+## 🧠 Pregunta principal
+
+¿Qué características de forma y tamaño permiten distinguir variedades de frijol y qué modelo clasifica mejor semillas no observadas?
+:::
+
+## Datos y lectura científica obligatoria
+
+- Fuente oficial: <https://archive.ics.uci.edu/dataset/602/dry+bean+dataset>
+- Descargar el conjunto Dry Bean de UCI. Usar el archivo Dry_Bean_Dataset.xlsx o su versión .arff, dentro del ZIP oficial.
+- Dimensiones esperadas: 13,611 filas;
+- 16 predictores numéricos;
+- variable objetivo Class, con siete variedades.
+- Artículo obligatorio: Köklü, M. y Özkan, I. A. (2020). “Multiclass classification of dry beans using computer vision and machine learning techniques”. Computers and Electronics in Agriculture, 174, 105507. <https://doi.org/10.1016/j.compag.2020.105507>
+- Cita del conjunto: Dry Bean (2020), UCI Machine Learning Repository. <https://doi.org/10.24432/C50S4B>
+
+## Reglas generales del análisis
+
+- Trabajar únicamente con los datos indicados. Documentar librerías, versión de Python y semilla aleatoria.
+- Separar primero entrenamiento (80 %) y prueba (20 %) de forma estratificada por clase; mantener el conjunto de prueba sin utilizar hasta la evaluación final.
+- Ajustar el escalamiento, la selección de variables y cualquier transformación usando solo el conjunto de entrenamiento; aplicar al de prueba los parámetros aprendidos.
+- Ajustar hiperparámetros mediante validación cruzada estratificada dentro del entrenamiento (por ejemplo, 5 pliegues). No seleccionar el mejor modelo mirando repetidamente la prueba.
+- Usar macro-F1 como métrica principal; informar también exactitud, precisión/recall por clase y matriz de confusión.
+- No utilizar la etiqueta verdadera como predictor; no presentar PCA/UMAP como prueba de capacidad predictiva.
+- Explicar las decisiones y los resultados con texto propio. Una gráfica sin interpretación no cuenta como análisis.
+
+## Actividades obligatorias
+
+### Exploración y preparación
+
+1.  Cargar el archivo; mostrar dimensiones, nombres y tipos de variables; confirmar ausencia o presencia de faltantes y duplicados.
+2.  Mostrar número y proporción de semillas por variedad; incluir una gráfica de barras.
+3.  Elegir tres características morfológicas (por ejemplo Area, MajorAxisLength, Roundness) y comparar sus distribuciones por variedad. Justificar por qué podrían ser útiles.
+4.  Separar entrenamiento y prueba; construir el escalamiento dentro del flujo de entrenamiento cuando corresponda.
+
+### PCA y visualización no lineal
+
+1.  Estandarizar los predictores a partir del entrenamiento y ajustar PCA en entrenamiento.
+2.  Graficar varianza explicada acumulada; informar cuántas componentes alcanzan al menos 90 % de varianza (si se alcanza).
+3.  Dibujar PC1 vs. PC2, coloreando por clase verdadera únicamente para interpretar la visualización. Describir qué clases se superponen.
+4.  Aplicar UMAP a los datos de entrenamiento (con semilla fija) y comparar su representación bidimensional con PCA. No interpretar las distancias globales de UMAP como equivalentes a distancias originales.
+
+### Clustering no supervisado
+
+1.  Aplicar K-means sobre los predictores de entrenamiento escalados, o sobre componentes principales suficientes para conservar al menos 90 % de la varianza; justificar la elección.
+2.  Explorar al menos k=2,…,8 con silhouette; mostrar una tabla o gráfica de resultados.
+3.  Elegir un k y comparar los clusters con las etiquetas verdaderas usando ARI y una tabla cruzada; explicar por qué cluster y clase no son conceptos idénticos.
+4.  Visualizar los clusters sobre PCA y describir qué patrones aparecen, sin afirmar que los colores prueban separación biológica.
+
+### Clasificación supervisada: SVM y XGBoost
+
+1.  Construir un SVM con un grid search y un modelo XGBoost multiclase.
+2.  Comparar configuraciones sencillas mediante validación cruzada estratificada en entrenamiento: SVM (C y gamma) y XGBoost (n_estimators, max_depth y learning_rate). Limitar la búsqueda para que sea viable en el tiempo disponible.
+3.  Seleccionar la configuración de cada método según macro-F1 de validación; evaluar una sola vez ambos modelos finales sobre prueba.
+4.  Presentar una tabla comparativa con macro-F1, exactitud y desempeño por clase, además de matrices de confusión.
+5.  Identificar las dos clases con mayores confusiones y proponer una explicación sustentada en las variables y visualizaciones.
+6.  Mostrar las 10 variables más importantes según XGBoost y discutir qué significa esta medida; no confundir importancia predictiva con causalidad.
+
+### Discusión e interpretación
+
+1.  ¿Qué variedades se distinguen mejor? ¿Cuáles se confunden y qué rasgos morfológicos podrían explicarlo?
+2.  ¿La estructura observada con PCA/UMAP coincide con los errores de SVM y XGBoost? Dar al menos un ejemplo.
+3.  ¿Qué variables resultan más importantes y qué significan geométricamente?
+4.  ¿Cuál modelo elegirías para clasificar semillas nuevas y por qué? Considera desempeño, interpretabilidad y costo computacional.
+
+## Lectura y comparación crítica con el artículo
+
+Leer al menos resumen, introducción, metodología general, resultados principales y discusión del artículo. Incluir una sección titulada “Comparación con la literatura”, de 1 a 2 páginas, que responda explícitamente:
+
+1.  ¿Cuál fue el objetivo del artículo y qué problema práctico buscaba resolver?
+2.  ¿Cómo se obtuvieron las 16 variables a partir de las imágenes? ¿Qué pasos del artículo no estás reproduciendo?
+3.  ¿Qué algoritmos evaluaron los autores y qué métricas utilizaron?
+4.  El artículo reporta aproximadamente 93.13 % de clasificación correcta para SVM. ¿Es directamente comparable con tu exactitud? Contrasta las particiones y la validación antes de concluir.
+5.  ¿Tus clases más difíciles coinciden con las reportadas? Si no, ¿qué razones metodológicas podrían explicarlo?
+6.  ¿Qué aporta tu comparación con XGBoost y qué limitaciones tiene respecto del trabajo original?
+
+## Productos a entregar
+
+- Notebook .ipynb ejecutable de principio a fin, con código, resultados, gráficas, comentarios e interpretación en Markdown.
+- Informe breve en PDF: pregunta, datos, metodología, resultados, discusión, comparación con el artículo, conclusiones y referencias.
+- Presentación oral de 10 minutos más 5 minutos de preguntas.
+- Repositorio y carpeta comprimida con notebook renderizado, informe, diapositivas y un archivo README con instrucciones para reproducir el análisis.
+
+## Criterios de evaluación (100 puntos)
+
+| Criterio | Puntos |
+|----|----|
+| Calidad y reproducibilidad del código; separación y ausencia de fuga | 20 |
+| Exploración, PCA y UMAP con interpretación | 15 |
+| Clustering y discusión de ARI/silhouette | 15 |
+| SVM y XGBoost: validación y evaluación | 25 |
+| Interpretación crítica y comparación con el artículo | 15 |
+| Informe, presentación oral y claridad de comunicación | 10 |
+| Total | 100 |
+
+::: callout-important
+## Criterio esencial
+
+La interpretación de los resultados y la comparación crítica con la literatura son obligatorias. No basta con entregar código o gráficas.
+:::

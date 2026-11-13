@@ -32,7 +32,7 @@
         "\n",
         "En un notebook de Jupyter se recomienda instalarla mediante:"
       ],
-      "id": "89c15923"
+      "id": "d987e977"
     },
     {
       "cell_type": "code",
@@ -42,7 +42,7 @@
         "\n",
         "%pip install pysr"
       ],
-      "id": "738695d6",
+      "id": "6d723a2b",
       "execution_count": null,
       "outputs": []
     },
@@ -82,7 +82,7 @@
         "\n",
         "Ahora importamos las bibliotecas necesarias."
       ],
-      "id": "91430e62"
+      "id": "f3845cda"
     },
     {
       "cell_type": "code",
@@ -93,7 +93,7 @@
         "\n",
         "from pysr import PySRRegressor"
       ],
-      "id": "754813c9",
+      "id": "33b84a39",
       "execution_count": null,
       "outputs": []
     },
@@ -113,7 +113,7 @@
         "\n",
         "representa ruido aleatorio."
       ],
-      "id": "ac7ccc36"
+      "id": "5e1511fe"
     },
     {
       "cell_type": "code",
@@ -133,7 +133,7 @@
         "\n",
         "y = x**2 + 2*np.sin(x) + epsilon"
       ],
-      "id": "e1ead69d",
+      "id": "1ca0deeb",
       "execution_count": null,
       "outputs": []
     },
@@ -147,7 +147,7 @@
         "\n",
         "Antes de construir un modelo, observemos los datos."
       ],
-      "id": "dea8608c"
+      "id": "085fe576"
     },
     {
       "cell_type": "code",
@@ -167,7 +167,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "5c3a1793",
+      "id": "473fac02",
       "execution_count": null,
       "outputs": []
     },
@@ -189,7 +189,7 @@
         "\n",
         "Actualmente `x` es un vector:"
       ],
-      "id": "a3123568"
+      "id": "41876def"
     },
     {
       "cell_type": "code",
@@ -197,7 +197,7 @@
       "source": [
         "x.shape"
       ],
-      "id": "2ad4d450",
+      "id": "465d76cd",
       "execution_count": null,
       "outputs": []
     },
@@ -207,7 +207,7 @@
       "source": [
         "Lo convertimos en una matriz con una columna:"
       ],
-      "id": "21bb4a9b"
+      "id": "b1803a1f"
     },
     {
       "cell_type": "code",
@@ -217,7 +217,7 @@
         "\n",
         "X.shape"
       ],
-      "id": "276fe666",
+      "id": "9638e303",
       "execution_count": null,
       "outputs": []
     },
@@ -247,7 +247,7 @@
         "\n",
         "$$\\sin(x).$$"
       ],
-      "id": "aa8f034e"
+      "id": "4db71824"
     },
     {
       "cell_type": "code",
@@ -266,7 +266,7 @@
         "    verbosity=1\n",
         ")"
       ],
-      "id": "6f3a77dd",
+      "id": "59c6b4ef",
       "execution_count": null,
       "outputs": []
     },
@@ -294,7 +294,7 @@
         "\n",
         "Ajustamos el modelo utilizando los datos."
       ],
-      "id": "f181ea98"
+      "id": "5df529df"
     },
     {
       "cell_type": "code",
@@ -302,7 +302,7 @@
       "source": [
         "model.fit(X, y)"
       ],
-      "id": "3a3b1aa8",
+      "id": "73e5dd27",
       "execution_count": null,
       "outputs": []
     },
@@ -347,7 +347,7 @@
         "\n",
         "Durante la búsqueda genera diferentes expresiones con distintos niveles de complejidad y error."
       ],
-      "id": "c48d2c0f"
+      "id": "c1424355"
     },
     {
       "cell_type": "code",
@@ -355,7 +355,7 @@
       "source": [
         "model.equations_"
       ],
-      "id": "f9dd1457",
+      "id": "cb631398",
       "execution_count": null,
       "outputs": []
     },
@@ -365,7 +365,7 @@
       "source": [
         "Podemos observar algunas de las columnas principales:"
       ],
-      "id": "a9d93751"
+      "id": "02ff8f9e"
     },
     {
       "cell_type": "code",
@@ -375,7 +375,7 @@
         "    [\"complexity\", \"loss\", \"equation\", \"score\"]\n",
         "]"
       ],
-      "id": "6a22ffaa",
+      "id": "ed80c8fd",
       "execution_count": null,
       "outputs": []
     },
@@ -400,7 +400,7 @@
         "\n",
         "Podemos obtener la expresión seleccionada por PySR en formato simbólico:"
       ],
-      "id": "2549faa8"
+      "id": "130303eb"
     },
     {
       "cell_type": "code",
@@ -408,7 +408,7 @@
       "source": [
         "model.sympy()"
       ],
-      "id": "fe574d72",
+      "id": "e5d8f200",
       "execution_count": null,
       "outputs": []
     },
@@ -436,7 +436,7 @@
         "\n",
         "Generamos valores de $x$ en todo el intervalo observado."
       ],
-      "id": "2f7d4be0"
+      "id": "1c3f7a2f"
     },
     {
       "cell_type": "code",
@@ -448,7 +448,7 @@
         "\n",
         "y_pred = model.predict(X_grid)"
       ],
-      "id": "395bf154",
+      "id": "f683870a",
       "execution_count": null,
       "outputs": []
     },
@@ -458,7 +458,7 @@
       "source": [
         "Y comparamos los datos con la predicción."
       ],
-      "id": "aa834926"
+      "id": "affb40c8"
     },
     {
       "cell_type": "code",
@@ -488,7 +488,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "231298ee",
+      "id": "2f00e4f4",
       "execution_count": null,
       "outputs": []
     },
@@ -500,7 +500,7 @@
         "\n",
         "Como nuestros datos son simulados, conocemos la función verdadera:"
       ],
-      "id": "734634df"
+      "id": "ba327900"
     },
     {
       "cell_type": "code",
@@ -508,7 +508,7 @@
       "source": [
         "y_true = x_grid**2 + 2*np.sin(x_grid)"
       ],
-      "id": "3976e9ad",
+      "id": "f70a1f8b",
       "execution_count": null,
       "outputs": []
     },
@@ -518,7 +518,7 @@
       "source": [
         "Podemos compararla directamente con la función encontrada."
       ],
-      "id": "f536cb8b"
+      "id": "e41546ef"
     },
     {
       "cell_type": "code",
@@ -556,7 +556,7 @@
         "\n",
         "plt.show()"
       ],
-      "id": "f2e9f2d8",
+      "id": "f86f396a",
       "execution_count": null,
       "outputs": []
     },
@@ -668,7 +668,7 @@
         "> ¿Hasta qué punto podemos decir que el algoritmo \\`\\`descubrió'' la ecuación y hasta qué punto el resultado depende del espacio de búsqueda que nosotros definimos?\n",
         ":::"
       ],
-      "id": "1e7db9b7"
+      "id": "7f5d11c6"
     }
   ],
   "metadata": {
